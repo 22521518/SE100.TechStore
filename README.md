@@ -1,6 +1,6 @@
 # SE100.TechStore
 
-## SERVER FILE
+### _SERVER file_
 # How to Use NestJS CLI
 
 ## Introduction
@@ -13,5 +13,4 @@ Before using the NestJS CLI, make sure it’s installed. If not, install it glob
 
 ```bash
 npm install -g @nestjs/cli
-
-
+```
