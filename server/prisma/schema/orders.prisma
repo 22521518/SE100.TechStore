@@ -1,0 +1,55 @@
+enum ORDER_STATUS {
+    PENDING
+    CONFIRMED
+    SHIPPED
+    DELIVERED
+    CANCELLED
+}
+
+model Orders {
+    order_id String @id @default(cuid()) @db.VarChar(10)
+    customer_id String?
+    order_status ORDER_STATUS
+    total_price Float
+    voucher_code String?
+    created_at DateTime @default(now())
+
+    customer Customers? @relation(fields: [customer_id], references: [customer_id], onDelete: SetNull)
+    order_item Order_Items[]
+    voucher Vouchers? @relation(fields: [voucher_code], references: [voucher_code], onDelete: SetNull)
+    invoice Invoices[]
+    shipping_address Shipping_Address?
+}
+
+model Order_Items {
+    order_id String @db.VarChar(10)
+    product_id String @db.VarChar(50)
+    quantity Int
+    unit_price Float
+    total_price Float
+    @@id([order_id, product_id])
+
+    order Orders @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+    product Products @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
+}
+
+model Invoices {
+    invoice_id String @id @default(cuid()) @db.VarChar(10)
+    order_id String? @db.VarChar(10)
+    total_price Float
+    created_at DateTime @default(now())
+
+    order Orders? @relation(fields: [order_id], references: [order_id], onDelete: SetNull)
+}
+
+model Shipping_Address {
+    shipping_id String @id @db.VarChar(50) @default(cuid())
+    customer_id String @db.VarChar(50)
+    order_id String @db.VarChar(10) @unique
+    address String @db.Text
+    city String @db.VarChar(50)
+    state String @db.VarChar(50)
+
+    order Orders @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+    customer Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+}

@@ -1,0 +1,33 @@
+model Suppliers {
+    supplier_id Int @id @default(autoincrement())
+    supplier_name String @db.VarChar(100)
+    contact_number String @db.VarChar(10)
+    email String @db.VarChar(100)
+    address String @db.Text
+    created_at DateTime @default(now())
+
+    importations Importations[]
+}
+
+model Importations {
+    import_id Int @id @default(autoincrement())
+    supplier_id Int?
+    import_date DateTime @default(now())
+    total_price Float @default(0.0)
+    remarks String? @db.Text
+
+    supplier Suppliers? @relation(fields: [supplier_id], references: [supplier_id], onDelete: SetNull)
+    import_items Import_Items[]
+}
+
+model Import_Items {
+    import_item_id Int @id @default(autoincrement())
+    import_id Int
+    product_id String?
+    quantity Int
+    unit_price Float
+    total_price Float
+
+    importation Importations @relation(fields: [import_id], references: [import_id], onDelete: Cascade)
+    product Products? @relation(fields: [product_id], references: [product_id], onDelete: SetNull)
+}

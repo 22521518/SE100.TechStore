@@ -1,0 +1,45 @@
+model Products {
+    product_id   String   @id @db.VarChar(50) @default(cuid())
+    product_name String   @db.VarChar(100)
+    description  String   @db.Text
+    price        Float
+    stock_quantity Int @default(0)
+    created_at  DateTime @default(now())
+    updated_at  DateTime @default(now())
+
+    cart_item    Cart_Item[]
+    product_category Product_Category[]
+    product_feedback Product_Feedbacks[]
+    import_item Import_Items[]
+    order_item Order_Items[]
+}
+
+model Categories {
+    category_id   Int   @id @default(autoincrement())
+    category_name String   @db.VarChar(50)@unique
+    description   String   @db.Text
+
+    product_category Product_Category[]
+}
+
+model Product_Category {
+    product_id String
+    category_id Int
+    @@id([product_id, category_id])
+    product Products @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
+    category Categories @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
+}
+
+model Product_Feedbacks {
+    feedback_id  String   @db.VarChar(50) @default(cuid())
+    product_id   String   @db.VarChar(50)
+    customer_id  String   @db.VarChar(50)
+    feedback     String   @db.Text
+    rating       Int
+    created_at   DateTime @default(now())
+
+    @@id([product_id, customer_id])
+
+    product Products @relation(fields: [product_id], references: [product_id], onDelete: Cascade)   
+    customer Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+}
