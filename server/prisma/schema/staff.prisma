@@ -1,0 +1,44 @@
+enum EMPLOY_STATUS {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+    RESIGNED
+}
+
+model Staff {
+    staff_id   String   @id @db.VarChar(50) @default(cuid())
+    account_id String   @db.VarChar(50) @unique
+    role_id   Int?
+    full_name  String   @db.VarChar(100)
+    phone_number String   @db.VarChar(10)
+    employee_status EMPLOY_STATUS
+    hire_date  DateTime
+    
+    account     Accounts   @relation(fields: [account_id], references: [account_id], onDelete: Cascade)
+    role Roles? @relation(fields: [role_id], references: [role_id], onDelete: SetNull) 
+}
+
+model Roles {
+    role_id   Int   @id @default(autoincrement())
+    role_name String   @db.VarChar(50) @unique
+    description String   @db.Text
+
+    staff Staff[]
+    role_permission Role_Permission[]
+}
+
+model Permissions {
+    permission_id   Int   @id @default(autoincrement())
+    permission_name String   @db.VarChar(50) @unique
+    description     String   @db.Text
+
+    role_permissions Role_Permission[]
+}
+
+model Role_Permission {
+    role_id Int
+    permission_id Int
+    @@id([permission_id, role_id])
+    role Roles @relation(fields: [role_id], references: [role_id], onDelete: Cascade)
+    permission Permissions @relation(fields: [permission_id], references: [permission_id], onDelete: Cascade)
+}

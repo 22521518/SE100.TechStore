@@ -1,0 +1,37 @@
+model Customers {
+    customer_id     String   @id  @db.VarChar(50) @default(cuid())
+    account_id      String   @db.VarChar(50)@unique
+    username        String   @unique @db.VarChar(50)
+    full_name       String   @db.VarChar(100)
+    phone_number    String   @db.VarChar(10)
+    date_joined     DateTime @default(now())
+
+    cart        Cart_Item[]
+    address    Customer_Address[]
+    account     Accounts   @relation(fields: [account_id], references: [account_id])
+    product_feedback    Product_Feedbacks[]
+    orders   Orders[]
+    shipping_address    Shipping_Address[]
+}
+
+model Customer_Address {
+    address_id     Int   @id @default(autoincrement())
+    customer_id     String   @db.VarChar(50)
+    address         String   @db.Text
+    city            String   @db.VarChar(50)
+    state           String   @db.VarChar(50)
+    is_primary      Boolean  @default(false)
+
+    customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+}
+
+model Cart_Item {
+    customer_id    String   @db.VarChar(50)
+    product_id     String   @db.VarChar(50)
+    quantity       Int     @default(1)
+    unit_price    Float
+
+    @@id([customer_id, product_id])
+    customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+    product     Products  @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
+}

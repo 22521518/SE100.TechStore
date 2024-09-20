@@ -1,0 +1,10 @@
+model Vouchers {
+    voucher_code    String @db.VarChar(50)  @id @default(cuid())
+    description     String   @db.Text
+    discount_amount        Float
+    valid_from     DateTime
+    valid_to    DateTime
+    is_active      Boolean  @default(true)
+
+    orders Orders[]
+}

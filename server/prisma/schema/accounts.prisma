@@ -1,0 +1,10 @@
+model Accounts {
+  account_id    String   @id @db.VarChar(50) @default(cuid())
+  email         String   @unique @db.VarChar(50)
+  password      String   @db.VarChar(255)
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now())
+  customers     Customers?
+  staff         Staff?
+}
+
