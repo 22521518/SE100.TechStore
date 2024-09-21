@@ -6,9 +6,9 @@ import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
 export class VouchersService {
   constructor(private readonly prismaDbService: PrismaDbService) {}
 
-  create(createVoucherDto: Prisma.VouchersCreateInput) {
+  async create(createVoucherDto: Prisma.VouchersCreateInput) {
     try {
-      const voucher = this.prismaDbService.vouchers.create({
+      const voucher = await this.prismaDbService.vouchers.create({
         data: createVoucherDto,
       });
       return voucher;
@@ -18,9 +18,9 @@ export class VouchersService {
     }
   }
 
-  findAll() {
+  async findAll() {
     try {
-      const vouchers = this.prismaDbService.vouchers.findMany();
+      const vouchers = await this.prismaDbService.vouchers.findMany();
       return vouchers;
     } catch (error) {
       console.error(error);
@@ -28,9 +28,9 @@ export class VouchersService {
     }
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     try {
-      const voucher = this.prismaDbService.vouchers.findUnique({
+      const voucher = await this.prismaDbService.vouchers.findUnique({
         where: { voucher_code: id },
       });
       return voucher;
@@ -40,9 +40,9 @@ export class VouchersService {
     }
   }
 
-  update(id: string, updateVoucherDto: Prisma.VouchersUpdateInput) {
+  async update(id: string, updateVoucherDto: Prisma.VouchersUpdateInput) {
     try {
-      const voucher = this.prismaDbService.vouchers.update({
+      const voucher = await this.prismaDbService.vouchers.update({
         where: { voucher_code: id },
         data: updateVoucherDto,
       });
@@ -53,9 +53,9 @@ export class VouchersService {
     }
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     try {
-      const voucher = this.prismaDbService.vouchers.delete({
+      const voucher = await this.prismaDbService.vouchers.delete({
         where: { voucher_code: id },
       });
       return voucher;

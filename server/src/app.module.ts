@@ -7,6 +7,7 @@ import { VouchersModule } from './vouchers/vouchers.module';
 import { ProductsModule } from './products/products.module';
 import { ImportationsModule } from './importations/importations.module';
 import { SupplierModule } from './supplier/supplier.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SupplierModule } from './supplier/supplier.module';
     ProductsModule,
     ImportationsModule,
     SupplierModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

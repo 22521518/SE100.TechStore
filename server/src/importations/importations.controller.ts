@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { ImportationsService } from './importations.service';
 import { Prisma } from '@prisma/client';
@@ -16,17 +17,35 @@ export class ImportationsController {
 
   @Post()
   create(@Body() createImportationDto: Prisma.ImportationsCreateInput) {
-    return this.importationsService.create(createImportationDto);
+    try {
+      const importation = this.importationsService.create(createImportationDto);
+      return importation;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Creating importation failed');
+    }
   }
 
   @Get()
   findAll() {
-    return this.importationsService.findAll();
+    try {
+      const importation = this.importationsService.findAll();
+      return importation;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching importations failed');
+    }
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.importationsService.findOne(+id);
+    try {
+      const importation = this.importationsService.findOne(+id);
+      return importation;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching importation failed');
+    }
   }
 
   @Patch(':id')
@@ -34,11 +53,26 @@ export class ImportationsController {
     @Param('id') id: string,
     @Body() updateImportationDto: Prisma.ImportationsUpdateInput,
   ) {
-    return this.importationsService.update(+id, updateImportationDto);
+    try {
+      const importation = this.importationsService.update(
+        +id,
+        updateImportationDto,
+      );
+      return importation;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Updating importation failed');
+    }
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.importationsService.remove(+id);
+    try {
+      const importation = this.importationsService.remove(+id);
+      return importation;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Removing importation failed');
+    }
   }
 }

@@ -6,9 +6,9 @@ import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
 export class ProductsService {
   constructor(private readonly prismaDbService: PrismaDbService) {}
 
-  create(createProductDto: Prisma.ProductsCreateInput) {
+  async create(createProductDto: Prisma.ProductsCreateInput) {
     try {
-      const product = this.prismaDbService.products.create({
+      const product = await this.prismaDbService.products.create({
         data: createProductDto,
       });
       return product;
@@ -17,18 +17,18 @@ export class ProductsService {
     }
   }
 
-  findAll() {
+  async findAll() {
     try {
-      const products = this.prismaDbService.products.findMany();
+      const products = await this.prismaDbService.products.findMany();
       return products;
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     try {
-      const product = this.prismaDbService.products.findUnique({
+      const product = await this.prismaDbService.products.findUnique({
         where: { product_id: id },
       });
       return product;
@@ -37,9 +37,9 @@ export class ProductsService {
     }
   }
 
-  update(id: string, updateProductDto: Prisma.ProductsUpdateInput) {
+  async update(id: string, updateProductDto: Prisma.ProductsUpdateInput) {
     try {
-      const product = this.prismaDbService.products.update({
+      const product = await this.prismaDbService.products.update({
         where: { product_id: id },
         data: updateProductDto,
       });
@@ -49,9 +49,9 @@ export class ProductsService {
     }
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     try {
-      const product = this.prismaDbService.products.delete({
+      const product = await this.prismaDbService.products.delete({
         where: { product_id: id },
       });
       return product;

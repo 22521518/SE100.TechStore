@@ -6,9 +6,9 @@ import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
 export class SupplierService {
   constructor(private readonly prismaDbService: PrismaDbService) {}
 
-  create(createSupplierDto: Prisma.SuppliersCreateInput) {
+  async create(createSupplierDto: Prisma.SuppliersCreateInput) {
     try {
-      const supplier = this.prismaDbService.suppliers.create({
+      const supplier = await this.prismaDbService.suppliers.create({
         data: createSupplierDto,
       });
       return supplier;
@@ -18,9 +18,9 @@ export class SupplierService {
     }
   }
 
-  findAll() {
+  async findAll() {
     try {
-      const suppliers = this.prismaDbService.suppliers.findMany();
+      const suppliers = await this.prismaDbService.suppliers.findMany();
       return suppliers;
     } catch (error) {
       console.error(error);
@@ -28,9 +28,9 @@ export class SupplierService {
     }
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     try {
-      const supplier = this.prismaDbService.suppliers.findUnique({
+      const supplier = await this.prismaDbService.suppliers.findUnique({
         where: { supplier_id: id },
       });
       return supplier;
@@ -40,9 +40,9 @@ export class SupplierService {
     }
   }
 
-  update(id: number, updateSupplierDto: Prisma.SuppliersUpdateInput) {
+  async update(id: number, updateSupplierDto: Prisma.SuppliersUpdateInput) {
     try {
-      const supplier = this.prismaDbService.suppliers.update({
+      const supplier = await this.prismaDbService.suppliers.update({
         where: { supplier_id: id },
         data: updateSupplierDto,
       });
@@ -53,9 +53,9 @@ export class SupplierService {
     }
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     try {
-      const supplier = this.prismaDbService.suppliers.delete({
+      const supplier = await this.prismaDbService.suppliers.delete({
         where: { supplier_id: id },
       });
       return supplier;
