@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
 
@@ -6,32 +6,62 @@ import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
 export class AccountsService {
   constructor(private readonly prismaDbService: PrismaDbService) {}
 
-  async reate(createAccountDto: Prisma.AccountsCreateInput) {
-    return await this.prismaDbService.accounts.create({
-      data: createAccountDto,
-    });
+  async create(createAccountDto: Prisma.AccountsCreateInput) {
+    try {
+      const acc = await this.prismaDbService.accounts.create({
+        data: createAccountDto,
+      });
+      return acc;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error creating account');
+    }
   }
 
   async findAll() {
-    return await this.prismaDbService.accounts.findMany();
+    try {
+      const acc = await this.prismaDbService.accounts.findMany();
+      return acc;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error fetching accounts');
+    }
   }
 
-  async findOne(id: number) {
-    return await this.prismaDbService.accounts.findUnique({
-      where: { id },
-    });
+  async findOne(id: string) {
+    try {
+      const acc = await this.prismaDbService.accounts.findUnique({
+        where: { account_id: id },
+      });
+      return acc;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error fetching account');
+    }
   }
 
-  async update(id: number, updateAccountDto: Prisma.AccountsUpdateInput) {
-    return await this.prismaDbService.accounts.update({
-      where: { id },
-      data: updateAccountDto,
-    });
+  async update(id: string, updateAccountDto: Prisma.AccountsUpdateInput) {
+    try {
+      const acc = await this.prismaDbService.accounts.update({
+        where: { account_id: id },
+        data: updateAccountDto,
+      });
+      return acc;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error updating account');
+    }
   }
 
-  async remove(id: number) {
-    return await this.prismaDbService.accounts.delete({
-      where: { id },
-    });
+  async remove(id: string) {
+    try {
+      const acc = await this.prismaDbService.accounts.delete({
+        where: { account_id: id },
+      });
+      return acc;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error deleting account');
+    }
   }
 }

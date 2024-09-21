@@ -10,7 +10,7 @@ model Suppliers {
 }
 
 model Importations {
-    import_id Int @id @default(autoincrement())
+    importation_id Int @id @default(autoincrement())
     supplier_id Int?
     import_date DateTime @default(now())
     total_price Float @default(0.0)
@@ -28,6 +28,6 @@ model Import_Items {
     unit_price Float
     total_price Float
 
-    importation Importations @relation(fields: [import_id], references: [import_id], onDelete: Cascade)
+    importation Importations @relation(fields: [import_id], references: [importation_id], onDelete: Cascade)
     product Products? @relation(fields: [product_id], references: [product_id], onDelete: SetNull)
 }

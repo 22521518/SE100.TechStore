@@ -4,6 +4,8 @@ model Accounts {
   password      String   @db.VarChar(255)
   is_active     Boolean  @default(true)
   created_at    DateTime @default(now())
+  // updated_at    DateTime @updatedAt
+
   customers     Customers?
   staff         Staff?
 }
