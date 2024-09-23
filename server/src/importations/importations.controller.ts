@@ -16,9 +16,10 @@ export class ImportationsController {
   constructor(private readonly importationsService: ImportationsService) {}
 
   @Post()
-  create(@Body() createImportationDto: Prisma.ImportationsCreateInput) {
+  async create(@Body() createImportationDto: Prisma.ImportationsCreateInput) {
     try {
-      const importation = this.importationsService.create(createImportationDto);
+      const importation =
+        await this.importationsService.create(createImportationDto);
       return importation;
     } catch (error) {
       console.error(error);
@@ -27,9 +28,9 @@ export class ImportationsController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     try {
-      const importation = this.importationsService.findAll();
+      const importation = await this.importationsService.findAll();
       return importation;
     } catch (error) {
       console.error(error);
@@ -38,9 +39,9 @@ export class ImportationsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     try {
-      const importation = this.importationsService.findOne(+id);
+      const importation = await this.importationsService.findOne(+id);
       return importation;
     } catch (error) {
       console.error(error);
@@ -49,12 +50,12 @@ export class ImportationsController {
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateImportationDto: Prisma.ImportationsUpdateInput,
   ) {
     try {
-      const importation = this.importationsService.update(
+      const importation = await this.importationsService.update(
         +id,
         updateImportationDto,
       );
@@ -66,9 +67,9 @@ export class ImportationsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     try {
-      const importation = this.importationsService.remove(+id);
+      const importation = await this.importationsService.remove(+id);
       return importation;
     } catch (error) {
       console.error(error);

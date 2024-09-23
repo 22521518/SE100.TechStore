@@ -22,11 +22,7 @@ export class CategoriesService {
     try {
       const categories = await this.prismaDbService.categories.findMany({
         include: {
-          product_category: {
-            include: {
-              product: including,
-            },
-          },
+          product: including,
         },
       });
       return categories;
@@ -41,11 +37,7 @@ export class CategoriesService {
       const category = await this.prismaDbService.categories.findUnique({
         where: { category_id: id },
         include: {
-          product_category: {
-            include: {
-              product: including,
-            },
-          },
+          product: including,
         },
       });
       return category;
@@ -73,11 +65,7 @@ export class CategoriesService {
       const category = await this.prismaDbService.categories.delete({
         where: { category_id: id },
         include: {
-          product_category: {
-            include: {
-              product: including,
-            },
-          },
+          product: including,
         },
       });
       return category;

@@ -24,7 +24,7 @@ model Roles {
     description String   @db.Text
 
     staff Staff[]
-    role_permission Role_Permission[]
+    role_permission Permissions[]
 }
 
 model Permissions {
@@ -32,13 +32,5 @@ model Permissions {
     permission_name String   @db.VarChar(50) @unique
     description     String   @db.Text
 
-    role_permissions Role_Permission[]
-}
-
-model Role_Permission {
-    role_id Int
-    permission_id Int
-    @@id([permission_id, role_id])
-    role Roles @relation(fields: [role_id], references: [role_id], onDelete: Cascade)
-    permission Permissions @relation(fields: [permission_id], references: [permission_id], onDelete: Cascade)
+    role_permissions Roles[]
 }

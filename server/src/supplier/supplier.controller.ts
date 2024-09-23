@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { Prisma } from '@prisma/client';
@@ -15,30 +16,63 @@ export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}
 
   @Post()
-  create(@Body() createSupplierDto: Prisma.SuppliersCreateInput) {
-    return this.supplierService.create(createSupplierDto);
+  async create(@Body() createSupplierDto: Prisma.SuppliersCreateInput) {
+    try {
+      const supplier = await this.supplierService.create(createSupplierDto);
+      return supplier;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Creating supplier failed');
+    }
   }
 
   @Get()
-  findAll() {
-    return this.supplierService.findAll();
+  async findAll() {
+    try {
+      const suppliers = await this.supplierService.findAll();
+      return suppliers;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching supplier failed');
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.supplierService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const supplier = await this.supplierService.findOne(+id);
+      return supplier;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching supplier failed');
+    }
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateSupplierDto: Prisma.SuppliersUpdateInput,
   ) {
-    return this.supplierService.update(+id, updateSupplierDto);
+    try {
+      const supplier = await this.supplierService.update(
+        +id,
+        updateSupplierDto,
+      );
+      return supplier;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Creating supplier failed');
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.supplierService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      const supplier = await this.supplierService.remove(+id);
+      return supplier;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Deleting supplier failed');
+    }
   }
 }

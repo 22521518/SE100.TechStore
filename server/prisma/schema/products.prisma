@@ -7,8 +7,8 @@ model Products {
     created_at  DateTime @default(now())
     updated_at  DateTime @default(now())
 
+    category Categories[]
     cart_item    Cart_Item[]
-    product_category Product_Category[]
     product_feedback Product_Feedbacks[]
     import_item Import_Items[]
     order_item Order_Items[]
@@ -18,16 +18,9 @@ model Categories {
     category_id   Int   @id @default(autoincrement())
     category_name String   @db.VarChar(50)@unique
     description   String   @db.Text
+    created_at    DateTime @default(now())
 
-    product_category Product_Category[]
-}
-
-model Product_Category {
-    product_id String
-    category_id Int
-    @@id([product_id, category_id])
-    product Products @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
-    category Categories @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
+    product Products[]
 }
 
 model Product_Feedbacks {

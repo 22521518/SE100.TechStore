@@ -10,6 +10,9 @@ export class ProductsService {
     try {
       const product = await this.prismaDbService.products.create({
         data: createProductDto,
+        include: {
+          category: true,
+        },
       });
       return product;
     } catch (error) {
@@ -19,7 +22,11 @@ export class ProductsService {
 
   async findAll() {
     try {
-      const products = await this.prismaDbService.products.findMany();
+      const products = await this.prismaDbService.products.findMany({
+        include: {
+          category: true,
+        },
+      });
       return products;
     } catch (error) {
       throw new BadRequestException(error);
@@ -30,6 +37,9 @@ export class ProductsService {
     try {
       const product = await this.prismaDbService.products.findUnique({
         where: { product_id: id },
+        include: {
+          category: true,
+        },
       });
       return product;
     } catch (error) {
@@ -42,6 +52,9 @@ export class ProductsService {
       const product = await this.prismaDbService.products.update({
         where: { product_id: id },
         data: updateProductDto,
+        include: {
+          category: true,
+        },
       });
       return product;
     } catch (error) {
@@ -53,6 +66,9 @@ export class ProductsService {
     try {
       const product = await this.prismaDbService.products.delete({
         where: { product_id: id },
+        include: {
+          category: true,
+        },
       });
       return product;
     } catch (error) {

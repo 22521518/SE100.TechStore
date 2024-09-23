@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { VouchersService } from './vouchers.service';
 import { Prisma } from '@prisma/client';
@@ -15,30 +16,60 @@ export class VouchersController {
   constructor(private readonly vouchersService: VouchersService) {}
 
   @Post()
-  create(@Body() createVoucherDto: Prisma.VouchersCreateInput) {
-    return this.vouchersService.create(createVoucherDto);
+  async create(@Body() createVoucherDto: Prisma.VouchersCreateInput) {
+    try {
+      const voucher = await this.vouchersService.create(createVoucherDto);
+      return voucher;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Creating voucher failed');
+    }
   }
 
   @Get()
-  findAll() {
-    return this.vouchersService.findAll();
+  async findAll() {
+    try {
+      const vouchers = await this.vouchersService.findAll();
+      return vouchers;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching vouchers failed');
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vouchersService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const voucher = await this.vouchersService.findOne(id);
+      return voucher;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching voucher failed');
+    }
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateVoucherDto: Prisma.VouchersUpdateInput,
   ) {
-    return this.vouchersService.update(id, updateVoucherDto);
+    try {
+      const voucher = await this.vouchersService.update(id, updateVoucherDto);
+      return voucher;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Updating voucher failed');
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vouchersService.remove(id);
+  async remove(@Param('id') id: string) {
+    try {
+      const voucher = await this.vouchersService.remove(id);
+      return voucher;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Deleting voucher failed');
+    }
   }
 }

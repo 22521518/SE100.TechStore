@@ -13,7 +13,6 @@ export class SupplierService {
       });
       return supplier;
     } catch (error) {
-      console.error(error);
       throw new BadRequestException(error);
     }
   }
@@ -23,7 +22,6 @@ export class SupplierService {
       const suppliers = await this.prismaDbService.suppliers.findMany();
       return suppliers;
     } catch (error) {
-      console.error(error);
       throw new BadRequestException(error);
     }
   }
@@ -35,7 +33,6 @@ export class SupplierService {
       });
       return supplier;
     } catch (error) {
-      console.error(error);
       throw new BadRequestException(error);
     }
   }
@@ -48,7 +45,6 @@ export class SupplierService {
       });
       return supplier;
     } catch (error) {
-      console.error(error);
       throw new BadRequestException(error);
     }
   }
@@ -60,7 +56,6 @@ export class SupplierService {
       });
       return supplier;
     } catch (error) {
-      console.error(error);
       throw new BadRequestException(error);
     }
   }

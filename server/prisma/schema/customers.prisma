@@ -29,7 +29,6 @@ model Cart_Item {
     customer_id    String   @db.VarChar(50)
     product_id     String   @db.VarChar(50)
     quantity       Int     @default(1)
-    unit_price    Float
 
     @@id([customer_id, product_id])
     customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
