@@ -14,6 +14,7 @@ import { AddressesModule } from './addresses/addresses.module';
 import { OrdersModule } from './orders/orders.module';
 import { ShipsModule } from './ships/ships.module';
 import { StaffModule } from './staff/staff.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { StaffModule } from './staff/staff.module';
     OrdersModule,
     ShipsModule,
     StaffModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
