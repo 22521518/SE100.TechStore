@@ -26,7 +26,7 @@ export class ProductsController {
       const { category, ...product_info } = createProductDto;
       const productDto: Prisma.ProductsCreateInput = {
         ...product_info,
-        category: {
+        categories: {
           connect: category.map((cat) => ({
             category_id: cat.category_id,
           })) as Prisma.CategoriesWhereUniqueInput[],
@@ -74,7 +74,7 @@ export class ProductsController {
       const { category, ...product_info } = updateProductDto;
       const productDto: Prisma.ProductsUpdateInput = {
         ...product_info,
-        category: {
+        categories: {
           set: category.map(
             (category_id) => category_id,
           ) as Prisma.CategoriesWhereUniqueInput[],

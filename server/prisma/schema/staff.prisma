@@ -24,7 +24,7 @@ model Roles {
     description String   @db.Text
 
     staff Staff[]
-    role_permission Permissions[]
+    role_permissions Permissions[]
 }
 
 model Permissions {

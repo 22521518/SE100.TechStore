@@ -7,22 +7,22 @@ enum ORDER_STATUS {
 }
 
 model Orders {
-    order_id String @id @default(cuid()) @db.VarChar(10)
+    order_id String @id @default(cuid()) @db.VarChar(25)
     customer_id String?
-    order_status ORDER_STATUS
+    order_status ORDER_STATUS @default(PENDING)
     total_price Float
     voucher_code String?
     created_at DateTime @default(now())
 
     customer Customers? @relation(fields: [customer_id], references: [customer_id], onDelete: SetNull)
-    order_item Order_Items[]
+    order_items Order_Items[]
     voucher Vouchers? @relation(fields: [voucher_code], references: [voucher_code], onDelete: SetNull)
-    invoice Invoices[]
+    invoices Invoices[]
     shipping_address Shipping_Address?
 }
 
 model Order_Items {
-    order_id String @db.VarChar(10)
+    order_id String @db.VarChar(25)
     product_id String @db.VarChar(50)
     quantity Int
     unit_price Float
@@ -44,13 +44,12 @@ model Invoices {
 
 model Shipping_Address {
     shipping_id String @id @db.VarChar(50) @default(cuid())
-    customer_id String? @db.VarChar(50)
     address_id Int?
-    order_id String @db.VarChar(10) @unique
-    city String @db.VarChar(50)
-    state String @db.VarChar(50)
+    order_id String @db.VarChar(25) @unique
+    shipping_status ORDER_STATUS @default(PENDING)
+    created_at DateTime @default(now())
+    delivery_date DateTime?
 
     order Orders @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
-    customer Customers? @relation(fields: [customer_id], references: [customer_id], onDelete: SetNull)
     address Customer_Address? @relation(fields: [address_id], references: [address_id], onDelete: SetNull)
 }

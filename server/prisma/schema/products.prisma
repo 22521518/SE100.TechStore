@@ -7,11 +7,11 @@ model Products {
     created_at  DateTime @default(now())
     updated_at  DateTime @default(now())
 
-    category Categories[]
+    categories Categories[]
     cart_item    Cart_Item[]
-    product_feedback Product_Feedbacks[]
-    import_item Import_Items[]
-    order_item Order_Items[]
+    product_feedbacks Product_Feedbacks[]
+    import_items Import_Items[]
+    order_items Order_Items[]
 }
 
 model Categories {
@@ -20,7 +20,7 @@ model Categories {
     description   String   @db.Text
     created_at    DateTime @default(now())
 
-    product Products[]
+    products Products[]
 }
 
 model Product_Feedbacks {

@@ -23,9 +23,22 @@ export class ImportationsController {
     },
   ) {
     try {
-      const { supplier_id, ...imprt } = createImportationDto;
+      const { supplier_id, import_items, ...imprt } = createImportationDto;
+      if (
+        !import_items ||
+        (import_items as Prisma.Import_ItemsCreateInput[]).length === 0
+      ) {
+        throw new BadRequestException(
+          'There is no import_items provided for the importation',
+        );
+      }
       const imprtDto: Prisma.ImportationsCreateInput = {
         ...imprt,
+        import_items: {
+          createMany: {
+            data: import_items as Prisma.Import_ItemsCreateManyImportationInput[],
+          },
+        },
         supplier: {
           connect: { supplier_id: supplier_id },
         },

@@ -11,7 +11,7 @@ export class ProductsService {
       const product = await this.prismaDbService.products.create({
         data: createProductDto,
         include: {
-          category: true,
+          categories: true,
         },
       });
       return product;
@@ -24,7 +24,7 @@ export class ProductsService {
     try {
       const products = await this.prismaDbService.products.findMany({
         include: {
-          category: true,
+          categories: true,
         },
       });
       return products;
@@ -38,7 +38,7 @@ export class ProductsService {
       const product = await this.prismaDbService.products.findUnique({
         where: { product_id: id },
         include: {
-          category: true,
+          categories: true,
         },
       });
       return product;
@@ -53,7 +53,7 @@ export class ProductsService {
         where: { product_id: id },
         data: updateProductDto,
         include: {
-          category: true,
+          categories: true,
         },
       });
       return product;
@@ -67,7 +67,7 @@ export class ProductsService {
       const product = await this.prismaDbService.products.delete({
         where: { product_id: id },
         include: {
-          category: true,
+          categories: true,
         },
       });
       return product;

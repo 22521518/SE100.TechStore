@@ -6,7 +6,7 @@ model Accounts {
   created_at    DateTime @default(now())
   // updated_at    DateTime @updatedAt
 
-  customers     Customers?
+  customer     Customers?
   staff         Staff?
 }
 

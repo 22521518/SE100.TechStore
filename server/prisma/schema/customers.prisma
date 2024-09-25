@@ -7,11 +7,10 @@ model Customers {
     date_joined     DateTime @default(now())
 
     cart        Cart_Item[]
-    address    Customer_Address[]
+    addresses    Customer_Address[]
     account     Accounts   @relation(fields: [account_id], references: [account_id])
-    product_feedback    Product_Feedbacks[]
+    product_feedbacks    Product_Feedbacks[]
     orders   Orders[]
-    shipping_address    Shipping_Address[]
 }
 
 model Customer_Address {
@@ -23,7 +22,7 @@ model Customer_Address {
     is_primary      Boolean  @default(true)
 
     customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
-    shipping_address    Shipping_Address[]
+    shipping_addresses    Shipping_Address[]
 }
 
 model Cart_Item {

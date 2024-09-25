@@ -11,26 +11,10 @@ export class ImportationsService {
     including_item: boolean = true,
     including_supplier: boolean = true,
   ) {
-    const { import_items, ...imprt } = createImportationDto;
-    if (
-      !import_items ||
-      (import_items as Prisma.Import_ItemsCreateInput[]).length === 0
-    ) {
-      throw new BadRequestException(
-        'There is no import_items provided for the importation',
-      );
-    }
     try {
       // Create the importation along with the nested import_items if provided
       const importation = await this.prismaDbService.importations.create({
-        data: {
-          ...imprt,
-          import_items: {
-            createMany: {
-              data: import_items as Prisma.Import_ItemsCreateInput[],
-            },
-          },
-        },
+        data: createImportationDto,
         include: { import_items: including_item, supplier: including_supplier },
       });
 
