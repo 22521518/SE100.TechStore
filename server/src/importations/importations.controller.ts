@@ -16,10 +16,22 @@ export class ImportationsController {
   constructor(private readonly importationsService: ImportationsService) {}
 
   @Post()
-  async create(@Body() createImportationDto: Prisma.ImportationsCreateInput) {
+  async create(
+    @Body()
+    createImportationDto: Prisma.ImportationsCreateInput & {
+      supplier_id: number;
+    },
+  ) {
     try {
-      const importation =
-        await this.importationsService.create(createImportationDto);
+      const { supplier_id, ...imprt } = createImportationDto;
+      const imprtDto: Prisma.ImportationsCreateInput = {
+        ...imprt,
+        supplier: {
+          connect: { supplier_id: supplier_id },
+        },
+      };
+
+      const importation = await this.importationsService.create(imprtDto);
       return importation;
     } catch (error) {
       console.error(error);

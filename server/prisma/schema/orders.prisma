@@ -44,12 +44,13 @@ model Invoices {
 
 model Shipping_Address {
     shipping_id String @id @db.VarChar(50) @default(cuid())
-    customer_id String @db.VarChar(50)
+    customer_id String? @db.VarChar(50)
+    address_id Int?
     order_id String @db.VarChar(10) @unique
-    address String @db.Text
     city String @db.VarChar(50)
     state String @db.VarChar(50)
 
     order Orders @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
-    customer Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+    customer Customers? @relation(fields: [customer_id], references: [customer_id], onDelete: SetNull)
+    address Customer_Address? @relation(fields: [address_id], references: [address_id], onDelete: SetNull)
 }

@@ -65,6 +65,18 @@ export class SupplierController {
     }
   }
 
+  //DEV mode
+  @Delete('all')
+  async removeAll() {
+    try {
+      const suppliers = await this.supplierService.removeAll();
+      return suppliers;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Deleting suppliers failed');
+    }
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

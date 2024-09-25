@@ -20,9 +20,10 @@ model Customer_Address {
     address         String   @db.Text
     city            String   @db.VarChar(50)
     state           String   @db.VarChar(50)
-    is_primary      Boolean  @default(false)
+    is_primary      Boolean  @default(true)
 
     customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+    shipping_address    Shipping_Address[]
 }
 
 model Cart_Item {

@@ -8,7 +8,8 @@ export class ImportationsService {
 
   async create(
     createImportationDto: Prisma.ImportationsCreateInput,
-    including: boolean = true,
+    including_item: boolean = true,
+    including_supplier: boolean = true,
   ) {
     const { import_items, ...imprt } = createImportationDto;
     if (
@@ -30,7 +31,7 @@ export class ImportationsService {
             },
           },
         },
-        include: { import_items: including },
+        include: { import_items: including_item, supplier: including_supplier },
       });
 
       return importation;
@@ -40,10 +41,13 @@ export class ImportationsService {
     }
   }
 
-  async findAll(including: boolean = true) {
+  async findAll(
+    including_item: boolean = true,
+    including_supplier: boolean = true,
+  ) {
     try {
       const importations = await this.prismaDbService.importations.findMany({
-        include: { import_items: including },
+        include: { import_items: including_item, supplier: including_supplier },
       });
       return importations;
     } catch (error) {
@@ -52,11 +56,15 @@ export class ImportationsService {
     }
   }
 
-  async findOne(id: number, including: boolean = true) {
+  async findOne(
+    id: number,
+    including_item: boolean = true,
+    including_supplier: boolean = true,
+  ) {
     try {
       const importation = await this.prismaDbService.importations.findUnique({
         where: { importation_id: id },
-        include: { import_items: including },
+        include: { import_items: including_item, supplier: including_supplier },
       });
       return importation;
     } catch (error) {
@@ -68,13 +76,14 @@ export class ImportationsService {
   async update(
     id: number,
     updateImportationDto: Prisma.ImportationsUpdateInput,
-    including: boolean = true,
+    including_item: boolean = true,
+    including_supplier: boolean = true,
   ) {
     try {
       const importation = await this.prismaDbService.importations.update({
         where: { importation_id: id },
         data: updateImportationDto,
-        include: { import_items: including },
+        include: { import_items: including_item, supplier: including_supplier },
       });
       return importation;
     } catch (error) {
@@ -83,11 +92,15 @@ export class ImportationsService {
     }
   }
 
-  async remove(id: number, including: boolean = true) {
+  async remove(
+    id: number,
+    including_item: boolean = true,
+    including_supplier: boolean = true,
+  ) {
     try {
       const importation = await this.prismaDbService.importations.delete({
         where: { importation_id: id },
-        include: { import_items: including },
+        include: { import_items: including_item, supplier: including_supplier },
       });
       return importation;
     } catch (error) {

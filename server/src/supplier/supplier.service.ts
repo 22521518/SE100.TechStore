@@ -6,57 +6,85 @@ import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
 export class SupplierService {
   constructor(private readonly prismaDbService: PrismaDbService) {}
 
-  async create(createSupplierDto: Prisma.SuppliersCreateInput) {
+  async create(
+    createSupplierDto: Prisma.SuppliersCreateInput,
+    including_importations: boolean = true,
+  ) {
     try {
       const supplier = await this.prismaDbService.suppliers.create({
         data: createSupplierDto,
+        include: { importations: including_importations },
       });
       return supplier;
     } catch (error) {
-      throw new BadRequestException(error);
+      console.error(error);
+      throw new BadRequestException('Creating supplier failed');
     }
   }
 
-  async findAll() {
+  async findAll(including_importations: boolean = true) {
     try {
-      const suppliers = await this.prismaDbService.suppliers.findMany();
+      const suppliers = await this.prismaDbService.suppliers.findMany({
+        include: { importations: including_importations },
+      });
       return suppliers;
     } catch (error) {
-      throw new BadRequestException(error);
+      console.error(error);
+      throw new BadRequestException('Fetching suppliers failed');
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, including_importations: boolean = true) {
     try {
       const supplier = await this.prismaDbService.suppliers.findUnique({
         where: { supplier_id: id },
+        include: { importations: including_importations },
       });
       return supplier;
     } catch (error) {
-      throw new BadRequestException(error);
+      console.error(error);
+      throw new BadRequestException('Fetching supplier failed');
     }
   }
 
-  async update(id: number, updateSupplierDto: Prisma.SuppliersUpdateInput) {
+  async update(
+    id: number,
+    updateSupplierDto: Prisma.SuppliersUpdateInput,
+    including_importations: boolean = true,
+  ) {
     try {
       const supplier = await this.prismaDbService.suppliers.update({
         where: { supplier_id: id },
         data: updateSupplierDto,
+        include: { importations: including_importations },
       });
       return supplier;
     } catch (error) {
-      throw new BadRequestException(error);
+      console.error(error);
+      throw new BadRequestException('Updating supplier failed');
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number, including_importations: boolean = true) {
     try {
       const supplier = await this.prismaDbService.suppliers.delete({
         where: { supplier_id: id },
+        include: { importations: including_importations },
       });
       return supplier;
     } catch (error) {
-      throw new BadRequestException(error);
+      console.error(error);
+      throw new BadRequestException('Deleting supplier failed');
+    }
+  }
+
+  async removeAll() {
+    try {
+      const suppliers = await this.prismaDbService.suppliers.deleteMany();
+      return suppliers;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Deleting all suppliers failed');
     }
   }
 }

@@ -3,7 +3,7 @@ model Suppliers {
     supplier_name String @db.VarChar(100)
     contact_number String @db.VarChar(10)
     email String @db.VarChar(100)
-    address String @db.Text
+    description String @db.Text
     created_at DateTime @default(now())
 
     importations Importations[]
