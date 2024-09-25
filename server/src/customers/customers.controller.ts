@@ -1,34 +1,78 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  BadRequestException,
+} from '@nestjs/common';
 import { CustomersService } from './customers.service';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('customers')
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customersService.create(createCustomerDto);
+  async create(@Body() createCustomerDto: Prisma.CustomersCreateInput) {
+    try {
+      const customer = await this.customersService.create(createCustomerDto);
+      return customer;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Creating customer failed');
+    }
   }
 
   @Get()
-  findAll() {
-    return this.customersService.findAll();
+  async findAll() {
+    try {
+      const customer = await this.customersService.findAll();
+      return customer;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching customer failed');
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.customersService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const customer = await this.customersService.findOne(id);
+      return customer;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching customer failed');
+    }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-    return this.customersService.update(+id, updateCustomerDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateCustomerDto: Prisma.CustomersUpdateInput,
+  ) {
+    try {
+      const customer = await this.customersService.update(
+        id,
+        updateCustomerDto,
+      );
+      return customer;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Updating customer failed');
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.customersService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      const customer = await this.customersService.remove(id);
+      return customer;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Deleing customer failed');
+    }
   }
 }

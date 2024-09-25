@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Put,
 } from '@nestjs/common';
 import { CartsService } from './carts.service';
 import { Prisma } from '@prisma/client';
@@ -15,10 +16,29 @@ import { Prisma } from '@prisma/client';
 export class CartsController {
   constructor(private readonly cartsService: CartsService) {}
 
-  @Post()
-  async create(@Body() createCartDto: Prisma.Cart_ItemCreateInput) {
+  @Post(':id')
+  async create(
+    @Param('id') customerId: string,
+    @Body()
+    createCartDto: Prisma.Cart_ItemCreateInput & {
+      product_id: string;
+    },
+  ) {
     try {
-      const item = await this.cartsService.create(createCartDto);
+      const cartDto: Prisma.Cart_ItemCreateInput = {
+        product: {
+          connect: {
+            product_id: createCartDto.product_id,
+          },
+        },
+        customer: {
+          connect: {
+            customer_id: customerId,
+          },
+        },
+        quantity: createCartDto.quantity,
+      };
+      const item = await this.cartsService.create(cartDto);
       return item;
     } catch (error) {
       console.error(error);
@@ -26,8 +46,8 @@ export class CartsController {
     }
   }
 
-  @Get('customer_id')
-  async findAll(@Param('customer_id') customerId: string) {
+  @Get(':id')
+  async findAll(@Param('id') customerId: string) {
     try {
       const item = await this.cartsService.findAll(customerId);
       return item;
@@ -37,17 +57,54 @@ export class CartsController {
     }
   }
 
-  @Patch(':customer_id')
-  async update(
-    @Param('customer_id') customerId: string,
+  @Put(':id')
+  async updateWhole(
+    @Param('id') customerId: string,
     @Body()
-    updateCartDto: {
-      quantity: Prisma.IntFieldUpdateOperationsInput | number;
+    updateCartDto: Prisma.Cart_ItemCreateInput & {
       product_id: string;
     },
   ) {
     try {
-      const item = await this.cartsService.update(customerId, updateCartDto);
+      const cartDto: Prisma.Cart_ItemCreateInput = {
+        product: {
+          connect: {
+            product_id: updateCartDto.product_id,
+          },
+        },
+        customer: {
+          connect: {
+            customer_id: customerId,
+          },
+        },
+        quantity: updateCartDto.quantity,
+      };
+      const item = await this.cartsService.create(cartDto);
+      return item;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Reset cart item failed');
+    }
+  }
+
+  @Patch(':id/:product_id')
+  async update(
+    @Param('id') customerId: string,
+    @Param('product_id') productId: string,
+    @Body()
+    updateCartDto: {
+      quantity: number;
+    },
+  ) {
+    try {
+      const cartDto: Prisma.Cart_ItemUpdateInput = {
+        quantity: updateCartDto.quantity,
+      };
+      const item = await this.cartsService.update(
+        customerId,
+        productId,
+        cartDto,
+      );
       return item;
     } catch (error) {
       console.error(error);
@@ -55,14 +112,28 @@ export class CartsController {
     }
   }
 
-  @Delete(':id')
-  async remove(@Param('customer_id') customerId: string) {
+  @Delete(':id/:product_id')
+  async remove(
+    @Param('id') customerId: string,
+    @Param('product_id') productId: string,
+  ) {
     try {
-      const item = await this.cartsService.remove(customerId);
+      const item = await this.cartsService.remove(customerId, productId);
       return item;
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Deleting cart item failed');
+    }
+  }
+
+  @Delete(':id')
+  async removeAll(@Param('id') customerId: string) {
+    try {
+      const item = await this.cartsService.removeAll(customerId);
+      return item;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Deleting all cart items failed');
     }
   }
 }

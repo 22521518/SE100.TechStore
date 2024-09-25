@@ -16,9 +16,9 @@ export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Post()
-  create(@Body() createAccountDto: Prisma.AccountsCreateInput) {
+  async create(@Body() createAccountDto: Prisma.AccountsCreateInput) {
     try {
-      const acc = this.accountsService.create(createAccountDto);
+      const acc = await this.accountsService.create(createAccountDto);
       return acc;
     } catch (error) {
       console.error(error);
@@ -27,9 +27,9 @@ export class AccountsController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     try {
-      const acc = this.accountsService.findAll();
+      const acc = await this.accountsService.findAll();
       return acc;
     } catch (error) {
       console.error(error);
@@ -38,9 +38,9 @@ export class AccountsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     try {
-      const acc = this.accountsService.findOne(id);
+      const acc = await this.accountsService.findOne(id);
       return acc;
     } catch (error) {
       console.error(error);
@@ -49,12 +49,20 @@ export class AccountsController {
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
-    @Body() updateAccountDto: Prisma.AccountsUpdateInput,
+    @Body()
+    updateAccountDto: {
+      password: string;
+      is_active: boolean;
+    },
   ) {
     try {
-      const acc = this.accountsService.update(id, updateAccountDto);
+      const accountDto: Prisma.AccountsUpdateInput = {
+        password: updateAccountDto.password,
+        is_active: updateAccountDto.is_active,
+      };
+      const acc = await this.accountsService.update(id, accountDto);
       return acc;
     } catch (error) {
       console.error(error);
@@ -63,9 +71,9 @@ export class AccountsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     try {
-      const acc = this.accountsService.remove(id);
+      const acc = await this.accountsService.remove(id);
       return acc;
     } catch (error) {
       console.error(error);

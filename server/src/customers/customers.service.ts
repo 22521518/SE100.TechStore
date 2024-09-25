@@ -1,26 +1,68 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
 
 @Injectable()
 export class CustomersService {
-  create(createCustomerDto: CreateCustomerDto) {
-    return 'This action adds a new customer';
+  constructor(private readonly prismaDbService: PrismaDbService) {}
+
+  async create(createCustomerDto: Prisma.CustomersCreateInput) {
+    try {
+      const customer = await this.prismaDbService.customers.create({
+        data: createCustomerDto,
+      });
+      return customer;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error creating customer');
+    }
   }
 
-  findAll() {
-    return `This action returns all customers`;
+  async findAll() {
+    try {
+      const customers = await this.prismaDbService.customers.findMany();
+      return customers;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching customer');
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+  async findOne(id: string) {
+    try {
+      const customer = await this.prismaDbService.customers.findUnique({
+        where: { customer_id: id },
+      });
+      return customer;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching customer');
+    }
   }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
+  async update(id: string, updateCustomerDto: Prisma.CustomersUpdateInput) {
+    try {
+      const customer = await this.prismaDbService.customers.update({
+        where: { customer_id: id },
+        data: updateCustomerDto,
+      });
+
+      return customer;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error updating customer');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  async remove(id: string) {
+    try {
+      const customer = await this.prismaDbService.customers.delete({
+        where: { customer_id: id },
+      });
+      return customer;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error deleting customer');
+    }
   }
 }
