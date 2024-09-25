@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `staff` MODIFY `employee_status` ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED', 'RESIGNED') NOT NULL DEFAULT 'INACTIVE';

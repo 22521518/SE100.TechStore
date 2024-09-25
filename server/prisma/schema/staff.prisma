@@ -11,7 +11,7 @@ model Staff {
     role_id   Int?
     full_name  String   @db.VarChar(100)
     phone_number String   @db.VarChar(10)
-    employee_status EMPLOY_STATUS
+    employee_status EMPLOY_STATUS @default(INACTIVE)
     hire_date  DateTime
     
     account     Accounts   @relation(fields: [account_id], references: [account_id], onDelete: Cascade)

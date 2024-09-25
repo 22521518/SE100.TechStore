@@ -13,6 +13,7 @@ import { CustomersModule } from './customers/customers.module';
 import { AddressesModule } from './addresses/addresses.module';
 import { OrdersModule } from './orders/orders.module';
 import { ShipsModule } from './ships/ships.module';
+import { StaffModule } from './staff/staff.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ShipsModule } from './ships/ships.module';
     AddressesModule,
     OrdersModule,
     ShipsModule,
+    StaffModule,
   ],
   controllers: [AppController],
   providers: [AppService],
