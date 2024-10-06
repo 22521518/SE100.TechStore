@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React,{useState} from 'react'
 import InputBox from '@components/Input/InputBox'
 import Link from 'next/link'
 import DatePicker from '@components/Input/DatePicker'
@@ -7,6 +8,18 @@ import PasswordInput from '@components/Input/PasswordInput'
 import PhoneInput from '@components/Input/PhoneInput'
 
 export default function SignUp() {
+  const [newAccount,setNewAccount] = useState({
+    firstname: "",
+    lastname:"",
+    gender:"",
+    birthdate:"",
+    username:"",
+    phonename:"",
+    email:"",
+    password:"",
+    repeatpassword:"",
+  })
+    
 
   return (
     <div className="flex items-center justify-center">
@@ -15,10 +28,10 @@ export default function SignUp() {
 
       <div className='flex flex-col gap-10 bg-inherit'>
           <div className='flex md:flex-row flex-col gap-10 bg-inherit'>
-              <InputBox name={"first name"}/>
+              <InputBox value={'username'} name={"first name"}/>
               <InputBox name={"last name"}/>
           </div>
-          <div className='flex md:flex-row flex-col gap-10 bg-inherit'>
+          <div className='flex md:flex-row flex-col gap-10 bg-inherit items-center'>
                 <RadioButton options={['Male' ,'Female']}/>
               <DatePicker name={"birth date"}/>
           </div>

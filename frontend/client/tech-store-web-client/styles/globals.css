@@ -34,13 +34,24 @@
   }
 }
 body {
-  background: rgb(var(--background));
+  background: linear-gradient(to top, White, rgba(var(--background), 1));
   color: rgb(var(--on-background));
   font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
-  *{
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  ul {
+    @apply overflow-scroll no-scrollbar
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  * {
     box-sizing: border-box;
   }
   .text-balance {
@@ -48,6 +59,29 @@ body {
   }
 
   .button-variant-1 {
-    @apply bg-on-surface font-bold text-surface p-2 rounded-lg hover:scale-105 transition-transform duration-200 ease-out gap-2 flex items-center justify-center
+    @apply bg-on-surface font-bold text-surface p-2 rounded-lg hover:scale-105 transition-transform duration-200 ease-out gap-2 flex items-center justify-center;
+  }
+
+  .order-state {
+    @apply flex items-center justify-center rounded-xl   px-3 py-1 font-semibold text-white;
+  }
+
+  .pending {
+    @apply order-state bg-slate-400;
+  }
+
+  .shipping {
+    @apply order-state bg-blue-400;
+  }
+
+  .delivered {
+    @apply order-state bg-green-400;
+  }
+
+  .refunded {
+    @apply order-state bg-black;
+  }
+  .cancelled {
+    @apply order-state bg-red-400;
   }
 }

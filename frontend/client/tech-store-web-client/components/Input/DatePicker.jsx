@@ -6,35 +6,35 @@ import React, { useRef } from "react";
 const DatePicker = ({ name, value, onChange }) => {
   const labelRef = useRef(null); // Create a reference for the label
   const datePickerRef = useRef(null);
+  
+    const handleDateChange = (e) => {
+      const value = e.target.value;
+      onChange(value);
+    };
 
-  const handleFocus = () => {
-    labelRef.current.classList.add("scale-90", "-translate-y-2");
-  };
-
-  const handleDateChange = (e) => {
-    const value = e.target.value;
-    onChange(value);
-  };
-
-  const handleBlur = (e) => {
-    if (e.target.value === "") {
-      labelRef.current.classList.remove("scale-90", "-translate-y-2");
-    }
-  };
+    const handleFocus = () => {
+      labelRef.current.classList.remove("scale-110","translate-y-5");
+    };
+  
+    const handleBlur = (e) => {
+      if (e.target.value === "") {
+        labelRef.current.classList.add("scale-110","translate-y-5");
+      }
+    };
 
   return (
     <div
-      className="relative bg-inherit rounded-lg border-[1px] border-on-background/50   outline-none  w-full"
+      className="relative bg-inherit rounded-lg border-[1px] border-on-background/50 outline-none h-fit w-full"
       onFocus={handleFocus}
       onBlur={handleBlur}
     >
       <span
         ref={labelRef}
-        className="absolute font-semibold bg-inherit left-3 translate-y-1/2 text-base px-2 text-on-background/50 pointer-events-none transition-transform duration-200 transform "
+        className={`-top-3 ${value?"":"translate-y-5 scale-110"}  absolute font-semibold bg-inherit left-3 text-base px-2 text-on-background/50 pointer-events-none transition-transform duration-200 transform `}
       >
         {name}
       </span>
-      <div className="relative flex flex-row grow p-2 py-3 text-xl">
+      <div className="relative flex flex-row grow p-2 py-2 text-lg">
           <input
             ref={datePickerRef}
             type="date"

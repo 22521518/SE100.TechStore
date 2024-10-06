@@ -5,6 +5,7 @@ import Footer from "@components/UI/Footer";
 
 import { config, icon } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import SupportChatBox from "@components/Chat/SupportChatBox";
 config.autoAddCss = false;
 
 export const metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
           <div className="max-w-[1200px] w-[1200px] px-2 py-4">{children}</div>
         </div>
         <Footer></Footer>
+        <SupportChatBox/>
       </body>
     </html>
   );
