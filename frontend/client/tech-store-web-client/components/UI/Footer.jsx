@@ -16,7 +16,7 @@ const Footer = () => {
       <div className="flex sm:flex-row flex-col gap-10 grow">
         <div className="flex flex-col gap-2">
           <span className="font-bold">Products</span>
-          <ul className="flex sm:flex-col gap-1 text-sm text-on-secondary/50 overflow-x-scroll no-scrollbar ">
+          <ul className="flex sm:flex-col gap-1 text-sm text-on-secondary/50 ">
             <li className="hover:text-on-secondary cursor-pointer">Category</li>
             <li className="hover:text-on-secondary cursor-pointer">Category</li>
             <li className="hover:text-on-secondary cursor-pointer">Category</li>
@@ -30,14 +30,16 @@ const Footer = () => {
               Contact us
             </li>
             <li className="hover:text-on-secondary cursor-pointer">
-              Order tracking
+              <Link href="/tracking">Order tracking</Link>
             </li>
           </ul>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold">Our company</span>
           <ul className="flex sm:flex-col gap-1 text-sm text-on-secondary/50">
-            <li className="hover:text-on-secondary cursor-pointer"><Link href="/about">About us</Link></li>
+            <li className="hover:text-on-secondary cursor-pointer">
+              <Link href="/about">About us</Link>
+            </li>
             <li className="hover:text-on-secondary cursor-pointer">Careers</li>
           </ul>
         </div>

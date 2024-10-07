@@ -59,7 +59,7 @@ body {
   }
 
   .button-variant-1 {
-    @apply bg-on-surface font-bold text-surface p-2 rounded-lg hover:scale-105 transition-transform duration-200 ease-out gap-2 flex items-center justify-center;
+    @apply bg-on-surface font-bold text-surface p-2 rounded-lg hover:scale-105 active:scale-90 transition-transform duration-200 ease-out gap-2 flex items-center justify-center h-fit;
   }
 
   .order-state {
@@ -83,5 +83,9 @@ body {
   }
   .cancelled {
     @apply order-state bg-red-400;
+  }
+
+  .panel-1 {
+    @apply h-fit overflow-hidden rounded-xl border-[2px] border-on-secondary p-4 bg-secondary/20 backdrop-blur-sm shadow-xl
   }
 }

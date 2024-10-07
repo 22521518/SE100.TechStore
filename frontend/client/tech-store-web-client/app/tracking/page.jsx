@@ -44,7 +44,7 @@ export default function Tracking() {
             </li>
           </ul>
         </div>
-        <div className="w-full h-fit overflow-hidden rounded-xl border-[2px] border-on-secondary p-4 bg-secondary/20 backdrop-blur-sm shadow-xl">
+        <div className="panel-1">
           <div className="flex flex-col md:flex-row gap-2 items-starts justify-between">
             <div className="flex flex-row gap-2 grow items-center">
               <h1 className="font-bold text-lg">Order id:</h1>
@@ -88,7 +88,7 @@ export default function Tracking() {
           </div>
         </div>
 
-        <div className="w-full h-fit overflow-hidden rounded-xl border-[2px] border-on-secondary p-4 bg-secondary/20 backdrop-blur-sm shadow-xl">
+        <div className="panel-1">
           <div className="flex flex-col md:flex-row gap-2 items-start justify-between">
             <div className="flex flex-row gap-2 grow items-center">
               <h1 className="font-bold text-lg">Order id:</h1>

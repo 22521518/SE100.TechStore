@@ -22,17 +22,17 @@ const ComponentName = () => {
             </li>
             <li className='flex flex-col items-center gap-2 p-2 w-full bg-surface text-on-surface rounded-lg shadow-lg'>
               <div className='relative h-[70%] w-full'>
-                <Image src="/images/LeNguyenDongXuan.jpg" width={300} height={300} className="size-full object-cover" />
+                <Image src="/images/HoMinhTri.jpg" width={300} height={300} className="size-full object-cover" />
               </div>
               <h2 className='font-bold'>Hồ Minh Trí</h2>
               <h2 className='font-semibold'>22521518</h2>
             </li>
             <li className='flex flex-col items-center gap-2 p-2 w-full bg-surface text-on-surface rounded-lg shadow-lg'>
               <div className='relative h-[70%] w-full'>
-                <Image src="/images/LeNguyenDongXuan.jpg" width={300} height={300} className="size-full object-cover" />
+                <Image src="/images/DoanQuangHuy.jpg" width={300} height={300} className="size-full object-cover" />
               </div>
-              <h2 className='font-bold'>Lê Nguyễn Đông Xuân</h2>
-              <h2 className='font-semibold'>22521713</h2>
+              <h2 className='font-bold'>Đoàn Quang Huy </h2>
+              <h2 className='font-semibold'>22520539</h2>
             </li>
         </ul>
 

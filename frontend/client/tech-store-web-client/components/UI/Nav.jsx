@@ -11,31 +11,33 @@ import Link from "next/link";
 import React from "react";
 
 const Nav = () => {
-
   const handleTriggerChatButton = () => {
-    const chatButton = document.getElementById("chatButton")
-    if(!chatButton) return
+    const chatButton = document.getElementById("chatButton");
+    if (!chatButton) return;
     // Create mouse down event
     const mouseDownEvent = new MouseEvent("mousedown", {
       bubbles: true,
       cancelable: true,
       view: window,
     });
-    
+
     // Create mouse up event
     const mouseUpEvent = new MouseEvent("mouseup", {
       bubbles: true,
       cancelable: true,
       view: window,
     });
-  
+
     // Dispatch the events
     chatButton.dispatchEvent(mouseDownEvent);
     chatButton.dispatchEvent(mouseUpEvent);
   };
   return (
     <div className="w-full sticky top-0 left-0 bg-secondary grid gap-2 md:grid-cols-3 gap-y-4 md:gap-y-0 grid-cols-1 p-2 z-50 text-on-secondary">
-      <Link href="/" className="flex flex-row gap-2 items-center justify-between md:justify-start">
+      <Link
+        href="/"
+        className="flex flex-row gap-2 items-center justify-between md:justify-start"
+      >
         <Image
           src={process.env.NEXT_PUBLIC_APP_LOGO}
           alt="app logo"
@@ -62,7 +64,10 @@ const Nav = () => {
             About us
           </button>
         </Link>
-        <button className="hover:bg-primary hover:text-on-primary rounded-xl h-full p-2 w-[80px]" onClick={handleTriggerChatButton}>
+        <button
+          className="hover:bg-primary hover:text-on-primary rounded-xl h-full p-2 w-[80px]"
+          onClick={handleTriggerChatButton}
+        >
           Support
         </button>
       </ul>
@@ -73,15 +78,19 @@ const Nav = () => {
           placeholder="Search product"
         />
         <button>
-          <FontAwesomeIcon icon={faSearch} />
+          <Link href="/search">
+            <FontAwesomeIcon icon={faSearch} />
+          </Link>
         </button>
         <button>
-          <FontAwesomeIcon icon={faShoppingCart} />
+          <Link href="/cart">
+            <FontAwesomeIcon icon={faShoppingCart} />
+          </Link>
         </button>
         <button>
           <FontAwesomeIcon icon={faCircleUser} />
         </button>
-      </ul> 
+      </ul>
     </div>
   );
 };

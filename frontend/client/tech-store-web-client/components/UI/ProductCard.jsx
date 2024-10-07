@@ -15,6 +15,7 @@ const ProductCard = () => {
           height={300}
           quality={75}
           className="h-full object-contain w-full"
+          priority
         />
       </div>
       <div className="text-lg">600,000 VNĐ</div>
