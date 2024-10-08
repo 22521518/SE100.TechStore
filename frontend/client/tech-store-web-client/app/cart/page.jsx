@@ -1,9 +1,11 @@
 "use client";
 import CheckBox from "@components/Input/CheckBox";
 import CartItem from "@components/UI/CartItem";
+import Divider from "@components/UI/Divider";
 import { faCheckSquare } from "@fortawesome/free-regular-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/navigation";
 import React, { useReducer, useState, useEffect } from "react";
 
 function reducer(state, action) {
@@ -18,6 +20,7 @@ function reducer(state, action) {
 }
 
 const Cart = () => {
+  const router = useRouter()
   const [cartItems, setCartItems] = useState([
     {
       id: "1",
@@ -50,29 +53,35 @@ const Cart = () => {
     total: 0,
   });
 
-  const calculateSubtotal = (items) => {
-    const newSubtotal = items.reduce((acc, item) => {
+  useEffect ( () => {
+    const newSubtotal = cartItems.reduce((acc, item) => {
       return item.checked ? acc + item.price * item.quantity : acc;
     }, 0);
 
-    setCartItems(items);
     dispatch({ type: "change_subtotal", payload: newSubtotal });
-  }
+
+  },[cartItems])
 
   useEffect(() => {
     const total = receipt.subtotal - receipt.discount;
     dispatch({ type: "change_total", payload: total < 0 ? 0 : total });
   }, [receipt.subtotal, receipt.discount]);
 
+  const handleCheckout = async () => {
+    router.push('cart/checkout')
+  }
+
   const handleRemoveItem = (id) => {
     const newCart = cartItems.filter(item => item.id!==id)
     
-    calculateSubtotal(newCart)
+    setCartItems(newCart)
 
   };
 
+  
+
   const handleRemoveAllItems = () => {
-    calculateSubtotal([])
+    setCartItems([])
   };
 
   const setAllCheckState = (checked) => {
@@ -80,7 +89,7 @@ const Cart = () => {
       return { ...item, checked };
     });
 
-    calculateSubtotal(newCart)
+    setCartItems(newCart)
   };
 
 
@@ -92,7 +101,7 @@ const Cart = () => {
       return item;
     });
 
-    calculateSubtotal(newCart)
+    setCartItems(newCart)
 
   };
 
@@ -124,7 +133,7 @@ const Cart = () => {
               </h1>
               <h1 className="text-right">Price</h1>
             </div>
-            <div className=" w-full border-t-2 border-on-secondary"></div>
+            <Divider/>
             <ul className="flex flex-col gap-4 py-4">
               {cartItems.map((item) => (
                 <CartItem
@@ -140,29 +149,29 @@ const Cart = () => {
 
         {/* Total review */}
         <div className="panel-1 flex flex-col gap-10 text-base min-w-[250px] md:row-start-2">
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row justify-between items-center gap-4">
             <h1 className="opacity-70">Subtotal</h1>
             <span className="">
               {Intl.NumberFormat("en-US").format(receipt.subtotal)} VNĐ
             </span>
           </div>
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row justify-between items-center gap-4">
             <h1 className="opacity-70">Discount</h1>
             <span>
               {Intl.NumberFormat("en-US").format(receipt.discount)} VNĐ
             </span>
           </div>
 
-          <div className=" w-full border-t-2 border-on-secondary"></div>
+          <Divider/>
 
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row justify-between items-center gap-4">
             <h1>Grand total</h1>
             <span className="font-bold text-lg">
               {Intl.NumberFormat("en-US").format(receipt.total)} VNĐ
             </span>
           </div>
 
-          <button className="button-variant-1 w-full"> Checkout now</button>
+          <button className="button-variant-1 w-full" onClick={handleCheckout}> Checkout now</button>
         </div>
       </div>
     </section>

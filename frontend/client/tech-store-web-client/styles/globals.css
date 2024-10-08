@@ -36,7 +36,6 @@
 body {
   background: linear-gradient(to top, White, rgba(var(--background), 1));
   color: rgb(var(--on-background));
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
@@ -86,6 +85,6 @@ body {
   }
 
   .panel-1 {
-    @apply h-fit overflow-hidden rounded-xl border-[2px] border-on-secondary p-4 bg-secondary/20 backdrop-blur-sm shadow-xl
+    @apply h-fit overflow-hidden rounded-xl border-[2px] border-on-secondary p-4 bg-primary/20 backdrop-blur-sm shadow-xl
   }
 }

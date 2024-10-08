@@ -36,9 +36,9 @@ export default function Home() {
 
       <p className="text-2xl font-semibold my-4">See our newest products</p>
       {/* product list */}
-      <ul className="grid grid-cols-2 md:grid-cols-4 gap-2">
-        {Array.from({ length: 16 }).map((item) => (
-          <ProductCard />
+      <ul className="grid grid-cols-2 md:grid-cols-4 gap-2 overflow-visible">
+        {Array.from({ length: 16 }).map((item,index) => (
+          <ProductCard key={index} />
         ))}
       </ul>
 

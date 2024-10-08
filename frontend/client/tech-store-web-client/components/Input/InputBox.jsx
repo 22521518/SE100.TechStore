@@ -22,7 +22,7 @@ const InputBox = ({ value, name, onChange }) => {
     <div className="relative bg-inherit w-full">
       <span
         ref={labelRef}
-        className={`-top-3 ${value?"":"translate-y-5 scale-110"}  absolute font-semibold bg-inherit left-3 text-base px-2 text-on-background/50 pointer-events-none transition-transform duration-200 transform `}
+        className={`-top-3 ${value?"":"translate-y-5 scale-110"} scale absolute font-semibold bg-inherit left-3 text-xs px-2 text-on-background/50 pointer-events-none transition-transform duration-200 transform `}
       >
         {name}
       </span>
@@ -30,7 +30,7 @@ const InputBox = ({ value, name, onChange }) => {
         type="text"
         placeholder=""
         value={value}
-        className="bg-transparent rounded-lg border-[1px] border-on-background/50  text-lg outline-none p-2 py-2 w-full"
+        className="bg-transparent rounded-lg border-[1px] border-on-background/50  text-base outline-none p-2 py-2 w-full"
         onFocus={handleFocus}
         onBlur={handleBlur}
         autoComplete="off"

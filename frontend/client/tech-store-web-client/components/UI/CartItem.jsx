@@ -31,7 +31,7 @@ const CartItem = ({reCalculate, cartItem , removeItem }) => {
   }
 
   return (
-    <div className="grid grid-cols-[auto_1fr_1fr] sm:grid-cols-[auto_1fr_auto_20%] items-center gap-2 border-b-2 border-on-secondary pb-2 last:border-none">
+    <div className="grid grid-cols-[auto_1fr_1fr] sm:grid-cols-[auto_1fr_auto_20%] items-center gap-2 pb-2 last:border-none">
       <CheckBox onChecked={() => setIsChecked(true)} onUnchecked={() => {setIsChecked(false)}} checked={cartItem.checked}/>
 
       <div className="flex flex-row">
@@ -99,10 +99,10 @@ const CartItem = ({reCalculate, cartItem , removeItem }) => {
               +
             </button>
           </div>
-          <buttons className='flex flex-row items-center justify-center gap-2 underline text-sm md:text-base' onClick={handleRemoveItem}>
+          <button className='flex flex-row items-center justify-center gap-2 underline text-sm md:text-base' onClick={handleRemoveItem}>
             <FontAwesomeIcon icon={faTrash}/>
              Remove
-          </buttons>
+          </button>
         </div>
       </div>
     </div>

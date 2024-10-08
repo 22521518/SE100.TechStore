@@ -1,5 +1,6 @@
 "use client";
 import InputBox from "@components/Input/InputBox";
+import OrderItem from "@components/UI/OrderItem";
 import {
   faCircleCheck,
   faHouse,
@@ -102,67 +103,9 @@ export default function Tracking() {
           <div className=" w-full border-t-2 border-on-secondary my-4"></div>
 
           <ul className="flex flex-col gap-4">
-            <li className="grid grid-cols-[auto_1fr_auto] gap-2 bg-surface text-on-surface p-2 rounded-xl">
-              <div className="w-[100px]  md:scale-[1.2] transition-transform duration-200 aspect-square">
-                <Image
-                  src="https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-15-Pro/Blue-Titanium/Apple-iPhone-15-Pro-Blue-Titanium-thumbnail.png"
-                  alt='product image'
-                  width={300}
-                  height={300}
-                  className="size-full object-contain"
-                />
-              </div>
-
-              <div className="flex flex-col justify-around items-start">
-                <h1 className="font-bold text-base md:text-xl">
-                  Iphone 16 pro-max
-                </h1>
-                <h2 className="font-semibold">42,999,000 VNĐ</h2>
-              </div>
-
-              <h2 className="text-xl">x3</h2>
-            </li>
-
-            <li className="grid grid-cols-[auto_1fr_auto] gap-2 bg-surface text-on-surface p-2 rounded-xl">
-              <div className="w-[100px]  md:scale-[1.2] transition-transform duration-200 aspect-square">
-                <Image
-                  src="https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-15-Pro/Blue-Titanium/Apple-iPhone-15-Pro-Blue-Titanium-thumbnail.png"
-                  alt='product image'
-                  width={300}
-                  height={300}
-                  className="size-full object-contain"
-                />
-              </div>
-
-              <div className="flex flex-col justify-around items-start">
-                <h1 className="font-bold text-base md:text-xl">
-                  Iphone 16 pro-max
-                </h1>
-                <h2 className="font-semibold">42,999,000 VNĐ</h2>
-              </div>
-
-              <h2 className="text-xl">x3</h2>
-            </li>
-            <li className="grid grid-cols-[auto_1fr_auto] gap-2 bg-surface text-on-surface p-2 rounded-xl">
-              <div className="w-[100px]  md:scale-[1.2] transition-transform duration-200 aspect-square">
-                <Image
-                  src="https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-15-Pro/Blue-Titanium/Apple-iPhone-15-Pro-Blue-Titanium-thumbnail.png"
-                  alt='product image'
-                  width={300}
-                  height={300}
-                  className="size-full object-contain"
-                />
-              </div>
-
-              <div className="flex flex-col justify-around items-start">
-                <h1 className="font-bold text-base md:text-xl">
-                  Iphone 16 pro-max
-                </h1>
-                <h2 className="font-semibold">42,999,000 VNĐ</h2>
-              </div>
-
-              <h2 className="text-xl">x3</h2>
-            </li>
+           <OrderItem/>
+           <OrderItem/>
+           <OrderItem/>
           </ul>
         </div>
         <div></div>

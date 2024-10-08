@@ -5,7 +5,7 @@ import React from "react";
 
 const ProductCard = () => {
   return (
-    <div className="flex flex-col w-full gap-2 shadow-lg p-2 rounded-lg bg-surface text-on-surface hover:shadow-2xl">
+    <div className="flex flex-col w-full gap-2 shadow-lg p-2 rounded-lg bg-surface text-on-surface hover:shadow-on-background/50 hover:shadow-2xl cursor-pointer">
       <div className="text-lg font-semibold break-all ">Product name</div>
       <div className='relative w-full h-[200px] flex justify-center'>
         <Image
