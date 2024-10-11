@@ -1,8 +1,8 @@
 model Suppliers {
     supplier_id Int @id @default(autoincrement())
-    supplier_name String @db.VarChar(100)
+    supplier_name String @unique @db.VarChar(100)
     contact_number String @db.VarChar(10)
-    email String @db.VarChar(100)
+    email String  @unique @db.VarChar(100)
     description String @db.Text
     created_at DateTime @default(now())
 

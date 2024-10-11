@@ -34,7 +34,7 @@ model Order_Items {
 }
 
 model Invoices {
-    invoice_id String @id @default(cuid()) @db.VarChar(10)
+    invoice_id String @id @default(cuid()) @db.VarChar(50)
     order_id String? @db.VarChar(10)
     total_price Float
     created_at DateTime @default(now())
