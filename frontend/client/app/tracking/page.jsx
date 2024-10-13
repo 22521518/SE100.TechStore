@@ -48,7 +48,7 @@ export default function Tracking() {
         <div className="panel-1">
           <div className="flex flex-col md:flex-row gap-2 items-starts justify-between">
             <div className="flex flex-row gap-2 grow items-center">
-              <h1 className="font-bold text-lg">Order id:</h1>
+              <h3 className="font-bold text-lg">Order id:</h3>
               <div>
                 <InputBox />
               </div>
@@ -63,14 +63,14 @@ export default function Tracking() {
           <div className=" w-full border-t-2 border-on-secondary my-4"></div>
 
           <div className="flex flex-row gap-2 items-center justify-between">
-            <h1 className="text-lg">Delivery estimate</h1>
-            <h1 className="text-lg">Jan 19, 2024</h1>
+            <h3 className="text-lg">Delivery estimate</h3>
+            <h3 className="text-lg">Jan 19, 2024</h3>
           </div>
 
           <div className=" w-full border-t-2 border-on-secondary my-4"></div>
 
           <div className="flex flex-col gap-2 items-start">
-            <h1 className="text-lg font-bold">John Doe</h1>
+            <h3 className="text-lg font-bold">John Doe</h3>
             <div className="grid grid-cols-[auto_1fr] gap-2 items-start">
               <FontAwesomeIcon icon={faHouse} />
               <p>123 street, phuong 1, quan 2, TP HCM</p>
@@ -84,16 +84,16 @@ export default function Tracking() {
           <div className=" w-full border-t-2 border-on-secondary my-4"></div>
 
           <div className="flex flex-row gap-2 items-center justify-between">
-            <h1 className="text-lg">Payment method</h1>
-            <h1 className="text-lg">Credit card</h1>
+            <h3 className="text-lg">Payment method</h3>
+            <h3 className="text-lg">Credit card</h3>
           </div>
         </div>
 
         <div className="panel-1">
           <div className="flex flex-col md:flex-row gap-2 items-start justify-between">
             <div className="flex flex-row gap-2 grow items-center">
-              <h1 className="font-bold text-lg">Order id:</h1>
-              <h1 className="font-bold ">ABC12345</h1>
+              <h3 className="font-bold text-lg">Order id:</h3>
+              <h3 className="font-bold ">ABC12345</h3>
             </div>
             <div className="text-xl">
               <span className="font-bold">4,999,000 VNĐ </span> (4 items)

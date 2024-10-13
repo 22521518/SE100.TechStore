@@ -87,4 +87,8 @@ body {
   .panel-1 {
     @apply h-fit overflow-hidden rounded-xl border-[2px] border-on-secondary p-4 bg-primary/20 backdrop-blur-sm shadow-xl
   }
+
+  .panel-2 {
+    @apply overflow-hidden rounded-md bg-primary shadow-lg text-on-primary p-4
+  }
 }

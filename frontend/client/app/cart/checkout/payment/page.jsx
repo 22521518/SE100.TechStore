@@ -67,17 +67,17 @@ const Payment = () => {
       <div className="w-full grid grid-cols-1 md:grid-rows-[auto_1fr] md:grid-flow-col gap-4">
         {/* Cart header */}
         <ul className="flex flex-row items-center gap-2">
-          <h1 className="text-xl opacity-50">Cart</h1>
+          <h3 className="text-xl opacity-50">Cart</h3>
           <span className="size-2 sm:size-3 bg-on-background rounded-full opacity-50"></span>
-          <h1 className="text-xl opacity-50">Checkout</h1>
+          <h3 className="text-xl opacity-50">Checkout</h3>
           <span className="size-2 sm:size-3 bg-on-background rounded-full opacity-50"></span>
-          <h1 className="font-bold text-2xl">Payment</h1>
+          <h3 className="font-bold text-2xl">Payment</h3>
         </ul>
         {/* Cart items list */}
         <div className="panel-1 ">
-          <h1 className="text-xl  mb-2">
+          <h3 className="text-xl  mb-2">
             Select Payment method <FontAwesomeIcon icon={faLocationDot} />
-          </h1>
+          </h3>
           <Divider />
 
           <label
@@ -92,7 +92,7 @@ const Payment = () => {
                   checked={selectedOption === "credit card"}
                   onChange={handleRadioSelectionChange}
                 />
-                <h1>Credit card</h1>
+                <h3>Credit card</h3>
               </div>
               <FontAwesomeIcon icon={faCreditCardAlt} />
             </div>
@@ -119,7 +119,7 @@ const Payment = () => {
                 checked={selectedOption === "App wallet"}
                 onChange={handleRadioSelectionChange}
               />
-              <h1>App wallet</h1>
+              <h3>App wallet</h3>
             </div>
             <FontAwesomeIcon icon={faWallet} />
           </label>
@@ -134,7 +134,7 @@ const Payment = () => {
                 checked={selectedOption === "COD"}
                 onChange={handleRadioSelectionChange}
               />
-              <h1>Cash on Delivery</h1>
+              <h3>Cash on Delivery</h3>
             </div>
             <FontAwesomeIcon icon={faMoneyBills} />
           </label>
@@ -142,7 +142,7 @@ const Payment = () => {
 
         {/* Total review */}
         <div className="panel-1 flex flex-col gap-4 text-base min-w-[250px] md:row-start-2">
-          <h1>Your order</h1>
+          <h3>Your order</h3>
           <ul className="flex flex-col gap-4">
             <OrderItem />
             <OrderItem />
@@ -150,8 +150,16 @@ const Payment = () => {
           </ul>
 
           <Divider />
+          <h3 className="text-base md:text-xl">Shipping address</h3>
+          <div className="flex flex-col items-start h-full justify-around text-sm">
+                  <h4>
+                    {"John Doe"} | {"1234 567 890"}
+                  </h4>
+                  <h3 className="opacity-50">{"123 Street, phuong 1, quan 2, Ho Chi Minh City"}</h3>
+                </div>
+          <Divider />
 
-          <h1 className="text-base md:text-xl">Discount</h1>
+          <h3 className="text-base md:text-xl">Discount</h3>
           <div className="flex flex-row gap-2 items-center justify-between">
             <InputBox name={"Vouchers"} value={""} onChange={() => {}} />
             <button className="button-variant-1">Select</button>
@@ -160,20 +168,20 @@ const Payment = () => {
           <Divider />
 
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1 className="opacity-70">Subtotal</h1>
+            <h3 className="opacity-70">Subtotal</h3>
             <span className="">
               {Intl.NumberFormat("en-US").format(receipt.subtotal)} VNĐ
             </span>
           </div>
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1 className="opacity-70">Discount</h1>
+            <h3 className="opacity-70">Discount</h3>
             <span>
               {Intl.NumberFormat("en-US").format(receipt.discount)} VNĐ
             </span>
           </div>
 
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1 className="opacity-70">Shipment cost</h1>
+            <h3 className="opacity-70">Shipment cost</h3>
             <span>
               {Intl.NumberFormat("en-US").format(receipt.discount)} VNĐ
             </span>
@@ -181,7 +189,7 @@ const Payment = () => {
           <Divider />
 
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1>Grand total</h1>
+            <h3>Grand total</h3>
             <span className="font-bold text-lg">
               {Intl.NumberFormat("en-US").format(receipt.total)} VNĐ
             </span>

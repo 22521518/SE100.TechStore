@@ -110,7 +110,7 @@ const Cart = () => {
       <div className="w-full grid grid-cols-1 md:grid-rows-[auto_1fr] md:grid-flow-col gap-4">
         {/* Cart header */}
         <div className="flex flex-row justify-between items-end">
-          <h1 className="font-bold text-4xl">Cart</h1>
+          <h3 className="font-bold text-4xl">Cart</h3>
           <button
             className="button-variant-1 text-xs md:text-base"
             onClick={handleRemoveAllItems}
@@ -127,11 +127,11 @@ const Cart = () => {
                 onChecked={() => setAllCheckState(true)}
                 onUnchecked={() => setAllCheckState(false)}
               />
-              <h1 className="text-left">Produt</h1>
-              <h1 className="hidden sm:inline-block text-center ml-auto">
+              <h3 className="text-left">Produt</h3>
+              <h3 className="hidden sm:inline-block text-center ml-auto">
                 Quanity
-              </h1>
-              <h1 className="text-right">Price</h1>
+              </h3>
+              <h3 className="text-right">Price</h3>
             </div>
             <Divider/>
             <ul className="flex flex-col gap-4 py-4">
@@ -150,13 +150,13 @@ const Cart = () => {
         {/* Total review */}
         <div className="panel-1 flex flex-col gap-10 text-base min-w-[250px] md:row-start-2">
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1 className="opacity-70">Subtotal</h1>
+            <h3 className="opacity-70">Subtotal</h3>
             <span className="">
               {Intl.NumberFormat("en-US").format(receipt.subtotal)} VNĐ
             </span>
           </div>
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1 className="opacity-70">Discount</h1>
+            <h3 className="opacity-70">Discount</h3>
             <span>
               {Intl.NumberFormat("en-US").format(receipt.discount)} VNĐ
             </span>
@@ -165,7 +165,7 @@ const Cart = () => {
           <Divider/>
 
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1>Grand total</h1>
+            <h3>Grand total</h3>
             <span className="font-bold text-lg">
               {Intl.NumberFormat("en-US").format(receipt.total)} VNĐ
             </span>

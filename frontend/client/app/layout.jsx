@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
       <body className="min-h-[100vh] flex flex-col">
         <Nav></Nav>
         <div className="grow h-fit flex justify-center">
-          <div className="max-w-[1200px] w-[1200px] px-2 py-4">{children}</div>
+          <div className="max-w-[1200px] w-full px-2 py-4">{children}</div>
         </div>
         <Footer></Footer>
         <SupportChatBox/>

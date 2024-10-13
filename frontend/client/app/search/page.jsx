@@ -6,7 +6,7 @@ import React from "react";
 
 export default function Search() {
   return (
-    <div className="flex flex-col gap-4 overflow-visible">
+    <section className="flex flex-col gap-4 overflow-visible">
       {/* filter */}
       <div className="flex gap-4 flex-wrap items-center justify-end h-fit rounded-xl w-full bg-surface    py-2 px-4">
         <DropDownButton />
@@ -30,6 +30,6 @@ export default function Search() {
           <FontAwesomeIcon icon={faAngleRight} />
         </button>
       </ul>
-    </div>
+    </section>
   );
 }

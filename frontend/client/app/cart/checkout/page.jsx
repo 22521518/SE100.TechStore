@@ -138,17 +138,17 @@ const Checkout = () => {
       <div className="w-full grid grid-cols-1 md:grid-rows-[auto_1fr] md:grid-flow-col gap-4">
         {/* Cart header */}
         <ul className="flex flex-row items-center gap-2">
-          <h1 className="text-xl opacity-50">Cart</h1>
+          <h3 className="text-xl opacity-50">Cart</h3>
           <span className="size-2 sm:size-3 bg-on-background rounded-full opacity-50"></span>
-          <h1 className="font-bold text-2xl">Checkout</h1>
+          <h3 className="font-bold text-2xl">Checkout</h3>
           <span className="size-2 sm:size-3 bg-on-background rounded-full opacity-50"></span>
-          <h1 className="text-xl opacity-50">Payment</h1>
+          <h3 className="text-xl opacity-50">Payment</h3>
         </ul>
         {/* Cart items list */}
         <div className="panel-1 ">
-          <h1 className="text-xl mb-2">
+          <h3 className="text-xl mb-2">
             Select Shipping address <FontAwesomeIcon icon={faLocationDot} />
-          </h1>
+          </h3>
           <Divider />
           <div className="flex flex-col py-4 gap-4">
             <div className="flex flex-row gap-1 size-fit items-center">
@@ -193,7 +193,7 @@ const Checkout = () => {
             />
           </div>
 
-          <h1 className="text-xl">Or choose a preset address</h1>
+          <h3 className="text-xl">Or choose a preset address</h3>
           <Divider />
           <ul className="flex flex-col gap-2 py-4">
             {userAddresses.map((item, index) => (
@@ -212,12 +212,12 @@ const Checkout = () => {
                   <FontAwesomeIcon icon={faLocationDot} />
                 </div>
                 <div className="flex flex-col items-start h-full justify-around text-xs">
-                  <h2>
+                  <h4>
                     {item.fullname} | {item.phone}
-                  </h2>
+                  </h4>
                   <h3 className="opacity-50">{item.address}</h3>
                 </div>
-                <h1 className="text-sm">{item.type}</h1>
+                <h3 className="text-sm">{item.type}</h3>
               </label>
             ))}
           </ul>
@@ -225,7 +225,7 @@ const Checkout = () => {
 
         {/* Total review */}
         <div className="panel-1 flex flex-col gap-4 text-base min-w-[250px] md:row-start-2">
-          <h1>Your order</h1>
+          <h3>Your order</h3>
           <ul className="flex flex-col gap-4">
             <OrderItem />
             <OrderItem />
@@ -234,20 +234,20 @@ const Checkout = () => {
           <Divider />
 
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1 className="opacity-70">Subtotal</h1>
+            <h3 className="opacity-70">Subtotal</h3>
             <span className="">
               {Intl.NumberFormat("en-US").format(receipt.subtotal)} VNĐ
             </span>
           </div>
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1 className="opacity-70">Discount</h1>
+            <h3 className="opacity-70">Discount</h3>
             <span>
               {Intl.NumberFormat("en-US").format(receipt.discount)} VNĐ
             </span>
           </div>
 
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1 className="opacity-70">Shipment cost</h1>
+            <h3 className="opacity-70">Shipment cost</h3>
             <span>
               {Intl.NumberFormat("en-US").format(receipt.discount)} VNĐ
             </span>
@@ -256,7 +256,7 @@ const Checkout = () => {
           <Divider />
 
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1>Grand total</h1>
+            <h3>Grand total</h3>
             <span className="font-bold text-lg">
               {Intl.NumberFormat("en-US").format(receipt.total)} VNĐ
             </span>
