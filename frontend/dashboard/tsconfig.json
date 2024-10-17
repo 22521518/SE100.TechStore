@@ -23,12 +23,8 @@
       }
     ],
     "paths": {
-      "@*": [
-        "./src/*"
-      ],
-      "@pages/*": [
-        "./pages/*"
-      ]
+      "@*": ["./src/*"],
+      "@pages/*": ["./pages/*"]
     },
     "incremental": true
   },
