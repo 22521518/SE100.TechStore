@@ -7,7 +7,14 @@ export interface IProduct {
   quantity: number;
 }
 
+export interface IProductAttribute {
+  id: string;
+  name: string;
+  detail: string;
+}
+
 export interface ICategory {
   id: string;
   title: string;
+  // name: string;
 }
