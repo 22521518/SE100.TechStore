@@ -4,6 +4,8 @@ import {
   IsNumber,
   IsOptional,
   ValidateNested,
+  Max,
+  Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -28,6 +30,8 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsNumber()
+  @Max(100)
+  @Min(0)
   discount?: number;
 
   @IsOptional()
