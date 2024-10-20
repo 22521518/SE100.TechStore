@@ -4,7 +4,7 @@ model Products {
     images       String[]   @db.VarChar(255)
     description  String   @db.Text
     price        Float
-    discount    Int @default(0)
+    discount    Int? @default(0)
     stock_quantity Int @default(0)
     created_at  DateTime @default(now())
     updated_at  DateTime @default(now())
