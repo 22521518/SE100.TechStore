@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Prisma } from '@prisma/client';
+import { CreateProductDto } from './dto/create-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -18,12 +20,12 @@ export class ProductsController {
   @Post()
   async create(
     @Body()
-    createProductDto: Prisma.ProductsCreateInput & {
-      categories: [{ category_id: string }];
-    },
+    createProductDto: CreateProductDto,
   ) {
     try {
-      const { categories, ...product_info } = createProductDto;
+      const { categories, images, attributes, ...product_info } =
+        createProductDto;
+      console.log(attributes, images);
       const productDto: Prisma.ProductsCreateInput = {
         ...product_info,
         categories: {
@@ -66,12 +68,11 @@ export class ProductsController {
   async update(
     @Param('id') id: string,
     @Body()
-    updateProductDto: Prisma.ProductsUpdateInput & {
-      categories: { category_id: number }[];
-    },
+    updateProductDto: UpdateProductDto,
   ) {
     try {
-      const { categories, ...product_info } = updateProductDto;
+      const { categories, attributes, ...product_info } = updateProductDto;
+      console.log(attributes);
       const productDto: Prisma.ProductsUpdateInput = {
         ...product_info,
         categories: {
@@ -84,6 +85,7 @@ export class ProductsController {
       return product;
     } catch (error) {
       console.error(error);
+      console.error(updateProductDto);
       throw new BadRequestException('Updating product failed');
     }
   }

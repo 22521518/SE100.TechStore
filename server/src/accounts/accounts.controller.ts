@@ -7,18 +7,26 @@ import {
   Param,
   Delete,
   BadRequestException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { Prisma } from '@prisma/client';
+import { CreateAccountsDto } from './dto/create-accounts.dto';
+import { UpdateAccountsDto } from './dto/update-accounts.dto';
 
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Post()
-  async create(@Body() createAccountDto: Prisma.AccountsCreateInput) {
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async create(@Body() createAccountDto: CreateAccountsDto) {
     try {
-      const acc = await this.accountsService.create(createAccountDto);
+      const accountDto: Prisma.AccountsCreateInput = {
+        ...createAccountDto,
+      };
+      const acc = await this.accountsService.create(accountDto);
       return acc;
     } catch (error) {
       console.error(error);
@@ -49,18 +57,15 @@ export class AccountsController {
   }
 
   @Patch(':id')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async update(
     @Param('id') id: string,
     @Body()
-    updateAccountDto: {
-      password: string;
-      is_active: boolean;
-    },
+    updateAccountDto: UpdateAccountsDto,
   ) {
     try {
       const accountDto: Prisma.AccountsUpdateInput = {
-        password: updateAccountDto.password,
-        is_active: updateAccountDto.is_active,
+        ...updateAccountDto,
       };
       const acc = await this.accountsService.update(id, accountDto);
       return acc;

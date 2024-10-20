@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { StaffService } from './staff.service';
 import { Prisma } from '@prisma/client';
+import { CreateStaffDto } from './dto/create-staff.dto';
+import { UpdateStaffDto } from './dto/update-staff.dto';
 
 @Controller('staff')
 export class StaffController {
@@ -18,13 +20,10 @@ export class StaffController {
   @Post()
   async create(
     @Body()
-    createStaffDto: Prisma.StaffCreateInput & {
-      account_id: string;
-    },
+    createStaffDto: CreateStaffDto,
   ) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { account_id, role, ...rest } = createStaffDto;
+      const { account_id, ...rest } = createStaffDto;
       const staffDto: Prisma.StaffCreateInput = {
         ...rest,
         account: {
@@ -67,9 +66,7 @@ export class StaffController {
   async update(
     @Param('id') id: string,
     @Body()
-    updateStaffDto: Prisma.StaffUpdateInput & {
-      role_id: number;
-    },
+    updateStaffDto: UpdateStaffDto,
   ) {
     try {
       const { full_name, phone_number, employee_status, role_id } =

@@ -10,15 +10,28 @@ import {
 } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 import { Prisma } from '@prisma/client';
+import { CreateCustomerDto } from './dto/create-customer.dto';
+import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Controller('customers')
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Post()
-  async create(@Body() createCustomerDto: Prisma.CustomersCreateInput) {
+  async create(@Body() createCustomerDto: CreateCustomerDto) {
     try {
-      const customer = await this.customersService.create(createCustomerDto);
+      const customerDto: Prisma.CustomersCreateInput = {
+        ...createCustomerDto,
+        account: {
+          create: createCustomerDto.account,
+          connectOrCreate: {
+            where: createCustomerDto.account,
+            create: createCustomerDto.account,
+          },
+          connect: createCustomerDto.account,
+        },
+      };
+      const customer = await this.customersService.create(customerDto);
       return customer;
     } catch (error) {
       console.error(error);
@@ -51,13 +64,13 @@ export class CustomersController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateCustomerDto: Prisma.CustomersUpdateInput,
+    @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
     try {
-      const customer = await this.customersService.update(
-        id,
-        updateCustomerDto,
-      );
+      const customerDto: Prisma.CustomersUpdateInput = {
+        ...updateCustomerDto,
+      };
+      const customer = await this.customersService.update(id, customerDto);
       return customer;
     } catch (error) {
       console.error(error);
