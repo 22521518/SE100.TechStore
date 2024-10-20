@@ -28,6 +28,7 @@ export class ProductsController {
       console.log(attributes, images);
       const productDto: Prisma.ProductsCreateInput = {
         ...product_info,
+        discount: product_info.discount || 0,
         categories: {
           connect: categories.map((cat) => ({
             category_id: cat.category_id,
