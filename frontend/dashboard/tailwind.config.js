@@ -20,7 +20,8 @@ module.exports = {
         neural: '#FFF5EE',
         accent: '#08050c'
       },
-      white: '#f7f5ff'
+      white: '#f7f5ff',
+      star: '#eab308'
     }
   },
   plugins: [require('tailwind-scrollbar')]

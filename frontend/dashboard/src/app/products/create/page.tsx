@@ -17,12 +17,15 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { HttpError, useList } from '@refinedev/core';
+import { HttpError, useForm, useList, useNavigation } from '@refinedev/core';
 import ProductAttributeFields from '@components/products';
-import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const ProductCreate = () => {
-  const router = useRouter();
+  const { list } = useNavigation();
+
+  const { onFinish } = useForm<IProduct, HttpError>();
+
   const { data, isLoading, isError } = useList<ICategory, HttpError>({
     resource: 'categories'
   });
@@ -46,6 +49,16 @@ const ProductCreate = () => {
     });
   };
 
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await onFinish(productValue);
+      list('/products');
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   return (
     <div className="pb-4 px-2 flex flex-col">
       <Box className="flex flex-row justify-between p-4">
@@ -57,10 +70,17 @@ const ProductCreate = () => {
         </Typography>
       </Box>
       <Box className="p-8 gap-4 bg-white rounded-lg flex flex-row justify-between">
-        <Stack className=" flex-1 gap-4">
-          <Box className="bg-accent rounded-lg w-full h-[500px]">
-            <p className="text-secondary-100">Image</p>
-          </Box>
+        <Stack className=" flex-1 gap-4 items-center justify-center">
+          <Image
+            src={
+              (productValue.images && productValue.images[0]) ||
+              'https://images.unsplash.com/photo-1612367289874-0fba3b4a07dd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            }
+            alt="Product Image"
+            width={500}
+            height={500}
+            className="rounded-lg max-h-[500px] max-w-[500px] object-contain overflow-hidden h-max w-max"
+          />
           <Box className="grid grid-cols-5 gap-2 w-full">
             {[1, 2, 3, 4, 5].map((i) => (
               <Box key={i} className="col-span-1">
@@ -69,7 +89,10 @@ const ProductCreate = () => {
             ))}
           </Box>
         </Stack>
-        <form className="flex-1">
+        <form
+          className="flex-1 flex flex-col justify-between"
+          onSubmit={onSubmit}
+        >
           <Stack className="gap-4">
             <FormControl>
               <TextField
@@ -93,6 +116,7 @@ const ProductCreate = () => {
                 <TextField
                   id="price"
                   type="number"
+                  defaultValue={''}
                   value={productValue.price}
                   variant="outlined"
                   label="Price"
@@ -112,7 +136,7 @@ const ProductCreate = () => {
                 <Select
                   labelId="categories"
                   id="demo-simple-select"
-                  value={productValue.categories[0]?.category_id}
+                  value={productValue.categories[0]?.category_id || ''} // Ensure a default value
                   label="Category"
                   onChange={(e) => {
                     setProductValue({
@@ -141,6 +165,7 @@ const ProductCreate = () => {
                 <TextField
                   id="discount"
                   type="number"
+                  defaultValue={''}
                   value={productValue.discount}
                   variant="outlined"
                   label="Discount"
@@ -159,6 +184,7 @@ const ProductCreate = () => {
                 <TextField
                   id="stock-quanity"
                   type="number"
+                  defaultValue={''}
                   value={productValue.stock_quantity}
                   variant="outlined"
                   label="Stock Quantity"
@@ -180,11 +206,31 @@ const ProductCreate = () => {
                   multiline
                   rows={4}
                   placeholder="Describe your product..."
+                  value={productValue.description}
+                  onChange={(e) => {
+                    setProductValue({
+                      ...productValue,
+                      description: e.target.value
+                    });
+                  }}
                 />
               </FormControl>
             </Box>
-            <Box className="py-10"></Box>
           </Stack>
+          <Box className="flex flex-row gap-5 justify-end">
+            <Button
+              className="bg-accent text-secondary-100 py-4 px-8 text-lg font-bold inline-block max-h-max min-w-max"
+              type="submit"
+            >
+              Add Product
+            </Button>
+            <Button
+              className="border-accent border-solid border-2 text-accent py-4 px-8 text-lg font-bold inline-block min-w-max max-h-max"
+              onClick={() => list('products')}
+            >
+              Cancel
+            </Button>
+          </Box>
         </form>
       </Box>
       <Box className="flex flex-row justify-between mt-4 py-4 items-start">
@@ -193,17 +239,6 @@ const ProductCreate = () => {
             attributes={productValue.attributes}
             setAttributes={setAttributes}
           />
-        </Box>
-        <Box className="flex flex-row gap-5 justify-end">
-          <Button className="bg-accent text-secondary-100 py-4 px-8 text-lg font-bold inline-block max-h-max min-w-max">
-            Add Product
-          </Button>
-          <Button
-            className="border-accent border-solid border-2 text-accent py-4 px-8 text-lg font-bold inline-block min-w-max max-h-max"
-            onClick={() => router.back()}
-          >
-            Cancel
-          </Button>
         </Box>
       </Box>
     </div>

@@ -64,7 +64,7 @@ export default function CategoryList({
         flex: 3,
         renderCell: ({ row }) => {
           return (
-            <Box className="flex flex-row gap-1 items-center">
+            <Box className="flex flex-row gap-1 items-center justify-center h-full">
               <Button className="text-accent" onClick={() => onEdit(row)}>
                 <EditIcon />
               </Button>

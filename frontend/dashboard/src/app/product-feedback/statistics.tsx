@@ -23,9 +23,9 @@ const ProductSatistics = ({ feedbackList }: ProductSatisticsProps) => {
 
   return (
     <>
-      <Stack className="md:hidden lg:flex flex-col min-w-max w-72">
-        <Box className="flex flex-row gap-4 items-center ">
-          <Typography variant="h6" className="text-3xl text-star font-bold">
+      <Stack className="md:hidden lg:flex flex-col min-w-max w-72 gap-1">
+        <Box className="flex flex-row gap-4 items-center py-2 ">
+          <Typography variant="h6" className="text-5xl text-star font-bold">
             {averageRating.toFixed(1)} / 5
           </Typography>
           <StarIcon className="text-5xl text-star" />

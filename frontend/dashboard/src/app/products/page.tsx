@@ -24,8 +24,11 @@ import { useNavigation } from '@refinedev/core';
 import CategoryCreate from '@app/categories/create/page';
 import CategoryEdit from '@app/categories/edit/[id]/page';
 
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 const ProductList = () => {
-  const { create } = useNavigation();
+  const { create, edit, show } = useNavigation();
 
   const filterList = ['Newest', 'Price', 'Name', 'Category'];
   const [filter, setFilter] = React.useState({
@@ -47,13 +50,13 @@ const ProductList = () => {
   const columns = React.useMemo<GridColDef<IProduct>[]>(
     () => [
       {
-        field: 'id',
+        field: 'product_id',
         headerName: 'ID',
         type: 'string',
         flex: 3
       },
       {
-        field: 'images',
+        field: 'images[0]',
         headerName: 'Image',
         minWidth: 50,
         align: 'center',
@@ -79,9 +82,16 @@ const ProductList = () => {
         flex: 4
       },
       {
-        field: 'categories[0]?.category_name',
+        field: 'categories',
         headerName: 'Category',
-        flex: 4
+        flex: 4,
+        renderCell: ({ row }) => {
+          return (
+            <span className="text-accent h-full self-center">
+              {row.categories[0]?.category_name}
+            </span>
+          );
+        }
       },
       {
         field: 'price',
@@ -97,11 +107,20 @@ const ProductList = () => {
         field: 'actions',
         headerName: '',
         flex: 4,
-        renderCell: () => {
+        renderCell: ({ row }) => {
           return (
-            <Box className="flex flex-row gap-1 items-center">
-              <EditButton />
-              <DeleteButton />
+            <Box className="flex flex-row gap-1 items-center justify-center h-full">
+              <Button
+                className="text-accent"
+                onClick={() =>
+                  row.product_id && edit('products', row.product_id)
+                }
+              >
+                <EditIcon />
+              </Button>
+              <Button className="text-accent">
+                <DeleteIcon />
+              </Button>
             </Box>
           );
         }
@@ -168,6 +187,11 @@ const ProductList = () => {
             <DataGrid
               {...dataGridProps}
               getRowId={(row) => row.product_id}
+              onCellClick={(cell) => {
+                if (cell.field !== 'actions') {
+                  show('products', cell.row.product_id);
+                }
+              }}
               columns={columns}
               sx={{
                 color: 'black',
@@ -193,7 +217,7 @@ const ProductList = () => {
           />
         </Stack>
         {(categoryCreateModal || categoryEditModal) && (
-          <div className="bg-slate-600 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
+          <div className="bg-slate-700 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
             <Box className="w-2/5">
               {categoryCreateModal && (
                 <CategoryCreate onCancel={() => handleCategoryCreate(false)} />
