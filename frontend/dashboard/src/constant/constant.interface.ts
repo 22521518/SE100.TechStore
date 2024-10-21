@@ -29,3 +29,22 @@ export interface IProductFeedback {
   feedback: string;
   created_at: string;
 }
+
+export interface ICustomer {
+  customer_id: string;
+  username: string;
+  full_name: string;
+  phone_number: string;
+  date_joined?: Date | string;
+  account: IAccount;
+}
+
+export interface IAccount {
+  email: string;
+}
+
+export interface IAddress {
+  address: string;
+  city: string;
+  state: string;
+}

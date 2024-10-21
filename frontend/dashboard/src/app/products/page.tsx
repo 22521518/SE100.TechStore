@@ -2,9 +2,6 @@
 
 import SearchBar from '@components/searchbar';
 
-import AddIcon from '@mui/icons-material/Add';
-import InventoryIcon from '@mui/icons-material/Inventory';
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
@@ -15,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import React from 'react';
-import { useDataGrid, EditButton, DeleteButton } from '@refinedev/mui';
+import { useDataGrid } from '@refinedev/mui';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ICategory, IProduct } from '@constant/constant.interface';
 import Image from 'next/image';
@@ -26,6 +23,8 @@ import CategoryEdit from '@app/categories/edit/[id]/page';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 const ProductList = () => {
   const { create, edit, show } = useNavigation();
