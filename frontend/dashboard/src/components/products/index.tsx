@@ -5,7 +5,7 @@ import React from 'react';
 
 type ProductAttributeFieldsProps = {
   attributes: IProductAttribute[];
-  setAttributes: React.Dispatch<React.SetStateAction<IProductAttribute[]>>;
+  setAttributes: (attributes: IProductAttribute[]) => void;
 };
 
 const ProductAttributeFields = ({

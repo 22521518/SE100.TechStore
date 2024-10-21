@@ -1,7 +1,11 @@
 'use client';
 
 import React from 'react';
-import { ICategory, IProductAttribute } from '@constant/constant.interface';
+import {
+  ICategory,
+  IProduct,
+  IProductAttribute
+} from '@constant/constant.interface';
 import {
   Box,
   Button,
@@ -22,14 +26,25 @@ const ProductCreate = () => {
   const { data, isLoading, isError } = useList<ICategory, HttpError>({
     resource: 'categories'
   });
-
-  const [attributes, setAttributes] = React.useState<IProductAttribute[]>([]);
   const categories = data?.data || [];
-  const [name, setName] = React.useState('');
-  const [price, setPrice] = React.useState(0);
-  const [discount, setDiscount] = React.useState(0);
-  const [stockQuantity, setStockQuantity] = React.useState(0);
-  const [category, setCategory] = React.useState('');
+
+  const [productValue, setProductValue] = React.useState<IProduct>({
+    product_name: '',
+    images: [],
+    description: '',
+    price: 0,
+    discount: 0,
+    stock_quantity: 0,
+    categories: [],
+    attributes: []
+  });
+
+  const setAttributes = (attributes: IProductAttribute[]) => {
+    setProductValue({
+      ...productValue,
+      attributes
+    });
+  };
 
   return (
     <div className="pb-4 px-2 flex flex-col">
@@ -60,12 +75,17 @@ const ProductCreate = () => {
               <TextField
                 id="product-name"
                 type="text"
-                value={name}
+                value={productValue.product_name}
                 variant="outlined"
                 label="Product name"
                 aria-describedby="product-name"
                 placeholder="Product name"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setProductValue({
+                    ...productValue,
+                    product_name: e.target.value
+                  });
+                }}
               />
             </FormControl>
             <Box className="grid grid-cols-2 gap-4">
@@ -73,12 +93,17 @@ const ProductCreate = () => {
                 <TextField
                   id="price"
                   type="number"
-                  value={price}
+                  value={productValue.price}
                   variant="outlined"
                   label="Price"
                   aria-describedby="Price"
                   placeholder="1.000"
-                  onChange={(e) => setPrice(Number(e.target.value))}
+                  onChange={(e) => {
+                    setProductValue({
+                      ...productValue,
+                      price: Number(e.target.value)
+                    });
+                  }}
                 />
               </FormControl>
 
@@ -87,16 +112,24 @@ const ProductCreate = () => {
                 <Select
                   labelId="categories"
                   id="demo-simple-select"
-                  value={category}
+                  value={productValue.categories[0]?.category_id}
                   label="Category"
                   onChange={(e) => {
-                    setCategory(e.target.value);
-                    console.log(category);
+                    setProductValue({
+                      ...productValue,
+                      categories: categories.filter(
+                        (category) =>
+                          category.category_id === Number(e.target.value)
+                      )
+                    });
                   }}
                 >
                   {categories.map((category) => (
-                    <MenuItem key={category.id} value={category.id}>
-                      {category.title}
+                    <MenuItem
+                      key={category.category_id}
+                      value={category.category_id}
+                    >
+                      {category.category_name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -108,12 +141,17 @@ const ProductCreate = () => {
                 <TextField
                   id="discount"
                   type="number"
-                  value={discount}
+                  value={productValue.discount}
                   variant="outlined"
                   label="Discount"
                   aria-describedby="Discount"
                   placeholder="33"
-                  onChange={(e) => setDiscount(Number(e.target.value))}
+                  onChange={(e) => {
+                    setProductValue({
+                      ...productValue,
+                      discount: Number(e.target.value)
+                    });
+                  }}
                 />
               </FormControl>
 
@@ -121,12 +159,17 @@ const ProductCreate = () => {
                 <TextField
                   id="stock-quanity"
                   type="number"
-                  value={stockQuantity}
+                  value={productValue.stock_quantity}
                   variant="outlined"
                   label="Stock Quantity"
                   aria-describedby="Stock Quantity"
                   placeholder="10"
-                  onChange={(e) => setStockQuantity(Number(e.target.value))}
+                  onChange={(e) => {
+                    setProductValue({
+                      ...productValue,
+                      stock_quantity: Number(e.target.value)
+                    });
+                  }}
                 />
               </FormControl>
 
@@ -147,7 +190,7 @@ const ProductCreate = () => {
       <Box className="flex flex-row justify-between mt-4 py-4 items-start">
         <Box className="p-8 gap-4 bg-white rounded-lg flex flex-row justify-between">
           <ProductAttributeFields
-            attributes={attributes}
+            attributes={productValue.attributes}
             setAttributes={setAttributes}
           />
         </Box>

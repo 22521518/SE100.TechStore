@@ -2,9 +2,13 @@ import React from 'react';
 import SearchButton from './search-button';
 import { Box, IconButton, InputBase, Paper, TextField } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
-import { SearchBarType } from '@constant/constant.type';
 
-const SearchBar = ({ title, handleSubmit }: SearchBarType) => {
+export type SearchBarProps = {
+  title: string;
+  handleSubmit: (query: string) => Promise<void>;
+};
+
+const SearchBar = ({ title, handleSubmit }: SearchBarProps) => {
   const [query, setQuery] = React.useState('');
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

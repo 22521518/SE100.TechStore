@@ -11,15 +11,27 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useNavigation } from '@refinedev/core';
 import AddIcon from '@mui/icons-material/Add';
 import InventoryIcon from '@mui/icons-material/Inventory';
-import { DeleteButton, EditButton, useDataGrid } from '@refinedev/mui';
+import { useDataGrid } from '@refinedev/mui';
 import React from 'react';
 import SearchBar from '@components/searchbar';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function CategoryList() {
+type CategoryListProps = {
+  onCancel: () => void;
+  onEdit: (category: ICategory) => void;
+  onCreate: () => void;
+};
+
+export default function CategoryList({
+  onCancel,
+  onCreate,
+  onEdit
+}: CategoryListProps) {
   const { edit, show, create } = useNavigation();
 
-  const handleDelete = async (id: string) => {
-    console.log('delete', id);
+  const handleDelete = async (category: ICategory) => {
+    console.log('delete', category);
   };
 
   const { dataGridProps } = useDataGrid<ICategory>({
@@ -29,14 +41,20 @@ export default function CategoryList() {
   const columns = React.useMemo<GridColDef<ICategory>[]>(
     () => [
       {
-        field: 'id',
+        field: 'category_id',
         headerName: 'ID',
         type: 'string',
         flex: 2
       },
       {
-        field: 'title',
+        field: 'category_name',
         headerName: 'Name',
+        type: 'string',
+        flex: 4
+      },
+      {
+        field: 'description',
+        headerName: 'Description',
         type: 'string',
         flex: 4
       },
@@ -44,11 +62,15 @@ export default function CategoryList() {
         field: 'actions',
         headerName: '',
         flex: 3,
-        renderCell: ({ row }: any) => {
+        renderCell: ({ row }) => {
           return (
             <Box className="flex flex-row gap-1 items-center">
-              <EditButton resource="categories" recordItemId={row?.id} />
-              <DeleteButton resource="categories" recordItemId={row?.id} />
+              <Button className="text-accent" onClick={() => onEdit(row)}>
+                <EditIcon />
+              </Button>
+              <Button className="text-accent" onClick={() => handleDelete(row)}>
+                <DeleteIcon />
+              </Button>
             </Box>
           );
         }
@@ -73,7 +95,7 @@ export default function CategoryList() {
         </Box>
         <Button
           className="bg-accent text-secondary-100 font-bold px-4 py-2"
-          onClick={() => create('categories')}
+          onClick={onCreate}
         >
           <AddIcon />
           Add Category
@@ -82,6 +104,7 @@ export default function CategoryList() {
       <DataGrid
         {...dataGridProps}
         columns={columns}
+        getRowId={(row) => row.category_id}
         className="text-accent my-2"
         sx={{}}
       />

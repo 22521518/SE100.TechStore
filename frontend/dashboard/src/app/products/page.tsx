@@ -17,10 +17,12 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useDataGrid, EditButton, DeleteButton } from '@refinedev/mui';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { IProduct } from '@constant/constant.interface';
+import { ICategory, IProduct } from '@constant/constant.interface';
 import Image from 'next/image';
 import CategoryList from '@app/categories/page';
 import { useNavigation } from '@refinedev/core';
+import CategoryCreate from '@app/categories/create/page';
+import CategoryEdit from '@app/categories/edit/[id]/page';
 
 const ProductList = () => {
   const { create } = useNavigation();
@@ -51,7 +53,7 @@ const ProductList = () => {
         flex: 3
       },
       {
-        field: 'image',
+        field: 'images',
         headerName: 'Image',
         minWidth: 50,
         align: 'center',
@@ -59,9 +61,11 @@ const ProductList = () => {
         renderCell: ({ row }) => {
           return (
             <Image
-              // src={row.image}
-              src="https://images.unsplash.com/photo-1612367289874-0fba3b4a07dd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt={row.name}
+              src={`${
+                (row.images && row.images[0]) ||
+                'https://images.unsplash.com/photo-1612367289874-0fba3b4a07dd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }`}
+              alt={row.product_name}
               width={48}
               height={48}
               className="items-center object-contain h-max flex justify-center"
@@ -70,12 +74,12 @@ const ProductList = () => {
         }
       },
       {
-        field: 'name',
+        field: 'product_name',
         headerName: 'Name',
         flex: 4
       },
       {
-        field: 'category',
+        field: 'categories[0]?.category_name',
         headerName: 'Category',
         flex: 4
       },
@@ -85,7 +89,7 @@ const ProductList = () => {
         flex: 4
       },
       {
-        field: 'quantity',
+        field: 'stock_quantity',
         headerName: 'Quantity',
         flex: 3
       },
@@ -106,65 +110,105 @@ const ProductList = () => {
     []
   );
 
+  const [categoryCreateModal, setCategoryCreateModal] = React.useState(false);
+  const [categoryEditModal, setCategoryEditModal] = React.useState(false);
+
+  const [category, setCategory] = React.useState<ICategory | null>(null);
+
+  const handleCategoryCreate = (mode: boolean) => {
+    setCategoryCreateModal(mode);
+    setCategoryEditModal(false);
+  };
+
+  const handleCategoryEdit = (mode: boolean) => {
+    setCategoryEditModal(mode);
+    setCategoryCreateModal(false);
+  };
+
   return (
-    <div className="pb-4 px-2">
-      <Stack className="py-6 bg-white rounded-lg px-4">
-        <Box className="flex flex-row justify-between items-center">
-          <Box className="flex flex-row items-center gap-2">
-            <InventoryIcon className="text-2xl" />
-            <Typography variant="h2" className="text-2xl font-bold">
-              All Products
-            </Typography>
-            <SearchBar title="Product" handleSubmit={SearchProductSubmit} />
-            <FormControl variant="outlined" className="mr-1 min-w-max hidden">
-              <InputLabel id="sort-by-label">Sort by:</InputLabel>
-              <Select
-                labelId="sort-by-label"
-                id="sort-by-select"
-                value={filter.search}
-                onChange={handleChange}
-                label="Sort by"
-                className="rounded-sm min-w-max"
-              >
-                {filterList.map((item, index) => (
-                  <MenuItem key={index} value={item.toLowerCase()}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+    <>
+      <div className="pb-4 px-2">
+        <Stack className="py-6 bg-white rounded-lg px-4">
+          <Box className="flex flex-row justify-between items-center">
+            <Box className="flex flex-row items-center gap-2">
+              <InventoryIcon className="text-2xl" />
+              <Typography variant="h2" className="text-2xl font-bold">
+                All Products
+              </Typography>
+              <SearchBar title="Product" handleSubmit={SearchProductSubmit} />
+              <FormControl variant="outlined" className="mr-1 min-w-max hidden">
+                <InputLabel id="sort-by-label">Sort by:</InputLabel>
+                <Select
+                  labelId="sort-by-label"
+                  id="sort-by-select"
+                  value={filter.search}
+                  onChange={handleChange}
+                  label="Sort by"
+                  className="rounded-sm min-w-max"
+                >
+                  {filterList.map((item, index) => (
+                    <MenuItem key={index} value={item.toLowerCase()}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+
+            <Button
+              className="bg-accent text-secondary-100 font-bold px-4 py-2"
+              onClick={() => create('products')}
+            >
+              <AddIcon />
+              Add Product
+            </Button>
           </Box>
-
-          <Button
-            className="bg-accent text-secondary-100 font-bold px-4 py-2"
-            onClick={() => create('products')}
-          >
-            <AddIcon />
-            Add Product
-          </Button>
-        </Box>
-        {/* List */}
-        <Box className="flex flex-col">
-          <DataGrid
-            {...dataGridProps}
-            columns={columns}
-            sx={{
-              color: 'black',
-              '& .MuiDataGrid-row': {
-                '&:nth-of-type(odd)': {
-                  backgroundColor: 'rgba(0,0,0,0.04)'
+          {/* List */}
+          <Box className="flex flex-col">
+            <DataGrid
+              {...dataGridProps}
+              getRowId={(row) => row.product_id}
+              columns={columns}
+              sx={{
+                color: 'black',
+                '& .MuiDataGrid-row': {
+                  '&:nth-of-type(odd)': {
+                    backgroundColor: 'rgba(0,0,0,0.04)'
+                  }
                 }
-              }
-            }}
-            className="text-accent my-4"
-          />
-        </Box>
-      </Stack>
+              }}
+              className="text-accent my-4"
+            />
+          </Box>
+        </Stack>
 
-      <Stack className="my-8 py-6 bg-white rounded-lg px-4">
-        <CategoryList />
-      </Stack>
-    </div>
+        <Stack className="my-8 py-6 bg-white rounded-lg px-4">
+          <CategoryList
+            onCancel={() => handleCategoryCreate(false)}
+            onEdit={(category: ICategory) => {
+              handleCategoryEdit(true);
+              setCategory(category);
+            }}
+            onCreate={() => handleCategoryCreate(true)}
+          />
+        </Stack>
+        {(categoryCreateModal || categoryEditModal) && (
+          <div className="bg-slate-600 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
+            <Box className="w-2/5">
+              {categoryCreateModal && (
+                <CategoryCreate onCancel={() => handleCategoryCreate(false)} />
+              )}
+              {categoryEditModal && (
+                <CategoryEdit
+                  onCancel={() => handleCategoryEdit(false)}
+                  category={category}
+                />
+              )}
+            </Box>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

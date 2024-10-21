@@ -1,10 +1,13 @@
 export interface IProduct {
-  id: string;
-  image: string;
-  name: string;
-  category: string;
+  product_id?: string;
+  product_name: string;
+  images?: string[];
+  description: string;
   price: number;
-  quantity: number;
+  discount?: number | null;
+  stock_quantity?: number;
+  categories: ICategory[];
+  attributes: IProductAttribute[];
 }
 
 export interface IProductAttribute {
@@ -14,7 +17,15 @@ export interface IProductAttribute {
 }
 
 export interface ICategory {
-  id: string;
-  title: string;
-  // name: string;
+  category_id?: number;
+  category_name: string;
+  description: string;
+}
+
+export interface IProductFeedback {
+  product_id: string;
+  customer_id: string;
+  rating: number;
+  feedback: string;
+  created_at: string;
 }

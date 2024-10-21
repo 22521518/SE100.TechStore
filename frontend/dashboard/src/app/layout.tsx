@@ -34,6 +34,13 @@ export default function RootLayout({
                 authProvider={authProvider}
                 resources={[
                   {
+                    name: 'products',
+                    list: '/products',
+                    create: '/products/create',
+                    edit: '/products/edit/:id',
+                    show: '/products/show/:id'
+                  },
+                  {
                     name: 'categories',
                     list: '/categories',
                     create: '/categories/create',
@@ -52,13 +59,6 @@ export default function RootLayout({
                     meta: {
                       canDelete: true
                     }
-                  },
-                  {
-                    name: 'products',
-                    list: '/products',
-                    create: '/products/create',
-                    edit: '/products/edit/:id',
-                    show: '/products/show/:id'
                   }
                 ]}
                 options={{
