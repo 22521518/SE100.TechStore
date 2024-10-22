@@ -1,23 +1,18 @@
 'use client';
 
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack
-} from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import React from 'react';
 
 import Typography from '@mui/material/Typography';
-import AddIcon from '@mui/icons-material/Add';
-import InventoryIcon from '@mui/icons-material/Inventory';
 import SearchBar from '@components/searchbar';
 import { ICustomer } from '@constant/interface.constant';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useNavigation } from '@refinedev/core';
 import { useDataGrid } from '@refinedev/mui';
+import { transformDate } from '@utils/transform.util';
+import SentimentSatisfiedAltOutlinedIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
+import AvatarImage from '@components/avatar';
+import { dummyAvatar } from '@constant/value.constant';
 
 const CustomerList = () => {
   const { show } = useNavigation();
@@ -34,8 +29,15 @@ const CustomerList = () => {
       {
         field: 'image',
         headerName: 'Image',
-        minWidth: 50,
-        flex: 2
+        minWidth: 32,
+        flex: 2,
+        renderCell: ({ row }) => {
+          return (
+            <Box className="flex h-full items-center justify-center">
+              <AvatarImage src={dummyAvatar} alt={row.full_name} size={32} />
+            </Box>
+          );
+        }
       },
       {
         field: 'username',
@@ -43,7 +45,7 @@ const CustomerList = () => {
         flex: 3
       },
       {
-        field: 'account.email',
+        field: 'account',
         headerName: 'Email',
         flex: 4,
         renderCell: ({ row }) => {
@@ -62,7 +64,11 @@ const CustomerList = () => {
       {
         field: 'date_joined',
         headerName: 'Created at',
-        flex: 3
+        flex: 3,
+        renderCell: ({ row }) => {
+          const date = row.date_joined ? new Date(row.date_joined) : new Date();
+          return <span>{transformDate(date.toISOString(), true)}</span>;
+        }
       }
     ],
     []
@@ -78,11 +84,11 @@ const CustomerList = () => {
         <Stack className="py-6 bg-white rounded-lg px-4">
           <Box className="flex flex-row justify-between items-center">
             <Box className="flex flex-row items-center gap-2">
-              <InventoryIcon className="text-2xl" />
+              <SentimentSatisfiedAltOutlinedIcon className="text-2xl" />
               <Typography variant="h2" className="text-2xl font-bold">
                 Customers
               </Typography>
-              <SearchBar title="Product" handleSubmit={searchCustomerHandle} />
+              <SearchBar title="Customer" handleSubmit={searchCustomerHandle} />
             </Box>
           </Box>
           <Box className="flex flex-col">

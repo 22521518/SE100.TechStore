@@ -7,19 +7,23 @@ import React from 'react';
 type AvatarImageProps = {
   src: string;
   alt: string;
+  size?: number;
 };
 
-const AvatarImage = ({ src, alt }: AvatarImageProps) => {
+const AvatarImage = ({ src, alt, size = 64 }: AvatarImageProps) => {
   return (
     <>
       {' '}
-      <Box className="max-h-16 max-w-16 rounded-full overflow-hidden">
+      <Box
+        className={`rounded-full overflow-hidden`}
+        style={{ width: size, height: size }}
+      >
         <Image
           src={src}
           alt={alt}
-          width={64}
-          height={64}
-          className="items-center object-contain flex justify-center"
+          width={size}
+          height={size}
+          className={`items-center object-fit flex justify-center w-full`}
         />
       </Box>
     </>

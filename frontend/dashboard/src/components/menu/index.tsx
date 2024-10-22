@@ -1,6 +1,6 @@
 'use client';
 
-import { Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { useLogout, useMenu } from '@refinedev/core';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,6 +9,7 @@ import logo from '@/public/images/logo.svg';
 export const Menu = () => {
   const { mutate: logout } = useLogout();
   const { menuItems, selectedKey } = useMenu();
+  const refinedMenu = menuItems.filter((item) => item.label !== 'Categories');
 
   return (
     <nav className="menu bg-accent h-full w-1/5 py-6 px-4 flex flex-col gap-6">
@@ -24,12 +25,11 @@ export const Menu = () => {
 
       <div className="w-full flex flex-col justify-between items-center grow">
         <ul className="w-full">
-          {menuItems.map((item) => (
+          {refinedMenu.map((item) => (
             <li key={item.key} className="w-full">
               <Link
                 href={item.route ?? '/'}
                 className={`{ px-4 py-2 inline-block text-start rounded-md w-full
-                ${item.label === 'Categories' ? 'hidden' : ''}
                 ${
                   selectedKey === item.key
                     ? 'bg-secondary-100 text-accent font-bold'
@@ -39,6 +39,9 @@ export const Menu = () => {
               >
                 {item.label}
               </Link>
+              {item.label === 'Customers' && (
+                <Divider className="w-full h-1 border-b-2 border-solid border-slate-300 py-2 mb-2 opacity-50" />
+              )}
             </li>
           ))}
         </ul>

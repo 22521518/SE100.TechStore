@@ -24,6 +24,7 @@ import {
 } from '@utils/random.util';
 import CustomerOrderList from './order-list';
 import { transformVNMoney } from '@utils/transform.util';
+import { dummyAvatar } from '@constant/value.constant';
 
 const CustomerShow = () => {
   const { query, formLoading, onFinish } = useForm<
@@ -82,10 +83,7 @@ const CustomerShow = () => {
             {/* Intro */}
             <Box className="flex flex-row justify-between border-b-2 border-slate-200 border-solid pb-6">
               <Box className="flex flex-row gap-3">
-                <AvatarImage
-                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="avatar"
-                />
+                <AvatarImage src={dummyAvatar} alt="avatar" />
                 <Stack>
                   <Typography variant="h3" className="text-2xl font-bold">
                     {customerValue.username}

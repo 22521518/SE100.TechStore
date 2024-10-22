@@ -41,6 +41,11 @@ export default function RootLayout({
                     show: '/products/show/:id'
                   },
                   {
+                    name: 'orders',
+                    list: '/orders',
+                    show: '/orders/show/:id'
+                  },
+                  {
                     name: 'customers',
                     list: '/customers',
                     show: '/customers/show/:id'
@@ -49,6 +54,13 @@ export default function RootLayout({
                     name: 'addresses',
                     list: '/addresses/:customerId',
                     show: '/addresses/show/:id'
+                  },
+                  {
+                    name: 'staff',
+                    list: '/staff',
+                    create: '/staff/create',
+                    edit: '/staff/edit/:id',
+                    show: '/staff/show/:id'
                   },
                   {
                     name: 'categories',

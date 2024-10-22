@@ -60,7 +60,7 @@ const CustomerOrderList = ({ orderList }: CustomerOrderListProps) => {
     []
   );
   return (
-    <CommonContainer>
+    <CommonContainer className="flex-1">
       <Box className="flex flex-row justify-between">
         <Box className="flex flex-row gap-1">
           <LocalGroceryStoreOutlinedIcon />

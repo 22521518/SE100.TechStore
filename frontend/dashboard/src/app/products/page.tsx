@@ -25,6 +25,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import { dummyProductImage } from '@constant/value.constant';
 
 const ProductList = () => {
   const { create, edit, show } = useNavigation();
@@ -33,7 +34,7 @@ const ProductList = () => {
   const [filter, setFilter] = React.useState({
     search: filterList[0].toLowerCase()
   });
-  const handleChange = (event: SelectChangeEvent<string>) => {
+  const handleFilterChange = (event: SelectChangeEvent<string>) => {
     setFilter({
       ...filter,
       search: event.target.value as string
@@ -63,10 +64,7 @@ const ProductList = () => {
         renderCell: ({ row }) => {
           return (
             <Image
-              src={`${
-                (row.images && row.images[0]) ||
-                'https://images.unsplash.com/photo-1612367289874-0fba3b4a07dd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              }`}
+              src={`${(row.images && row.images[0]) || dummyProductImage}`}
               alt={row.product_name}
               width={48}
               height={48}
@@ -145,7 +143,7 @@ const ProductList = () => {
 
   return (
     <>
-      <div className="pb-4 px-2">
+      <div className="pb-4 mx-2">
         <Stack className="py-6 bg-white rounded-lg px-4">
           <Box className="flex flex-row justify-between items-center">
             <Box className="flex flex-row items-center gap-2">
@@ -160,7 +158,7 @@ const ProductList = () => {
                   labelId="sort-by-label"
                   id="sort-by-select"
                   value={filter.search}
-                  onChange={handleChange}
+                  onChange={handleFilterChange}
                   label="Sort by"
                   className="rounded-sm min-w-max"
                 >

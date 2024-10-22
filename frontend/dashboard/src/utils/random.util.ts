@@ -1,9 +1,14 @@
-import { ORDER_STATUS } from '@constant/enum.constant';
+import { EMPLOY_STATUS, ORDER_STATUS } from '@constant/enum.constant';
 import {
+  IAccount,
   IAddress,
+  ICustomer,
   IOrder,
   IOrderItem,
-  IProductFeedback
+  IPermission,
+  IProductFeedback,
+  IRole,
+  IStaff
 } from '@constant/interface.constant';
 
 export function generateProductFeedback(loop: number): IProductFeedback[] {
@@ -14,9 +19,9 @@ export function generateProductFeedback(loop: number): IProductFeedback[] {
       feedback_id: `feedback-${i + 1}`,
       product_id: `product-${i + 1}`,
       customer_id: `customer-${i + 1}`,
-      rating: Math.floor(Math.random() * 5) + 1, // Random rating between 1 and 5
+      rating: Math.floor(Math.random() * 5) + 1,
       feedback: `Feedback from customer ${i + 1}`,
-      created_at: new Date().toISOString()
+      created_at: new Date()
     });
   }
 
@@ -68,6 +73,32 @@ export const generateRandomAddresses = (count: number): IAddress[] => {
   return randomAddresses;
 };
 
+export function generateRandomAccountList(
+  loops: number = 10,
+  title: string = 'example'
+): IAccount[] {
+  const accounts: IAccount[] = [];
+  for (let i = 0; i < loops; i++) {
+    accounts.push({
+      email: `${title}  ${i + Math.floor(Math.random() * 1000)}@example.com`
+    });
+  }
+  return accounts;
+}
+
+export function generateRandomCustomer(): ICustomer {
+  return {
+    customer_id: `customer-${Math.floor(Math.random() * 1000)}`,
+    username: `user_${Math.random().toString(36).substr(2, 5)}`,
+    full_name: `Full Name ${Math.random().toString(36).substr(2, 5)}`,
+    phone_number: `+1${Math.floor(Math.random() * 9000000000) + 1000000000}`,
+    date_joined: new Date().toISOString(),
+    account: {
+      email: `customer${Math.floor(Math.random() * 1000)}@example.com`
+    }
+  };
+}
+
 function generateRandomOrderItem(order_id: string): IOrderItem {
   const quantity = Math.floor(Math.random() * 10) + 1;
   const unit_price = Math.random() * 100 * 1000;
@@ -106,6 +137,7 @@ export function generateRandomOrder(loops: number): IOrder[] {
     orders.push({
       order_id: order_id,
       customer_id: `customer-${Math.floor(Math.random() * 100)}`,
+      customer: generateRandomCustomer(),
       order_status:
         orderStatuses[Math.floor(Math.random() * orderStatuses.length)],
       total_price: parseFloat(total_price.toFixed(2)),
@@ -114,9 +146,82 @@ export function generateRandomOrder(loops: number): IOrder[] {
           ? `voucher-${Math.floor(Math.random() * 50)}`
           : null,
       created_at: new Date().toISOString(),
+      shipping_address: {
+        shipping_status:
+          orderStatuses[Math.floor(Math.random() * orderStatuses.length)],
+        delivery_date: new Date().toISOString(),
+        address: generateRandomAddresses(1)[0]
+      },
       order_items: order_items
     });
   }
 
   return orders;
+}
+
+export function getRandomEmployeeStatus(): EMPLOY_STATUS {
+  const statuses = Object.values(EMPLOY_STATUS);
+  const randomIndex = Math.floor(Math.random() * statuses.length);
+  return statuses[randomIndex] as EMPLOY_STATUS;
+}
+
+function generateRandomPermission(): IPermission {
+  return {
+    permission_id: `permission-${Math.floor(Math.random() * 1000)}`,
+    permission_name: `Permission ${Math.floor(Math.random() * 100)}`,
+    description: `Description for permission ${Math.floor(Math.random() * 100)}`
+  };
+}
+
+function generateRandomRole(permissionCount: number): IRole {
+  const permissions: IPermission[] = [];
+
+  for (let i = 0; i < 2; i++) {
+    permissions.push(generateRandomPermission());
+  }
+
+  return {
+    role_id: `role-${Math.floor(Math.random() * 1000)}`,
+    role_name: `Role ${Math.floor(Math.random() * 100)}`,
+    description: `Description for role ${Math.floor(Math.random() * 100)}`,
+    permissions: permissions
+  };
+}
+
+export function generateRandomRoleList(loops: number): IRole[] {
+  const roles: IRole[] = [];
+
+  for (let i = 0; i < loops; i++) {
+    roles.push(generateRandomRole(2));
+  }
+
+  return roles;
+}
+
+function generateRandomStaff(permissionCount: number): IStaff {
+  const hasRole = 1;
+  return {
+    staff_id: `staff-${Math.floor(Math.random() * 1000)}`,
+    full_name: `Staff Full Name ${Math.random().toString(36).substr(2, 5)}`,
+    phone_number: `+1${Math.floor(Math.random() * 9000000000) + 1000000000}`,
+    employee_status: getRandomEmployeeStatus(),
+    hire_date: new Date().toISOString(),
+    account: {
+      email: `staff${Math.floor(Math.random() * 1000)}@example.com`
+    },
+    role: hasRole ? generateRandomRole(permissionCount) : undefined
+  };
+}
+
+export function generateRandomStaffList(
+  staffCount: number,
+  permissionCount: number = 1
+): IStaff[] {
+  const staffList: IStaff[] = [];
+
+  for (let i = 0; i < staffCount; i++) {
+    staffList.push(generateRandomStaff(permissionCount));
+  }
+
+  return staffList;
 }

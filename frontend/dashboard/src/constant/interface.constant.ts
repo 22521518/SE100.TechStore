@@ -1,4 +1,4 @@
-import { ORDER_STATUS } from './enum.constant';
+import { EMPLOY_STATUS, ORDER_STATUS } from './enum.constant';
 
 export interface IProduct {
   product_id?: string;
@@ -30,7 +30,7 @@ export interface IProductFeedback {
   product_id?: string;
   rating: number;
   feedback: string;
-  created_at: string;
+  created_at: string | Date;
 }
 
 export interface ICustomer {
@@ -54,18 +54,50 @@ export interface IAddress {
 
 export interface IOrder {
   order_id: string;
-  customer_id: string | null;
+  customer_id?: string | null;
+  customer?: ICustomer;
   order_status: ORDER_STATUS;
   total_price: number;
   voucher_code?: string | null;
   created_at: Date | string;
+  shipping_address?: IShippingAddress;
   order_items: IOrderItem[];
 }
 
 export interface IOrderItem {
   order_id: string;
   product_id: string;
+  product?: IProduct;
   quantity: number;
   unit_price: number;
   total_price: number;
+}
+
+export interface IShippingAddress {
+  shipping_status: ORDER_STATUS;
+  delivery_date?: Date | string;
+  address: IAddress;
+}
+
+export interface IPermission {
+  permission_id: string;
+  permission_name: string;
+  description: string;
+}
+
+export interface IRole {
+  role_id: string;
+  role_name: string;
+  description: string;
+  permissions?: IPermission[];
+}
+
+export interface IStaff {
+  staff_id?: string;
+  full_name: string;
+  phone_number: string;
+  employee_status?: EMPLOY_STATUS;
+  hire_date: Date | string;
+  account: IAccount;
+  role?: IRole;
 }

@@ -5,6 +5,7 @@ import { Box, Typography } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React from 'react';
+import { transformDate } from '@utils/transform.util';
 
 type ProductFeedbackListProps = {
   feedbacklist: IProductFeedback[];
@@ -43,8 +44,7 @@ const ProductFeedbackList = ({ feedbacklist }: ProductFeedbackListProps) => {
         flex: 2,
         renderCell: ({ row }) => {
           const date = new Date(row.created_at);
-          const formattedDate = date.toLocaleDateString('en-US');
-          return <span>{formattedDate}</span>;
+          return <span>{transformDate(date.toISOString(), true)}</span>;
         }
       }
     ],
