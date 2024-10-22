@@ -5,7 +5,7 @@ import {
   ICategory,
   IProduct,
   IProductAttribute
-} from '@constant/constant.interface';
+} from '@constant/interface.constant';
 import {
   Box,
   Button,

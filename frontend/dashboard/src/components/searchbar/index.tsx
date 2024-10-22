@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import SearchButton from './search-button';
 import { Box, IconButton, InputBase, Paper, TextField } from '@mui/material';

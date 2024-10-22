@@ -1,4 +1,6 @@
-import { IProductAttribute } from '@constant/constant.interface';
+'use client';
+
+import { IProductAttribute } from '@constant/interface.constant';
 import { Add, Remove } from '@mui/icons-material';
 import { Box, Button, Input, Stack, Typography } from '@mui/material';
 import React from 'react';

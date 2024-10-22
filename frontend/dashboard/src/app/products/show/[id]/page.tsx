@@ -2,9 +2,10 @@
 
 import ProductFeedbackList from '@app/product-feedback/show/[id]/page';
 import ProductSatistics from '@app/product-feedback/statistics';
-import { IProduct, IProductFeedback } from '@constant/constant.interface';
+import { IProduct, IProductFeedback } from '@constant/interface.constant';
 import { Box, Stack, Typography } from '@mui/material';
 import { HttpError, useNavigation, useForm } from '@refinedev/core';
+import { generateProductFeedback } from '@utils/random.util';
 import Image from 'next/image';
 import React from 'react';
 
@@ -98,19 +99,3 @@ const ProductShow = () => {
 };
 
 export default ProductShow;
-
-function generateProductFeedback(loop: number): IProductFeedback[] {
-  const feedbacks: IProductFeedback[] = [];
-
-  for (let i = 0; i < loop; i++) {
-    feedbacks.push({
-      product_id: `product-${i + 1}`,
-      customer_id: `customer-${i + 1}`,
-      rating: Math.floor(Math.random() * 5) + 1, // Random rating between 1 and 5
-      feedback: `Feedback from customer ${i + 1}`,
-      created_at: new Date().toISOString()
-    });
-  }
-
-  return feedbacks;
-}

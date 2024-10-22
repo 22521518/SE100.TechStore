@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useDataGrid } from '@refinedev/mui';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { ICategory, IProduct } from '@constant/constant.interface';
+import { ICategory, IProduct } from '@constant/interface.constant';
 import Image from 'next/image';
 import CategoryList from '@app/categories/page';
 import { useNavigation } from '@refinedev/core';

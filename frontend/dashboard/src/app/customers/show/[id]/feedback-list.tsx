@@ -1,21 +1,23 @@
 'use client';
 
+import CommonContainer from '@components/common-container';
 import { IProductFeedback } from '@constant/interface.constant';
 import { Box, Typography } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React from 'react';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
 
-type ProductFeedbackListProps = {
-  feedbacklist: IProductFeedback[];
+type CustomerFeedbackListProps = {
+  feedbackList: IProductFeedback[];
 };
 
-const ProductFeedbackList = ({ feedbacklist }: ProductFeedbackListProps) => {
+const CustomerFeedbackList = ({ feedbackList }: CustomerFeedbackListProps) => {
   const columns = React.useMemo<GridColDef<IProductFeedback>[]>(
     () => [
       {
-        field: 'customer_id',
-        headerName: 'CUSTOMER ID',
+        field: 'product_id',
+        headerName: 'Product ID',
         type: 'string',
         flex: 3
       },
@@ -27,7 +29,7 @@ const ProductFeedbackList = ({ feedbacklist }: ProductFeedbackListProps) => {
           return (
             <Box className="flex items-center justify-center h-full">
               <Typography className="text-sm">{value}</Typography>
-              <StarIcon sx={{ color: '#ffcc00', marginLeft: '4px' }} />
+              <StarIcon sx={{ color: '#ffcc00', marginLeft: '1px' }} />
             </Box>
           );
         }
@@ -52,10 +54,24 @@ const ProductFeedbackList = ({ feedbacklist }: ProductFeedbackListProps) => {
   );
 
   return (
-    <Box className="flex flex-row justify-between px-8 py-5 bg-white rounded-lg">
+    <CommonContainer>
+      <Box className="flex flex-row justify-between">
+        <Box className="flex flex-row gap-1">
+          <RateReviewOutlinedIcon />
+          <Typography variant="h4" className="font-bold text-xl">
+            Feedbacks
+          </Typography>
+        </Box>
+        <Typography
+          variant="h4"
+          className="font-semibold text-lg text-slate-500"
+        >
+          Total {feedbackList.length} feedbacks
+        </Typography>
+      </Box>
       <DataGrid
         columns={columns}
-        rows={feedbacklist}
+        rows={feedbackList}
         getRowId={(row: IProductFeedback) => row.feedback_id}
         sx={{
           color: 'black',
@@ -67,8 +83,8 @@ const ProductFeedbackList = ({ feedbacklist }: ProductFeedbackListProps) => {
         }}
         className="text-accent my-4"
       />
-    </Box>
+    </CommonContainer>
   );
 };
 
-export default ProductFeedbackList;
+export default CustomerFeedbackList;

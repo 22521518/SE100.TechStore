@@ -1,3 +1,5 @@
+import { ORDER_STATUS } from './enum.constant';
+
 export interface IProduct {
   product_id?: string;
   product_name: string;
@@ -23,8 +25,9 @@ export interface ICategory {
 }
 
 export interface IProductFeedback {
-  product_id: string;
-  customer_id: string;
+  feedback_id: string;
+  customer_id?: string;
+  product_id?: string;
   rating: number;
   feedback: string;
   created_at: string;
@@ -47,4 +50,22 @@ export interface IAddress {
   address: string;
   city: string;
   state: string;
+}
+
+export interface IOrder {
+  order_id: string;
+  customer_id: string | null;
+  order_status: ORDER_STATUS;
+  total_price: number;
+  voucher_code?: string | null;
+  created_at: Date | string;
+  order_items: IOrderItem[];
+}
+
+export interface IOrderItem {
+  order_id: string;
+  product_id: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
 }

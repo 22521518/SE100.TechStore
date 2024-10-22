@@ -1,6 +1,6 @@
 'use client';
 
-import { ICategory } from '@constant/constant.interface';
+import { ICategory } from '@constant/interface.constant';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';

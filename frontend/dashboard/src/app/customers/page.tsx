@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import SearchBar from '@components/searchbar';
-import { ICustomer } from '@constant/constant.interface';
+import { ICustomer } from '@constant/interface.constant';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useNavigation } from '@refinedev/core';
 import { useDataGrid } from '@refinedev/mui';

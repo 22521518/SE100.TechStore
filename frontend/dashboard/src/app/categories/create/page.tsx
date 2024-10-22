@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ICategory } from '@constant/constant.interface';
+import { ICategory } from '@constant/interface.constant';
 import { HttpError, useForm } from '@refinedev/core';
 import {
   Box,
