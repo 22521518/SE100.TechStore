@@ -1,5 +1,5 @@
 import { DevtoolsProvider } from '@providers/devtools';
-import { GitHubBanner, Refine } from '@refinedev/core';
+import { Refine } from '@refinedev/core';
 import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar';
 import routerProvider from '@refinedev/nextjs-router';
 import { Metadata } from 'next';
@@ -63,6 +63,13 @@ export default function RootLayout({
                     show: '/staff/show/:id'
                   },
                   {
+                    name: 'vouchers',
+                    list: '/vouchers',
+                    create: '/vouchers/create',
+                    edit: '/vouchers/edit/:id',
+                    show: '/vouchers/show/:id'
+                  },
+                  {
                     name: 'categories',
                     list: '/categories',
                     create: '/categories/create',
@@ -73,6 +80,11 @@ export default function RootLayout({
                     }
                   },
                   {
+                    name: 'inbox',
+                    list: '/inbox',
+                    show: '/inbox/show/:id'
+                  },
+                  {
                     name: 'blog_posts',
                     list: '/blog-posts',
                     create: '/blog-posts/create',
@@ -81,6 +93,11 @@ export default function RootLayout({
                     meta: {
                       canDelete: true
                     }
+                  },
+                  {
+                    name: 'profile',
+                    list: `/profile`
+                    // show: `/profile`
                   }
                 ]}
                 options={{

@@ -8,7 +8,8 @@ import {
   IPermission,
   IProductFeedback,
   IRole,
-  IStaff
+  IStaff,
+  IVoucher
 } from '@constant/interface.constant';
 
 export function generateProductFeedback(loop: number): IProductFeedback[] {
@@ -234,4 +235,26 @@ export function generateRandomStaffList(
   }
 
   return staffList;
+}
+
+export function generateRandomVoucher(loops: number): IVoucher[] {
+  const vouchers: IVoucher[] = [];
+
+  for (let i = 0; i < loops; i++) {
+    const discountAmount = parseFloat((Math.random() * 50 + 5).toFixed(2));
+    const validFrom = new Date();
+    const validTo = new Date(validFrom);
+    validTo.setMonth(validTo.getMonth() + Math.floor(Math.random() * 12) + 1);
+    vouchers.push({
+      voucher_code: `voucher_code-${i}-${Math.floor(Math.random() * 1000)}`,
+      voucher_name: `voucher-${i}-${Math.floor(Math.random() * 1000)}`,
+      description: `Discount of ${discountAmount}% on all items.`,
+      discount_amount: discountAmount,
+      valid_from: validFrom.toISOString(),
+      valid_to: validTo.toISOString(),
+      is_active: Math.random() > 0.5
+    });
+  }
+
+  return vouchers;
 }

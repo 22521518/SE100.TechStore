@@ -1,22 +1,26 @@
-"use client";
+'use client';
 
-import type { AuthProvider } from "@refinedev/core";
-import Cookies from "js-cookie";
+import type { AuthProvider } from '@refinedev/core';
+import Cookies from 'js-cookie';
 
 const mockUsers = [
   {
-    name: "John Doe",
-    email: "johndoe@mail.com",
-    roles: ["admin"],
-    avatar: "https://i.pravatar.cc/150?img=1",
+    staff_id: 1,
+    name: 'John Doe',
+    email: 'johndoe@mail.com',
+    roles: ['admin'],
+    avatar: 'https://i.pravatar.cc/150?img=1'
   },
   {
-    name: "Jane Doe",
-    email: "janedoe@mail.com",
-    roles: ["editor"],
-    avatar: "https://i.pravatar.cc/150?img=1",
-  },
+    staff_id: 2,
+    name: 'Jane Doe',
+    email: 'janedoe@mail.com',
+    roles: ['editor'],
+    avatar: 'https://i.pravatar.cc/150?img=1'
+  }
 ];
+
+export type TMockUser = (typeof mockUsers)[0];
 
 export const authProvider: AuthProvider = {
   login: async ({ email, username, password, remember }) => {
@@ -24,47 +28,47 @@ export const authProvider: AuthProvider = {
     const user = mockUsers[0];
 
     if (user) {
-      Cookies.set("auth", JSON.stringify(user), {
+      Cookies.set('auth', JSON.stringify(user), {
         expires: 30, // 30 days
-        path: "/",
+        path: '/'
       });
       return {
         success: true,
-        redirectTo: "/",
+        redirectTo: '/'
       };
     }
 
     return {
       success: false,
       error: {
-        name: "LoginError",
-        message: "Invalid username or password",
-      },
+        name: 'LoginError',
+        message: 'Invalid username or password'
+      }
     };
   },
   logout: async () => {
-    Cookies.remove("auth", { path: "/" });
+    Cookies.remove('auth', { path: '/' });
     return {
       success: true,
-      redirectTo: "/login",
+      redirectTo: '/login'
     };
   },
   check: async () => {
-    const auth = Cookies.get("auth");
+    const auth = Cookies.get('auth');
     if (auth) {
       return {
-        authenticated: true,
+        authenticated: true
       };
     }
 
     return {
       authenticated: false,
       logout: true,
-      redirectTo: "/login",
+      redirectTo: '/login'
     };
   },
   getPermissions: async () => {
-    const auth = Cookies.get("auth");
+    const auth = Cookies.get('auth');
     if (auth) {
       const parsedUser = JSON.parse(auth);
       return parsedUser.roles;
@@ -72,7 +76,7 @@ export const authProvider: AuthProvider = {
     return null;
   },
   getIdentity: async () => {
-    const auth = Cookies.get("auth");
+    const auth = Cookies.get('auth');
     if (auth) {
       const parsedUser = JSON.parse(auth);
       return parsedUser;
@@ -82,10 +86,10 @@ export const authProvider: AuthProvider = {
   onError: async (error) => {
     if (error.response?.status === 401) {
       return {
-        logout: true,
+        logout: true
       };
     }
 
     return { error };
-  },
+  }
 };

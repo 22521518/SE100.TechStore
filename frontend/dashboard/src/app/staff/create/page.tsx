@@ -102,7 +102,7 @@ const StaffCreate = () => {
             <Box className="grid grid-cols-2 gap-6 items-center">
               <FormControl>
                 <TextField
-                  type="text"
+                  type="tel"
                   id="phone_number"
                   label="Phone Number"
                   name="phone_number"

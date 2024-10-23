@@ -52,6 +52,7 @@ export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
             </Typography>
             <Input
               type="text"
+              disableUnderline
               value={category.category_name}
               onChange={(e) =>
                 setCategory({ ...category, category_name: e.target.value })
@@ -66,6 +67,7 @@ export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
             <Input
               type="text"
               multiline
+              disableUnderline
               rows={5}
               value={category.description}
               onChange={(e) =>

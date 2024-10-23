@@ -41,9 +41,9 @@ const ProductList = () => {
     });
   };
 
-  const SearchProductSubmit = async (query: String) => {
+  const SearchProductSubmit = React.useCallback(async (query: String) => {
     console.log('SearchProductSubmit', query);
-  };
+  }, []);
 
   const { dataGridProps } = useDataGrid<IProduct>();
 

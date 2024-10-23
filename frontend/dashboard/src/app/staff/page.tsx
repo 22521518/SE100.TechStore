@@ -88,9 +88,9 @@ const StaffList = () => {
     []
   );
 
-  const searchStaffHandle = async (query: string) => {
+  const searchStaffHandle = React.useCallback(async (query: string) => {
     console.log('searchStaffHandle', query);
-  };
+  }, []);
 
   return (
     <CommonContainer>

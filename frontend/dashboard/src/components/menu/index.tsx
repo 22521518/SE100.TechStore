@@ -24,9 +24,14 @@ export const Menu = () => {
       </div>
 
       <div className="w-full flex flex-col justify-between items-center grow">
-        <ul className="w-full">
+        <ul className="w-full flex-1 flex flex-col">
           {refinedMenu.map((item) => (
-            <li key={item.key} className="w-full">
+            <li
+              key={item.key}
+              className={`w-full ${
+                item.label === 'Profiles' ? 'mt-auto py-10' : ''
+              }`}
+            >
               <Link
                 href={item.route ?? '/'}
                 className={`{ px-4 py-2 inline-block text-start rounded-md w-full

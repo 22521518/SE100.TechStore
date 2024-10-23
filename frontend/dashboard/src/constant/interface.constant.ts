@@ -116,11 +116,33 @@ export interface IStaffInfo {
   role?: IRole | undefined;
 }
 
-export interface IVoucher {
+export interface IVoucherWithoutCode {
   voucher_name: string;
   description: string;
   discount_amount: number;
   valid_from: Date | string;
   valid_to: Date | string;
   is_active?: boolean;
+}
+
+export interface IVoucher extends IVoucherWithoutCode {
+  voucher_code: string;
+}
+
+export interface IInboxRoom {
+  room_id: string;
+  room_name: string;
+  member: ICustomer;
+  messages: IInboxMessage[];
+}
+
+export interface ISender {
+  sender_id: string;
+  sender_name: string;
+}
+export interface IInboxMessage {
+  sender: ISender;
+  message_id: string;
+  message: string;
+  created_at: Date | string;
 }

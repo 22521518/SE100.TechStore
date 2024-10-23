@@ -59,8 +59,8 @@ const StaffShow = () => {
 
   if (formLoading) return <div>Loading...</div>;
   return (
-    <Stack className="gap-4">
-      <CommonContainer>
+    <Stack className="gap-4 px-32 ">
+      <CommonContainer className="w-full">
         <Box className="flex flex-row justify-between items-center p-3">
           <Box className="flex flex-row items-center gap-2">
             <PermIdentityOutlinedIcon className="text-3xl" />
@@ -71,19 +71,23 @@ const StaffShow = () => {
           <Box className="flex flex-row gap-4 items-center">
             <Typography className="text-xl font-bold">Status:</Typography>
             <Typography className="text-lg">
-              {staffInfo.employee_status}
+              {staffValue.employee_status}
             </Typography>
-            <EmployStatusIcon status={staffInfo.employee_status} />
+            <EmployStatusIcon status={staffValue.employee_status} />
           </Box>
         </Box>
         <Box className="flex flex-row gap-4 items-center p-2">
-          <AvatarImage src={dummyAvatar} alt={staffInfo?.full_name} size={96} />
+          <AvatarImage
+            src={dummyAvatar}
+            alt={staffValue?.full_name}
+            size={96}
+          />
           <Stack className="justify-start gap-5">
-            <Typography className="text-3xl font-bold">
-              {staffInfo.full_name}
+            <Typography className="text-lg font-bold">
+              {staffValue.full_name}
             </Typography>
-            <Typography className="text-xl text-slate-500 font-bold">
-              ID: {staffInfo.staff_id}
+            <Typography className="text-lg text-slate-500 font-bold">
+              ID: {staffValue.staff_id}
             </Typography>
           </Stack>
         </Box>
@@ -91,47 +95,68 @@ const StaffShow = () => {
         <Box className="grid grid-cols-2 px-6 items-start justify-center">
           <Stack className="p-4 gap-10">
             <Box className="flex flex-row gap-6 items-center">
-              <BadgeOutlinedIcon className="text-2xl" />
-              <Typography className="text-2xl">
-                {staffInfo.full_name}
+              <Typography className="text-lg flex flex-row items-center gap-3">
+                <BadgeOutlinedIcon />
+                Full name:
+              </Typography>
+              <Typography className="text-lg">
+                {staffValue.full_name}
               </Typography>
             </Box>
             <Box className="flex flex-row gap-4 items-center">
-              <ManageAccountsOutlinedIcon className="text-2xl" />
-              <Typography className="text-2xl">
-                {staffInfo?.role?.role_name}
+              <Typography className="text-lg flex flex-row items-center gap-3">
+                <ManageAccountsOutlinedIcon /> Role:
+              </Typography>
+              <Typography className="text-lg">
+                {staffValue?.role?.role_name}
               </Typography>
             </Box>
 
             <Box className="flex flex-row gap-4 items-center">
-              <AlternateEmailIcon className="text-2xl" />
-              <Typography className="text-2xl">
-                {staffInfo.account.email}
+              <Typography className="text-lg flex flex-row items-center gap-3">
+                <AlternateEmailIcon />
+                Email:
+              </Typography>
+              <Typography className="text-lg">
+                {staffValue.account.email}
               </Typography>
             </Box>
             <Box className="flex flex-row gap-4 items-center">
-              <CallOutlinedIcon className="text-2xl" />
-              <Typography className="text-2xl">
-                {staffInfo.phone_number}
+              <Typography className="text-lg flex flex-row items-center gap-3">
+                <CallOutlinedIcon />
+                Phone number:
+              </Typography>
+              <Typography className="text-lg">
+                {staffValue.phone_number}
               </Typography>
             </Box>
           </Stack>
           {/* Extra information */}
           <Stack className="p-4 gap-10">
             <Box className="flex flex-row gap-6 items-center">
-              <CakeOutlinedIcon className="text-2xl" />
-              <Typography className="text-2xl">{dummyBirthday}</Typography>
+              <Typography className="text-lg flex flex-row items-center gap-3">
+                <CakeOutlinedIcon className="text-lg" />
+                Birthday:
+              </Typography>
+              <Typography className="text-lg">{dummyBirthday}</Typography>
             </Box>
             <Box className="flex flex-row gap-6 items-center">
-              <GenderIcon male={dummyGender === 'male'} />
-              <Typography className="text-2xl">{dummyGender}</Typography>
+              <Typography className="text-lg flex flex-row items-center gap-3">
+                <GenderIcon male={dummyGender === 'male'} />
+                Gender:
+              </Typography>
+              <Typography className="text-lg">{dummyGender}</Typography>
             </Box>
             <Box className="flex flex-row gap-4 items-center">
-              <DateRangeOutlinedIcon className="text-2xl" />
-              <Typography className="text-2xl">
+              <Typography className="text-lg flex flex-row items-center gap-3">
+                <DateRangeOutlinedIcon />
+                Hire date:
+              </Typography>
+
+              <Typography className="text-lg">
                 {(() => {
-                  const date = staffInfo.hire_date
-                    ? new Date(staffInfo.hire_date)
+                  const date = staffValue.hire_date
+                    ? new Date(staffValue.hire_date)
                     : new Date();
                   return <span>{transformDate(date.toISOString())}</span>;
                 })()}
@@ -141,11 +166,11 @@ const StaffShow = () => {
         </Box>
       </CommonContainer>
 
-      <CommonContainer className="gap-4 justify-end flex flex-row">
+      <CommonContainer className="gap-4 justify-end flex flex-row w-full">
         <Button
           className="gap-2 bg-accent text-white py-2 px-4 min-w-max"
-          onClick={() => edit('staff', staffInfo?.staff_id || '')}
-          disabled={formLoading || !staffInfo?.staff_id}
+          onClick={() => edit('staff', staffValue?.staff_id || '')}
+          disabled={formLoading || !staffValue?.staff_id}
         >
           <EditOutlinedIcon />
           <Typography className="font-bold">Edit</Typography>
