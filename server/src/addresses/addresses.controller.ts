@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common';
 import { AddressesService } from './addresses.service';
 import { Prisma } from '@prisma/client';
+import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
 @Controller('addresses')
 export class AddressesController {
@@ -19,7 +21,7 @@ export class AddressesController {
   @Post(':id')
   async create(
     @Param('id') customerId: string,
-    @Body() createAddressDto: Prisma.Customer_AddressCreateInput,
+    @Body() createAddressDto: CreateAddressDto,
   ) {
     try {
       const addressDto: Prisma.Customer_AddressCreateInput = {
@@ -28,9 +30,7 @@ export class AddressesController {
             customer_id: customerId,
           },
         },
-        address: createAddressDto.address,
-        city: createAddressDto.city,
-        state: createAddressDto.state,
+        ...createAddressDto,
       };
       const address = await this.addressesService.create(addressDto);
       return address;
@@ -72,13 +72,11 @@ export class AddressesController {
   async update(
     @Param('id') customerId: string,
     @Param('address_id', ParseIntPipe) addressId: number,
-    @Body() updateAddressDto: Prisma.Customer_AddressUpdateInput,
+    @Body() updateAddressDto: UpdateAddressDto,
   ) {
     try {
       const addressDto: Prisma.Customer_AddressUpdateInput = {
-        address: updateAddressDto.address,
-        city: updateAddressDto.city,
-        state: updateAddressDto.state,
+        ...updateAddressDto,
       };
       const address = await this.addressesService.update(
         customerId,

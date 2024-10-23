@@ -6,39 +6,80 @@ import {
   Patch,
   Param,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { Prisma } from '@prisma/client';
+import { CreateCategoriesDto } from './dto/create-categories.dto';
+import { UpdateCategoriesDto } from './dto/update-categories.dto';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  create(@Body() createCategoryDto: Prisma.CategoriesCreateInput) {
-    return this.categoriesService.create(createCategoryDto);
+  async create(@Body() createCategoryDto: CreateCategoriesDto) {
+    try {
+      const categoryDto: Prisma.CategoriesCreateInput = {
+        category_name: createCategoryDto.category_name,
+        description: createCategoryDto.description,
+      };
+      const category = await this.categoriesService.create(categoryDto);
+      return category;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error creating category');
+    }
   }
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  async findAll() {
+    try {
+      const category = await this.categoriesService.findAll();
+      return category;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching categories');
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const category = await this.categoriesService.findOne(+id);
+      return category;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching category');
+    }
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
-    @Body() updateCategoryDto: Prisma.CategoriesUpdateInput,
+    @Body() updateCategoryDto: UpdateCategoriesDto,
   ) {
-    return this.categoriesService.update(+id, updateCategoryDto);
+    try {
+      const categoryDto: Prisma.CategoriesUpdateInput = {
+        category_name: updateCategoryDto.category_name,
+        description: updateCategoryDto.description,
+      };
+      const category = await this.categoriesService.update(+id, categoryDto);
+      return category;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error updating categories');
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      const category = await this.categoriesService.remove(+id);
+      return category;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error removing categories');
+    }
   }
 }

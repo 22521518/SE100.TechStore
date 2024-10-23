@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { Prisma } from '@prisma/client';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -19,9 +21,7 @@ export class OrdersController {
   async create(
     @Param('id') customerId: string,
     @Body()
-    createOrderDto: Prisma.OrdersCreateInput & {
-      voucher_code: string;
-    },
+    createOrderDto: CreateOrderDto,
   ) {
     try {
       const { order_items, voucher_code, ...ord } = createOrderDto;
@@ -83,13 +83,11 @@ export class OrdersController {
   async update(
     @Param('id') customerId: string,
     @Param('order_id') orderId: string,
-    @Body() updateOrderDto: Prisma.OrdersUpdateInput,
+    @Body() updateOrderDto: UpdateOrderDto,
   ) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { order_status, ...ord } = updateOrderDto;
       const orderDto: Prisma.OrdersUpdateInput = {
-        order_status: order_status,
+        order_status: updateOrderDto.order_status,
       };
       const order = await this.ordersService.update(orderId, orderDto);
       return { ...order };

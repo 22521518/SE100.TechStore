@@ -10,18 +10,19 @@ import {
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { Prisma } from '@prisma/client';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
-  async create(@Body() createRoleDto: Prisma.RolesCreateInput) {
+  async create(@Body() createRoleDto: CreateRoleDto) {
     try {
-      const { role_name, description } = createRoleDto;
       const roleDto: Prisma.RolesCreateInput = {
-        role_name,
-        description,
+        role_name: createRoleDto.role_name,
+        description: createRoleDto.description,
       };
       const role = await this.rolesService.create(roleDto);
       return role;
@@ -54,10 +55,7 @@ export class RolesController {
   }
 
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateRoleDto: Prisma.RolesUpdateInput,
-  ) {
+  async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     try {
       const { role_permissions, role_name, description } = updateRoleDto;
       const roleDto: Prisma.RolesUpdateInput = {
@@ -65,7 +63,7 @@ export class RolesController {
         description,
         ...(role_permissions && {
           role_permissions: {
-            set: role_permissions as Prisma.PermissionsWhereUniqueInput[],
+            set: role_permissions,
           },
         }),
       };

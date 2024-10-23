@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Prisma } from '@prisma/client';
+import { CreateProductDto } from './dto/create-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -18,16 +20,17 @@ export class ProductsController {
   @Post()
   async create(
     @Body()
-    createProductDto: Prisma.ProductsCreateInput & {
-      category: [{ category_id: string }];
-    },
+    createProductDto: CreateProductDto,
   ) {
     try {
-      const { category, ...product_info } = createProductDto;
+      const { categories, images, attributes, ...product_info } =
+        createProductDto;
+      console.log(attributes, images);
       const productDto: Prisma.ProductsCreateInput = {
         ...product_info,
+        discount: product_info.discount || 0,
         categories: {
-          connect: category.map((cat) => ({
+          connect: categories.map((cat) => ({
             category_id: cat.category_id,
           })) as Prisma.CategoriesWhereUniqueInput[],
         },
@@ -66,16 +69,15 @@ export class ProductsController {
   async update(
     @Param('id') id: string,
     @Body()
-    updateProductDto: Prisma.ProductsUpdateInput & {
-      category: { category_id: number }[];
-    },
+    updateProductDto: UpdateProductDto,
   ) {
     try {
-      const { category, ...product_info } = updateProductDto;
+      const { categories, attributes, ...product_info } = updateProductDto;
+      console.log(attributes);
       const productDto: Prisma.ProductsUpdateInput = {
         ...product_info,
         categories: {
-          set: category.map(
+          set: categories.map(
             (category_id) => category_id,
           ) as Prisma.CategoriesWhereUniqueInput[],
         },
@@ -84,6 +86,7 @@ export class ProductsController {
       return product;
     } catch (error) {
       console.error(error);
+      console.error(updateProductDto);
       throw new BadRequestException('Updating product failed');
     }
   }

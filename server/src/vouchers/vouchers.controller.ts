@@ -10,15 +10,24 @@ import {
 } from '@nestjs/common';
 import { VouchersService } from './vouchers.service';
 import { Prisma } from '@prisma/client';
+import { CreateVoucherDto } from './dto/create-voucher.dto';
+import { UpdateVoucherDto } from './dto/update-voucher.dto';
 
 @Controller('vouchers')
 export class VouchersController {
   constructor(private readonly vouchersService: VouchersService) {}
 
   @Post()
-  async create(@Body() createVoucherDto: Prisma.VouchersCreateInput) {
+  async create(@Body() createVoucherDto: CreateVoucherDto) {
     try {
-      const voucher = await this.vouchersService.create(createVoucherDto);
+      const voucherDto: Prisma.VouchersCreateInput = {
+        voucher_name: createVoucherDto.voucher_name,
+        description: createVoucherDto.description,
+        discount_amount: createVoucherDto.discount_amount,
+        valid_from: createVoucherDto.valid_from,
+        valid_to: createVoucherDto.valid_to,
+      };
+      const voucher = await this.vouchersService.create(voucherDto);
       return voucher;
     } catch (error) {
       console.error(error);
@@ -51,10 +60,17 @@ export class VouchersController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateVoucherDto: Prisma.VouchersUpdateInput,
+    @Body() updateVoucherDto: UpdateVoucherDto,
   ) {
     try {
-      const voucher = await this.vouchersService.update(id, updateVoucherDto);
+      const voucherDto: Prisma.VouchersUpdateInput = {
+        voucher_name: updateVoucherDto.voucher_name,
+        description: updateVoucherDto.description,
+        discount_amount: updateVoucherDto.discount_amount,
+        valid_from: updateVoucherDto.valid_from,
+        valid_to: updateVoucherDto.valid_to,
+      };
+      const voucher = await this.vouchersService.update(id, voucherDto);
       return voucher;
     } catch (error) {
       console.error(error);

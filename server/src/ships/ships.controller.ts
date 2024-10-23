@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ShipsService } from './ships.service';
 import { Prisma } from '@prisma/client';
+import { CreateShipDto } from './dto/create-ship.dto';
+import { UpdateShipDto } from './dto/update-ship.dto';
 
 @Controller('ships')
 export class ShipsController {
@@ -18,10 +20,7 @@ export class ShipsController {
   @Post()
   async create(
     @Body()
-    createShipDto: Prisma.Shipping_AddressCreateInput & {
-      order_id: string;
-      address_id: string;
-    },
+    createShipDto: CreateShipDto,
   ) {
     try {
       const { order_id, address_id } = createShipDto;
@@ -68,10 +67,7 @@ export class ShipsController {
   }
 
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateShipDto: Prisma.Shipping_AddressUpdateInput,
-  ) {
+  async update(@Param('id') id: string, @Body() updateShipDto: UpdateShipDto) {
     try {
       const { delivery_date, shipping_status } = updateShipDto;
       const shipDto: Prisma.Shipping_AddressUpdateInput = {

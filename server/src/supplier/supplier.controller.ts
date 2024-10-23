@@ -10,15 +10,21 @@ import {
 } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { Prisma } from '@prisma/client';
+import { CreateSupplierDto } from './dto/create-supplier.dto';
+import { UpdateSupplierDto } from './dto/update-supplier.dto';
 
 @Controller('supplier')
 export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}
 
   @Post()
-  async create(@Body() createSupplierDto: Prisma.SuppliersCreateInput) {
+  async create(@Body() createSupplierDto: CreateSupplierDto) {
     try {
-      const supplier = await this.supplierService.create(createSupplierDto);
+      const supplierDto: Prisma.SuppliersCreateInput = {
+        ...createSupplierDto,
+      };
+
+      const supplier = await this.supplierService.create(supplierDto);
       return supplier;
     } catch (error) {
       console.error(error);
@@ -51,13 +57,13 @@ export class SupplierController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateSupplierDto: Prisma.SuppliersUpdateInput,
+    @Body() updateSupplierDto: UpdateSupplierDto,
   ) {
     try {
-      const supplier = await this.supplierService.update(
-        +id,
-        updateSupplierDto,
-      );
+      const supplierDto: Prisma.SuppliersUpdateInput = {
+        ...updateSupplierDto,
+      };
+      const supplier = await this.supplierService.update(+id, supplierDto);
       return supplier;
     } catch (error) {
       console.error(error);

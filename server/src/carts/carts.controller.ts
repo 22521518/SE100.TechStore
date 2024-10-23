@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common';
 import { CartsService } from './carts.service';
 import { Prisma } from '@prisma/client';
+import { CreateCartDto } from './dto/create-cart.dto';
+import { UpdateCartDto } from './dto/update-cart.dto';
 
 @Controller('carts')
 export class CartsController {
@@ -20,9 +22,7 @@ export class CartsController {
   async create(
     @Param('id') customerId: string,
     @Body()
-    createCartDto: Prisma.Cart_ItemCreateInput & {
-      product_id: string;
-    },
+    createCartDto: CreateCartDto,
   ) {
     try {
       const cartDto: Prisma.Cart_ItemCreateInput = {
@@ -92,9 +92,7 @@ export class CartsController {
     @Param('id') customerId: string,
     @Param('product_id') productId: string,
     @Body()
-    updateCartDto: {
-      quantity: number;
-    },
+    updateCartDto: UpdateCartDto,
   ) {
     try {
       const cartDto: Prisma.Cart_ItemUpdateInput = {

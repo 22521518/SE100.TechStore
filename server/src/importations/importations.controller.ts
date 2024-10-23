@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ImportationsService } from './importations.service';
 import { Prisma } from '@prisma/client';
+import { CreateImportationDto } from './dto/create-importation.dto';
+import { UpdateImportationDto } from './dto/update-importation.dto';
 
 @Controller('importations')
 export class ImportationsController {
@@ -18,9 +20,7 @@ export class ImportationsController {
   @Post()
   async create(
     @Body()
-    createImportationDto: Prisma.ImportationsCreateInput & {
-      supplier_id: number;
-    },
+    createImportationDto: CreateImportationDto,
   ) {
     try {
       const { supplier_id, import_items, ...imprt } = createImportationDto;
@@ -32,15 +32,20 @@ export class ImportationsController {
           'There is no import_items provided for the importation',
         );
       }
+      const totalPrice = import_items.reduce(
+        (acc, item) => acc + item.total_price,
+        0,
+      );
       const imprtDto: Prisma.ImportationsCreateInput = {
         ...imprt,
+        total_price: totalPrice,
+        supplier: {
+          connect: { supplier_id: supplier_id },
+        },
         import_items: {
           createMany: {
             data: import_items as Prisma.Import_ItemsCreateManyImportationInput[],
           },
-        },
-        supplier: {
-          connect: { supplier_id: supplier_id },
         },
       };
 
@@ -77,12 +82,15 @@ export class ImportationsController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateImportationDto: Prisma.ImportationsUpdateInput,
+    @Body() updateImportationDto: UpdateImportationDto,
   ) {
     try {
+      const importationDto: Prisma.ImportationsUpdateInput = {
+        ...updateImportationDto,
+      };
       const importation = await this.importationsService.update(
         +id,
-        updateImportationDto,
+        importationDto,
       );
       return importation;
     } catch (error) {
