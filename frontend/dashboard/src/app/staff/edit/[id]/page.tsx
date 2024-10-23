@@ -61,20 +61,27 @@ const StaffEdit = () => {
 
   React.useEffect(() => {
     setStaffValue({
-      staff_id: staffInfo.staff_id,
-      full_name: staffInfo.full_name,
-      phone_number: staffInfo.phone_number,
-      hire_date: staffInfo.hire_date,
-      role: staffInfo.role,
-      account: staffInfo.account,
-      employee_status: staffInfo.employee_status
+      staff_id: record?.staff_id || staffInfo.staff_id,
+      full_name: record?.full_name || staffInfo.full_name,
+      phone_number: record?.phone_number || staffInfo.phone_number,
+      hire_date: record?.hire_date || staffInfo.hire_date,
+      role: record?.role || staffInfo.role,
+      account: record?.account || staffInfo.account,
+      employee_status: record?.employee_status || staffInfo.employee_status
     });
-  }, [staffInfo]);
+  }, [record]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await onFinish(staffValue);
+      // await onFinish(staffValue);
+      setStaffValue({
+        ...staffValue,
+        employee_status:
+          staffValue.employee_status === EMPLOY_STATUS.ACTIVE
+            ? EMPLOY_STATUS.SUSPENDED
+            : EMPLOY_STATUS.ACTIVE
+      });
     } catch (error) {
       console.log(error);
     }
@@ -258,10 +265,11 @@ const StaffEdit = () => {
         </Box>
         {/* ACTION */}
         <Box className="flex flex-row items-center gap-4 py-10  w-full justify-end">
-          {/* {staffInfo.employee_status === EMPLOY_STATUS.SUSPENDED ? (
+          {staffInfo.employee_status === EMPLOY_STATUS.ACTIVE ? (
             <Button
               id="suspend"
               className="gap-2 bg-accent text-white py-3 px-4 min-w-max"
+              type="submit"
             >
               <DeleteOutlinedIcon />
               <Typography className="font-bold">Suspend</Typography>
@@ -270,11 +278,12 @@ const StaffEdit = () => {
             <Button
               id="activate"
               className="gap-2 bg-accent text-white py-3 px-4 min-w-max"
+              type="submit"
             >
               <CheckCircleOutlinedIcon />
               <Typography className="font-bold">Activate</Typography>
             </Button>
-          )} */}
+          )}
 
           <Button
             className="gap-2 bg-accent text-white py-3 px-6 min-w-max"

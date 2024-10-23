@@ -220,7 +220,17 @@ export function generateRandomStaffList(
   const staffList: IStaff[] = [];
 
   for (let i = 0; i < staffCount; i++) {
-    staffList.push(generateRandomStaff(permissionCount));
+    staffList.push({
+      staff_id: `staff-${i}`,
+      full_name: `Staff Full Name ${Math.random().toString(36).substr(2, 5)}`,
+      phone_number: `+1${Math.floor(Math.random() * 9000000000) + 1000000000}`,
+      employee_status: getRandomEmployeeStatus(),
+      hire_date: new Date().toISOString(),
+      account: {
+        email: `staff${Math.floor(Math.random() * 1000)}@example.com`
+      },
+      role: generateRandomRole(permissionCount)
+    });
   }
 
   return staffList;

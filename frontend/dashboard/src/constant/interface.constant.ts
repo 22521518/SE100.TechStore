@@ -101,3 +101,26 @@ export interface IStaff {
   account: IAccount;
   role?: IRole;
 }
+
+export interface IAccountWithPassword {
+  email: string;
+  password: string;
+}
+
+export interface IStaffInfo {
+  full_name: string;
+  phone_number: string;
+  employee_status?: EMPLOY_STATUS;
+  hire_date: Date | string;
+  account: IAccountWithPassword;
+  role?: IRole | undefined;
+}
+
+export interface IVoucher {
+  voucher_name: string;
+  description: string;
+  discount_amount: number;
+  valid_from: Date | string;
+  valid_to: Date | string;
+  is_active?: boolean;
+}
