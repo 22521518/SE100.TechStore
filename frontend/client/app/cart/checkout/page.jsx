@@ -168,18 +168,21 @@ const Checkout = () => {
             />
             <div className="flex gap-4 flex-wrap  items-center h-fit rounded-xl w-full z-50">
               <DropDownButton
+                value={province}
                 options={provinces}
                 name="province"
                 onChange={handleChangeProvince}
                 zIndex={70}
               />
               <DropDownButton
+                value={district}
                 options={districts}
                 name="district"
                 onChange={handleChangeDistrict}
                 zIndex={60}
               />
               <DropDownButton
+                value={ward}
                 options={wards}
                 name="ward"
                 onChange={handleChangeWard}
@@ -199,7 +202,7 @@ const Checkout = () => {
             {userAddresses.map((item, index) => (
               <label
                 key={index}
-                className="grid grid-cols-[auto_1fr_auto] gap-3 items-center w-full bg-surface rounded-lg p-2 min-h-[70px]"
+                className="grid grid-cols-[auto_1fr] gap-3 items-center w-full bg-surface rounded-lg p-2 min-h-[70px]"
                 htmlFor={index + 1}
               >
                 <div className="flex flex-row gap-1 size-fit items-center">
@@ -217,7 +220,6 @@ const Checkout = () => {
                   </h4>
                   <h3 className="opacity-50">{item.address}</h3>
                 </div>
-                <h3 className="text-sm">{item.type}</h3>
               </label>
             ))}
           </ul>

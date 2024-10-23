@@ -61,6 +61,10 @@ body {
     @apply bg-on-surface font-bold text-surface p-2 rounded-lg hover:scale-105 active:scale-90 transition-transform duration-200 ease-out gap-2 flex items-center justify-center h-fit;
   }
 
+  .button-variant-2 {
+    @apply shadow-md text-on-primary bg-primary px-2 py-1 hover:font-semibold rounded-lg gap-2 flex items-center justify-center h-fit;
+  }
+
   .order-state {
     @apply flex items-center justify-center rounded-xl   px-3 py-1 font-semibold text-white;
   }
@@ -90,5 +94,13 @@ body {
 
   .panel-2 {
     @apply overflow-hidden rounded-md bg-primary shadow-lg text-on-primary p-4
+  }
+
+  .account-nav-bar-item {
+    @apply grid grid-cols-[auto_1fr] gap-2 items-center hover:bg-secondary hover:text-on-secondary rounded-lg p-2  text-left justify-items-start  w-full min-w-fit
+  }
+
+  .account-nav-bar-selected-item {
+    @apply grid grid-cols-[auto_1fr] gap-2 items-center bg-secondary text-on-secondary rounded-lg p-2  text-left justify-items-start  w-full min-w-fit
   }
 }
