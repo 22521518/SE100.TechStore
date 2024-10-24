@@ -3,27 +3,22 @@ import { faAngleDown, faAngleUp, faSortDown, faSortUp } from "@fortawesome/free-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect } from "react";
 
-const DropDownButton = ({ name, options, onChange,zIndex=10 }) => {
+const DropDownButton = ({value, name, options, onChange,zIndex=10 }) => {
   const [list, setList] = useState(options);
-  const [selectedOption, setSelectedOption] = useState(
-    options ? options[0] : null
-  );
   const [isDropDown, setIsDropDown] = useState(false);
 
   useEffect(() => {
     setList(options);
-    setSelectedOption(null);
   }, [options]);
   const handleChangeOption = (item) => {
     onChange(item);
-    setSelectedOption(item);
     setIsDropDown(false);
   };
 
   return (
     <div className="relative" style={{ zIndex:zIndex }}>
       <div className="relative p-0 gap-2 grid grid-cols-[1fr_auto] max-w-[200px] w-[200px] h-fit rounded-xl text-base items-center bg-primary border-[2px] border-secondary overflow-hidden z-50 ">
-        <div className="px-2 overflow-x-scroll no-scrollbar whitespace-nowrap ">{selectedOption?.name || name}</div>
+        <div className="px-2 overflow-x-scroll no-scrollbar whitespace-nowrap">{value?.name||name}</div>
         <button
           className="p-1 bg-secondary text-on-secondary w-8 aspect-square"
           onClick={() => setIsDropDown((prev) => !prev)}

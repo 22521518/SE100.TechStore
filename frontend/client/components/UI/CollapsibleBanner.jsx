@@ -19,7 +19,7 @@ const CollapsibleContainer = ({ content, maxHeight }) => {
         {isExpandable && (
         <button
           onClick={() => setIsExpanded((prev) => !prev)}
-          className="text-center w-full bg-secondary text-on-secondary"
+          className="text-center w-full bg-secondary text-on-secondary "
         >
           {isExpanded ? "Collapse" : "Expand"}
         </button>

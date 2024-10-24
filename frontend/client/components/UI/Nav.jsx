@@ -88,7 +88,9 @@ const Nav = () => {
           </Link>
         </button>
         <button>
-          <FontAwesomeIcon icon={faCircleUser} />
+          <Link href="/account">
+            <FontAwesomeIcon icon={faCircleUser} />
+          </Link>
         </button>
       </ul>
     </div>
