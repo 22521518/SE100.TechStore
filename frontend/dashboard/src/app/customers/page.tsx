@@ -93,7 +93,7 @@ const CustomerList = () => {
           </Box>
           <Box className="flex flex-col">
             <DataGrid
-              {...dataGridProps}
+              // {...dataGridProps}
               rows={generateCustomers(10)}
               getRowId={(row) => row.customer_id}
               onCellClick={(cell) => {

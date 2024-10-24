@@ -57,7 +57,7 @@ const StaffShow = () => {
     }
   }, [record]);
 
-  if (formLoading) return <div>Loading...</div>;
+  // if (formLoading) return <div>Loading...</div>;
   return (
     <Stack className="gap-4 px-32 ">
       <CommonContainer className="w-full">

@@ -7,12 +7,17 @@ import { Box, Stack } from '@mui/material';
 import React from 'react';
 
 type InboxRoomCardProps = {
-  room: IInboxRoom;
+  // room: IInboxRoom;
+  isChoosen: boolean;
 };
-
-const InboxRoomCard = () => {
+//{ room, isChoosen }: InboxRoomCardProps
+const InboxRoomCard = ({ isChoosen = false }: InboxRoomCardProps) => {
   return (
-    <Box className="grid grid-cols-6 h-max w-full hover:bg-opacity-60 hover:bg-slate-700 px-2 py-1 items-center rounded-md">
+    <Box
+      className={`grid grid-cols-6 h-max w-full hover:bg-opacity-20 hover:cursor-pointer hover:bg-secondary-200 px-2 py-1 items-center rounded-md 
+       ${isChoosen ? 'bg-secondary-200' : ''}  
+      `}
+    >
       <AvatarImage src={dummyAvatar} size={46} alt="avatar" />
       <Stack className="col-span-4">
         <div className="flex flex-row items-center">

@@ -3,11 +3,14 @@ import {
   IAccount,
   IAddress,
   ICustomer,
+  IInboxMessage,
+  IInboxRoom,
   IOrder,
   IOrderItem,
   IPermission,
   IProductFeedback,
   IRole,
+  ISender,
   IStaff,
   IVoucher
 } from '@constant/interface.constant';
@@ -87,9 +90,9 @@ export function generateRandomAccountList(
   return accounts;
 }
 
-export function generateRandomCustomer(): ICustomer {
+export function generateRandomCustomer(id?: string): ICustomer {
   return {
-    customer_id: `customer-${Math.floor(Math.random() * 1000)}`,
+    customer_id: id || `customer-${Math.floor(Math.random() * 1000)}`,
     username: `user_${Math.random().toString(36).substr(2, 5)}`,
     full_name: `Full Name ${Math.random().toString(36).substr(2, 5)}`,
     phone_number: `+1${Math.floor(Math.random() * 9000000000) + 1000000000}`,
@@ -257,4 +260,59 @@ export function generateRandomVoucher(loops: number): IVoucher[] {
   }
 
   return vouchers;
+}
+
+function generateRandomSender(seen: boolean, id?: string): ISender {
+  return {
+    sender_id: id || `sender-${Math.floor(Math.random() * 1000)}`,
+    sender_name: `Sender Name ${Math.random().toString(36).substr(2, 5)}`,
+    is_seen: true
+  };
+}
+
+function generateRandomMessage(seen: boolean = true): IInboxMessage {
+  return {
+    sender: generateRandomSender(
+      seen,
+      Math.random() > 0.5 ? '--admin' : '--customer'
+    ),
+    message_id: `message-${Math.floor(Math.random() * 1000)}`,
+    message: `This is a random message with id ${Math.floor(
+      Math.random() * 1000
+    )}`,
+    created_at: new Date().toISOString()
+  };
+}
+
+function generateRandomMessages(
+  messageCount: number,
+  randomSeen: boolean = false
+): IInboxMessage[] {
+  const messages: IInboxMessage[] = [];
+
+  for (let i = 0; i < messageCount; i++) {
+    messages.push(
+      generateRandomMessage(i == messageCount - 1 ? !randomSeen : true)
+    );
+  }
+
+  return messages;
+}
+
+export function generateRandomInboxRoom(loops: number): IInboxRoom[] {
+  const rooms: IInboxRoom[] = [];
+
+  for (let i = 0; i < loops; i++) {
+    const messageCount = 20;
+    rooms.push({
+      room_id: `room-${i + 1}`,
+      room_name: `Room Name ${Math.random().toString(36).substr(2, 5)}`,
+      customer: generateRandomCustomer(
+        Math.random() > 0.5 ? '--admin' : '--customer'
+      ),
+      messages: generateRandomMessages(messageCount)
+    });
+  }
+
+  return rooms;
 }

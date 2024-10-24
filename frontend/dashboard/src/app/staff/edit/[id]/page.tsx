@@ -11,7 +11,8 @@ import {
   Select,
   Stack,
   TextField,
-  Typography
+  Typography,
+  InputLabel
 } from '@mui/material';
 import { useForm, useNavigation } from '@refinedev/core';
 import React from 'react';
@@ -39,11 +40,13 @@ import { EMPLOY_STATUS } from '@constant/enum.constant';
 const StaffEdit = () => {
   const { show } = useNavigation();
 
-  const roleList = generateRandomRoleList(5);
+  const [roleList, setRole] = React.useState(generateRandomRoleList(5));
 
   const { query, formLoading, onFinish } = useForm<IStaff>();
   const record = query?.data?.data;
-  const staffInfo = record || generateRandomStaffList(1)[0];
+  const [staffInfo, setSTaff] = React.useState<IStaff>(
+    record || generateRandomStaffList(1)[0]
+  );
   const [dummyGender, setDummyGender] = React.useState('male');
   const [dummyBirthday, setDummyBirthday] = React.useState(
     new Date('2003-01-01')
@@ -139,33 +142,33 @@ const StaffEdit = () => {
                   }}
                 />
               </FormControl>
-              <FormControl className="flex flex-row gap-4 items-center">
+              <Box className="flex flex-row gap-6 items-center">
                 <ManageAccountsOutlinedIcon className="text-lg" />
-                <Typography className="text-lg">
-                  {staffValue.role?.role_name}
-                </Typography>
-                <Select
-                  labelId="role-select-label"
-                  id="role-select"
-                  label="Role"
-                  value={staffValue.role?.role_id}
-                  defaultValue={staffValue.role?.role_id}
-                  onChange={(e) => {
-                    setStaffValue({
-                      ...staffValue,
-                      role: roleList.find(
-                        (role) => role.role_id === e.target.value
-                      )
-                    });
-                  }}
-                >
-                  {roleList.map((role) => (
-                    <MenuItem key={role.role_id} value={role.role_id}>
-                      {role.role_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                <FormControl className="min-w-max">
+                  <InputLabel id="role-select-label">Role</InputLabel>
+                  <Select
+                    labelId="role-select-label"
+                    id="role-select"
+                    label="Role"
+                    value={staffValue.role?.role_id}
+                    defaultValue={staffValue.role?.role_id}
+                    onChange={(e) => {
+                      setStaffValue({
+                        ...staffValue,
+                        role: roleList.find(
+                          (role) => role.role_id === e.target.value
+                        )
+                      });
+                    }}
+                  >
+                    {roleList.map((role) => (
+                      <MenuItem key={role.role_id} value={role.role_id}>
+                        {role.role_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
 
               <FormControl className="flex flex-row gap-4 items-center">
                 <AlternateEmailIcon className="text-lg" />
@@ -219,24 +222,28 @@ const StaffEdit = () => {
                   className="text-lg"
                 />
               </FormControl>
-              <FormControl className="flex flex-row gap-6 items-center">
+              <Box className="flex flex-row gap-6 items-center">
                 <GenderIcon male={dummyGender === 'male'} />
-                <Select
-                  labelId="gender-select-label"
-                  id="gender-select"
-                  value={dummyGender}
-                  className="min-w-36"
-                  onChange={(e) => {
-                    setStaffValue({
-                      ...staffValue
-                    });
-                    setDummyGender(e.target.value);
-                  }}
-                >
-                  <MenuItem value="male">Male</MenuItem>
-                  <MenuItem value="female">Female</MenuItem>
-                </Select>
-              </FormControl>
+                <FormControl>
+                  <InputLabel id="gender-select-label">Gender</InputLabel>
+                  <Select
+                    labelId="gender-select-label"
+                    label="Gender"
+                    id="gender-select"
+                    value={dummyGender}
+                    className="min-w-36"
+                    onChange={(e) => {
+                      setStaffValue({
+                        ...staffValue
+                      });
+                      setDummyGender(e.target.value);
+                    }}
+                  >
+                    <MenuItem value="male">Male</MenuItem>
+                    <MenuItem value="female">Female</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
               <FormControl className="flex flex-row gap-4 items-center">
                 <DateRangeOutlinedIcon className="text-lg" />
                 <TextField

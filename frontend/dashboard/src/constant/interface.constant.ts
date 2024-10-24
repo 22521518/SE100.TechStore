@@ -132,13 +132,14 @@ export interface IVoucher extends IVoucherWithoutCode {
 export interface IInboxRoom {
   room_id: string;
   room_name: string;
-  member: ICustomer;
+  customer: ICustomer;
   messages: IInboxMessage[];
 }
 
 export interface ISender {
   sender_id: string;
   sender_name: string;
+  is_seen: boolean;
 }
 export interface IInboxMessage {
   sender: ISender;

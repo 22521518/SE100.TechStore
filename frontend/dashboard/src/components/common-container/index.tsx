@@ -8,7 +8,7 @@ const CommonContainer: React.FC<CommonContainerProps> = ({
 }) => {
   return (
     <div
-      className={`p-4 mx-2 mr-2 bg-white rounded-lg h-max shadow-md ${className}`}
+      className={`p-4 mx-2 mr-2 bg-white rounded-lg h-max shadow-lg ${className}`}
     >
       {children}
     </div>

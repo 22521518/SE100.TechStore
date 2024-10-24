@@ -15,7 +15,7 @@ const AvatarImage = ({ src, alt, size = 64 }: AvatarImageProps) => {
     <>
       {' '}
       <Box
-        className={`rounded-full overflow-hidden`}
+        className={`rounded-full overflow-hidden shadow-sm`}
         style={{ width: size, height: size }}
       >
         <Image

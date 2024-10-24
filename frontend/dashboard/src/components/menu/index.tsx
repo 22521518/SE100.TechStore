@@ -6,13 +6,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import logo from '@/public/images/logo.svg';
 
-export const Menu = () => {
+export const Menu = ({ className = '' }: { className: string }) => {
   const { mutate: logout } = useLogout();
   const { menuItems, selectedKey } = useMenu();
   const refinedMenu = menuItems.filter((item) => item.label !== 'Categories');
 
   return (
-    <nav className="menu bg-accent h-full w-1/5 py-6 px-4 flex flex-col gap-6">
+    <nav className={`menu ${className}`}>
       <div className="flex flex-row gap-3 h-max grow-0 items-center self-center">
         <Image src={logo} alt="Hive Electro" width={36} height={36} />
         <Typography

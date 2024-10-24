@@ -15,9 +15,12 @@ module.exports = {
         },
         secondary: {
           100: '#FFF5EE',
-          200: '#996E50'
+          200: '#B07F61',
+          300: '#CCC2BB',
+          400: '#AAA099'
         },
-        neural: '#FFF5EE',
+
+        neural: '#FFEEEE',
         accent: '#08050c'
       },
       white: '#f7f5ff',

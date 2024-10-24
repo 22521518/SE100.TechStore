@@ -38,8 +38,10 @@ const OrderList = () => {
       search: event.target.value as string
     });
   };
-  const { dataGridProps } = useDataGrid<IOrder>();
-  const dummyOrders = generateRandomOrder(10);
+  // const { dataGridProps } = useDataGrid<IOrder>();
+  const [dummyOrders, setDummyOrder] = React.useState<IOrder[]>(
+    generateRandomOrder(10)
+  );
   const [orderDetail, setOrderDetail] = React.useState<IOrder | null>(null);
 
   const columns = React.useMemo<GridColDef<IOrder>[]>(
@@ -135,7 +137,7 @@ const OrderList = () => {
           </FormControl>
         </Box>
         <DataGrid
-          {...dataGridProps}
+          // {...dataGridProps}
           columns={columns}
           rows={dummyOrders}
           getRowId={(row: IOrder) => row.order_id}
