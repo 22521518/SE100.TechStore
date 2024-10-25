@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/generalSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+
+        <ImageView
+            android:id="@+id/userImage"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_user_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="John Doe"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/darker_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/menuItemUserInfo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_user_icon"
+            android:drawablePadding="8dp"
+            android:focusable="true"
+            android:paddingHorizontal="8dp"
+            android:text="Info"
+            android:textSize="24sp"
+            android:gravity="center_vertical"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
+        <TextView
+            android:id="@+id/menuItemUserAddress"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_location_icon"
+            android:drawablePadding="8dp"
+            android:focusable="true"
+            android:paddingHorizontal="8dp"
+            android:text="Address"
+            android:textSize="24sp"
+            android:gravity="center_vertical"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
+        <TextView
+            android:id="@+id/menuItemUserChangePassword"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_key_icon"
+            android:drawablePadding="8dp"
+            android:focusable="true"
+            android:paddingHorizontal="8dp"
+            android:text="Change password"
+            android:textSize="24sp"
+            android:gravity="center_vertical"
+            android:textStyle="bold" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/menuItemUserOrders"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_truck_icon"
+            android:drawablePadding="8dp"
+            android:focusable="true"
+            android:paddingHorizontal="8dp"
+            android:text="Orders"
+            android:textSize="24sp"
+            android:gravity="center_vertical"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
+        <TextView
+            android:id="@+id/menuItemUserVouchers"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_money_icon"
+            android:drawablePadding="8dp"
+            android:focusable="true"
+            android:paddingHorizontal="8dp"
+            android:text="Vouchers"
+            android:textSize="24sp"
+            android:gravity="center_vertical"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/darker_gray" />
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_border"
+        android:text="Sign out"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

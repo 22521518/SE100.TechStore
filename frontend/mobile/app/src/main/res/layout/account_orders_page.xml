@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/ic_arrow_left_icon" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Orders"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.7"
+                android:text="View your orders "
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/darker_gray" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:paddingVertical="8dp"
+                android:text="All"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:paddingVertical="8dp"
+                android:text="Pending"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:paddingVertical="8dp"
+                android:text="Shipping"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:paddingVertical="8dp"
+                android:text="Delivered"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:paddingVertical="8dp"
+                android:text="Canceled"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:paddingVertical="8dp"
+                android:text="Refunded"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/darker_gray" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</LinearLayout>
