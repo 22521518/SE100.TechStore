@@ -5,7 +5,7 @@ import {
   ICategory,
   IProduct,
   IProductAttribute
-} from '@constant/constant.interface';
+} from '@constant/interface.constant';
 import {
   Box,
   Button,
@@ -20,6 +20,8 @@ import {
 import { HttpError, useForm, useList, useNavigation } from '@refinedev/core';
 import ProductAttributeFields from '@components/products';
 import Image from 'next/image';
+import { dummyProductImage } from '@constant/value.constant';
+import CommonContainer from '@components/common-container';
 
 const ProductEdit = () => {
   const { list } = useNavigation();
@@ -90,12 +92,12 @@ const ProductEdit = () => {
           Edit Product
         </Typography>
       </Box>
-      <Box className="p-8 gap-4 bg-white rounded-lg flex flex-row justify-between">
+      <CommonContainer className="p-8 flex flex-row justify-between">
         <Stack className=" flex-1 gap-4 items-center justify-center">
           <Image
             src={
               (productValue.images && productValue.images[0]) ||
-              'https://images.unsplash.com/photo-1612367289874-0fba3b4a07dd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              dummyProductImage
             }
             alt="Product Image"
             width={500}
@@ -240,27 +242,27 @@ const ProductEdit = () => {
           </Stack>
           <Box className="flex flex-row gap-5 justify-end">
             <Button
-              className="bg-accent text-secondary-100 py-4 px-8 text-lg font-bold inline-block max-h-max min-w-max"
+              className="bg-accent text-secondary-100 py-4 px-8 text-base font-bold inline-block max-h-max min-w-max"
               type="submit"
             >
               Save
             </Button>
             <Button
-              className="border-accent border-solid border-2 text-accent py-4 px-8 text-lg font-bold inline-block min-w-max max-h-max"
+              className="border-accent border-solid border-2 text-accent py-4 px-8 text-base font-bold inline-block min-w-max max-h-max"
               onClick={() => list('products')}
             >
               Cancel
             </Button>
           </Box>
         </form>
-      </Box>
+      </CommonContainer>
       <Box className="flex flex-row justify-between mt-4 py-4 items-start">
-        <Box className="p-8 gap-4 bg-white rounded-lg flex flex-row justify-between">
+        <CommonContainer className="w-full">
           <ProductAttributeFields
             attributes={productValue.attributes}
             setAttributes={setAttributes}
           />
-        </Box>
+        </CommonContainer>
       </Box>
     </div>
   );

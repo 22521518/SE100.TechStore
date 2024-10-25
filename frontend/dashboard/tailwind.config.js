@@ -11,13 +11,17 @@ module.exports = {
       colors: {
         primary: {
           100: '#D4CFCB',
-          200: '#A69B94'
+          200: '#A69B94',
+          300: '#D9CEC7'
         },
         secondary: {
           100: '#FFF5EE',
-          200: '#996E50'
+          200: '#B07F61',
+          300: '#CCC2BB',
+          400: '#AAA099'
         },
-        neural: '#FFF5EE',
+
+        neural: '#FFEEEE',
         accent: '#08050c'
       },
       white: '#f7f5ff',

@@ -7,6 +7,14 @@
 * It is safe to delete them, and they are not intended to be used by Refine components.
 */
 @layer base {
+  :root {
+    --DataGrid-containerBackground: transparent;
+  }
+
+  .Muidatagrid-root .Muidatagrid-container--top [role='row'],
+  .Muidatagrid-root .Muidatagrid-container--bottom [role='row'] {
+    @apply bg-transparent text-accent;
+  }
   button {
     @apply border border-gray-300 px-2 rounded-sm bg-[#EFEFEF];
   }
@@ -74,6 +82,12 @@
 
   content::-webkit-scrollbar-thumb {
     @apply hover:opacity-10 bg-accent rounded-sm border-solid border-l-accent;
+  }
+  input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset; /* Background fix */
+    -webkit-text-fill-color: black; /* Text color fix */
+    font-size: 16px; /* Adjust font size to match */
+    color: black;
   }
 
   /* For Firefox */

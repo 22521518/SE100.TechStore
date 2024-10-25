@@ -3,17 +3,28 @@
 import { CustomerFormValues } from '@app/customers/customer.interface';
 import AvatarImage from '@components/avatar';
 import CommonContainer from '@components/common-container';
-import { IAccount, IAddress, ICustomer } from '@constant/constant.interface';
+import { IAccount, IAddress, ICustomer } from '@constant/interface.constant';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import FaceIcon from '@mui/icons-material/Face';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CakeOutlinedIcon from '@mui/icons-material/CakeOutlined';
 import KeyIcon from '@mui/icons-material/Key';
-import CallIcon from '@mui/icons-material/Call';
+import CallOutlinedIcon from '@mui/icons-material/CallOutlined';
 import HouseOutlinedIcon from '@mui/icons-material/HouseOutlined';
 import LocalAtmOutlinedIcon from '@mui/icons-material/LocalAtmOutlined';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import { HttpError, useForm } from '@refinedev/core';
 import React from 'react';
+import GenderIcon from '@components/icons/gender-icon';
+import CustomerFeedbackList from './feedback-list';
+import {
+  generateProductFeedback,
+  generateRandomAddresses,
+  generateRandomOrder
+} from '@utils/random.util';
+import CustomerOrderList from './order-list';
+import { transformVNMoney } from '@utils/transform.util';
+import { dummyAvatar } from '@constant/value.constant';
 
 const CustomerShow = () => {
   const { query, formLoading, onFinish } = useForm<
@@ -33,8 +44,14 @@ const CustomerShow = () => {
   });
 
   const addressList = generateRandomAddresses(5);
+  const feedbackList = generateProductFeedback(15);
+  const orderList = generateRandomOrder(10);
 
-  const totalSpending = 0;
+  const totalSpending = orderList.reduce((acc, order) => {
+    acc += order.total_price;
+    return acc;
+  }, 0);
+
   const [customerValue, setCustomerValue] = React.useState<ICustomer>({
     customer_id: record?.customer_id || 'default-customer-id',
     username: record?.username || 'default_username',
@@ -43,6 +60,9 @@ const CustomerShow = () => {
     date_joined: record?.date_joined || new Date().toISOString(),
     account: record?.account || { email: 'default@example.com' }
   });
+
+  const male = true;
+  const dummyBirthday = '1-1-2003';
 
   React.useEffect(() => {
     setCustomerValue({
@@ -63,10 +83,7 @@ const CustomerShow = () => {
             {/* Intro */}
             <Box className="flex flex-row justify-between border-b-2 border-slate-200 border-solid pb-6">
               <Box className="flex flex-row gap-3">
-                <AvatarImage
-                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="avatar"
-                />
+                <AvatarImage src={dummyAvatar} alt="avatar" />
                 <Stack>
                   <Typography variant="h3" className="text-2xl font-bold">
                     {customerValue.username}
@@ -91,10 +108,10 @@ const CustomerShow = () => {
             </Box>
             {/* Information */}
             <Box className="grid grid-cols-2">
-              <Box className="grid grid-cols-2 border-e-2 border-slate-200 border-solid ">
-                <Stack className="p-4 gap-4">
+              <Box className="grid grid-cols-2 max-lg:grid-cols-1 border-e-2 border-slate-200 border-solid ">
+                <Stack className="p-4 gap-6">
                   <Box className="flex flex-row gap-4 items-center">
-                    <FaceIcon />
+                    <InfoOutlinedIcon />
                     <Typography variant="body1">
                       {customerValue.full_name}
                     </Typography>
@@ -106,26 +123,30 @@ const CustomerShow = () => {
                     </Typography>
                   </Box>
                   <Box className="flex flex-row gap-4 items-center">
-                    <CallIcon />
+                    <CallOutlinedIcon />
                     <Typography variant="body1">
                       {customerValue.phone_number}
                     </Typography>
                   </Box>
                 </Stack>
                 {/* GENDER & things */}
-                <Stack className="p-4 gap-4">
+                <Stack className="p-4 gap-6">
                   <Box className="flex flex-row gap-4 items-center">
-                    <FaceIcon />
+                    <GenderIcon male={male} />
                     <Typography variant="body1">
-                      {customerValue.full_name}
+                      {male ? 'Male' : 'Female'}
                     </Typography>
+                  </Box>
+                  <Box className="flex flex-row gap-4 items-center">
+                    <CakeOutlinedIcon />
+                    <Typography variant="body1">{dummyBirthday}</Typography>
                   </Box>
                 </Stack>
               </Box>
               {/* Address */}
               <Stack className="gap-4 p-4">
                 {addressList.map((address, index) => (
-                  <Box key={index} className="flex flex-row gap-3">
+                  <Box key={index} className="flex flex-row gap-3 items-center">
                     <HouseOutlinedIcon />
                     <Typography variant="caption" className="text-slate-500">
                       {address.address}, {address.state}, {address.city}
@@ -144,59 +165,18 @@ const CustomerShow = () => {
                 Total Spening
               </Typography>
             </Box>
-            <Typography variant="h4" className="text-2xl font-bold">
-              ${totalSpending.toFixed(2)}
+            <Typography variant="h4" className="text-3xl font-bold">
+              {transformVNMoney(totalSpending)}
             </Typography>
           </Box>
         </CommonContainer>
+        <Box className="flex flex-row gap-1 w-full">
+          <CustomerFeedbackList feedbackList={feedbackList} />
+          <CustomerOrderList orderList={orderList} />
+        </Box>
       </Stack>
     </>
   );
 };
 
 export default CustomerShow;
-
-const getRandomItem = (arr: string[]) =>
-  arr[Math.floor(Math.random() * arr.length)];
-
-const generateRandomAddresses = (count: number): IAddress[] => {
-  const streets = [
-    'Main St',
-    'Oak St',
-    'Maple Ave',
-    'Pine Rd',
-    'Cedar Blvd',
-    'Elm St',
-    'Park Ave',
-    '5th Ave',
-    'Sunset Blvd',
-    'River Rd'
-  ];
-  const cities = [
-    'New York',
-    'Los Angeles',
-    'Chicago',
-    'Houston',
-    'Phoenix',
-    'Philadelphia',
-    'San Antonio',
-    'San Diego',
-    'Dallas',
-    'San Jose'
-  ];
-  const states = ['NY', 'CA', 'IL', 'TX', 'AZ', 'PA', 'TX', 'CA', 'TX', 'CA'];
-
-  const randomAddresses: IAddress[] = [];
-
-  for (let i = 0; i < count; i++) {
-    const address = `${Math.floor(Math.random() * 9999) + 1} ${getRandomItem(
-      streets
-    )}`;
-    const city = getRandomItem(cities);
-    const state = getRandomItem(states);
-
-    randomAddresses.push({ address, city, state });
-  }
-
-  return randomAddresses;
-};

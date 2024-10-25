@@ -1,4 +1,6 @@
-import { IProductFeedback } from '@constant/constant.interface';
+'use client';
+
+import { IProductFeedback } from '@constant/interface.constant';
 import StarIcon from '@mui/icons-material/Star';
 import { Box, LinearProgress, Stack, Typography } from '@mui/material';
 import React from 'react';

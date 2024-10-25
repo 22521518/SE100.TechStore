@@ -1,5 +1,5 @@
 import { DevtoolsProvider } from '@providers/devtools';
-import { GitHubBanner, Refine } from '@refinedev/core';
+import { Refine } from '@refinedev/core';
 import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar';
 import routerProvider from '@refinedev/nextjs-router';
 import { Metadata } from 'next';
@@ -41,6 +41,11 @@ export default function RootLayout({
                     show: '/products/show/:id'
                   },
                   {
+                    name: 'orders',
+                    list: '/orders',
+                    show: '/orders/show/:id'
+                  },
+                  {
                     name: 'customers',
                     list: '/customers',
                     show: '/customers/show/:id'
@@ -49,6 +54,20 @@ export default function RootLayout({
                     name: 'addresses',
                     list: '/addresses/:customerId',
                     show: '/addresses/show/:id'
+                  },
+                  {
+                    name: 'staff',
+                    list: '/staff',
+                    create: '/staff/create',
+                    edit: '/staff/edit/:id',
+                    show: '/staff/show/:id'
+                  },
+                  {
+                    name: 'vouchers',
+                    list: '/vouchers',
+                    create: '/vouchers/create',
+                    edit: '/vouchers/edit/:id',
+                    show: '/vouchers/show/:id'
                   },
                   {
                     name: 'categories',
@@ -61,14 +80,13 @@ export default function RootLayout({
                     }
                   },
                   {
-                    name: 'blog_posts',
-                    list: '/blog-posts',
-                    create: '/blog-posts/create',
-                    edit: '/blog-posts/edit/:id',
-                    show: '/blog-posts/show/:id',
-                    meta: {
-                      canDelete: true
-                    }
+                    name: 'inbox',
+                    list: '/inbox',
+                    show: '/inbox/show/:id'
+                  },
+                  {
+                    name: 'profile',
+                    list: `/profile`
                   }
                 ]}
                 options={{

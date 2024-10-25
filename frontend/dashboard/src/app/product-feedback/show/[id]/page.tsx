@@ -1,8 +1,11 @@
-import { IProductFeedback } from '@constant/constant.interface';
+'use client';
+
+import { IProductFeedback } from '@constant/interface.constant';
 import { Box, Typography } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React from 'react';
+import { transformDate } from '@utils/transform.util';
 
 type ProductFeedbackListProps = {
   feedbacklist: IProductFeedback[];
@@ -41,8 +44,7 @@ const ProductFeedbackList = ({ feedbacklist }: ProductFeedbackListProps) => {
         flex: 2,
         renderCell: ({ row }) => {
           const date = new Date(row.created_at);
-          const formattedDate = date.toLocaleDateString('en-US');
-          return <span>{formattedDate}</span>;
+          return <span>{transformDate(date.toISOString(), true)}</span>;
         }
       }
     ],
@@ -54,7 +56,7 @@ const ProductFeedbackList = ({ feedbacklist }: ProductFeedbackListProps) => {
       <DataGrid
         columns={columns}
         rows={feedbacklist}
-        getRowId={(row: IProductFeedback) => row.product_id}
+        getRowId={(row: IProductFeedback) => row.feedback_id}
         sx={{
           color: 'black',
           '& .MuiDataGrid-row': {

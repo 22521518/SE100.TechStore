@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ICategory } from '@constant/constant.interface';
+import { ICategory } from '@constant/interface.constant';
 import { HttpError, useForm } from '@refinedev/core';
 import {
   Box,
@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Cancel, Create } from '@mui/icons-material';
 import { CategoryFormValues } from '../category.interface';
+import CommonContainer from '@components/common-container';
 
 type CategoryCreateProps = {
   onCancel: () => void;
@@ -40,7 +41,7 @@ export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg flex flex-col gap-3 shadow-sm">
+    <CommonContainer isModal className="p-8 flex flex-col gap-3 shadow-sm">
       <Typography variant="h3" className="text-3xl font-semibold self-center">
         Create Category
       </Typography>
@@ -52,6 +53,7 @@ export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
             </Typography>
             <Input
               type="text"
+              disableUnderline
               value={category.category_name}
               onChange={(e) =>
                 setCategory({ ...category, category_name: e.target.value })
@@ -66,6 +68,7 @@ export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
             <Input
               type="text"
               multiline
+              disableUnderline
               rows={5}
               value={category.description}
               onChange={(e) =>
@@ -92,6 +95,6 @@ export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
           </Button>
         </Box>
       </form>
-    </div>
+    </CommonContainer>
   );
 }
