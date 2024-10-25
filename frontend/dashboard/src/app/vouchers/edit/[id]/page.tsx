@@ -40,21 +40,18 @@ const VoucherEdit = ({ onCancel, voucher }: VoucherEditProps) => {
     setVoucherValue(record || voucher);
   }, [record, voucher]);
 
-  const onSubmit = React.useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      try {
-        await onFinish(voucherValue);
-        console.log('voucher');
-      } catch (error) {
-        console.log('error', error);
-      }
-    },
-    []
-  );
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await onFinish(voucherValue);
+      console.log('voucher');
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
 
   return (
-    <CommonContainer>
+    <CommonContainer isModal>
       <Stack className="gap-2">
         <Box className="flex flex-row items-center gap-2 pb-6 pt-2 px-2">
           <LoyaltyOutlinedIcon className="text-2xl" />

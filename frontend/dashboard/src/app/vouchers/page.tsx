@@ -18,7 +18,9 @@ import VoucherEdit from './edit/[id]/page';
 
 const VoucherList = () => {
   const { edit, create, show } = useNavigation();
-  const voucherFake = generateRandomVoucher(10);
+  const [voucherFake, setVoucerFake] = React.useState<IVoucher[]>(
+    generateRandomVoucher(10)
+  );
   const { dataGridProps } = useDataGrid<IVoucher>();
   const columns = React.useMemo<GridColDef<IVoucher>[]>(
     () => [
@@ -99,13 +101,13 @@ const VoucherList = () => {
     setVoucherEditModal(true);
   }, []);
 
-  const searchVoucherHandle = React.useCallback(async (query: string) => {
+  const searchVoucherHandle = async (query: string) => {
     console.log('searchVoucherHandle', query);
-  }, []);
+  };
 
   return (
     <>
-      <CommonContainer>
+      <CommonContainer className="flex flex-col">
         <Box className="flex flex-row justify-between items-center">
           <Box className="flex flex-row items-center gap-2 px-2">
             <LoyaltyOutlinedIcon className="text-2xl" />
@@ -123,7 +125,7 @@ const VoucherList = () => {
           </Button>
         </Box>
         <DataGrid
-          {...dataGridProps}
+          // {...dataGridProps}
           columns={columns}
           rows={voucherFake}
           getRowId={(row: IVoucher) => row.voucher_code || ''}
@@ -137,7 +139,12 @@ const VoucherList = () => {
               '&:nth-of-type(odd)': {
                 backgroundColor: 'rgba(0,0,0,0.04)'
               }
-            }
+            },
+            '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
+              {
+                backgroundColor: 'transparent !important',
+                color: 'black'
+              }
           }}
           className="text-accent my-4"
         />

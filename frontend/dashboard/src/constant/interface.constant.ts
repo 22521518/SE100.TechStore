@@ -13,7 +13,7 @@ export interface IProduct {
 }
 
 export interface IProductAttribute {
-  id: string;
+  id: number;
   name: string;
   detail: string;
 }

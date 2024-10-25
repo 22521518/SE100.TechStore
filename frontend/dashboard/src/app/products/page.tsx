@@ -26,6 +26,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import { dummyProductImage } from '@constant/value.constant';
+import CommonContainer from '@components/common-container';
 
 const ProductList = () => {
   const { create, edit, show } = useNavigation();
@@ -41,9 +42,9 @@ const ProductList = () => {
     });
   };
 
-  const SearchProductSubmit = React.useCallback(async (query: String) => {
+  const SearchProductSubmit = async (query: String) => {
     console.log('SearchProductSubmit', query);
-  }, []);
+  };
 
   const { dataGridProps } = useDataGrid<IProduct>();
 
@@ -142,94 +143,90 @@ const ProductList = () => {
   };
 
   return (
-    <>
-      <div className="pb-4 mx-2">
-        <Stack className="py-6 bg-white rounded-lg px-4">
-          <Box className="flex flex-row justify-between items-center">
-            <Box className="flex flex-row items-center gap-2">
-              <InventoryIcon className="text-2xl" />
-              <Typography variant="h2" className="text-2xl font-bold">
-                All Products
-              </Typography>
-              <SearchBar title="Product" handleSubmit={SearchProductSubmit} />
-              <FormControl variant="outlined" className="mr-1 min-w-max hidden">
-                <InputLabel id="sort-by-label">Sort by:</InputLabel>
-                <Select
-                  labelId="sort-by-label"
-                  id="sort-by-select"
-                  value={filter.search}
-                  onChange={handleFilterChange}
-                  label="Sort by"
-                  className="rounded-sm min-w-max"
-                >
-                  {filterList.map((item, index) => (
-                    <MenuItem key={index} value={item.toLowerCase()}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-
-            <Button
-              className="bg-accent text-secondary-100 font-bold px-4 py-2"
-              onClick={() => create('products')}
-            >
-              <AddIcon />
-              Add Product
-            </Button>
+    <div className="pb-4 mx-2 flex flex-col gap-4">
+      <CommonContainer className="gap-4">
+        <Box className="flex flex-row justify-between items-center">
+          <Box className="flex flex-row items-center gap-2">
+            <InventoryIcon className="text-2xl" />
+            <Typography variant="h2" className="text-2xl font-bold">
+              All Products
+            </Typography>
+            <SearchBar title="Product" handleSubmit={SearchProductSubmit} />
+            <FormControl variant="outlined" className="mr-1 min-w-max hidden">
+              <InputLabel id="sort-by-label">Sort by:</InputLabel>
+              <Select
+                labelId="sort-by-label"
+                id="sort-by-select"
+                value={filter.search}
+                onChange={handleFilterChange}
+                label="Sort by"
+                className="rounded-sm min-w-max"
+              >
+                {filterList.map((item, index) => (
+                  <MenuItem key={index} value={item.toLowerCase()}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
-          {/* List */}
-          <Box className="flex flex-col">
-            <DataGrid
-              {...dataGridProps}
-              getRowId={(row) => row.product_id}
-              onCellClick={(cell) => {
-                if (cell.field !== 'actions') {
-                  show('products', cell.row.product_id);
-                }
-              }}
-              columns={columns}
-              sx={{
-                color: 'black',
-                '& .MuiDataGrid-row': {
-                  '&:nth-of-type(odd)': {
-                    backgroundColor: 'rgba(0,0,0,0.04)'
-                  }
-                }
-              }}
-              className="text-accent my-4"
-            />
-          </Box>
-        </Stack>
 
-        <Stack className="my-8 py-6 bg-white rounded-lg px-4">
-          <CategoryList
-            onCancel={() => handleCategoryCreate(false)}
-            onEdit={(category: ICategory) => {
-              handleCategoryEdit(true);
-              setCategory(category);
+          <Button
+            className="bg-accent text-secondary-100 font-bold px-4 py-2"
+            onClick={() => create('products')}
+          >
+            <AddIcon />
+            Add Product
+          </Button>
+        </Box>
+        {/* List */}
+        <Box className="flex flex-col">
+          <DataGrid
+            {...dataGridProps}
+            getRowId={(row) => row.product_id}
+            onCellClick={(cell) => {
+              if (cell.field !== 'actions') {
+                show('products', cell.row.product_id);
+              }
             }}
-            onCreate={() => handleCategoryCreate(true)}
+            columns={columns}
+            sx={{
+              '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
+                {
+                  backgroundColor: 'transparent !important',
+                  color: 'black'
+                }
+            }}
+            className="text-accent my-4 bg-transparent"
           />
-        </Stack>
-        {(categoryCreateModal || categoryEditModal) && (
-          <div className="bg-slate-700 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
-            <Box className="w-2/5">
-              {categoryCreateModal && (
-                <CategoryCreate onCancel={() => handleCategoryCreate(false)} />
-              )}
-              {categoryEditModal && (
-                <CategoryEdit
-                  onCancel={() => handleCategoryEdit(false)}
-                  category={category}
-                />
-              )}
-            </Box>
-          </div>
-        )}
-      </div>
-    </>
+        </Box>
+      </CommonContainer>
+
+      <CommonContainer className="">
+        <CategoryList
+          onEdit={(category: ICategory) => {
+            handleCategoryEdit(true);
+            setCategory(category);
+          }}
+          onCreate={() => handleCategoryCreate(true)}
+        />
+      </CommonContainer>
+      {(categoryCreateModal || categoryEditModal) && (
+        <div className="bg-slate-700 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
+          <Box className="w-2/5">
+            {categoryCreateModal && (
+              <CategoryCreate onCancel={() => handleCategoryCreate(false)} />
+            )}
+            {categoryEditModal && (
+              <CategoryEdit
+                onCancel={() => handleCategoryEdit(false)}
+                category={category}
+              />
+            )}
+          </Box>
+        </div>
+      )}
+    </div>
   );
 };
 

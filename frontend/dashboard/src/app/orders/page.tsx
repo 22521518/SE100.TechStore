@@ -38,7 +38,7 @@ const OrderList = () => {
       search: event.target.value as string
     });
   };
-  // const { dataGridProps } = useDataGrid<IOrder>();
+  const { dataGridProps } = useDataGrid<IOrder>();
   const [dummyOrders, setDummyOrder] = React.useState<IOrder[]>(
     generateRandomOrder(10)
   );
@@ -153,7 +153,12 @@ const OrderList = () => {
               '&:nth-of-type(odd)': {
                 backgroundColor: 'rgba(0,0,0,0.04)'
               }
-            }
+            },
+            '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
+              {
+                backgroundColor: 'transparent !important',
+                color: 'black'
+              }
           }}
           className="text-accent my-4"
         />

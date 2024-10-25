@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Cancel, Create } from '@mui/icons-material';
 import { CategoryFormValues } from '@app/categories/category.interface';
+import CommonContainer from '@components/common-container';
 
 type CategoryEditProps = {
   category: ICategory | null;
@@ -64,7 +65,7 @@ export default function CategoryEdit({
   }
 
   return (
-    <div className="bg-white p-8 rounded-lg flex flex-col gap-3 shadow-sm">
+    <CommonContainer isModal className="p-8 rounded-lg flex flex-col gap-3">
       <Typography variant="h3" className="text-3xl font-semibold self-center">
         Edit Category
       </Typography>
@@ -133,6 +134,6 @@ export default function CategoryEdit({
           </Button>
         </Box>
       </form>
-    </div>
+    </CommonContainer>
   );
 }

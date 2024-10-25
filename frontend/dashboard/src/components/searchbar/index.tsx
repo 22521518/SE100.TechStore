@@ -15,8 +15,8 @@ export type SearchBarProps = {
 const SearchBar = ({
   title,
   handleSubmit,
-  className = '',
-  showSearchButton = true
+  className = 'bg-primary-300',
+  showSearchButton = false
 }: SearchBarProps) => {
   const [query, setQuery] = React.useState('');
 
@@ -51,7 +51,7 @@ const SearchBar = ({
           inputProps={{ 'aria-label': `search ${title}` }}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full flex-1"
+          className="w-full flex-1 bg-transparent"
         />
         <IconButton
           className="p-2 h-full"

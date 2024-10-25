@@ -33,7 +33,7 @@ const OrderShow = ({ order }: OrderShowProps) => {
       {order && (
         <>
           <CommonContainer>
-            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-slate-400 pb-4 mb-4">
+            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               <Box className="flex flex-row gap-2 items-center">
                 <Typography className="font-semibold text-sm">
                   Order ID:
@@ -48,7 +48,7 @@ const OrderShow = ({ order }: OrderShowProps) => {
               </Box>
             </Box>
 
-            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-slate-400 pb-4 mb-4">
+            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               <Box className="flex flex-row gap-2 items-start">
                 <AvatarImage
                   src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -59,20 +59,20 @@ const OrderShow = ({ order }: OrderShowProps) => {
                   <Typography className="font-semibold text-lg">
                     {customer?.username || 'username'}
                   </Typography>
-                  <Typography className="text-sm text-slate-400">
+                  <Typography className="text-sm text-secondary-border-secondary-300">
                     {customer?.customer_id || 'customer_id'}
                   </Typography>
                 </Stack>
               </Box>
             </Box>
 
-            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-slate-400 pb-4 mb-4">
+            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               <Typography className="font-semibold text-base">
                 Deliveried date:
               </Typography>
               <Typography
                 variant="caption"
-                className="text-base text-slate-500"
+                className="text-base text-secondary-border-secondary-300"
               >
                 {order.order_status === ORDER_STATUS.DELIVERED &&
                 order.shipping_address?.delivery_date
@@ -83,12 +83,12 @@ const OrderShow = ({ order }: OrderShowProps) => {
               </Typography>
             </Box>
 
-            <Box className="flex flex-col gap-2 border-b-2 border-solid border-slate-400 pb-4 mb-4">
+            <Box className="flex flex-col gap-2 border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               <Box className="flex flex-row gap-3 items-center">
                 <HouseOutlinedIcon />
                 <Typography
                   variant="caption"
-                  className="text-base text-slate-500"
+                  className="text-base text-secondary-border-secondary-300"
                 >
                   {address?.address}, {address?.state}, {address?.city}
                 </Typography>
@@ -97,7 +97,7 @@ const OrderShow = ({ order }: OrderShowProps) => {
                 <CallOutlinedIcon />
                 <Typography
                   variant="caption"
-                  className="text-base text-slate-500"
+                  className="text-base text-secondary-border-secondary-300"
                 >
                   {customer?.phone_number}
                 </Typography>
@@ -106,7 +106,7 @@ const OrderShow = ({ order }: OrderShowProps) => {
           </CommonContainer>
 
           <CommonContainer>
-            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-slate-400 pb-4 mb-4">
+            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               <Box className="flex flex-row gap-2 items-center">
                 <Typography className="font-semibold text-sm">
                   Amounts:
@@ -123,7 +123,7 @@ const OrderShow = ({ order }: OrderShowProps) => {
               </Box>
             </Box>
 
-            <Box className="flex flex-col gap-2 justify-between items-center border-b-2 border-solid border-slate-400 pb-4 mb-4">
+            <Box className="flex flex-col gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               {orderItems?.map((item, index) => (
                 <Box key={index} className="w-full">
                   <ProductCard orderItem={item} />

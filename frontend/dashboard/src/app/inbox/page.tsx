@@ -14,7 +14,15 @@ const InboxList = () => {
     resource: 'inbox'
   });
 
-  const rooms = generateRandomInboxRoom(25);
+  const [rooms, setRooms] = React.useState<IInboxRoom[]>(
+    generateRandomInboxRoom(25)
+  );
+  const [selectedRoom, setSelectedRoom] = React.useState<IInboxRoom>(rooms[0]);
+  const [searchQuery, setSearchQuery] = React.useState<string>('');
+
+  const onClickRoom = (room: IInboxRoom) => {
+    setSelectedRoom(room);
+  };
 
   return (
     <Box className="p-1 overflow-hidden">
@@ -33,12 +41,17 @@ const InboxList = () => {
           </Box>
           <Stack className="w-full h-full scrollbar-thin overflow-y-scroll gap-0.5">
             {rooms.map((room, index) => (
-              <InboxRoomCard key={index} isChoosen={index % 4 == 0} />
+              <InboxRoomCard
+                room={room}
+                key={index}
+                isChoosen={room === selectedRoom}
+                onClick={() => onClickRoom(room)}
+              />
             ))}
           </Stack>
         </Stack>
         <Box className="col-span-3 w-full h-full overflow-scroll scrollbar-none rounded-lg bg-secondary-400">
-          <InboxShow />
+          {selectedRoom && <InboxShow showRoom={selectedRoom} />}
         </Box>
       </Box>
     </Box>

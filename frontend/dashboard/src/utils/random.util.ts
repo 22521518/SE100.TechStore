@@ -110,6 +110,28 @@ function generateRandomOrderItem(order_id: string): IOrderItem {
   return {
     order_id: order_id,
     product_id: `product-${Math.floor(Math.random() * 100)}`,
+    product: {
+      product_id: `product-${Math.floor(Math.random() * 100)}`,
+      product_name: `Product ${Math.floor(Math.random() * 100)}`,
+      categories: [
+        {
+          category_id: Math.floor(Math.random() * 100),
+          category_name: `Category ${Math.floor(Math.random() * 100)}`,
+          description: `Description for category ${Math.floor(
+            Math.random() * 100
+          )}`
+        }
+      ],
+      description: `Description for product ${Math.floor(Math.random() * 100)}`,
+      price: Math.random() * 100 * 1000,
+      attributes: [
+        {
+          id: Math.floor(Math.random() * 100),
+          name: `Attribute ${Math.floor(Math.random() * 100)}`,
+          detail: `Value ${Math.floor(Math.random() * 100)}`
+        }
+      ]
+    },
     quantity: quantity,
     unit_price: unit_price,
     total_price: unit_price * quantity
