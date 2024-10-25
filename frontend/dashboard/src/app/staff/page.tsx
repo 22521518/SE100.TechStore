@@ -88,13 +88,13 @@ const StaffList = () => {
     []
   );
 
-  const searchStaffHandle = React.useCallback(async (query: string) => {
+  const searchStaffHandle = async (query: string) => {
     console.log('searchStaffHandle', query);
-  }, []);
+  };
 
   return (
-    <CommonContainer>
-      <Box className="flex flex-row justify-between items-center">
+    <CommonContainer className="flex flex-col">
+      <Box className="flex flex-row justify-between items-center min-h-max">
         <Box className="flex flex-row items-center gap-2 px-2">
           <SupportAgentOutlinedIcon className="text-2xl" />
           <Typography variant="h2" className="text-2xl font-bold">
@@ -123,7 +123,12 @@ const StaffList = () => {
             '&:nth-of-type(odd)': {
               backgroundColor: 'rgba(0,0,0,0.04)'
             }
-          }
+          },
+          '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
+            {
+              backgroundColor: 'transparent !important',
+              color: 'black'
+            }
         }}
         className="text-accent my-4"
       />

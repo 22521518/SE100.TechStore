@@ -27,7 +27,7 @@ const ProductCard = ({ orderItem }: ProductCardProps) => {
           <Typography className="text-lg font-medium">
             {productInfo?.product_name || 'product'}
           </Typography>
-          <Typography className="text-slate-500">
+          <Typography className="text-secondary-100">
             {transformVNMoney(orderItem.unit_price || 0)}
           </Typography>
         </Stack>

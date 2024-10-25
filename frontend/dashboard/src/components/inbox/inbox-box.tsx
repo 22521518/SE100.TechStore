@@ -19,14 +19,20 @@ const InboxBox = ({
   isStart = true
 }: InboxBoxProps) => {
   return (
-    <Box className="w-full grid grid-cols-5">
-      {isSender && <Box></Box>}
+    <Box
+      className={`w-full grid grid-cols-5 
+    ${isStart ? 'mb-0' : 'mb-2'}
+    ${isEnd ? 'mt-0' : 'mt-2'}
+    
+    `}
+    >
+      {isSender && <span></span>}
       <Box
         className={`flex flex-row gap-2 col-span-4 w-full items-center
           ${isSender ? 'justify-end ' : 'justify-start '}`}
       >
         <Typography
-          className={`w-max max-w-full col-span-4 rounded-3xl p-2 px-3 
+          className={`w-max max-w-full col-span-4 rounded-3xl py-2.5 px-4 text-sm
           ${
             isSender
               ? 'bg-accent text-white w-max order-1 ml-auto ' +
@@ -41,7 +47,7 @@ const InboxBox = ({
           {message.message} / {message.sender.sender_id}
         </Typography>
         <Typography
-          className={`text-sm lg:w-max text-secondary-300 flex-1 lg:min-w-max ${
+          className={`text-[0.75rem] lg:w-max text-secondary-300 flex-1 lg:min-w-max ${
             isSender ? 'text-end' : 'md:-mr-2'
           }`}
         >

@@ -7,6 +7,14 @@
 * It is safe to delete them, and they are not intended to be used by Refine components.
 */
 @layer base {
+  :root {
+    --DataGrid-containerBackground: transparent;
+  }
+
+  .Muidatagrid-root .Muidatagrid-container--top [role='row'],
+  .Muidatagrid-root .Muidatagrid-container--bottom [role='row'] {
+    @apply bg-transparent text-accent;
+  }
   button {
     @apply border border-gray-300 px-2 rounded-sm bg-[#EFEFEF];
   }

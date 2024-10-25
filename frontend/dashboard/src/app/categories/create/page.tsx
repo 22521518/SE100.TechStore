@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Cancel, Create } from '@mui/icons-material';
 import { CategoryFormValues } from '../category.interface';
+import CommonContainer from '@components/common-container';
 
 type CategoryCreateProps = {
   onCancel: () => void;
@@ -40,7 +41,7 @@ export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg flex flex-col gap-3 shadow-sm">
+    <CommonContainer isModal className="p-8 flex flex-col gap-3 shadow-sm">
       <Typography variant="h3" className="text-3xl font-semibold self-center">
         Create Category
       </Typography>
@@ -94,6 +95,6 @@ export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
           </Button>
         </Box>
       </form>
-    </div>
+    </CommonContainer>
   );
 }

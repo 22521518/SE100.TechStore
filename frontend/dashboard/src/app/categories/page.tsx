@@ -18,16 +18,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 type CategoryListProps = {
-  onCancel: () => void;
   onEdit: (category: ICategory) => void;
   onCreate: () => void;
 };
 
-export default function CategoryList({
-  onCancel,
-  onCreate,
-  onEdit
-}: CategoryListProps) {
+export default function CategoryList({ onCreate, onEdit }: CategoryListProps) {
   const { edit, show, create } = useNavigation();
 
   const handleDelete = async (category: ICategory) => {
@@ -105,8 +100,14 @@ export default function CategoryList({
         {...dataGridProps}
         columns={columns}
         getRowId={(row) => row.category_id}
-        className="text-accent my-2"
-        sx={{}}
+        className="text-accent my-2 bg-transparent"
+        sx={{
+          '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
+            {
+              backgroundColor: 'transparent !important',
+              color: 'black'
+            }
+        }}
       />
     </Stack>
   );

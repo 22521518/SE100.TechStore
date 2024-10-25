@@ -13,6 +13,7 @@ import { transformDate } from '@utils/transform.util';
 import SentimentSatisfiedAltOutlinedIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import AvatarImage from '@components/avatar';
 import { dummyAvatar } from '@constant/value.constant';
+import CommonContainer from '@components/common-container';
 
 const CustomerList = () => {
   const { show } = useNavigation();
@@ -81,7 +82,7 @@ const CustomerList = () => {
   return (
     <>
       <div className="pb-4 px-2">
-        <Stack className="py-6 bg-white rounded-lg px-4">
+        <CommonContainer className="">
           <Box className="flex flex-row justify-between items-center">
             <Box className="flex flex-row items-center gap-2">
               <SentimentSatisfiedAltOutlinedIcon className="text-2xl" />
@@ -109,12 +110,17 @@ const CustomerList = () => {
                   '&:nth-of-type(odd)': {
                     backgroundColor: 'rgba(0,0,0,0.04)'
                   }
-                }
+                },
+                '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
+                  {
+                    backgroundColor: 'transparent !important',
+                    color: 'black'
+                  }
               }}
               className="text-accent my-4"
             />
           </Box>
-        </Stack>
+        </CommonContainer>
       </div>
     </>
   );
