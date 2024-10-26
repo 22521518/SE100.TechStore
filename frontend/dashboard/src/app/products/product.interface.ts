@@ -1,12 +1,18 @@
-import { ICategory, IProductAttribute } from '@constant/interface.constant';
+import {
+  ICategory,
+  IProduct,
+  IProductAttribute,
+  IProductImage
+} from '@constant/interface.constant';
 
 export interface ProductFormValues {
+  product_id?: string;
   product_name: string;
-  images: string[];
-  price: number;
-  discount: number;
-  categories: ICategory[];
+  images?: IProductImage[];
   description: string;
-  stock_quantity: number;
+  price: number;
+  discount?: number | null;
+  stock_quantity?: number;
+  categories: ICategory[];
   attributes: IProductAttribute[];
 }

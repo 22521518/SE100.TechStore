@@ -21,27 +21,46 @@ import { HttpError, useForm, useList, useNavigation } from '@refinedev/core';
 import ProductAttributeFields from '@components/products';
 import Image from 'next/image';
 import CommonContainer from '@components/common-container';
+import { ProductFormValues } from '../product.interface';
+import { generateRandomProduct } from '@utils/random.util';
+import { dummyProductImage } from '@constant/value.constant';
+import Compressor from 'compressorjs';
 
 const ProductCreate = () => {
-  const { list } = useNavigation();
+  const { list, create } = useNavigation();
 
   const { onFinish } = useForm<IProduct, HttpError>();
 
   const { data, isLoading, isError } = useList<ICategory, HttpError>({
-    resource: 'categories'
+    resource: 'categories',
+    meta: {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
   });
   const categories = data?.data || [];
 
-  const [productValue, setProductValue] = React.useState<IProduct>({
-    product_name: '',
-    images: [],
-    description: '',
-    price: 0,
-    discount: 0,
-    stock_quantity: 0,
-    categories: [],
-    attributes: []
-  });
+  // const [productValue, setProductValue] = React.useState<IProduct>({
+  //   product_name: '',
+  //   images: [],
+  //   description: '',
+  //   price: 0,
+  //   discount: 0,
+  //   stock_quantity: 0,
+  //   categories: [],
+  //   attributes: []
+  // });
+
+  const [productValue, setProductValue] = React.useState<IProduct>(
+    generateRandomProduct()
+  );
+
+  const [productFormValue, setProductFormValue] =
+    React.useState<ProductFormValues>({
+      ...productValue,
+      images: []
+    });
 
   const setAttributes = (attributes: IProductAttribute[]) => {
     setProductValue({
@@ -50,11 +69,47 @@ const ProductCreate = () => {
     });
   };
 
+  const handleImage = async (file: File) => {
+    const reader = (readFile: File) =>
+      new Promise<string>((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.onload = () => resolve(fileReader.result as string);
+        fileReader.readAsDataURL(readFile);
+      });
+
+    new Compressor(file, {
+      quality: 0.8,
+      maxWidth: 500,
+      maxHeight: 500,
+      resize: 'contain',
+      async success(result) {
+        await reader(file).then((result: string) => {
+          setProductFormValue({
+            ...productFormValue,
+            images: [{ name: file?.name, url: result }]
+          });
+        });
+        console.log('productFormValue', productFormValue);
+      },
+      error(error) {
+        console.error('Error reading file:', error);
+      }
+    });
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleImage(files[0]);
+    }
+  };
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await onFinish(productValue);
-      list('/products');
+      console.log('productFormValue', productFormValue);
+      await onFinish(productFormValue);
+      // list('/products');
     } catch (error) {
       console.log('error', error);
     }
@@ -74,16 +129,17 @@ const ProductCreate = () => {
         <Stack className=" flex-1 gap-4 items-center justify-center">
           <Image
             src={
-              (productValue.images && productValue.images[0]) ||
-              'https://images.unsplash.com/photo-1612367289874-0fba3b4a07dd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              (productFormValue.images && productFormValue.images[0]?.url) ||
+              dummyProductImage
             }
             alt="Product Image"
             width={500}
             height={500}
             className="rounded-lg max-h-[500px] max-w-[500px] object-contain overflow-hidden h-max w-max"
           />
+          <input accept="image/*" type="file" onChange={handleImageChange} />
           <Box className="grid grid-cols-5 gap-2 w-full">
-            {[1, 2, 3, 4, 5].map((i) => (
+            {[].map((i) => (
               <Box key={i} className="col-span-1">
                 <Box className="bg-accent rounded-lg size-24"></Box>
               </Box>

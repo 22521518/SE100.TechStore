@@ -8,12 +8,41 @@ import {
   IOrder,
   IOrderItem,
   IPermission,
+  IProduct,
+  IProductAttribute,
   IProductFeedback,
   IRole,
   ISender,
   IStaff,
   IVoucher
 } from '@constant/interface.constant';
+export function generateRandomAttribute(loops: number): IProductAttribute[] {
+  const attributes: IProductAttribute[] = [];
+
+  for (let i = 0; i < loops; i++) {
+    attributes.push({
+      id: i + 1,
+      name: `Attribute ${i + 1}`,
+      detail: `Value ${i + 1}`
+    });
+  }
+  return attributes;
+}
+
+export function generateRandomProduct(): IProduct {
+  return {
+    product_name: `Product Name ${Math.random().toString(36).substr(2, 5)}`, // Random product name
+    images: [],
+    description: `This is a random product description for ${Math.random()
+      .toString(36)
+      .substr(2, 5)}.`,
+    price: parseFloat((Math.random() * 100 + 5).toFixed(2)), // Random price between 5 and 105
+    discount: parseFloat((Math.random() * 20).toFixed(2)), // Random discount
+    stock_quantity: Math.floor(Math.random() * 100), // Random stock quantity
+    categories: [],
+    attributes: generateRandomAttribute(5) // Random attributes
+  };
+}
 
 export function generateProductFeedback(loop: number): IProductFeedback[] {
   const feedbacks: IProductFeedback[] = [];

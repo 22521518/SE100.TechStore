@@ -3,13 +3,18 @@ import { EMPLOY_STATUS, ORDER_STATUS } from './enum.constant';
 export interface IProduct {
   product_id?: string;
   product_name: string;
-  images?: string[];
+  images?: IProductImage[];
   description: string;
   price: number;
   discount?: number | null;
   stock_quantity?: number;
   categories: ICategory[];
   attributes: IProductAttribute[];
+}
+
+export interface IProductImage {
+  name: string;
+  url: string;
 }
 
 export interface IProductAttribute {
