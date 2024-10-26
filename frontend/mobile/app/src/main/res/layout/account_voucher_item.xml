@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/sharp_border"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/sharp_border"
+        android:padding="16dp"
+        android:src="@drawable/ic_truck_icon" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CODE"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50% off for every product"
+                android:textSize="18sp" />
+
+          <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              android:layout_gravity="center_vertical">
+              <ImageView
+                  android:layout_width="16dp"
+                  android:layout_height="16dp"
+                  android:src="@drawable/ic_clock_icon"/>
+              <TextView
+                  android:layout_marginStart="8dp"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:text="valid until 1/1/2025"/>
+          </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
