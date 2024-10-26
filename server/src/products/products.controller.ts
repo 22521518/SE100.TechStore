@@ -7,12 +7,16 @@ import {
   Param,
   Delete,
   BadRequestException,
+  UseInterceptors,
+  UploadedFiles,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Prisma } from '@prisma/client';
 import { CreateProductDto } from './dto/create-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-
+import { FilesInterceptor } from '@nestjs/platform-express';
+import sharp from 'sharp';
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -23,11 +27,40 @@ export class ProductsController {
     createProductDto: CreateProductDto,
   ) {
     try {
-      const { categories, images, attributes, ...product_info } =
+      const { categories, attributes, images, ...product_info } =
         createProductDto;
-      console.log(attributes, images);
+
+      const imageFiles = await Promise.all(
+        images.map(async ({ name, url }) => {
+          const base64Data = url.replace(/^data:image\/\w+;base64,/, '');
+          const imageBuffer = Buffer.from(base64Data, 'base64');
+
+          const compressedBuffer = await sharp(imageBuffer)
+            .resize(500) // Resize if needed
+            .jpeg({ quality: 80 }) // Adjust format and quality
+            .toBuffer()
+            .then((data) => data)
+            .catch((err) => {
+              throw new InternalServerErrorException(
+                'Failed to compress image: ' + err,
+              );
+            });
+
+          // Create a mock Express.Multer.File object
+          return {
+            fieldname: 'image',
+            originalname: name,
+            encoding: 'base64',
+            mimetype: 'image/jpeg', // or whatever type you expect
+            buffer: compressedBuffer,
+            size: compressedBuffer.length,
+          };
+        }),
+      );
+
       const productDto: Prisma.ProductsCreateInput = {
         ...product_info,
+        images: [],
         discount: product_info.discount || 0,
         categories: {
           connect: categories.map((cat) => ({
@@ -35,7 +68,13 @@ export class ProductsController {
           })) as Prisma.CategoriesWhereUniqueInput[],
         },
       };
-      const product = await this.productsService.create(productDto);
+
+      const product = await this.productsService.create(
+        productDto,
+        attributes,
+        imageFiles as Express.Multer.File[],
+      );
+
       return product;
     } catch (error) {
       console.error(error);
@@ -66,24 +105,33 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FilesInterceptor('images', 6))
   async update(
     @Param('id') id: string,
     @Body()
     updateProductDto: UpdateProductDto,
+    @UploadedFiles() images: Express.Multer.File[],
   ) {
     try {
       const { categories, attributes, ...product_info } = updateProductDto;
       console.log(attributes);
       const productDto: Prisma.ProductsUpdateInput = {
         ...product_info,
+        images: [],
         categories: {
-          set: categories.map(
-            (category_id) => category_id,
-          ) as Prisma.CategoriesWhereUniqueInput[],
+          set: categories?.map((category) => ({
+            category_id: category.category_id,
+          })) as Prisma.CategoriesWhereUniqueInput[],
         },
       };
-      const product = await this.productsService.update(id, productDto);
+      const product = await this.productsService.update(
+        id,
+        productDto,
+        attributes,
+        images,
+      );
       return product;
+      // return updateProductDto;
     } catch (error) {
       console.error(error);
       console.error(updateProductDto);
@@ -99,6 +147,17 @@ export class ProductsController {
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Deleting product failed');
+    }
+  }
+
+  @Delete()
+  async removeAll() {
+    try {
+      const product = await this.productsService.removeAll();
+      return product;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Deleting all products failed');
     }
   }
 }

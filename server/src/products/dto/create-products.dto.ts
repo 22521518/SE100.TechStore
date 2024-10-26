@@ -8,6 +8,7 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ProductAttribute } from '../schemas/product-attribute.schema';
 
 export class CreateProductDto {
   @IsOptional()
@@ -19,13 +20,15 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true }) // Ensures each element in the array is a string
-  images?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => ProductImageDto)
+  images?: ProductImageDto[];
 
   @IsString()
   description: string;
 
   @IsNumber()
+  @Min(0)
   price: number;
 
   @IsOptional()
@@ -36,6 +39,7 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsNumber()
+  @Min(0)
   stock_quantity?: number;
 
   @IsArray()
@@ -45,10 +49,20 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsArray()
-  attributes?: any[];
+  @ValidateNested({ each: true })
+  @Type(() => ProductAttribute)
+  attributes?: ProductAttribute[];
 }
 
 export class Category {
   @IsNumber()
   category_id: number;
+}
+
+export class ProductImageDto {
+  @IsString()
+  name: string;
+
+  @IsString()
+  url: string;
 }

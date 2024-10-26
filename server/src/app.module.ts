@@ -15,9 +15,18 @@ import { OrdersModule } from './orders/orders.module';
 import { ShipsModule } from './ships/ships.module';
 import { StaffModule } from './staff/staff.module';
 import { RolesModule } from './roles/roles.module';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { CloudinaryDbService } from './cloudinary-db/cloudinary-db.service';
+import { CloudinaryDbModule } from './cloudinary-db/cloudinary-db.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(process.env.MONGOBD_URI),
     PrismaDbModule,
     AccountsModule,
     VouchersModule,
@@ -32,8 +41,9 @@ import { RolesModule } from './roles/roles.module';
     ShipsModule,
     StaffModule,
     RolesModule,
+    CloudinaryDbModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CloudinaryDbService],
 })
 export class AppModule {}

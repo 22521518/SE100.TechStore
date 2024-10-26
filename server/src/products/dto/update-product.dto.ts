@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 import { Category } from './create-products.dto';
 import { Type } from 'class-transformer';
+import { ProductAttribute } from '../schemas/product-attribute.schema';
 
 export class UpdateProductDto {
   @IsString()
@@ -15,8 +16,8 @@ export class UpdateProductDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true }) // Ensures each element in the array is a string
-  images?: string[];
+  @ValidateNested({ each: true })
+  images?: Express.Multer.File[];
 
   @IsString()
   @IsOptional()
@@ -42,5 +43,7 @@ export class UpdateProductDto {
 
   @IsOptional()
   @IsArray()
-  attributes?: any[];
+  @ValidateNested({ each: true })
+  @Type(() => ProductAttribute)
+  attributes?: ProductAttribute[];
 }

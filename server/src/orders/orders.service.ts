@@ -41,9 +41,18 @@ export class OrdersService {
           customer_id: customerId,
         },
         include: {
-          order_items: including_items,
+          order_items: {
+            include: {
+              product: including_items,
+            },
+          },
           customer: including_customer,
           voucher: including_voucher,
+          shipping_address: {
+            include: {
+              address: true,
+            },
+          },
         },
       });
       return orders;
