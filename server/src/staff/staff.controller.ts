@@ -12,10 +12,14 @@ import { StaffService } from './staff.service';
 import { Prisma } from '@prisma/client';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
+import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
 
 @Controller('staff')
 export class StaffController {
-  constructor(private readonly staffService: StaffService) {}
+  constructor(
+    private readonly staffService: StaffService,
+    private readonly prismaDbService: PrismaDbService,
+  ) {}
 
   @Post()
   async create(
@@ -23,12 +27,26 @@ export class StaffController {
     createStaffDto: CreateStaffDto,
   ) {
     try {
-      const { account_id, ...rest } = createStaffDto;
+      const { account, ...rest } = createStaffDto;
+
+      const existingAccount = await this.prismaDbService.accounts.findUnique({
+        where: { email: account.email },
+      });
+
+      if (existingAccount) {
+        throw new BadRequestException('Email already exists');
+      }
+
       const staffDto: Prisma.StaffCreateInput = {
         ...rest,
         account: {
-          connect: {
-            account_id: account_id,
+          connectOrCreate: {
+            where: { email: account.email }, // Ensure to use the same unique identifier
+            create: {
+              email: account.email,
+              password: account.password, // Adjust as necessary
+              // Add other necessary fields here...
+            },
           },
         },
       };
@@ -36,7 +54,7 @@ export class StaffController {
       return staff;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Creating staff failed');
+      throw new BadRequestException(error || 'Creating staff failed');
     }
   }
 

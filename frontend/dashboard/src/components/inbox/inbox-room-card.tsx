@@ -21,7 +21,7 @@ const InboxRoomCard = ({
   const message = room.messages[room.messages.length - 1];
   const sender = message.sender;
   const isSeen =
-    sender.is_seen && sender.sender_id === room.customer.customer_id;
+    message.is_seen && sender.sender_id === room.customer.customer_id;
 
   return (
     <Box

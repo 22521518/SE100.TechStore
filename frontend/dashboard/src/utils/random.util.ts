@@ -313,24 +313,21 @@ export function generateRandomVoucher(loops: number): IVoucher[] {
   return vouchers;
 }
 
-function generateRandomSender(seen: boolean, id?: string): ISender {
+function generateRandomSender(id?: string): ISender {
   return {
     sender_id: id || `sender-${Math.floor(Math.random() * 1000)}`,
-    sender_name: `Sender Name ${Math.random().toString(36).substr(2, 5)}`,
-    is_seen: true
+    sender_name: `Sender Name ${Math.random().toString(36).substr(2, 5)}`
   };
 }
 
 function generateRandomMessage(seen: boolean = true): IInboxMessage {
   return {
-    sender: generateRandomSender(
-      seen,
-      Math.random() > 0.5 ? '--admin' : '--customer'
-    ),
+    sender: generateRandomSender(),
     message_id: `message-${Math.floor(Math.random() * 1000)}`,
     message: `This is a random message with id ${Math.floor(
       Math.random() * 1000
     )}`,
+    is_seen: seen,
     created_at: new Date().toISOString()
   };
 }
@@ -357,7 +354,6 @@ export function generateRandomInboxRoom(loops: number): IInboxRoom[] {
     const messageCount = 20;
     rooms.push({
       room_id: `room-${i + 1}`,
-      room_name: `Room Name ${Math.random().toString(36).substr(2, 5)}`,
       customer: generateRandomCustomer(
         Math.random() > 0.5 ? '--admin' : '--customer'
       ),

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProductAttributeSchema } from './schemas/product-attribute.schema';
+import { ProductAttributeSchema } from './entities/product-attribute.entity';
 import { CloudinaryDbModule } from 'src/cloudinary-db/cloudinary-db.module';
 
 @Module({

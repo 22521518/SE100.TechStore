@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Prisma } from '@prisma/client';
 import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
-import { ProductAttribute } from './schemas/product-attribute.schema';
+import { ProductAttribute } from './entities/product-attribute.entity';
 import mongoose from 'mongoose';
 import { CloudinaryDbService } from 'src/cloudinary-db/cloudinary-db.service';
 
@@ -131,6 +131,7 @@ export class ProductsService {
         where: { product_id: id },
         include: {
           categories: true,
+          product_feedbacks: true,
         },
       });
 

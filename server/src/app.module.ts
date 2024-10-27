@@ -19,6 +19,9 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CloudinaryDbService } from './cloudinary-db/cloudinary-db.service';
 import { CloudinaryDbModule } from './cloudinary-db/cloudinary-db.module';
+import { InboxModule } from './inbox/inbox.module';
+import { CustomerInboxModule } from './customer-inbox/customer-inbox.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -42,6 +45,9 @@ import { CloudinaryDbModule } from './cloudinary-db/cloudinary-db.module';
     StaffModule,
     RolesModule,
     CloudinaryDbModule,
+    InboxModule,
+    CustomerInboxModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryDbService],

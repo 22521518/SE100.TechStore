@@ -1,9 +1,19 @@
 import { $Enums } from '@prisma/client';
-import { IsDateString, IsEnum, IsString, Length } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsString,
+  Length,
+  ValidateNested,
+} from 'class-validator';
+import { CreateAccountsDto } from 'src/accounts/dto/create-accounts.dto';
 
 export class CreateStaffDto {
-  @IsString()
-  account_id: string;
+  @ValidateNested()
+  @Type(() => CreateAccountsDto)
+  account: CreateAccountsDto;
 
   @IsString()
   full_name: string;
@@ -12,6 +22,7 @@ export class CreateStaffDto {
   @Length(10, 10)
   phone_number: string;
 
+  @IsOptional()
   @IsEnum($Enums.EMPLOY_STATUS, { message: 'Invalid employee status' })
   employee_status?: $Enums.EMPLOY_STATUS;
 

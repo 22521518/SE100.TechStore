@@ -135,8 +135,7 @@ export interface IVoucher extends IVoucherWithoutCode {
 }
 
 export interface IInboxRoom {
-  room_id: string;
-  room_name: string;
+  room_id?: string;
   customer: ICustomer;
   messages: IInboxMessage[];
 }
@@ -144,11 +143,12 @@ export interface IInboxRoom {
 export interface ISender {
   sender_id: string;
   sender_name: string;
-  is_seen: boolean;
 }
+
 export interface IInboxMessage {
   sender: ISender;
-  message_id: string;
+  message_id?: string;
   message: string;
   created_at: Date | string;
+  is_seen: boolean;
 }

@@ -8,7 +8,7 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ProductAttribute } from '../schemas/product-attribute.schema';
+import { ProductAttribute } from '../entities/product-attribute.entity';
 
 export class CreateProductDto {
   @IsOptional()

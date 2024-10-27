@@ -12,25 +12,42 @@ import { CustomersService } from './customers.service';
 import { Prisma } from '@prisma/client';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { PrismaDbService } from 'src/prisma-db/prisma-db.service';
 
 @Controller('customers')
 export class CustomersController {
-  constructor(private readonly customersService: CustomersService) {}
+  constructor(
+    private readonly customersService: CustomersService,
+    private readonly prismaDbService: PrismaDbService,
+  ) {}
 
   @Post()
   async create(@Body() createCustomerDto: CreateCustomerDto) {
     try {
+      const { account, ...customerInfo } = createCustomerDto;
+
+      const existingAccount = await this.prismaDbService.accounts.findUnique({
+        where: { email: account.email },
+      });
+
+      if (existingAccount) {
+        throw new BadRequestException('Email already exists');
+      }
+
       const customerDto: Prisma.CustomersCreateInput = {
-        ...createCustomerDto,
+        ...customerInfo,
         account: {
-          create: createCustomerDto.account,
           connectOrCreate: {
-            where: createCustomerDto.account,
-            create: createCustomerDto.account,
+            where: { email: account.email }, // Ensure to use the same unique identifier
+            create: {
+              email: account.email,
+              password: account.password, // Adjust as necessary
+              // Add other necessary fields here...
+            },
           },
-          connect: createCustomerDto.account,
         },
       };
+
       const customer = await this.customersService.create(customerDto);
       return customer;
     } catch (error) {

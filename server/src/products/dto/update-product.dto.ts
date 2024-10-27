@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { Category } from './create-products.dto';
 import { Type } from 'class-transformer';
-import { ProductAttribute } from '../schemas/product-attribute.schema';
+import { ProductAttribute } from '../entities/product-attribute.entity';
 
 export class UpdateProductDto {
   @IsString()
