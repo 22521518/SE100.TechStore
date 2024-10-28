@@ -8,7 +8,7 @@ async function bootstrap() {
     origin: '*',
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  await app.listen(9999);
+  await app.listen(0);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
