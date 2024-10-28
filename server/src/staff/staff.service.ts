@@ -40,9 +40,16 @@ export class StaffService {
         where: { staff_id: id },
         include: {
           role: true,
+          account: true,
         },
       });
-      return staff;
+      const { account, ...rest } = staff;
+      return {
+        ...rest,
+        account: {
+          email: account.email,
+        },
+      };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Error fetching staff');
