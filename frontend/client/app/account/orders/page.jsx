@@ -1,6 +1,8 @@
 "use client";
+import CollapsibleContainer from "@components/UI/CollapsibleBanner";
 import Divider from "@components/UI/Divider";
 import OrderItem from "@components/UI/OrderItem";
+import Link from "@node_modules/next/link";
 import React, { useState } from "react";
 
 const Orders = () => {
@@ -8,17 +10,18 @@ const Orders = () => {
   const viewItems = [
     "All",
     "Pending",
+    "Confirmed",
     "Shipping",
     "Delivered",
     "Canceled",
-    "Refunded",
+
   ];
-  const [orderItems, setOrderItems] = useState([
-    { id: "a", status: "Pending" },
-    { id: "b", status: "Shipping" },
-    { id: "c", status: "Delivered" },
-    { id: "d", status: "Canceled" },
-    { id: "e", status: "Refunded" },
+  const [orders, setOrders] = useState([
+    { id: "a", totalPrice: 300000000, createdAt:"01/01/2024", status: "Pending",items:[1,2,3] },
+    { id: "b", totalPrice: 300000000, createdAt:"01/01/2024", status: "Shipping",items:[1,2] },
+    { id: "c", totalPrice: 300000000, createdAt:"01/01/2024", status: "Delivered" ,items:[1]},
+    { id: "d", totalPrice: 300000000, createdAt:"01/01/2024", status: "Canceled",items:[1,2,3,5] },
+    { id: "e", totalPrice: 300000000, createdAt:"01/01/2024", status: "Confirmed",items:[1,2,3,1,2,4] },
   ]);
 
   const renderActions = (status) => {
@@ -26,7 +29,7 @@ const Orders = () => {
       case "Pending":
         return <button className="button-variant-2">Cancel</button>;
       case "Shipping":
-        return <button className="button-variant-2">Track</button>;
+        return <Link href={'/tracking'}><button className="button-variant-2">Track</button></Link>;
       case "Delivered":
         return (
           <>
@@ -36,8 +39,8 @@ const Orders = () => {
         );
       case "Canceled":
         return <button className="button-variant-2">Reorder</button>;
-      case "Refunded":
-        return <button className="button-variant-2">Reorder</button>;
+      case "Confirmed":
+        return <Link href={'/tracking'}><button className="button-variant-2">Track</button></Link>;
       default:
         return null;
     }
@@ -68,7 +71,7 @@ const Orders = () => {
             {status}
           </div>
         );
-      case "Refunded":
+      case "Confirmed":
         return (
           <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-black">
             {status}
@@ -101,12 +104,21 @@ const Orders = () => {
         <Divider />
       </div>
       <div className="flex flex-col justify-center  gap-4">
-        {orderItems.filter(item=>item.status===selectedView||selectedView==="All").map((item) => (
+        {orders?.filter(item=>item.status===selectedView||selectedView==="All").map((item) => (
           <div
             key={item.id}
             className="flex flex-col bg-on-surface/20 rounded-lg p-2 gap-2"
           >
-            <OrderItem />
+            <div className="flex flex-wrap justify-between gap-4">
+              <h3>OrderID: {item.id}</h3>
+              <h3 className="opacity-70">{item.createdAt}</h3>
+            </div>
+            <Divider/>
+            <h2 className="text-xl font-bold">{Intl.NumberFormat("en-US").format(item.totalPrice)} VNĐ</h2>
+            <CollapsibleContainer content={ <ul className="flex flex-col gap-4 py-4">
+            {item.items?.map(item=><OrderItem/>)}
+            </ul>} maxHeight={200} />
+           
             <div className="flex flex-row justify-between items-center">
               {renderStatus(item.status)}
               <div className="flex gap-2 flex-wrap">
