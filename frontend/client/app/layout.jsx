@@ -1,12 +1,11 @@
-
 import "@styles/globals.css";
 import Nav from "@components/UI/Nav";
 import Footer from "@components/UI/Footer";
-
 import { config, icon } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import SupportChatBox from "@components/Chat/SupportChatBox";
 import ThemeProvider from "@components/theme/ThemeProvider";
+import Provider from "@provider/AuthProvider";
 config.autoAddCss = false;
 
 export const metadata = {
@@ -21,16 +20,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <ThemeProvider>
-          <div className="min-h-[100vh] flex flex-col background">
-            <Nav></Nav>
-            <div className="grow h-fit flex justify-center">
-              <div className="max-w-[1200px] w-full px-2 py-4">{children}</div>
+        <Provider>
+          <ThemeProvider>
+            <div className="min-h-[100vh] flex flex-col background">
+              <Nav></Nav>
+              <div className="grow h-fit flex justify-center">
+                <div className="max-w-[1200px] w-full px-2 py-4">
+                  {children}
+                </div>
+              </div>
+              <Footer></Footer>
+              <SupportChatBox />
             </div>
-            <Footer></Footer>
-            <SupportChatBox/>
-          </div>
-        </ThemeProvider>
+          </ThemeProvider>
+        </Provider>
       </body>
     </html>
   );

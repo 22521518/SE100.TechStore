@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  
   .light {
     --primary: 255, 255, 255;
     --primary-variant: 200, 200, 200; /* Example value */

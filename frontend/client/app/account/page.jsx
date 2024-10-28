@@ -29,11 +29,11 @@ const Account = () => {
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-4 md:flex-row">
-              <span className="grid grid-rows-[auto_1fr] md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-10 ">
+              <span className="grid grid-cols-1 md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-x-10 gap-y-4 ">
                 <span>Last name</span>
                 <InputBox/>
               </span>
-              <span className="grid grid-rows-[auto_1fr] md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-10 ">
+              <span className="grid grid-cols-1 md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-x-10 gap-y-4 ">
                 <span>First name</span>
                 <InputBox />
               </span>
