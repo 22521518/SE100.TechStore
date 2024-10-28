@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --primary: 255, 255, 255;
-  --primary-variant: 200, 200, 200; /* Example value */
-  --secondary: 34, 34, 34; /* Example value */
-  --secondary-variant: 70, 70, 70; /* Example value */
-  --background: 255, 255, 255;
-  --surface: 240, 240, 240; /* Example value */
-  --error: 255, 0, 0; /* Example value */
-  --on-primary: 0, 0, 0; /* Example value */
-  --on-secondary: 255, 255, 255; /* Example value */
-  --on-background: 0, 0, 0; /* Example value */
-  --on-surface: 0, 0, 0; /* Example value */
-  --on-error: 255, 255, 255; /* Example value */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
+  .light {
+    --primary: 255, 255, 255;
+    --primary-variant: 200, 200, 200; /* Example value */
+    --secondary: 34, 34, 34; /* Example value */
+    --secondary-variant: 70, 70, 70; /* Example value */
+    --background: 255, 255, 255;
+    --surface: 240, 240, 240; /* Example value */
+    --error: 255, 0, 0; /* Example value */
+    --on-primary: 0, 0, 0; /* Example value */
+    --on-secondary: 255, 255, 255; /* Example value */
+    --on-background: 0, 0, 0; /* Example value */
+    --on-surface: 0, 0, 0; /* Example value */
+    --on-error: 255, 255, 255; /* Example value */
+  }
+  
+  .dark {
     --primary: 34, 34, 34; /* Dark grey */
     --primary-variant: 50, 50, 50; /* Darker grey */
     --secondary: 10, 10, 10; /* White */
@@ -33,17 +33,17 @@
     --on-error: 255, 255, 255; /* White */
   }
 }
-body {
+
+.background {
   background: linear-gradient(to top, White, rgba(var(--background), 1));
   color: rgb(var(--on-background));
 }
-
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
   ul {
-    @apply overflow-scroll no-scrollbar
+    @apply overflow-scroll no-scrollbar;
   }
 
   .no-scrollbar {
@@ -89,18 +89,18 @@ body {
   }
 
   .panel-1 {
-    @apply h-fit overflow-hidden rounded-xl border-[2px] border-on-secondary p-4 bg-primary/20 backdrop-blur-sm shadow-xl
+    @apply h-fit overflow-hidden rounded-xl border-[2px] border-on-secondary p-4 bg-primary/20 backdrop-blur-sm shadow-xl;
   }
 
   .panel-2 {
-    @apply overflow-hidden rounded-md bg-primary shadow-lg text-on-primary p-4
+    @apply overflow-hidden rounded-md bg-primary shadow-lg text-on-primary p-4;
   }
 
   .account-nav-bar-item {
-    @apply grid grid-cols-[auto_1fr] gap-2 items-center hover:bg-secondary hover:text-on-secondary rounded-lg p-2  text-left justify-items-start  w-full min-w-fit
+    @apply grid grid-cols-[auto_1fr] gap-2 items-center hover:bg-secondary hover:text-on-secondary rounded-lg p-2  text-left justify-items-start  w-full min-w-fit;
   }
 
   .account-nav-bar-selected-item {
-    @apply grid grid-cols-[auto_1fr] gap-2 items-center bg-secondary text-on-secondary rounded-lg p-2  text-left justify-items-start  w-full min-w-fit
+    @apply grid grid-cols-[auto_1fr] gap-2 items-center bg-secondary text-on-secondary rounded-lg p-2  text-left justify-items-start  w-full min-w-fit;
   }
 }

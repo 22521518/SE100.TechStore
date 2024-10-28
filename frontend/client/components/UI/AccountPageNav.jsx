@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   faBox,
   faKey,
@@ -24,20 +24,23 @@ const AccountPageNav = () => {
 
   return (
     <div className="grid grid-rows-[auto_1fr] gap-2 w-full">
-      <div className="flex flex-row w-full gap-4">
+      <div className="flex flex-row w-full gap-4 items-center">
         <button className="text-4xl">
           <FontAwesomeIcon icon={faUserCircle} />
         </button>
-        <div className="flex flex-col justify-around items-start">
-          <span className="text-xl">Username</span>
-          <span className="text-sm">Edit user</span>
-        </div>
+        <span className="text-xl">Username</span>
       </div>
       <div className="  panel-1 ">
         <div className="overflow-x-scroll no-scrollbar w-full flex flex-row md:flex-col gap-2 text-sm items-center md:items-start ">
           {MenuItems.map((item) => (
             <Link key={item.name} href={item.path} className="w-full">
-              <button className={`${pathName===item.path?'account-nav-bar-selected-item':'account-nav-bar-item'}`}>
+              <button
+                className={`${
+                  pathName === item.path
+                    ? "account-nav-bar-selected-item"
+                    : "account-nav-bar-item"
+                }`}
+              >
                 <FontAwesomeIcon icon={item.icon} />
                 <span>{item.name}</span>
               </button>

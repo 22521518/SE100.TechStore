@@ -1,4 +1,5 @@
 "use client";
+import ThemeButton from "@components/theme/ThemeButton";
 import {
   faCartPlus,
   faCircleUser,
@@ -34,20 +35,23 @@ const Nav = () => {
   };
   return (
     <div className="w-full sticky top-0 left-0 bg-secondary grid gap-2 md:grid-cols-3 gap-y-4 md:gap-y-0 grid-cols-1 p-2 z-50 text-on-secondary">
-      <Link
-        href="/"
-        className="flex flex-row gap-2 items-center justify-between md:justify-start"
-      >
-        <Image
-          src={process.env.NEXT_PUBLIC_APP_LOGO}
-          alt="app logo"
-          width={42}
-          height={42}
-        />
-        <div className="font-bold text-xl">
-          {process.env.NEXT_PUBLIC_APP_NAME}
-        </div>
-      </Link>
+      <div className="flex gap-4 items-center justify-between md:justify-start">
+        <Link
+          href="/"
+          className="flex flex-row gap-2 items-center"
+        >
+          <Image
+            src={process.env.NEXT_PUBLIC_APP_LOGO}
+            alt="app logo"
+            width={42}
+            height={42}
+          />
+          <div className="font-bold text-xl">
+            {process.env.NEXT_PUBLIC_APP_NAME}
+          </div>
+        </Link>
+        <ThemeButton/>
+      </div>
       <ul className="flex h-full whitespace-nowrap justify-between px-2 items-center text-sm font-semibold md:row-auto row-start-3">
         <Link href="/">
           <button className="hover:bg-primary hover:text-on-primary rounded-xl h-full p-2 w-[80px]">
