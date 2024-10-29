@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.home_page">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#000000"
+        tools:context=".HomePageActivity"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/black">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logo"
+                android:textColor="@color/white"
+                android:padding="8dp"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:src="@drawable/ic_cart"
+                android:layout_marginLeft="290dp"
+                android:padding="8dp"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_user"
+                android:padding="8dp" />
+
+
+        </LinearLayout>
+        <!-- Header with Logo, Search, Cart, and Profile -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:background="@color/black">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_menu"/>
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:layout_margin="4dp"
+                android:hint="  Search"
+                android:background="@color/white"
+                android:padding="4dp"
+                android:drawableLeft="@drawable/ic_search" />
+
+
+
+
+        </LinearLayout>
+
+
+
+        <!-- Promotional Banner -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/white"
+                android:src="@drawable/img_gold_price_2"
+                android:layout_centerInParent="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buy now"
+                android:background="#000000"
+                android:textColor="#FFFFFF"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="10dp"/>
+        </RelativeLayout>
+
+
+        <!-- Product Item -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rc_trend"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp" />
+
+        <!-- Load More Button -->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Xem thêm sản phẩm"
+            android:background="@color/lightgray"
+            android:textColor="@color/white"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
