@@ -54,7 +54,6 @@ export class RolesController {
   async findOne(@Param('id') id: string) {
     try {
       const role = await this.rolesService.findOne(+id);
-      console.log(role);
       return role;
     } catch (error) {
       console.error(error);

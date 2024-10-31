@@ -28,12 +28,16 @@ export class StaffService {
           account: true,
         },
       });
-      const staffs = staff.map(({ account, ...rest }) => ({
-        ...rest,
-        account: {
-          email: account.email,
-        },
-      }));
+      const staffs = staff.map((acc) => {
+        if (!acc) return null;
+        const { account, ...rest } = acc;
+        return {
+          ...rest,
+          account: {
+            email: account.email,
+          },
+        };
+      });
       return staffs;
     } catch (error) {
       console.error(error);
@@ -50,6 +54,7 @@ export class StaffService {
           account: true,
         },
       });
+      if (!staff) return null;
       const { account, ...rest } = staff;
       return {
         ...rest,

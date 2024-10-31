@@ -88,7 +88,7 @@ export class ProductsService {
     try {
       // Fetch products and their categories
       const productsData = await this.prismaDbService.products.findMany({
-        include: { categories: true },
+        include: { categories: true, product_feedbacks: true },
       });
 
       // Fetch all product attributes
@@ -111,9 +111,14 @@ export class ProductsService {
       });
 
       // Combine products with their corresponding attributes
-      const products = productsData.map((product) => ({
-        ...product,
-        attributes: attributeMap.get(product.product_id) || [],
+      const products = productsData.map(({ product_feedbacks, ...rest }) => ({
+        ...rest,
+        average_rating:
+          product_feedbacks.length === 0
+            ? 0
+            : product_feedbacks.reduce((acc, curr) => acc + curr.rating, 0) /
+              product_feedbacks.length,
+        attributes: attributeMap.get(rest.product_id) || [],
       }));
 
       return products;
