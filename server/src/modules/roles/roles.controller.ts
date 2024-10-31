@@ -20,9 +20,16 @@ export class RolesController {
   @Post()
   async create(@Body() createRoleDto: CreateRoleDto) {
     try {
+      const { role_permissions, ...rest } = createRoleDto;
       const roleDto: Prisma.RolesCreateInput = {
-        role_name: createRoleDto.role_name,
-        description: createRoleDto.description,
+        ...rest,
+        ...(role_permissions && {
+          role_permissions: {
+            connect: role_permissions.map((permission) => ({
+              permission_id: permission.permission_id,
+            })),
+          },
+        }),
       };
       const role = await this.rolesService.create(roleDto);
       return role;
@@ -47,6 +54,7 @@ export class RolesController {
   async findOne(@Param('id') id: string) {
     try {
       const role = await this.rolesService.findOne(+id);
+      console.log(role);
       return role;
     } catch (error) {
       console.error(error);
@@ -57,13 +65,14 @@ export class RolesController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     try {
-      const { role_permissions, role_name, description } = updateRoleDto;
+      const { role_permissions, ...rest } = updateRoleDto;
       const roleDto: Prisma.RolesUpdateInput = {
-        role_name,
-        description,
+        ...rest,
         ...(role_permissions && {
           role_permissions: {
-            set: role_permissions,
+            set: role_permissions.map((permission) => ({
+              permission_id: permission.permission_id,
+            })),
           },
         }),
       };

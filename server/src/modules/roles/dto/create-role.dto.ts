@@ -1,4 +1,4 @@
-import { IsString, IsArray, ValidateNested, IsNumber } from 'class-validator';
+import { IsString, IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateRoleDto {
@@ -15,6 +15,6 @@ export class CreateRoleDto {
 }
 
 export class RolePermission {
-  @IsNumber()
-  permission_id: number;
+  @IsString()
+  permission_id: string;
 }

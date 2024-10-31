@@ -3,6 +3,7 @@ import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 import { Prisma } from '@prisma/client';
+import { Permission } from './entities/permission.entity';
 
 @Injectable()
 export class PermissionsService {
@@ -29,7 +30,12 @@ export class PermissionsService {
   async findAll() {
     try {
       const permissions = await this.prismaDbService.permissions.findMany();
-      return permissions;
+      return [
+        ...permissions,
+        ...[
+          // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        ].map((i) => new Permission('permision_id' + i + `${Math.random()}`)),
+      ];
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Error fetching permissions');
