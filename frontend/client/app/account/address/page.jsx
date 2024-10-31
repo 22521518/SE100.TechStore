@@ -49,16 +49,6 @@ const Address = () => {
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
 
-  const handleChangeProvince = (province) => {
-    setProvince(province);
-  };
-  const handleChangeDistrict = (district) => {
-    setDistrict(district);
-  };
-  const handleChangeWard = (ward) => {
-    setWard(ward);
-  };
-
   useEffect(() => {
     if (skipflag) return;
     setDistrict(null);
@@ -252,21 +242,21 @@ const Address = () => {
                 value={province}
                 options={provinces}
                 name="province"
-                onChange={handleChangeProvince}
+                onChange={setProvince}
                 zIndex={70}
               />
               <DropDownButton
                 value={district}
                 options={districts}
                 name="district"
-                onChange={handleChangeDistrict}
+                onChange={setDistrict}
                 zIndex={60}
               />
               <DropDownButton
                 value={ward}
                 options={wards}
                 name="ward"
-                onChange={handleChangeWard}
+                onChange={setWard}
                 zIndex={50}
               />
             </div>

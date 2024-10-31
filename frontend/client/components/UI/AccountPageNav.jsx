@@ -8,6 +8,7 @@ import {
   faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { signOut } from "@node_modules/next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
@@ -28,7 +29,10 @@ const AccountPageNav = () => {
         <button className="text-4xl">
           <FontAwesomeIcon icon={faUserCircle} />
         </button>
-        <span className="text-xl">Username</span>
+        <div className="flex flex-col h-full justify-between">
+          <span className="text-xl">Username</span>
+          <span onClick={signOut} className="text-sm opacity-50 hover:opacity-100 cursor-pointer w-fit text-red-400">Log out</span>
+        </div>
       </div>
       <div className="  panel-1 ">
         <div className="overflow-x-scroll no-scrollbar w-full flex flex-row md:flex-col gap-2 text-sm items-center md:items-start ">
