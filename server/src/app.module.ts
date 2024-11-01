@@ -1,27 +1,31 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PrismaDbModule } from './prisma-db/prisma-db.module';
-import { AccountsModule } from './accounts/accounts.module';
-import { VouchersModule } from './vouchers/vouchers.module';
-import { ProductsModule } from './products/products.module';
-import { ImportationsModule } from './importations/importations.module';
-import { SupplierModule } from './supplier/supplier.module';
-import { CategoriesModule } from './categories/categories.module';
-import { CartsModule } from './carts/carts.module';
-import { CustomersModule } from './customers/customers.module';
-import { AddressesModule } from './addresses/addresses.module';
-import { OrdersModule } from './orders/orders.module';
-import { ShipsModule } from './ships/ships.module';
-import { StaffModule } from './staff/staff.module';
-import { RolesModule } from './roles/roles.module';
+import { PrismaDbModule } from './databases/prisma-db/prisma-db.module';
+import { AccountsModule } from './modules/accounts/accounts.module';
+import { VouchersModule } from './modules/vouchers/vouchers.module';
+import { ProductsModule } from './modules/products/products.module';
+import { ImportationsModule } from './modules/importations/importations.module';
+import { SupplierModule } from './modules/supplier/supplier.module';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { CartsModule } from './modules/carts/carts.module';
+import { CustomersModule } from './modules/customers/customers.module';
+import { AddressesModule } from './modules/addresses/addresses.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { ShipsModule } from './modules/ships/ships.module';
+import { StaffModule } from './modules/staff/staff.module';
+import { RolesModule } from './modules/roles/roles.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CloudinaryDbService } from './cloudinary-db/cloudinary-db.service';
-import { CloudinaryDbModule } from './cloudinary-db/cloudinary-db.module';
-import { InboxModule } from './inbox/inbox.module';
-import { CustomerInboxModule } from './customer-inbox/customer-inbox.module';
-import { FeedbackModule } from './feedback/feedback.module';
+import { CloudinaryDbService } from './databases/cloudinary-db/cloudinary-db.service';
+import { CloudinaryDbModule } from './databases/cloudinary-db/cloudinary-db.module';
+import { InboxModule } from './modules/inbox/inbox.module';
+import { CustomerInboxModule } from './modules/customer-inbox/customer-inbox.module';
+import { FeedbackModule } from './modules/feedback/feedback.module';
+import { PermissionsModule } from './modules/permissions/permissions.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { PermissionsGuard } from './common/guards/permission.guard';
 
 @Module({
   imports: [
@@ -48,8 +52,17 @@ import { FeedbackModule } from './feedback/feedback.module';
     InboxModule,
     CustomerInboxModule,
     FeedbackModule,
+    PermissionsModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CloudinaryDbService],
+  providers: [
+    AppService,
+    CloudinaryDbService,
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
+    },
+  ],
 })
 export class AppModule {}
