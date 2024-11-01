@@ -9,6 +9,7 @@ import {
   BadRequestException,
   UseInterceptors,
   InternalServerErrorException,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Prisma } from '@prisma/client';
@@ -82,9 +83,23 @@ export class ProductsController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(
+    @Query('pageSize') limit: string,
+    @Query('current') offset: string,
+    @Query('product_name') product_name: string = '',
+  ) {
     try {
-      const product = await this.productsService.findAll();
+      const product = await this.productsService.findAll(
+        +limit,
+        (+offset > 0 ? +offset - 1 : 0) * +limit,
+        product_name,
+      );
+      console.log('product_name', product_name);
+      console.log('offset', offset);
+      console.log('limit', limit);
+      console.log('length', product.length);
+      console.log('\n--------\n');
+
       return product;
     } catch (error) {
       console.error(error);

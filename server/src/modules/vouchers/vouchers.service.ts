@@ -18,9 +18,28 @@ export class VouchersService {
     }
   }
 
-  async findAll() {
+  async findAll(voucher_code: string, voucher_name: string) {
     try {
-      const vouchers = await this.prismaDbService.vouchers.findMany();
+      const vouchers = await this.prismaDbService.vouchers.findMany({
+        where: {
+          ...(voucher_code
+            ? {
+                voucher_code: {
+                  contains: voucher_code,
+                  mode: 'insensitive',
+                },
+              }
+            : {}),
+          ...(voucher_name
+            ? {
+                voucher_name: {
+                  contains: voucher_name,
+                  mode: 'insensitive',
+                },
+              }
+            : {}),
+        },
+      });
       return vouchers;
     } catch (error) {
       console.error(error);

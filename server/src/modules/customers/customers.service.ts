@@ -18,9 +18,25 @@ export class CustomersService {
     }
   }
 
-  async findAll() {
+  async findAll(contain_username: string, contain_customer_id: string) {
     try {
       const customers = await this.prismaDbService.customers.findMany({
+        where: {
+          ...(contain_username
+            ? {
+                username: {
+                  contains: contain_username,
+                },
+              }
+            : {}),
+          ...(contain_customer_id
+            ? {
+                customer_id: {
+                  contains: contain_customer_id,
+                },
+              }
+            : {}),
+        },
         include: {
           account: true,
         },
@@ -41,10 +57,64 @@ export class CustomersService {
     }
   }
 
-  async findOne(id: string) {
+  async findOneByAccount(account_id: string) {
+    try {
+      const customer = await this.prismaDbService.customers.findFirst({
+        where: {
+          account_id: account_id,
+        },
+        include: {
+          account: true,
+        },
+      });
+      if (!customer) {
+        throw new BadRequestException('Customer not found');
+      }
+      const { account, ...rest } = customer;
+      return {
+        ...rest,
+        account: {
+          email: account.email,
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching customer');
+    }
+  }
+
+  async findOneByEmail(email: string) {
+    try {
+      const customer = await this.prismaDbService.customers.findFirst({
+        where: {
+          account: {
+            email: email,
+          },
+        },
+        include: {
+          account: true,
+        },
+      });
+      if (!customer) {
+        throw new BadRequestException('Customer not found');
+      }
+      const { account, ...rest } = customer;
+      return {
+        ...rest,
+        account: {
+          email: account.email,
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching customer');
+    }
+  }
+
+  async findOne(customer_id: string) {
     try {
       const customer = await this.prismaDbService.customers.findUnique({
-        where: { customer_id: id },
+        where: { customer_id: customer_id },
         include: {
           orders: true,
           product_feedbacks: true,

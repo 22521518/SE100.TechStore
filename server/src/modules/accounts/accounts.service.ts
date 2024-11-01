@@ -18,9 +18,34 @@ export class AccountsService {
     }
   }
 
-  async findAll() {
+  async comparePassword(password: string, hash: string) {
     try {
-      const acc = await this.prismaDbService.accounts.findMany();
+      return password === hash;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error comparing password');
+    }
+  }
+
+  async findOneByEmail(email: string) {
+    try {
+      const acc = await this.prismaDbService.accounts.findUnique({
+        where: { email: email },
+      });
+      return acc;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error fetching account');
+    }
+  }
+
+  async findAll(contain_email: string) {
+    try {
+      const acc = await this.prismaDbService.accounts.findMany({
+        where: {
+          ...(contain_email ? { email: { contains: contain_email } } : {}),
+        },
+      });
       return acc;
     } catch (error) {
       console.log(error);

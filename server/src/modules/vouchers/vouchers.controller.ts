@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { VouchersService } from './vouchers.service';
 import { Prisma } from '@prisma/client';
@@ -36,9 +37,15 @@ export class VouchersController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(
+    @Query('voucher_code') voucher_code: string,
+    @Query('voucher_name') voucher_name: string,
+  ) {
     try {
-      const vouchers = await this.vouchersService.findAll();
+      const vouchers = await this.vouchersService.findAll(
+        voucher_code,
+        voucher_name,
+      );
       return vouchers;
     } catch (error) {
       console.error(error);

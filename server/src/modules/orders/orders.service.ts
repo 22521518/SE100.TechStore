@@ -30,6 +30,36 @@ export class OrdersService {
   }
 
   async findAll(
+    customer_id: string,
+    including_items: boolean = true,
+    including_customer: boolean = true,
+    including_voucher: boolean = true,
+  ) {
+    try {
+      const orders = await this.prismaDbService.orders.findMany({
+        where: {
+          ...(customer_id
+            ? {
+                customer_id: {
+                  equals: customer_id,
+                },
+              }
+            : {}),
+        },
+        include: {
+          order_items: including_items,
+          customer: including_customer,
+          voucher: including_voucher,
+        },
+      });
+      return orders;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching orders');
+    }
+  }
+
+  async findAllWithCustomer(
     customerId: string,
     including_items: boolean = true,
     including_customer: boolean = true,

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 import { Prisma } from '@prisma/client';
@@ -57,9 +58,15 @@ export class CustomersController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(
+    @Query('username') contain_username: string,
+    @Query('customer_id') contain_customer_id: string,
+  ) {
     try {
-      const customer = await this.customersService.findAll();
+      const customer = await this.customersService.findAll(
+        contain_username,
+        contain_customer_id,
+      );
       return customer;
     } catch (error) {
       console.error(error);

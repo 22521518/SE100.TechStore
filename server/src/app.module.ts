@@ -23,6 +23,9 @@ import { InboxModule } from './modules/inbox/inbox.module';
 import { CustomerInboxModule } from './modules/customer-inbox/customer-inbox.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { PermissionsGuard } from './common/guards/permission.guard';
 
 @Module({
   imports: [
@@ -50,8 +53,16 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
     CustomerInboxModule,
     FeedbackModule,
     PermissionsModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CloudinaryDbService],
+  providers: [
+    AppService,
+    CloudinaryDbService,
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
+    },
+  ],
 })
 export class AppModule {}

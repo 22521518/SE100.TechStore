@@ -20,9 +20,36 @@ export class StaffService {
     }
   }
 
-  async findAll() {
+  async findAll(full_name: string, staff_id: string, email: string) {
     try {
       const staff = await this.prismaDbService.staff.findMany({
+        where: {
+          ...(full_name
+            ? {
+                full_name: {
+                  contains: full_name,
+                  mode: 'insensitive',
+                },
+              }
+            : {}),
+          ...(staff_id
+            ? {
+                staff_id: {
+                  equals: staff_id,
+                },
+              }
+            : {}),
+          ...(email
+            ? {
+                account: {
+                  email: {
+                    contains: email,
+                    mode: 'insensitive',
+                  },
+                },
+              }
+            : {}),
+        },
         include: {
           role: true,
           account: true,
@@ -39,6 +66,35 @@ export class StaffService {
         };
       });
       return staffs;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching staff');
+    }
+  }
+
+  async findOneByAccount(account_id: string) {
+    try {
+      const staff = await this.prismaDbService.staff.findFirst({
+        where: {
+          account_id,
+        },
+        include: {
+          role: {
+            include: {
+              role_permissions: true,
+            },
+          },
+          account: true,
+        },
+      });
+      if (!staff) return null;
+      const { account, ...rest } = staff;
+      return {
+        ...rest,
+        account: {
+          email: account.email,
+        },
+      };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Error fetching staff');

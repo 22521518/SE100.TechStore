@@ -9,11 +9,15 @@ import {
   BadRequestException,
   UsePipes,
   ValidationPipe,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { Prisma } from '@prisma/client';
 import { CreateAccountsDto } from './dto/create-accounts.dto';
 import { UpdateAccountsDto } from './dto/update-accounts.dto';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('accounts')
 export class AccountsController {
@@ -34,10 +38,12 @@ export class AccountsController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['accounts:read'])
   @Get()
-  async findAll() {
+  async findAll(@Query('email') contain_email: string) {
     try {
-      const acc = await this.accountsService.findAll();
+      const acc = await this.accountsService.findAll(contain_email);
       return acc;
     } catch (error) {
       console.error(error);

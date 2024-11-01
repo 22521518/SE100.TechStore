@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { Prisma } from '@prisma/client';
@@ -33,9 +34,11 @@ export class CategoriesController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query('category') contain_category_name: string) {
     try {
-      const category = await this.categoriesService.findAll();
+      const category = await this.categoriesService.findAll(
+        contain_category_name,
+      );
       return category;
     } catch (error) {
       console.error(error);

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { StaffService } from './staff.service';
 import { Prisma } from '@prisma/client';
@@ -59,9 +60,13 @@ export class StaffController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(
+    @Query('full_name') full_name: string,
+    @Query('staff_id') staff_id: string,
+    @Query('email') email: string,
+  ) {
     try {
-      const staff = await this.staffService.findAll();
+      const staff = await this.staffService.findAll(full_name, staff_id, email);
       return staff;
     } catch (error) {
       console.error(error);

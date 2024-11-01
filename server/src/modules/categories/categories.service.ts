@@ -18,9 +18,14 @@ export class CategoriesService {
     }
   }
 
-  async findAll(including: boolean = true) {
+  async findAll(contain_category_name: string, including: boolean = false) {
     try {
       const categories = await this.prismaDbService.categories.findMany({
+        where: {
+          ...(contain_category_name
+            ? { category_name: { contains: contain_category_name } }
+            : {}),
+        },
         include: {
           products: including,
         },

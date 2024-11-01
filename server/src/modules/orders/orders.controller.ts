@@ -7,6 +7,7 @@ import {
   Param,
   BadRequestException,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { Prisma } from '@prisma/client';
@@ -54,10 +55,21 @@ export class OrdersController {
     }
   }
 
-  @Get(':id')
-  async findAll(@Param('id') customerId: string) {
+  @Get()
+  async findAll(@Query('customer_id') customerId: string) {
     try {
-      const order = await this.ordersService.findAll(customerId);
+      const orders = await this.ordersService.findAll(customerId);
+      return orders;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching orders failed');
+    }
+  }
+
+  @Get(':id')
+  async findAllWithCustomer(@Param('id') customerId: string) {
+    try {
+      const order = await this.ordersService.findAllWithCustomer(customerId);
       return order;
     } catch (error) {
       console.error(error);

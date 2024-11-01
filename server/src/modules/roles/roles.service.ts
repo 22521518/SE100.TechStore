@@ -30,6 +30,9 @@ export class RolesService {
         include: {
           role_permissions: including_permissions,
         },
+        orderBy: {
+          role_id: 'asc',
+        },
       });
       return roles;
     } catch (error) {
