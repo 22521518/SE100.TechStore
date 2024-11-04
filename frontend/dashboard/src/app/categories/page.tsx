@@ -8,7 +8,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useNavigation } from '@refinedev/core';
 import AddIcon from '@mui/icons-material/Add';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import { useDataGrid } from '@refinedev/mui';
@@ -23,8 +22,6 @@ type CategoryListProps = {
 };
 
 export default function CategoryList({ onCreate, onEdit }: CategoryListProps) {
-  const { edit, show, create } = useNavigation();
-
   const handleDelete = async (category: ICategory) => {
     console.log('delete', category);
   };

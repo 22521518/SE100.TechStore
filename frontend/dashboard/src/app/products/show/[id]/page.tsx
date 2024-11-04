@@ -2,19 +2,19 @@
 
 import ProductFeedbackList from '@app/product-feedback/show/[id]/page';
 import ProductSatistics from '@app/product-feedback/statistics';
-import { IProduct, IProductFeedback } from '@constant/interface.constant';
-import { Box, Stack, Typography } from '@mui/material';
+import CommonContainer from '@components/common-container';
+import { IProductReceive } from '@constant/interface.constant';
+import { Box, Typography } from '@mui/material';
 import { HttpError, useNavigation, useForm } from '@refinedev/core';
-import { generateProductFeedback } from '@utils/random.util';
 import Image from 'next/image';
 import React from 'react';
 
 const ProductShow = () => {
   const { edit, list } = useNavigation();
-  const { query, formLoading } = useForm<IProduct, HttpError>();
+  const { query, formLoading } = useForm<IProductReceive, HttpError>();
   const record = query?.data?.data;
 
-  const [productValue, setProductValue] = React.useState<IProduct>({
+  const [productValue, setProductValue] = React.useState<IProductReceive>({
     product_name: record?.product_name || 'Product Name',
     images: record?.images || [],
     description: record?.description || '',
@@ -22,7 +22,8 @@ const ProductShow = () => {
     discount: record?.discount || 1,
     stock_quantity: record?.stock_quantity || 0,
     categories: record?.categories || [],
-    attributes: record?.attributes || []
+    attributes: record?.attributes || [],
+    product_feedbacks: record?.product_feedbacks || []
   });
 
   const priceDiscout =
@@ -37,19 +38,17 @@ const ProductShow = () => {
       discount: record?.discount || 1,
       stock_quantity: record?.stock_quantity || 0,
       categories: record?.categories || [],
-      attributes: record?.attributes || []
+      attributes: record?.attributes || [],
+      product_feedbacks: record?.product_feedbacks || []
     });
   }, [record]);
 
   return (
     <div className="pb-4 px-2 flex flex-col gap-4">
-      <Box className="py-6 bg-white rounded-lg px-4 grid grid-cols-2">
+      <CommonContainer className="py-6 grid grid-cols-2">
         <Box className="flex flex-row gap-4 items-center">
           <Image
-            src={
-              (productValue.images && productValue.images[0]) ||
-              'https://images.unsplash.com/photo-1612367289874-0fba3b4a07dd?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-            }
+            src={productValue.images && productValue.images[0]}
             alt={productValue.product_name}
             width={256}
             height={256}
@@ -60,13 +59,12 @@ const ProductShow = () => {
               {productValue.product_name}
             </Typography>
             <Typography variant="body1" className="text-2xl font-bold">
-              {' '}
               {priceDiscout.toFixed(0)} VND
             </Typography>
             <Box className="flex flex-row gap-2">
               <Typography
                 variant="body2"
-                className="font-bold text-slate-400 line-through text-xl"
+                className="font-bold text-secondary-100 text-opacity-75 line-through text-xl"
               >
                 {productValue.price} VND
               </Typography>
@@ -80,20 +78,24 @@ const ProductShow = () => {
               )}
             </Box>
             <Typography variant="body2">
-              Stock: {productValue.stock_quantity}{' '}
+              Stock: {productValue.stock_quantity} items
             </Typography>
-            <Typography variant="body2" className="text-slate-400 text-xl">
-              {productValue.categories[0]?.category_name}
+            <Typography variant="body2" className="text-secondary-100 text-xl">
+              Category: {productValue.categories[0]?.category_name}
             </Typography>
           </Box>
         </Box>
         {/* Statics */}
         <Box className="flex items-center justify-end px-4 text-yellow-500">
-          <ProductSatistics feedbackList={generateProductFeedback(1000)} />
+          {productValue.product_feedbacks && (
+            <ProductSatistics feedbackList={productValue.product_feedbacks} />
+          )}
         </Box>
-      </Box>
+      </CommonContainer>
 
-      <ProductFeedbackList feedbacklist={generateProductFeedback(100)} />
+      {productValue.product_feedbacks && (
+        <ProductFeedbackList feedbacklist={productValue.product_feedbacks} />
+      )}
     </div>
   );
 };

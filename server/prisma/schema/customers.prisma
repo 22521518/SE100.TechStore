@@ -4,6 +4,8 @@ model Customers {
     username        String   @unique @db.VarChar(50)
     full_name       String   @db.VarChar(100)
     phone_number    String   @db.VarChar(10)
+    male            Boolean?  @default(true) 
+    birth_date      DateTime? 
     date_joined     DateTime @default(now())
 
     cart        Cart_Item[]

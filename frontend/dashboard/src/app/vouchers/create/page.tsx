@@ -30,7 +30,6 @@ const VoucherCreate = ({ onCancel }: VoucherCreateProps) => {
 
   const onCancelHandler = React.useCallback(() => {
     if (onCancel) onCancel();
-    else list('vouchers');
   }, [onCancel]);
 
   const [voucher, setVoucher] = React.useState<IVoucherWithoutCode>({
@@ -41,11 +40,14 @@ const VoucherCreate = ({ onCancel }: VoucherCreateProps) => {
     valid_to: new Date()
   });
 
+  const validTo = voucher.valid_to;
+  const validFrom = voucher.valid_from;
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await onFinish(voucher);
-      list('vouchers');
+      onCancelHandler();
     } catch (error) {
       console.log('error', error);
     }
@@ -106,7 +108,7 @@ const VoucherCreate = ({ onCancel }: VoucherCreateProps) => {
             <TextField
               type="date"
               label="Valid From"
-              value={new Date(voucher.valid_from).toISOString().split('T')[0]}
+              value={new Date(validFrom).toISOString().split('T')[0]}
               onChange={(e) =>
                 setVoucher({ ...voucher, valid_from: new Date(e.target.value) })
               }
@@ -117,9 +119,9 @@ const VoucherCreate = ({ onCancel }: VoucherCreateProps) => {
             <TextField
               type="date"
               label="Valid To"
-              value={new Date(voucher.valid_to).toISOString().split('T')[0]}
+              value={new Date(validTo).toISOString().split('T')[0]}
               onChange={(e) =>
-                setVoucher({ ...voucher, valid_to: e.target.value })
+                setVoucher({ ...voucher, valid_to: new Date(e.target.value) })
               }
               className="w-full"
             />
