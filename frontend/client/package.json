@@ -14,10 +14,12 @@
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "compressorjs": "^1.2.1",
     "next": "14.2.14",
     "next-auth": "^4.24.10",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sonner": "^1.6.1"
   },
   "devDependencies": {
     "@types/node": "22.8.1",

@@ -7,11 +7,22 @@ import {
   faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "@node_modules/next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useRef } from "react";
 
 const Nav = () => {
+  const router = useRouter()
+  const searchTextRef = useRef("");
+
+  const handleTextChange = (e) => {
+    searchTextRef.current = e.target.value;
+  };
+
+  const handleSearch = () => {
+    router.push(`/search?searchText=${searchTextRef.current}`)
+  }
   const handleTriggerChatButton = () => {
     const chatButton = document.getElementById("chatButton");
     if (!chatButton) return;
@@ -36,10 +47,7 @@ const Nav = () => {
   return (
     <div className="w-full sticky top-0 left-0 bg-secondary grid gap-2 md:grid-cols-3 gap-y-4 md:gap-y-0 grid-cols-1 p-2 z-50 text-on-secondary">
       <div className="flex gap-4 items-center justify-between md:justify-start">
-        <Link
-          href="/"
-          className="flex flex-row gap-2 items-center"
-        >
+        <Link href="/" className="flex flex-row gap-2 items-center">
           <Image
             src={process.env.NEXT_PUBLIC_APP_LOGO}
             alt="app logo"
@@ -50,7 +58,7 @@ const Nav = () => {
             {process.env.NEXT_PUBLIC_APP_NAME}
           </div>
         </Link>
-        <ThemeButton/>
+        <ThemeButton />
       </div>
       <ul className="flex h-full whitespace-nowrap justify-between px-2 items-center text-sm font-semibold md:row-auto row-start-3">
         <Link href="/">
@@ -78,16 +86,16 @@ const Nav = () => {
       <ul className="flex flex-row gap-4 text-2xl justify-end">
         <input
           type="text"
-          className="w-full md:w-[100px] lg:w-[300px] rounded-xl bg-primary-variant text-base px-2 text-on-primary placeholder:text-on-primary"
+          className="w-full md:w-[100px] lg:w-[300px] rounded-xl bg-primary-variant text-base px-2 text-on-primary placeholder:text-on-primary outline-none"
           placeholder="Search product"
+          onChange={handleTextChange}
+          onKeyDown={(e)=>{e.key==='Enter'?handleSearch():null}}
         />
-        <button>
-          <Link href="/search">
-            <FontAwesomeIcon icon={faSearch} />
-          </Link>
+        <button onClick={handleSearch}>
+          <FontAwesomeIcon icon={faSearch} />
         </button>
-        <button>
-          <Link href="/cart">
+        <button id="CartButton">
+          <Link href="/cart" >
             <FontAwesomeIcon icon={faShoppingCart} />
           </Link>
         </button>

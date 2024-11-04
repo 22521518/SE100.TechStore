@@ -36,7 +36,7 @@
 }
 
 .background {
-  background: linear-gradient(to top, White, rgba(var(--background), 1));
+  background: linear-gradient(to top, rgba(var(--on-background),1), rgba(var(--background), 1));
   color: rgb(var(--on-background));
 }
 @layer utilities {
@@ -71,22 +71,22 @@
   }
 
   .pending {
-    @apply order-state bg-slate-400;
+    @apply order-state bg-slate-500;
   }
 
   .shipping {
-    @apply order-state bg-blue-400;
+    @apply order-state bg-blue-500;
   }
 
   .delivered {
-    @apply order-state bg-green-400;
+    @apply order-state bg-green-500;
   }
 
-  .refunded {
+  .confirmed {
     @apply order-state bg-black;
   }
   .cancelled {
-    @apply order-state bg-red-400;
+    @apply order-state bg-red-500;
   }
 
   .panel-1 {

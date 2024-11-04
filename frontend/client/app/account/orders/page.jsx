@@ -13,14 +13,14 @@ const Orders = () => {
     "Confirmed",
     "Shipping",
     "Delivered",
-    "Canceled",
+    "Cancelled",
 
   ];
   const [orders, setOrders] = useState([
     { id: "a", totalPrice: 300000000, createdAt:"01/01/2024", status: "Pending",items:[1,2,3] },
     { id: "b", totalPrice: 300000000, createdAt:"01/01/2024", status: "Shipping",items:[1,2] },
     { id: "c", totalPrice: 300000000, createdAt:"01/01/2024", status: "Delivered" ,items:[1]},
-    { id: "d", totalPrice: 300000000, createdAt:"01/01/2024", status: "Canceled",items:[1,2,3,5] },
+    { id: "d", totalPrice: 300000000, createdAt:"01/01/2024", status: "Cancelled",items:[1,2,3,5] },
     { id: "e", totalPrice: 300000000, createdAt:"01/01/2024", status: "Confirmed",items:[1,2,3,1,2,4] },
   ]);
 
@@ -37,7 +37,7 @@ const Orders = () => {
             <button className="button-variant-2">Refund</button>
           </>
         );
-      case "Canceled":
+      case "Cancelled":
         return <button className="button-variant-2">Reorder</button>;
       case "Confirmed":
         return <Link href={'/tracking'}><button className="button-variant-2">Track</button></Link>;
@@ -49,31 +49,31 @@ const Orders = () => {
     switch (status) {
       case "Pending":
         return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-gray-500">
+          <div className="pending">
             {status}
           </div>
         );
       case "Shipping":
         return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-blue-500">
+          <div className="shipping">
             {status}
           </div>
         );
       case "Delivered":
         return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-green-500">
+          <div className="delivered">
             {status}
           </div>
         );
-      case "Canceled":
+      case "Cancelled":
         return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-red-500">
+          <div className="cancelled">
             {status}
           </div>
         );
       case "Confirmed":
         return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-black">
+          <div className="confirmed">
             {status}
           </div>
         );

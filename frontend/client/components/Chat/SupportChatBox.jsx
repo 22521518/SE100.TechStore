@@ -30,10 +30,18 @@ const SupportChatBox = () => {
       const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
       const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
 
-      setPosition({
-        bottom: window.innerHeight - clientY - offset.y,
-        left: clientX - offset.x,
-      });
+       // Calculate new position
+    const newBottom = window.innerHeight - clientY - offset.y;
+    const newLeft = clientX - offset.x;
+
+    // Ensure the button stays within the viewport
+    const clampedBottom = Math.max(0, Math.min(newBottom, window.innerHeight - 50)); // Keep it above the bottom edge
+    const clampedLeft = Math.max(0, Math.min(newLeft, window.innerWidth - 50)); // Keep it within the left edge
+
+    setPosition({
+      bottom: clampedBottom,
+      left: clampedLeft,
+    });
     }
   };
 
@@ -89,7 +97,7 @@ const SupportChatBox = () => {
       ) : (
         <button
           id="chatButton"
-          className=" shadow-xl fixed size-9 m-4 rounded-full bg-on-primary text-primary sm:scale-110 transition-transform duration-150 hover:scale-150"
+          className=" shadow-xl fixed size-9 m-4 rounded-full bg-on-primary text-primary sm:scale-110 transition-transform duration-150 hover:scale-150 z-50"
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}

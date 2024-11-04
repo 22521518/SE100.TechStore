@@ -1,15 +1,16 @@
 "use client";
-import { getAllProduct } from "@actions/product";
+import { getAllProduct, getProducts } from "@service/product";
 import ProductCard from "@components/UI/ProductCard";
 import { faEquals } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { getAllCategory } from "@actions/category";
+import { getAllCategory } from "@service/category";
 import Link from "@node_modules/next/link";
 
 export default function Home() {
-  const [isLoading,setIsLoading] = useState(true)
+  const PRODUCTS_LIMIT = 16;
+  const [isLoading, setIsLoading] = useState(true);
   const bannerImage = [
     "https://cdn.thewirecutter.com/wp-content/media/2024/07/laptopstopicpage-2048px-3685-2x1-1.jpg?width=2048&quality=75&crop=2:1&auto=webp",
     "https://pianohouse.vn/image/cache/large/catalog/products/phu-kien-piano/Loa%20Marshall/marshall-banner-2.jpg",
@@ -21,21 +22,17 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const firstBannerRef = useRef(null);
   const secondBannerRef = useRef(null);
+  const fetchProducts = () => {
+    setIsLoading(true);
+    getAllProduct(40).then((data) => setProducts(data));
+    setTimeout(() => setIsLoading(false), 1000);
+  };
+
+  const fetchCategories = () => {
+    getAllCategory().then((data) => setCategories(data));
+  };
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true)
-      const response = await getAllProduct();
-
-      setProducts(response.slice(0, 16));
-      setIsLoading(false)
-    };
-
-    const fetchCategories = async () => {
-      const response = await getAllCategory();
-
-      setCategories(response);
-    };
-
     fetchProducts();
     fetchCategories();
 
@@ -47,7 +44,7 @@ export default function Home() {
 
         // Check if scrolled to the end
         if (firstBannerRef.current.scrollLeft + clientWidth >= scrollWidth) {
-          firstBannerRef.current.scrollLeft = 0
+          firstBannerRef.current.scrollLeft = 0;
         } else {
           firstBannerRef.current.scrollBy({
             left: clientWidth,
@@ -63,7 +60,7 @@ export default function Home() {
 
         // Check if scrolled to the end
         if (secondBannerRef.current.scrollLeft + clientWidth >= scrollWidth) {
-          secondBannerRef.current.scrollLeft = 0
+          secondBannerRef.current.scrollLeft = 0;
         } else {
           secondBannerRef.current.scrollBy({
             left: clientWidth,
@@ -82,18 +79,22 @@ export default function Home() {
       <div className="w-full overflow-hidden rounded-lg shadow-md relative">
         <ul
           ref={firstBannerRef}
-          className="relative w-full flex flex-row items-center overflow-x-scroll no-scrollbar snap-mandatory snap-x gap-2 bg-secondary/50"
+          className="relative w-full flex flex-row items-center overflow-x-scroll no-scrollbar snap-mandatory snap-x gap-4 bg-secondary/50"
         >
           {bannerImage.map((image, index) => (
-            <li key={index} className="flex-shrink-0 w-full h-80 snap-start">
+            <li
+              key={index}
+              className="min-w-full h-fit relative flex items-center justify-center "
+            >
               {" "}
               {/* Specify height here */}
               <Image
                 src={image}
                 alt="product image"
-                width={800} // Set the width of the image
-                height={256} // Set the height of the image for proper aspect ratio
-                className="object-cover w-full h-full" // Ensure the image covers the entire area
+                width={0} // Set the width of the image
+                height={0}
+                layout="responsive" // Set the height of the image for proper aspect ratio
+                className="size-full object-contain snap-start" // Ensure the image covers the entire area
               />
             </li>
           ))}
@@ -108,43 +109,84 @@ export default function Home() {
       {/* product categories */}
       <div className="flex gap-2 justify-center items-center">
         <ul className="px-4 py-2 min-h-[48px] flex-wrap items-center bg-surface text-on-surface gap-6 flex rounded-xl text-lg">
-          {categories.slice(0,5).map((item) => (
-            <li key={item.category_id} className="hover:font-bold cursor-pointer"><Link href={`/search?category=${item.category_id}`}>{item.category_name}</Link></li>
+          {categories.slice(0, 5).map((item) => (
+            <li
+              key={item.category_id}
+              className="hover:font-bold cursor-pointer"
+            >
+              <Link href={`/search?category=${item.category_id}`}>
+                {item.category_name}
+              </Link>
+            </li>
           ))}
         </ul>
-        <button className="size-12 text-2xl text-on-surface bg-surface rounded-xl">
-          <FontAwesomeIcon icon={faEquals} />
-        </button>
       </div>
 
       <p className="text-2xl font-semibold my-4">See our newest products</p>
       {/* product list */}
       <ul className="grid grid-cols-2 md:grid-cols-4 gap-2 overflow-visible">
         {isLoading
-        ?Array.from({length:16}).map((_,index)=>
-          <ProductCard key={index} loading={true}/>
-        )
-        :products.map((item) => (
-          <ProductCard key={item.product_id} product={item} />
-        ))}
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <ProductCard key={index} loading={true} />
+            ))
+          : products
+              .slice(0, 8)
+              .map((item) => (
+                <ProductCard key={item.product_id} product={item} />
+              ))}
+      </ul>
+      <ul className="flex flex-col gap-2">
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, index) => (
+            <li key={index}>
+            <p className="text-2xl font-semibold my-4">
+              Products from ...
+            </p>
+            <ul className="w-full overflow-scroll no-scrollbar flex flex-row gap-2">
+              {Array.from({ length: 16 }).map((_, index) => (
+              <ProductCard key={index} loading={true} />
+            ))}
+            </ul>
+          </li>
+            ))
+          : categories?.slice(0, 4).map((item) => (
+              <li key={item.category_id}>
+                <p className="text-2xl font-semibold my-4">
+                  Products from {item.category_name}
+                </p>
+                <ul className="w-full overflow-scroll no-scrollbar flex flex-row gap-2">
+                  {products
+                    .filter(
+                      (pd) => pd.categories[0].category_id === item.category_id
+                    )
+                    .map((pd) => (
+                      <ProductCard key={pd.product_id} product={pd} />
+                    ))}
+                </ul>
+              </li>
+            ))}
       </ul>
 
       {/* banner */}
       <div className="w-full overflow-hidden rounded-lg shadow-md relative">
         <ul
           ref={secondBannerRef}
-          className="relative w-full flex flex-row items-center overflow-x-scroll no-scrollbar snap-mandatory snap-x gap-2 bg-secondary/50"
+          className="relative w-full flex flex-row items-center overflow-x-scroll no-scrollbar snap-mandatory snap-x gap-4 bg-secondary/50"
         >
           {bannerImage.map((image, index) => (
-            <li key={index} className="flex-shrink-0 w-full h-80 snap-start">
+            <li
+              key={index}
+              className="min-w-full h-fit relative flex items-center justify-center "
+            >
               {" "}
               {/* Specify height here */}
               <Image
                 src={image}
                 alt="product image"
-                width={800} // Set the width of the image
-                height={256} // Set the height of the image for proper aspect ratio
-                className="object-cover w-full h-full" // Ensure the image covers the entire area
+                width={0} // Set the width of the image
+                height={0}
+                layout="responsive" // Set the height of the image for proper aspect ratio
+                className="size-full object-contain snap-start" // Ensure the image covers the entire area
               />
             </li>
           ))}

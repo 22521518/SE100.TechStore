@@ -1,5 +1,5 @@
 "use client";
-import { fetchDistricts, fetchProvinces, fetchWards } from "@actions/address";
+import { fetchDistricts, fetchProvinces, fetchWards } from "@service/address";
 import CheckBox from "@components/Input/CheckBox";
 import DatePicker from "@components/Input/DatePicker";
 import DropDownButton from "@components/Input/DropDownButton";
