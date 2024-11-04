@@ -7,31 +7,60 @@
     android:padding="10dp">
 
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select shipping address"
+        android:textColor="@android:color/white"/>
+
 
     <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#D3D3D3"
-        android:layout_marginVertical="10dp" />
+        android:layout_marginVertical="5dp" />
+
 
     <!-- Input Fields -->
+    <RadioButton
+        android:id="@+id/radioButton5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Full name"
+        android:textColor="@android:color/white"
+        android:paddingBottom="5dp"/>
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter your full name"
         android:background="@android:color/white"
-        android:padding="10dp"
-        android:textColor="@android:color/black" />
+        android:padding="12dp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="10dp"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Phone number"
+        android:textColor="@android:color/white"
+        android:paddingBottom="5dp"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter your phone number"
         android:background="@android:color/white"
-        android:padding="10dp"
+        android:padding="12dp"
         android:textColor="@android:color/black"
-        android:layout_marginTop="10dp" />
+        android:layout_marginBottom="10dp"/>
 
     <!-- Province and District Spinner -->
     <LinearLayout
@@ -39,41 +68,54 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <Spinner
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/white"
-            android:padding="10dp"
-            android:entries="province" />
+            android:padding="13dp"/>
 
         <Spinner
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/white"
-            android:padding="10dp"
-            android:entries="district" />
+            android:padding="13dp"/>
     </LinearLayout>
 
     <!-- Address Field -->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Specific address"
+        android:textColor="@android:color/white"
+        android:paddingBottom="5dp"/>
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="123 Tran Hung Dao, etc"
         android:background="@android:color/white"
-        android:padding="10dp"
+        android:padding="12dp"
         android:textColor="@android:color/black"
-        android:layout_marginTop="10dp" />
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Or choose one present adress"
+        android:textColor="@android:color/white"/>
 
     <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#D3D3D3"
-        android:layout_marginVertical="10dp" />
+        android:layout_marginVertical="5dp" />
 
     <!-- Saved Addresses Section -->
     <RadioGroup
@@ -166,12 +208,6 @@
         </LinearLayout>
     </RadioGroup>
 
-    <!-- Divider -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#D3D3D3"
-        android:layout_marginVertical="10dp" />
 
     <!-- Continue to Payment Button -->
     <Button
@@ -180,6 +216,6 @@
         android:text="Continue to payment"
         android:background="@android:drawable/btn_default"
         android:textColor="@android:color/white"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="20dp" />
 
 </LinearLayout>

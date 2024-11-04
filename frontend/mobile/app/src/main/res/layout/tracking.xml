@@ -316,7 +316,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#D3D3D3" />
+            android:background="#D3D3D3"
+            android:layout_marginVertical="10dp"/>
 
         <!-- View All Button -->
         <LinearLayout
