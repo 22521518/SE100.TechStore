@@ -1,4 +1,4 @@
-import { EMPLOY_STATUS, ORDER_STATUS } from './enum.constant';
+import { EMPLOY_STATUS, ORDER_STATUS, PAYMENT_METHOD } from './enum.constant';
 
 export interface IProduct {
   product_id?: string;
@@ -42,7 +42,10 @@ export interface ICustomer {
   customer_id: string;
   username: string;
   full_name: string;
+  image?:string;
+  male?:boolean;
   phone_number: string;
+  birth_date?: Date | string;
   date_joined?: Date | string;
   account: IAccount;
 }
@@ -62,6 +65,7 @@ export interface IOrder {
   customer_id?: string | null;
   customer?: ICustomer;
   order_status: ORDER_STATUS;
+  payment_method?:PAYMENT_METHOD,
   total_price: number;
   voucher_code?: string | null;
   created_at: Date | string;
