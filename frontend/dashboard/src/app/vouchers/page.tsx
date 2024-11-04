@@ -4,7 +4,6 @@ import { IVoucher } from '@constant/interface.constant';
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigation } from '@refinedev/core';
 import { useDataGrid } from '@refinedev/mui';
-import { generateRandomVoucher } from '@utils/random.util';
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -18,9 +17,6 @@ import VoucherEdit from './edit/[id]/page';
 
 const VoucherList = () => {
   const { edit, create, show } = useNavigation();
-  const [voucherFake, setVoucerFake] = React.useState<IVoucher[]>(
-    generateRandomVoucher(10)
-  );
   const { dataGridProps } = useDataGrid<IVoucher>();
   const columns = React.useMemo<GridColDef<IVoucher>[]>(
     () => [
@@ -125,9 +121,8 @@ const VoucherList = () => {
           </Button>
         </Box>
         <DataGrid
-          // {...dataGridProps}
+          {...dataGridProps}
           columns={columns}
-          rows={voucherFake}
           getRowId={(row: IVoucher) => row.voucher_code || ''}
           onCellClick={(cell) => {
             setVoucher(cell.row as IVoucher);

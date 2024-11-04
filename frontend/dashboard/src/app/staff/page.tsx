@@ -8,7 +8,6 @@ import { dummyAvatar } from '@constant/value.constant';
 import { Box, Button, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useDataGrid } from '@refinedev/mui';
-import { generateRandomStaffList } from '@utils/random.util';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import React from 'react';
 import { useNavigation } from '@refinedev/core';
@@ -29,7 +28,7 @@ const StaffList = () => {
         field: 'image',
         headerName: 'Image',
         minWidth: 32,
-        flex: 2,
+        flex: 1,
         renderCell: ({ row }) => {
           return (
             <Box className="flex h-full items-center justify-center">
@@ -50,7 +49,7 @@ const StaffList = () => {
         renderCell: ({ row }) => {
           return (
             <Typography className="h-full flex items-center">
-              {row.account.email}
+              {row.account?.email}
             </Typography>
           );
         }
@@ -58,16 +57,28 @@ const StaffList = () => {
       {
         field: 'phone_number',
         headerName: 'Phone Number',
-        flex: 3
+        flex: 2
       },
       {
         field: 'role',
         headerName: 'Role',
-        flex: 2,
+        flex: 3,
         renderCell: ({ row }) => {
           return (
             <Typography className="h-full flex items-center">
-              {row.role?.role_name}
+              {row.role?.role_name || 'No role assigned'}
+            </Typography>
+          );
+        }
+      },
+      {
+        field: 'male',
+        headerName: 'Gender',
+        flex: 1,
+        renderCell: ({ row }) => {
+          return (
+            <Typography className="h-full flex items-center">
+              {row.male ? 'Male' : 'Female'}
             </Typography>
           );
         }
@@ -112,7 +123,6 @@ const StaffList = () => {
       </Box>
       <DataGrid
         {...dataGridProps}
-        rows={generateRandomStaffList(10)}
         getRowId={(row) => row.staff_id}
         onCellClick={(cell) => show('staff', cell.row.staff_id)}
         columns={columns}

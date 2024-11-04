@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useDataGrid } from '@refinedev/mui';
-import { generateRandomOrder } from '@utils/random.util';
 import { transformVNMoney, transformDate } from '@utils/transform.util';
 import React from 'react';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
@@ -39,9 +38,9 @@ const OrderList = () => {
     });
   };
   const { dataGridProps } = useDataGrid<IOrder>();
-  const [dummyOrders, setDummyOrder] = React.useState<IOrder[]>(
-    generateRandomOrder(10)
-  );
+  const records = dataGridProps.rows as IOrder[];
+
+  const [dummyOrders, setDummyOrder] = React.useState<IOrder[]>(records || []);
   const [orderDetail, setOrderDetail] = React.useState<IOrder | null>(null);
 
   const columns = React.useMemo<GridColDef<IOrder>[]>(

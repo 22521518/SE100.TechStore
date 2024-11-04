@@ -24,7 +24,7 @@ import CommonContainer from '@components/common-container';
 import { ProductFormValues } from '../product.interface';
 import { generateRandomProduct } from '@utils/random.util';
 import { dummyProductImage } from '@constant/value.constant';
-import Compressor from 'compressorjs';
+import { handleImage } from '@utils/image.utils';
 
 const ProductCreate = () => {
   const { list, create } = useNavigation();
@@ -32,12 +32,7 @@ const ProductCreate = () => {
   const { onFinish } = useForm<IProduct, HttpError>();
 
   const { data, isLoading, isError } = useList<ICategory, HttpError>({
-    resource: 'categories',
-    meta: {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }
+    resource: 'categories'
   });
   const categories = data?.data || [];
 
@@ -69,47 +64,24 @@ const ProductCreate = () => {
     });
   };
 
-  const handleImage = async (file: File) => {
-    const reader = (readFile: File) =>
-      new Promise<string>((resolve, reject) => {
-        const fileReader = new FileReader();
-        fileReader.onload = () => resolve(fileReader.result as string);
-        fileReader.readAsDataURL(readFile);
-      });
-
-    new Compressor(file, {
-      quality: 0.8,
-      maxWidth: 500,
-      maxHeight: 500,
-      resize: 'contain',
-      async success(result) {
-        await reader(file).then((result: string) => {
-          setProductFormValue({
-            ...productFormValue,
-            images: [{ name: file?.name, url: result }]
-          });
-        });
-        console.log('productFormValue', productFormValue);
-      },
-      error(error) {
-        console.error('Error reading file:', error);
-      }
+  const changeImage = ({ name, url }: { name: string; url: string }) => {
+    setProductFormValue({
+      ...productFormValue,
+      images: [{ name, url }]
     });
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      handleImage(files[0]);
+      await handleImage(files[0], changeImage);
     }
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log('productFormValue', productFormValue);
       await onFinish(productFormValue);
-      // list('/products');
     } catch (error) {
       console.log('error', error);
     }
