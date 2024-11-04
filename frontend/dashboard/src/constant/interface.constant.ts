@@ -56,10 +56,10 @@ export interface ICustomer {
   account_id: string;
   username: string;
   full_name: string;
-  image?:string;
-  male?:boolean;
+  // image?:string;
+  // male?:boolean;
   phone_number: string;
-  birth_date?: Date | string;
+  // birth_date?: Date | string;
   date_joined?: Date | string;
   account?: IAccount;
   product_feedbacks?: IProductFeedback[];
@@ -75,6 +75,13 @@ export interface IAddress {
   address: string;
   city: string;
   state: string;
+  // full_name?:string,  
+  // phone_number?:string,
+  // province?:string;
+  // district?:string;
+  // ward?:string;
+  // default?:boolean
+
 }
 
 export interface IOrder {
@@ -82,7 +89,7 @@ export interface IOrder {
   customer_id?: string | null;
   customer?: ICustomer;
   order_status: ORDER_STATUS;
-  payment_method?:PAYMENT_METHOD,
+  // payment_method?:PAYMENT_METHOD,
   total_price: number;
   voucher_code?: string | null;
   created_at: Date | string;
