@@ -12,7 +12,7 @@ const PAYMENT_METHOD = [
   "ELECTRO_WALLET",
 ];
 
-export const generateDummyOrder = () => {
+export const generateDummyOrderData = () => {
   const dummyCustomer = {
     customer_id: "cust_12345",
     username: "john_doe",
@@ -86,7 +86,7 @@ export const generateDummyOrder = () => {
   };
 
   const dummyOrder = {
-    order_id: "order_12345",
+    order_id: "order_"+Math.round(Math.random()*1000).toString(),
     customer_id: dummyCustomer.customer_id,
     customer: dummyCustomer,
     order_status: ORDER_STATUS[Math.floor(Math.random() * ORDER_STATUS.length)],
@@ -103,3 +103,14 @@ export const generateDummyOrder = () => {
 
   return dummyOrder;
 };
+
+export const generateDummyOrdersData = (num=1) => {
+  const orders_list = []
+
+  for(let i=0;i<num;i++) {
+    orders_list.push(generateDummyOrderData())
+  }
+
+  return orders_list
+  
+}

@@ -60,7 +60,7 @@ const ChangePassword = () => {
             </span>
             <PasswordInput value={password.new_password} onChange={(t)=>setPassword(p=>({...p,new_password:t}))}/>
             <span>
-              <h2>Repeat password</h2>
+              <h2>Confirm password</h2>
             </span>
             <PasswordInput value={password.repeat_password} onChange={(t)=>setPassword(p=>({...p,repeat_password:t}))}/>
             <button className="button-variant-1  md:col-span-2" onClick={handleChangePassword}>Change password</button>

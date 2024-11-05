@@ -22,7 +22,7 @@ const ProfileImageHolder = ({ url, size=100 }) => {
 
   return (
     <div
-      className="rounded-full overflow-hidden"
+      className="rounded-full overflow-hidden flex items-center justify-center"
       style={{ width: size, height: size }}
     >
       {isValid ? (

@@ -94,10 +94,10 @@ const Nav = () => {
           onChange={handleTextChange}
           onKeyDown={(e)=>{e.key==='Enter'?handleSearch():null}}
         />
-        <button onClick={handleSearch}>
+        <button onClick={handleSearch} className="hover:animate-pulse">
           <FontAwesomeIcon icon={faSearch} />
         </button>
-        <button id="CartButton">
+        <button id="CartButton" >
           <Link href="/cart" >
             <FontAwesomeIcon icon={faShoppingCart} />
           </Link>

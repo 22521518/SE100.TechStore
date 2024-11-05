@@ -60,7 +60,7 @@ const ProductCard = ({ product, loading = false }) => {
         <span className="text-red-500">-{product.discount}%</span>{" "}
       </div>
       <div className="flex justify-between items-center">
-        <div className="text-yellow-400 flex flex-row items-baseline gap-1">
+        <div className="text-yellow-400 flex flex-row items-center gap-1">
           <span className="font-semibold">{product.average_rating}</span>
           <FontAwesomeIcon icon={faStar} />
         </div>
