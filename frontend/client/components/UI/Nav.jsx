@@ -7,12 +7,15 @@ import {
   faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSession } from "@node_modules/next-auth/react";
 import { useRouter } from "@node_modules/next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useRef } from "react";
+import ProfileImageHolder from "./ProfileImageHolder";
 
 const Nav = () => {
+  const {data:session} = useSession()
   const router = useRouter()
   const searchTextRef = useRef("");
 
@@ -101,7 +104,7 @@ const Nav = () => {
         </button>
         <button>
           <Link href="/account">
-            <FontAwesomeIcon icon={faCircleUser} />
+            <ProfileImageHolder url={session?.user.image} size={32}/>
           </Link>
         </button>
       </ul>

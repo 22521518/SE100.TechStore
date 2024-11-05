@@ -36,7 +36,7 @@
 }
 
 .background {
-  background: linear-gradient(to top, rgba(var(--on-background),1), rgba(var(--background), 1));
+  background: linear-gradient(to top ,rgba(var(--background), 1), rgba(var(--on-background),0.5), rgba(var(--background), 1));
   color: rgb(var(--on-background));
 }
 @layer utilities {

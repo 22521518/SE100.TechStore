@@ -4,25 +4,43 @@ import InputBox from "@components/Input/InputBox";
 import PhoneInput from "@components/Input/PhoneInput";
 import RadioButton from "@components/Input/RadioButton";
 import Divider from "@components/UI/Divider";
+import ProfileImageHolder from "@components/UI/ProfileImageHolder";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getSession, useSession } from "@node_modules/next-auth/react";
 import { getCustomer } from "@service/customer";
 import { formattedDate } from "@util/format";
-import { toastSuccess } from "@util/toaster";
+import { handleImage } from "@util/image";
+import { toastSuccess, toastWarning } from "@util/toaster";
 import { Input } from "postcss";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const Account = () => {
   const { data: session, update } = useSession();
   const [email, setEmail] = useState("");
   const [customer, setCustomer] = useState();
+  const [image,setImage] = useState({name:'',url:''})
   const [gender, setGender] = useState("Male");
+  const imagePicker = useRef(null)
   const handleRadioSelectionChange = (value) => {
     setGender(value);
   };
 
+  const checkEmptyInput = () => {
+    if (
+      !customer.full_name.trim() ||
+      !customer.phone_number.trim() ||
+      !customer.username.trim() ||
+      !customer.birth_date.trim() 
+    ) {
+      toastWarning("Please fill out all field");
+      return true;
+    }
+    return false;
+  };
+
   const handleEditCustomer = async () => {
+    if(checkEmptyInput()) return 
     const newSession = await getSession();
     await update(newSession);
     toastSuccess("Information updated");
@@ -30,6 +48,7 @@ const Account = () => {
 
   const fetchUser = () => {
     getCustomer(session?.user.email).then((data) => {
+      setImage({name:'user',url:data.image})
       setEmail(data.account.email);
       setCustomer(data);
       setGender(data.male ? "Male" : "Female");
@@ -53,6 +72,23 @@ const Account = () => {
     }));
   };
 
+  const changeImage = ({ name, url }) => {
+    setImage({
+      name,url
+    });
+  };
+
+  const handleImageChange = async (e) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      await handleImage(files[0], changeImage);
+    }
+  };
+
+  const handleOpenImage = () => {
+    imagePicker.current&&imagePicker.current.click()
+  }
+
   return (
     <section className="w-full flex flex-col gap-2">
       <div className="w-full flex flex-col gap-2">
@@ -64,8 +100,9 @@ const Account = () => {
       <Divider />
       <div className="flex flex-col md:flex-row">
         <div className="flex flex-col gap-4 items-center p-4">
-          <FontAwesomeIcon icon={faUserCircle} className="text-6xl" />
-          <button>Change photo</button>
+          <ProfileImageHolder url={image.url}/>
+          <button className="button-variant-1" onClick={handleOpenImage}>Change photo</button>
+          <input type="file" accept="image/" className="hidden" ref={imagePicker} onChange={handleImageChange}/>
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-4 md:flex-row">

@@ -1,11 +1,8 @@
-import Compressor from 'compressorjs';
+import Compressor from "compressorjs";
 
-export const handleImage = async (
-  {file,
-  callback}
-) => {
+export const handleImage = async (file, callback ) => {
   const reader = (readFile) =>
-    new Promise<string>((resolve, reject) => {
+    new Promise((resolve, reject) => {
       const fileReader = new FileReader();
       fileReader.onload = () => resolve(fileReader.result);
       fileReader.readAsDataURL(readFile);
@@ -15,14 +12,14 @@ export const handleImage = async (
     quality: 0.8,
     maxWidth: 500,
     maxHeight: 500,
-    resize: 'contain',
+    resize: "contain",
     async success() {
       await reader(file).then((result) => {
         callback({ name: file?.name, url: result });
       });
     },
     error(error) {
-      console.error('Error reading file:', error);
-    }
+      console.error("Error reading file:", error);
+    },
   });
 };
