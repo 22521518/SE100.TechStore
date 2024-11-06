@@ -64,45 +64,58 @@
                 android:layout_marginTop="3dp"
                 android:background="#000000" />
 
-            <EditText
-                android:id="@+id/fullname"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/border"
-                android:hint="Enter your full name"
-                android:textColor="@color/black"
-                android:textSize="15dp" />
+                android:hint="Full name">
 
-            <EditText
-                android:id="@+id/holder_name"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fullname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/border"
-                android:hint="Holder's name"
-                android:textColor="@color/black"
-                android:textSize="15dp" />
+                android:hint="Holder's name">
 
-            <EditText
-                android:id="@+id/date"
-                android:layout_width="250dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border"
-                android:hint="Expiration date (MM/YY)"
-                android:textColor="@color/black"
-                android:textSize="15dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/holder_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/cvv"
-                android:layout_width="250dp"
-                android:layout_height="40dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/border"
-                android:hint="CVV"
-                android:textColor="@color/black"
-                android:textSize="15dp" />
+                android:hint="Expiration date (MM/YY)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="CVV">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/cvv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
         </LinearLayout>
 
@@ -207,16 +220,19 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/discount"
-                    android:layout_width="220dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/border"
-                    android:hint="Add voucher code here"
-                    android:textColor="@color/black"
-                    android:textSize="15dp" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Voucher code">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/discount"
+                        android:layout_width="220dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/discount_button"
