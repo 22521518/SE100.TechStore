@@ -65,6 +65,7 @@ export interface ICustomer {
   product_feedbacks?: IProductFeedback[];
   orders?: IOrder[];
   addresses?: IAddress[];
+  // vouchers?: IVoucher[];
 }
 
 export interface IAccount {
@@ -72,6 +73,7 @@ export interface IAccount {
 }
 
 export interface IAddress {
+  // address_id?:string;
   address: string;
   city: string;
   state: string;
@@ -80,8 +82,7 @@ export interface IAddress {
   // province?:string;
   // district?:string;
   // ward?:string;
-  // default?:boolean
-
+  // is_primary?:boolean
 }
 
 export interface IOrder {
