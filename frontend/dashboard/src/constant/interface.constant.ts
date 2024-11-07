@@ -51,21 +51,26 @@ export interface IProductFeedback {
   created_at: string | Date;
 }
 
+// 04/11/2024 -- unchecked
 export interface ICustomer {
   customer_id: string;
   account_id: string;
   username: string;
   full_name: string;
-  // image?:string;
-  // male?:boolean;
   phone_number: string;
-  // birth_date?: Date | string;
   date_joined?: Date | string;
   account?: IAccount;
   product_feedbacks?: IProductFeedback[];
   orders?: IOrder[];
   addresses?: IAddress[];
+<<<<<<< Updated upstream
   // vouchers?: IVoucher[];
+=======
+
+  image?: string;
+  male?: boolean;
+  birth_date?: Date | string;
+>>>>>>> Stashed changes
 }
 
 export interface IAccount {
@@ -77,12 +82,23 @@ export interface IAddress {
   address: string;
   city: string;
   state: string;
+<<<<<<< Updated upstream
   // full_name?:string,  
   // phone_number?:string,
   // province?:string;
   // district?:string;
   // ward?:string;
   // is_primary?:boolean
+=======
+
+  full_name?: string;
+  phone_number?: string;
+  district?: string; // quận
+  ward?: string; // phường
+  is_primary?: boolean;
+
+  // province?:string; // tỉnh
+>>>>>>> Stashed changes
 }
 
 export interface IOrder {
@@ -90,12 +106,13 @@ export interface IOrder {
   customer_id?: string | null;
   customer?: ICustomer;
   order_status: ORDER_STATUS;
-  // payment_method?:PAYMENT_METHOD,
   total_price: number;
   voucher_code?: string | null;
   created_at: Date | string;
   shipping_address?: IShippingAddress;
   order_items: IOrderItem[];
+
+  // payment_method?:PAYMENT_METHOD,
 }
 
 export interface IOrderItem {
