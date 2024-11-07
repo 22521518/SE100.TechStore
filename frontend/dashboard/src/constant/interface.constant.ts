@@ -63,14 +63,10 @@ export interface ICustomer {
   product_feedbacks?: IProductFeedback[];
   orders?: IOrder[];
   addresses?: IAddress[];
-<<<<<<< Updated upstream
-  // vouchers?: IVoucher[];
-=======
-
+  // 04/11/2024 checked
   image?: string;
   male?: boolean;
   birth_date?: Date | string;
->>>>>>> Stashed changes
 }
 
 export interface IAccount {
@@ -78,29 +74,20 @@ export interface IAccount {
 }
 
 export interface IAddress {
-  // address_id?:string;
-  address: string;
+  address_id?: string;
   city: string;
-  state: string;
-<<<<<<< Updated upstream
-  // full_name?:string,  
-  // phone_number?:string,
-  // province?:string;
-  // district?:string;
-  // ward?:string;
-  // is_primary?:boolean
-=======
+  address: string;
 
-  full_name?: string;
-  phone_number?: string;
   district?: string; // quận
   ward?: string; // phường
+  full_name?: string;
+  phone_number?: string;
   is_primary?: boolean;
 
   // province?:string; // tỉnh
->>>>>>> Stashed changes
 }
 
+// 04/11/2024 -- unchecked
 export interface IOrder {
   order_id: string;
   customer_id?: string | null;
@@ -112,7 +99,8 @@ export interface IOrder {
   shipping_address?: IShippingAddress;
   order_items: IOrderItem[];
 
-  // payment_method?:PAYMENT_METHOD,
+  // 06/11/2024 -- checked
+  payment_method?: PAYMENT_METHOD;
 }
 
 export interface IOrderItem {
