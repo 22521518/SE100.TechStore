@@ -1,3 +1,4 @@
+import { randomImage } from "@util/generator/customer";
 import { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider, {
   CredentialInput,
@@ -56,7 +57,7 @@ export const options = {
       if (user) {
         token.id = user.id;
         token.name = user.name;
-        token.image = user.image;
+        token.image = randomImage();
       }
       return token;
     },

@@ -1,6 +1,5 @@
 import {
   ICategory,
-  IProduct,
   IProductAttribute,
   IProductImage
 } from '@constant/interface.constant';

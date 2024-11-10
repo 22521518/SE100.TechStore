@@ -2,10 +2,15 @@
 import CollapsibleContainer from "@components/UI/CollapsibleBanner";
 import Divider from "@components/UI/Divider";
 import OrderItem from "@components/UI/OrderItem";
+import { useSession } from "@node_modules/next-auth/react";
 import Link from "@node_modules/next/link";
-import React, { useState } from "react";
+import { getOrders } from "@service/order";
+import { formattedDate, formattedPrice } from "@util/format";
+import React, { useEffect, useState } from "react";
 
 const Orders = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const { data: session } = useSession();
   const [selectedView, setSelectedView] = useState("All");
   const viewItems = [
     "All",
@@ -13,70 +18,55 @@ const Orders = () => {
     "Confirmed",
     "Shipping",
     "Delivered",
-    "Canceled",
-
+    "Cancelled",
   ];
-  const [orders, setOrders] = useState([
-    { id: "a", totalPrice: 300000000, createdAt:"01/01/2024", status: "Pending",items:[1,2,3] },
-    { id: "b", totalPrice: 300000000, createdAt:"01/01/2024", status: "Shipping",items:[1,2] },
-    { id: "c", totalPrice: 300000000, createdAt:"01/01/2024", status: "Delivered" ,items:[1]},
-    { id: "d", totalPrice: 300000000, createdAt:"01/01/2024", status: "Canceled",items:[1,2,3,5] },
-    { id: "e", totalPrice: 300000000, createdAt:"01/01/2024", status: "Confirmed",items:[1,2,3,1,2,4] },
-  ]);
+  const [orders, setOrders] = useState([]);
 
-  const renderActions = (status) => {
-    switch (status) {
-      case "Pending":
+  const fetchOrders = () => {
+    setIsLoading(true);
+    getOrders(session?.user.id).then((data) => setOrders(data));
+    setTimeout(() => setIsLoading(false), 1000);
+  };
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const renderActions = (order) => {
+    switch (order.order_status) {
+      case "PENDING":
         return <button className="button-variant-2">Cancel</button>;
-      case "Shipping":
-        return <Link href={'/tracking'}><button className="button-variant-2">Track</button></Link>;
-      case "Delivered":
+      case "SHIPPED":
         return (
-          <>
-            <button className="button-variant-2">Reorder</button>
-            <button className="button-variant-2">Refund</button>
-          </>
+          <Link href={`/tracking?orderId=${order.order_id}`}>
+            <button className="button-variant-2">Track</button>
+          </Link>
         );
-      case "Canceled":
+      case "DELIVERED":
         return <button className="button-variant-2">Reorder</button>;
-      case "Confirmed":
-        return <Link href={'/tracking'}><button className="button-variant-2">Track</button></Link>;
+      case "CANCELLED":
+        return <button className="button-variant-2">Reorder</button>;
+      case "CONFIRMED":
+        return (
+          <Link href={`/tracking?orderId=${order.order_id}`}>
+            <button className="button-variant-2">Track</button>
+          </Link>
+        );
       default:
         return null;
     }
   };
-  const renderStatus = (status) => {
-    switch (status) {
-      case "Pending":
-        return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-gray-500">
-            {status}
-          </div>
-        );
-      case "Shipping":
-        return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-blue-500">
-            {status}
-          </div>
-        );
-      case "Delivered":
-        return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-green-500">
-            {status}
-          </div>
-        );
-      case "Canceled":
-        return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-red-500">
-            {status}
-          </div>
-        );
-      case "Confirmed":
-        return (
-          <div className="text-sm px-2 py-1 text-white font-bold rounded-lg bg-black">
-            {status}
-          </div>
-        );
+  const renderStatus = (order) => {
+    switch (order.order_status) {
+      case "PENDING":
+        return <div className="pending">{order.order_status}</div>;
+      case "SHIPPED":
+        return <div className="shipping">{order.order_status}</div>;
+      case "DELIVERED":
+        return <div className="delivered">{order.order_status}</div>;
+      case "CANCELLED":
+        return <div className="cancelled">{order.order_status}</div>;
+      case "CONFIRMED":
+        return <div className="confirmed">{order.order_status}</div>;
     }
   };
   return (
@@ -87,15 +77,16 @@ const Orders = () => {
       </div>
       <Divider />
       <div>
-        <div className="flex flex-row w-full overflow-x-scroll no-scrollbar ">
+        <div className="flex flex-row w-full overflow-x-scroll no-scrollbar  ">
           {viewItems.map((viewItem) => (
             <button
+              key={viewItem}
               className={`grow text-center gap-2 min-w-[100px] p-2 hover:border-on-secondary/50 hover:border-b-2 ${
                 selectedView === viewItem
-                  ? "border-b-2 border-on-secondary font-bold"
+                  ? "border-b-4 border-on-primary font-bold"
                   : ""
-              }`}   
-              onClick={()=>setSelectedView(viewItem)}
+              }`}
+              onClick={() => setSelectedView(viewItem)}
             >
               {viewItem}
             </button>
@@ -104,29 +95,83 @@ const Orders = () => {
         <Divider />
       </div>
       <div className="flex flex-col justify-center  gap-4">
-        {orders?.filter(item=>item.status===selectedView||selectedView==="All").map((item) => (
-          <div
-            key={item.id}
-            className="flex flex-col bg-on-surface/20 rounded-lg p-2 gap-2"
-          >
-            <div className="flex flex-wrap justify-between gap-4">
-              <h3>OrderID: {item.id}</h3>
-              <h3 className="opacity-70">{item.createdAt}</h3>
-            </div>
-            <Divider/>
-            <h2 className="text-xl font-bold">{Intl.NumberFormat("en-US").format(item.totalPrice)} VNĐ</h2>
-            <CollapsibleContainer content={ <ul className="flex flex-col gap-4 py-4">
-            {item.items?.map(item=><OrderItem/>)}
-            </ul>} maxHeight={200} />
-           
-            <div className="flex flex-row justify-between items-center">
-              {renderStatus(item.status)}
-              <div className="flex gap-2 flex-wrap">
-                {renderActions(item.status)}
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex flex-col bg-on-surface/20 rounded-lg p-2 gap-2"
+              >
+                <div className="rounded-lg bg-primary animate-pulse h-5 w-[200px]"></div>
+                <Divider />
+                <h2 className="h-7 rounded-lg bg-primary animate-pulse w-[200px]">
+                </h2>
+                <CollapsibleContainer
+                  content={
+                    <ul className="flex flex-col gap-4 py-4">
+                      {Array.from({length:2}).map((_,index) => (
+                        <OrderItem
+                          key={index}
+                          loading={true}
+                        />
+                      ))}
+                    </ul>
+                  }
+                  maxHeight={200}
+                />
+
+                <div className="flex flex-row justify-between items-center">
+                  <div className="h-6 rounded-lg bg-primary animate-pulse w-[80px]"></div>
+                  <div className="flex gap-2 flex-wrap">
+                  <div className="h-6 rounded-lg bg-primary animate-pulse w-[80px]"></div>
+                  <div className="h-6 rounded-lg bg-primary animate-pulse w-[80px]"></div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))
+          : orders
+              ?.filter(
+                (item) =>
+                  item.order_status.toLowerCase() ===
+                    selectedView.toLowerCase() || selectedView === "All"
+              )
+              .map((item) => (
+                <div
+                  key={item.order_id}
+                  className=" flex flex-col bg-on-surface/20 rounded-lg p-2 gap-2"
+                >
+                  <div className="flex flex-wrap justify-between gap-4">
+                    <h3>OrderID: {item.order_id}</h3>
+                    <h3 className="opacity-70">
+                      {formattedDate(item.created_at)}
+                    </h3>
+                  </div>
+                  <Divider />
+                  <h2 className="text-xl font-bold">
+                    {formattedPrice(item.total_price)}
+                  </h2>
+                  <CollapsibleContainer
+                    content={
+                      <ul className="flex flex-col gap-4 py-4">
+                        {item.order_items?.map((oi) => (
+                          <OrderItem
+                            key={oi.order_id + oi.product_id}
+                            orderItem={oi}
+                          />
+                        ))}
+                      </ul>
+                    }
+                    maxHeight={200}
+                  />
+
+                  <div className="flex flex-row justify-between items-center">
+                    {renderStatus(item)}
+                    <div className="flex gap-2 flex-wrap">
+                      {renderActions(item)}
+                    </div>
+                  </div>
+               
+                </div>
+              ))}
       </div>
     </section>
   );

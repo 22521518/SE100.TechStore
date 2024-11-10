@@ -25,7 +25,8 @@ export class CustomersController {
   @Post()
   async create(@Body() createCustomerDto: CreateCustomerDto) {
     try {
-      const { account, ...customerInfo } = createCustomerDto;
+      const { account, image, ...customerInfo } = createCustomerDto;
+      console.log('customer image', image);
 
       const existingAccount = await this.prismaDbService.accounts.findUnique({
         where: { email: account.email },
@@ -91,8 +92,11 @@ export class CustomersController {
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
     try {
+      const { image, ...customerInfo } = updateCustomerDto;
+      console.log('customer update image', image);
+
       const customerDto: Prisma.CustomersUpdateInput = {
-        ...updateCustomerDto,
+        ...customerInfo,
       };
       const customer = await this.customersService.update(id, customerDto);
       return customer;

@@ -1,4 +1,4 @@
-import { EMPLOY_STATUS, ORDER_STATUS } from './enum.constant';
+import { EMPLOY_STATUS, ORDER_STATUS, PAYMENT_METHOD } from './enum.constant';
 
 export interface IProduct {
   product_id?: string;
@@ -10,6 +10,19 @@ export interface IProduct {
   stock_quantity?: number;
   categories: ICategory[];
   attributes: IProductAttribute[];
+}
+
+export interface IProductReceive {
+  product_id?: string;
+  product_name: string;
+  images: string[];
+  description: string;
+  price: number;
+  discount?: number | null;
+  stock_quantity?: number;
+  categories: ICategory[];
+  attributes: IProductAttribute[];
+  product_feedbacks?: IProductFeedback[];
 }
 
 export interface IProductImage {
@@ -38,13 +51,22 @@ export interface IProductFeedback {
   created_at: string | Date;
 }
 
+// 04/11/2024 -- unchecked
 export interface ICustomer {
   customer_id: string;
+  account_id: string;
   username: string;
   full_name: string;
   phone_number: string;
   date_joined?: Date | string;
-  account: IAccount;
+  account?: IAccount;
+  product_feedbacks?: IProductFeedback[];
+  orders?: IOrder[];
+  addresses?: IAddress[];
+  // 04/11/2024 checked
+  image?: string;
+  male?: boolean;
+  birth_date?: Date | string;
 }
 
 export interface IAccount {
@@ -52,11 +74,20 @@ export interface IAccount {
 }
 
 export interface IAddress {
-  address: string;
+  address_id?: string;
   city: string;
-  state: string;
+  address: string;
+
+  district?: string; // quận
+  ward?: string; // phường
+  full_name?: string;
+  phone_number?: string;
+  is_primary?: boolean;
+
+  // province?:string; // tỉnh
 }
 
+// 04/11/2024 -- unchecked
 export interface IOrder {
   order_id: string;
   customer_id?: string | null;
@@ -67,6 +98,9 @@ export interface IOrder {
   created_at: Date | string;
   shipping_address?: IShippingAddress;
   order_items: IOrderItem[];
+
+  // 06/11/2024 -- checked
+  payment_method?: PAYMENT_METHOD;
 }
 
 export interface IOrderItem {
@@ -91,20 +125,25 @@ export interface IPermission {
 }
 
 export interface IRole {
-  role_id: string;
+  role_id?: number;
   role_name: string;
   description: string;
-  permissions?: IPermission[];
+  role_permissions?: IPermission[];
+  staff?: IStaff[];
 }
 
 export interface IStaff {
   staff_id?: string;
+  account_id?: string;
   full_name: string;
+  images?: string;
+  male?: boolean;
+  birth_date?: Date | string;
   phone_number: string;
   employee_status?: EMPLOY_STATUS;
   hire_date: Date | string;
-  account: IAccount;
   role?: IRole;
+  account?: IAccount;
 }
 
 export interface IAccountWithPassword {
@@ -118,7 +157,7 @@ export interface IStaffInfo {
   employee_status?: EMPLOY_STATUS;
   hire_date: Date | string;
   account: IAccountWithPassword;
-  role?: IRole | undefined;
+  role?: IRole;
 }
 
 export interface IVoucherWithoutCode {
@@ -136,8 +175,16 @@ export interface IVoucher extends IVoucherWithoutCode {
 
 export interface IInboxRoom {
   room_id?: string;
+  customer_id?: string;
   customer: ICustomer;
   messages: IInboxMessage[];
+}
+
+export interface IInboxRoomCard {
+  room_id?: string;
+  customer_id?: string;
+  customer: ICustomer;
+  latestMessage: IInboxMessage;
 }
 
 export interface ISender {

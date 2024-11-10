@@ -9,7 +9,8 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ProductAttribute } from '../entities/product-attribute.entity';
-import { Category, ProductImageDto } from './create-products.dto';
+import { Category } from './create-products.dto';
+import { ImageDto } from '../../common-dto/ImageDto';
 
 export class UpdateProductDto {
   @IsOptional()
@@ -22,8 +23,8 @@ export class UpdateProductDto {
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => ProductImageDto)
-  images?: ProductImageDto[];
+  @Type(() => ImageDto)
+  images?: ImageDto[];
 
   @IsOptional()
   @IsString()

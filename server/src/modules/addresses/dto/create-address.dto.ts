@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, Max, Min } from 'class-validator';
 
 export class CreateAddressDto {
   @IsString()
@@ -8,5 +8,16 @@ export class CreateAddressDto {
   city: string;
 
   @IsString()
-  state: string;
+  district: string;
+
+  @IsString()
+  ward: string;
+
+  @IsString()
+  full_name: string;
+
+  @IsString()
+  @Min(10)
+  @Max(10)
+  phone_number: string;
 }

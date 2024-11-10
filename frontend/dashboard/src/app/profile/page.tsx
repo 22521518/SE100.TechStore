@@ -141,7 +141,7 @@ const ProfileShow = () => {
               Email:
             </Typography>
             <Typography className="text-lg">
-              {personalInfo.account.email}
+              {personalInfo.account?.email}
             </Typography>
           </Box>
           <Box className="flex flex-row gap-4 items-center">

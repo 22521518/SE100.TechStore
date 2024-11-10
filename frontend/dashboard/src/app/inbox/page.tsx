@@ -2,30 +2,53 @@
 
 import InboxRoomCard from '@components/inbox/inbox-room-card';
 import SearchBar from '@components/searchbar';
-import { IInboxRoom } from '@constant/interface.constant';
+import { IInboxRoomCard } from '@constant/interface.constant';
 import { Box, Stack, Typography } from '@mui/material';
 import { HttpError, useList } from '@refinedev/core';
 import React from 'react';
 import InboxShow from './show/[id]/page';
-import { generateRandomInboxRoom } from '@utils/random.util';
 
 const InboxList = () => {
-  const { data, isLoading, isError } = useList<IInboxRoom, HttpError>({
-    resource: 'inbox'
+  const { data, isLoading, isError } = useList<IInboxRoomCard, HttpError>({
+    successNotification: (data, values, resource) => {
+      return {
+        message: `${data?.title} Successfully fetched.`,
+        description: 'Success with no errors',
+        type: 'success'
+      };
+    },
+    errorNotification: (data, values, resource) => {
+      return {
+        message: `Something went wrong when getting ${data?.id}`,
+        description: 'Error',
+        type: 'error'
+      };
+    }
   });
+  const records = React.useMemo(() => data?.data || [], [data]);
 
-  const [rooms, setRooms] = React.useState<IInboxRoom[]>(
-    generateRandomInboxRoom(25)
+  const [rooms, setRooms] = React.useState<IInboxRoomCard[]>(records);
+  const [selectedRoom, setSelectedRoom] = React.useState<IInboxRoomCard>(
+    rooms[0]
   );
-  const [selectedRoom, setSelectedRoom] = React.useState<IInboxRoom>(rooms[0]);
   const [searchQuery, setSearchQuery] = React.useState<string>('');
 
-  const onClickRoom = (room: IInboxRoom) => {
-    setSelectedRoom(room);
+  React.useEffect(() => {
+    setRooms(records);
+  }, [records]);
+
+  const onClickRoom = (room: IInboxRoomCard) => {
+    setSelectedRoom({
+      ...room,
+      latestMessage: {
+        ...room.latestMessage,
+        is_seen: true
+      }
+    });
   };
 
   return (
-    <Box className="p-1 overflow-hidden">
+    <Box className="p-1 overflow-hidden h-full w-full">
       <Box className="mr-2 bg-transparent rounded-lg shadow-sm grid grid-cols-5 overflow-hidden h-full gap-2">
         <Stack className="col-span-2 bg-primary-200 w-full h-full gap-1 px-1 overflow-y-scroll scrollbar-none py-2 rounded-lg">
           <Box>

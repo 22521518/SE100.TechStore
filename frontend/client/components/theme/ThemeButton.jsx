@@ -12,7 +12,7 @@ const ThemeButton = () => {
   }
 
   return (
-    <button onClick={handleChangeTheme} className="rounded-full text-xl bg-on-primary text-primary hover:bg-on-secondary/20 size-9 flex items-center justify-center">
+    <button onClick={handleChangeTheme} className="rounded-full text-xl bg-on-primary text-primary hover:bg-on-primary/90 size-9 flex items-center justify-center hover:animate-pulse">
       <FontAwesomeIcon icon={faLightbulb} />
       {/* Change icon based on the current theme */}
     </button>

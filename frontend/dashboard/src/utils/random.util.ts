@@ -31,6 +31,7 @@ export function generateRandomAttribute(loops: number): IProductAttribute[] {
 
 export function generateRandomProduct(): IProduct {
   return {
+    product_id: `product-${Math.floor(Math.random() * 1000)}`, // Random product id
     product_name: `Product Name ${Math.random().toString(36).substr(2, 5)}`, // Random product name
     images: [],
     description: `This is a random product description for ${Math.random()
@@ -122,6 +123,7 @@ export function generateRandomAccountList(
 export function generateRandomCustomer(id?: string): ICustomer {
   return {
     customer_id: id || `customer-${Math.floor(Math.random() * 1000)}`,
+    account_id: `account-${Math.floor(Math.random() * 1000)}`,
     username: `user_${Math.random().toString(36).substr(2, 5)}`,
     full_name: `Full Name ${Math.random().toString(36).substr(2, 5)}`,
     phone_number: `+1${Math.floor(Math.random() * 9000000000) + 1000000000}`,
@@ -220,7 +222,7 @@ export function getRandomEmployeeStatus(): EMPLOY_STATUS {
   return statuses[randomIndex] as EMPLOY_STATUS;
 }
 
-function generateRandomPermission(): IPermission {
+export function generateRandomPermission(): IPermission {
   return {
     permission_id: `permission-${Math.floor(Math.random() * 1000)}`,
     permission_name: `Permission ${Math.floor(Math.random() * 100)}`,
@@ -236,10 +238,10 @@ function generateRandomRole(permissionCount: number): IRole {
   }
 
   return {
-    role_id: `role-${Math.floor(Math.random() * 1000)}`,
+    role_id: Math.floor(Math.random() * 1000),
     role_name: `Role ${Math.floor(Math.random() * 100)}`,
     description: `Description for role ${Math.floor(Math.random() * 100)}`,
-    permissions: permissions
+    role_permissions: permissions
   };
 }
 

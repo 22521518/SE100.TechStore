@@ -11,3 +11,11 @@ export enum EMPLOY_STATUS {
   SUSPENDED = 'SUSPENDED',
   RESIGNED = 'RESIGNED'
 }
+
+// 04/11/2024 -- unchecked
+// 06/11/2024 -- checked
+export enum PAYMENT_METHOD {
+  COD = 'COD',
+  ELECTRO_WALLET = 'ELECTRO_WALLET',
+  CREDIT_CARD = 'CREDIT_CARD'
+}

@@ -1,4 +1,5 @@
 import "@styles/globals.css";
+import { Toaster, toast } from 'sonner'
 import Nav from "@components/UI/Nav";
 import Footer from "@components/UI/Footer";
 import { config, icon } from "@fortawesome/fontawesome-svg-core";
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
               <Footer></Footer>
               <SupportChatBox />
             </div>
+            <Toaster  richColors   position="bottom-right"/>
           </ThemeProvider>
         </Provider>
       </body>

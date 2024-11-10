@@ -8,7 +8,7 @@ const CollapsibleContainer = ({ content, maxHeight }) => {
     if (containerRef.current.scrollHeight > maxHeight) setIsExpandable(true);
   }, [maxHeight]);
   return (
-    <div className="w-full h-fit">
+    <div className="w-full h-fit relative">
         <div
         ref={containerRef}
         className={`w-full overflow-y-hidden ${isExpanded ? 'h-fit' : ''}`}
@@ -19,7 +19,7 @@ const CollapsibleContainer = ({ content, maxHeight }) => {
         {isExpandable && (
         <button
           onClick={() => setIsExpanded((prev) => !prev)}
-          className="text-center w-full bg-secondary text-on-secondary "
+          className={` hover:font-bold text-center w-full bottom-0 ${isExpanded?'':'bg-gradient-to-b  absolute'} from-transparent to-surface  text-on-surface `}
         >
           {isExpanded ? "Collapse" : "Expand"}
         </button>

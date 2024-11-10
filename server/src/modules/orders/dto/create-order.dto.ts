@@ -1,6 +1,8 @@
+import { $Enums } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -19,8 +21,10 @@ export class CreateOrderDto {
   @ValidateNested({ each: true })
   @Type(() => OrderItems)
   order_items: OrderItems[];
-}
 
+  @IsEnum($Enums.PAYMENT_METHOD, { message: 'Invalid order status' })
+  payment_method: $Enums.PAYMENT_METHOD;
+}
 export class OrderItems {
   @IsString()
   product_id: string;

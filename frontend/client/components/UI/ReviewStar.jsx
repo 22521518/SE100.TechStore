@@ -1,30 +1,57 @@
-'use client'
+"use client";
 import {
-    faStar as faEmptyStar,
-    faStarHalf,
-  } from "@fortawesome/free-regular-svg-icons";
-  import {
-    faAngleLeft,
-    faAngleRight,
-    faCartShopping,
-    faStar as faFullStar,
-    faStarHalfStroke,
-    faUserCircle,
-  } from "@fortawesome/free-solid-svg-icons";
+  faStar as faEmptyStar,
+  faStarHalf,
+} from "@fortawesome/free-regular-svg-icons";
+import {
+  faAngleLeft,
+  faAngleRight,
+  faCartShopping,
+  faStar as faFullStar,
+  faStarHalfStroke,
+  faUserCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const ReviewStar = ({rating,size}) => {
+const ReviewStar = ({ rating, size, editable = false, onChange= (num)=>{} }) => {
+  const [editRating, setEditRating] = useState(rating);
+  const handleMouseHover = (index) => {
+    setEditRating(index);
+  };
+
+  const handleMouseLeave = () => {
+    setEditRating(rating)
+  }
+
+  const handleMouseClick = (index) => {
+    onChange(index===rating?0:index)
+  }
+
+  useEffect(()=>{setEditRating(rating)},[rating])
   return (
-    <div className={`flex flex-row gap-1 items-center text-yellow-400 ${size}`}>
-      {Array.from({ length: rating / 1 }).map((_, index) => (
-        <FontAwesomeIcon key={`full-${index}`} icon={faFullStar} />
-      ))}
-      {rating % 1 >= 0.5 && <FontAwesomeIcon icon={faStarHalfStroke} />}
-      {Array.from({ length: 5 - Math.ceil(rating) }).map((_, index) => (
-        <FontAwesomeIcon key={`empty-${index}`} icon={faEmptyStar} />
-      ))}
-    </div>
+    <ul className={`flex flex-row gap-1 items-center text-yellow-400 ${size}`}>
+      {Array.from({ length: 5 }).map((_, index) => {
+        const fullStars = Math.round(editRating);
+        const hasHalfStar = editRating % 1 < 0.5 && editRating % 1 !== 0;
+        return (
+          <FontAwesomeIcon
+            onClick={()=>handleMouseClick(index+1)}
+            className={`${editable ? "cursor-pointer" : ""}`}
+            onMouseEnter={() => (editable ? handleMouseHover(index + 1) : {})}
+            onMouseLeave={handleMouseLeave}
+            key={index}
+            icon={
+              index < fullStars
+                ? faFullStar
+                : index === fullStars && hasHalfStar
+                ? faStarHalfStroke
+                : faEmptyStar
+            }
+          />
+        );
+      })}
+    </ul>
   );
 };
 

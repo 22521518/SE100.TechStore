@@ -9,7 +9,6 @@ import logo from '@/public/images/logo.svg';
 export const Menu = ({ className = '' }: { className: string }) => {
   const { mutate: logout } = useLogout();
   const { menuItems, selectedKey } = useMenu();
-  const refinedMenu = menuItems.filter((item) => item.label !== 'Categories');
 
   return (
     <nav className={`menu ${className}`}>
@@ -25,7 +24,7 @@ export const Menu = ({ className = '' }: { className: string }) => {
 
       <div className="w-full flex flex-col justify-between items-center grow">
         <ul className="w-full flex-1 flex flex-col">
-          {refinedMenu.map((item) => (
+          {menuItems.map((item) => (
             <li
               key={item.key}
               className={`w-full ${

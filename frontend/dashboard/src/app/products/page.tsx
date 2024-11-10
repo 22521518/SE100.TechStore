@@ -46,7 +46,19 @@ const ProductList = () => {
     console.log('SearchProductSubmit', query);
   };
 
-  const { dataGridProps } = useDataGrid<IProduct>();
+  const { dataGridProps } = useDataGrid<IProduct>({
+    pagination: {
+      pageSize: 10
+    },
+    sorters: {
+      initial: [
+        {
+          field: 'product_name',
+          order: 'desc'
+        }
+      ]
+    }
+  });
 
   const columns = React.useMemo<GridColDef<IProduct>[]>(
     () => [
@@ -69,7 +81,7 @@ const ProductList = () => {
               alt={row.product_name}
               width={48}
               height={48}
-              className="items-center object-contain h-max flex justify-center"
+              className="items-center object-contain h-full flex justify-center"
             />
           );
         }
@@ -184,6 +196,7 @@ const ProductList = () => {
           <DataGrid
             {...dataGridProps}
             getRowId={(row) => row.product_id}
+            pagination
             onCellClick={(cell) => {
               if (cell.field !== 'actions') {
                 show('products', cell.row.product_id);
@@ -197,7 +210,7 @@ const ProductList = () => {
                   color: 'black'
                 }
             }}
-            className="text-accent my-4 bg-transparent"
+            className="text-accent my-4 bg-transparent overflow-hidden"
           />
         </Box>
       </CommonContainer>

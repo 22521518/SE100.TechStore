@@ -5,6 +5,10 @@ model Customers {
     full_name       String   @db.VarChar(100)
     phone_number    String   @db.VarChar(10)
     date_joined     DateTime @default(now())
+    
+    image          String?  @db.Text
+    male            Boolean?  @default(true) 
+    birth_date      DateTime? 
 
     cart        Cart_Item[]
     addresses    Customer_Address[]
@@ -14,18 +18,22 @@ model Customers {
 }
 
 model Customer_Address {
-    address_id     Int   @id @default(autoincrement())
-    customer_id     String   @db.VarChar(50)
-    address         String   @db.Text
-    city            String   @db.VarChar(50)
-    state           String   @db.VarChar(50)
-    is_primary      Boolean  @default(true)
+    address_id    Int   @id @default(autoincrement())
+    customer_id   String   @db.VarChar(50)
+    city          String   @db.VarChar(50)
+    district      String   @db.VarChar(50)
+    ward          String   @db.VarChar(50)
+    address       String   @db.Text
+    is_primary    Boolean  @default(true)
+
+    full_name      String   @db.VarChar(100)
+    phone_number   String   @db.Char(10)
 
     customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
     shipping_addresses    Shipping_Address[]
 }
 
-model Cart_Item {
+model Cart_Item { 
     customer_id    String   @db.VarChar(50)
     product_id     String   @db.VarChar(50)
     quantity       Int     @default(1)

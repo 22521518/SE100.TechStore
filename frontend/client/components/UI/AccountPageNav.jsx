@@ -8,12 +8,14 @@ import {
   faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { signOut } from "@node_modules/next-auth/react";
+import { signOut, useSession } from "@node_modules/next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
+import ProfileImageHolder from "./ProfileImageHolder";
 
 const AccountPageNav = () => {
+  const {data:session} = useSession()
   const pathName = usePathname();
   const MenuItems = [
     { name: "My account", path: "/account", icon: faUser },
@@ -27,7 +29,7 @@ const AccountPageNav = () => {
     <div className="grid grid-rows-[auto_1fr] gap-2 w-full">
       <div className="flex flex-row w-full gap-4 items-center">
         <button className="text-4xl">
-          <FontAwesomeIcon icon={faUserCircle} />
+          <ProfileImageHolder url={session?.user.image} size={40}/>
         </button>
         <div className="flex flex-col h-full justify-between">
           <span className="text-xl">Username</span>
@@ -39,7 +41,7 @@ const AccountPageNav = () => {
           {MenuItems.map((item) => (
             <Link key={item.name} href={item.path} className="w-full">
               <button
-                className={`${
+                className={`whitespace-nowrap ${
                   pathName === item.path
                     ? "account-nav-bar-selected-item"
                     : "account-nav-bar-item"
