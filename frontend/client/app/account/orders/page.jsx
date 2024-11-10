@@ -7,10 +7,11 @@ import Link from "@node_modules/next/link";
 import { getOrders } from "@service/order";
 import { formattedDate, formattedPrice } from "@util/format";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 
 const Orders = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const { data: session } = useSession();
+  const session = useSelector((state) => state.session);
   const [selectedView, setSelectedView] = useState("All");
   const viewItems = [
     "All",

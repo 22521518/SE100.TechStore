@@ -29,27 +29,27 @@ const OrderItem = ({ orderItem, loading }) => {
   return (
     <Link
       href={`/product/${orderItem?.product_id}`}
-      className="grid grid-cols-[auto_1fr_auto] gap-2 bg-surface text-on-surface p-2 rounded-xl"
+      className="grid grid-cols-[auto_1fr_auto] gap-2 bg-surface text-on-surface p-2 rounded-xl overflow-x-scroll no-scrollbar"
     >
-      <div className="size-[75px] scale-[0.8] md:scale-100 transition-transform duration-200 aspect-square flex items-center">
+      <div className="size-[50px] scale-[0.8] md:scale-100 transition-transform duration-200 aspect-square flex items-center h-full">
         <Image
           src={
             orderItem?.product.images[0]
-              ? orderItem.product.images[0].url
+              ? orderItem.product.images[0]
               : process.env.NEXT_PUBLIC_APP_LOGO
           }
           alt="product image"
           width={300}
           height={300}
-          className="size-full "
+          className="size-full object-scale-down"
         />
       </div>
 
       <div className="flex flex-col justify-between items-start">
-        <h1 className=" text-base md:text-lg">
+        <h1 className=" text-sm md:text-lg">
           {orderItem?.product.product_name}
         </h1>
-        <h2 className="text-base md:text-lg">x{orderItem?.quantity}</h2>
+        <h2 className="text-sm md:text-lg">x{orderItem?.quantity}</h2>
       </div>
 
       <div className="flex flex-col justify-between items-end">

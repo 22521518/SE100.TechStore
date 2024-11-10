@@ -11,12 +11,14 @@ import { useSession } from "@node_modules/next-auth/react";
 import { useRouter } from "@node_modules/next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import ProfileImageHolder from "./ProfileImageHolder";
+import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 
 const Nav = () => {
-  const {data:session} = useSession()
-  const router = useRouter()
+  const session = useSelector((state) => state.session);
+  const cartCount = useSelector((state) => state.cart.quantity);
+  const router = useRouter();
   const searchTextRef = useRef("");
 
   const handleTextChange = (e) => {
@@ -24,8 +26,8 @@ const Nav = () => {
   };
 
   const handleSearch = () => {
-    router.push(`/search?searchText=${searchTextRef.current}`)
-  }
+    router.push(`/search?searchText=${searchTextRef.current}`);
+  };
   const handleTriggerChatButton = () => {
     const chatButton = document.getElementById("chatButton");
     if (!chatButton) return;
@@ -47,6 +49,13 @@ const Nav = () => {
     chatButton.dispatchEvent(mouseDownEvent);
     chatButton.dispatchEvent(mouseUpEvent);
   };
+
+  useEffect(() => {
+    const cartButton = document.getElementById("CartButton");
+    cartButton.classList.add("animate-bounce");
+    setTimeout(() => cartButton.classList.remove("animate-bounce"), 1500);
+  }, [cartCount]);
+
   return (
     <div className="w-full sticky top-0 left-0 bg-secondary grid gap-2 md:grid-cols-3 gap-y-4 md:gap-y-0 grid-cols-1 p-2 z-50 text-on-secondary">
       <div className="flex gap-4 items-center justify-between md:justify-start">
@@ -65,22 +74,22 @@ const Nav = () => {
       </div>
       <ul className="flex h-full whitespace-nowrap justify-between px-2 items-center text-sm font-semibold md:row-auto row-start-3">
         <Link href="/">
-          <button className="hover:bg-primary hover:text-on-primary rounded-xl h-full p-2 w-[80px]">
+          <button className="hover:bg-on-secondary hover:text-secondary rounded-xl h-full p-2 w-[80px]">
             Home
           </button>
         </Link>
         <Link href="/search">
-          <button className="hover:bg-primary hover:text-on-primary rounded-xl h-full p-2 w-[80px]">
+          <button className="hover:bg-on-secondary hover:text-secondary rounded-xl h-full p-2 w-[80px]">
             Product
           </button>
         </Link>
         <Link href="/about">
-          <button className="hover:bg-primary hover:text-on-primary rounded-xl h-full p-2 w-[80px]">
+          <button className="hover:bg-on-secondary hover:text-secondary rounded-xl h-full p-2 w-[80px]">
             About us
           </button>
         </Link>
         <button
-          className="hover:bg-primary hover:text-on-primary rounded-xl h-full p-2 w-[80px]"
+          className="hover:bg-on-secondary hover:text-secondary rounded-xl h-full p-2 w-[80px]"
           onClick={handleTriggerChatButton}
         >
           Support
@@ -92,19 +101,26 @@ const Nav = () => {
           className="w-full md:w-[100px] lg:w-[300px] rounded-xl bg-primary-variant text-base px-2 text-on-primary placeholder:text-on-primary outline-none"
           placeholder="Search product"
           onChange={handleTextChange}
-          onKeyDown={(e)=>{e.key==='Enter'?handleSearch():null}}
+          onKeyDown={(e) => {
+            e.key === "Enter" ? handleSearch() : null;
+          }}
         />
-        <button onClick={handleSearch} className="hover:animate-pulse">
+        <button onClick={handleSearch}>
           <FontAwesomeIcon icon={faSearch} />
         </button>
-        <button id="CartButton" >
-          <Link href="/cart" >
+        <button id="CartButton" className="relative">
+          <Link href="/cart">
             <FontAwesomeIcon icon={faShoppingCart} />
           </Link>
+          {cartCount > 0 && (
+            <div className=" absolute size-4 rounded-full bg-primary-variant text-on-primary text-xs flex items-center justify-center font-bold top-0 left-full -translate-x-1/2">
+              {cartCount}
+            </div>
+          )}
         </button>
         <button>
           <Link href="/account">
-            <ProfileImageHolder url={session?.user.image} size={32}/>
+            <ProfileImageHolder url={session?.user?.image} size={40} />
           </Link>
         </button>
       </ul>

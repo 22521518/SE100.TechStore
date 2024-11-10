@@ -58,13 +58,13 @@ export const generateDummyCustomerAddresses = (numAddresses) => {
         ward: randomWard,
         full_name: `Customer ${Math.floor(Math.random() * 1000)}`, // Generate a random name
         phone_number: `+84${Math.floor(Math.random() * 900000000) + 100000000}`, // Generate a random phone number
-        default: false, 
+        is_primary: false, 
       };
     });
   
     // Randomly select one address to be the default
     const defaultIndex = Math.floor(Math.random() * addressesList.length);
-    addressesList[defaultIndex].default = true; // Set the selected address as default
+    addressesList[defaultIndex].is_primary = true; // Set the selected address as default
   
     return addressesList;
   };

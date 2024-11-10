@@ -17,6 +17,7 @@ const ProfileImageHolder = ({ url, size=100 }) => {
   };
 
   useEffect(() => {
+    if(!url) return
     testImageUrl(url).then((result) => setIsValid(result));
   }, [url]);
 

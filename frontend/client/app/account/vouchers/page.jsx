@@ -5,23 +5,23 @@ import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { faShoppingBag, faTicket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "@node_modules/next-auth/react";
+import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 import { getVouchers } from "@service/voucher";
 import { formattedDate } from "@util/format";
 import React, { useEffect, useState } from "react";
 
 const Vouchers = () => {
-  const { data: session } = useSession();
+  const session = useSelector((state) => state.session);
   const [isLoading, setIsLoading] = useState(true);
   const [vouchers, setVouchers] = useState([]);
   const [voucherCode, setVoucherCode] = useState("");
   const fetchVoucher = () => {
     setIsLoading(true);
-    getVouchers(session?.user.id).then((data) => {
+    getVouchers(session?.user?.id).then((data) => {
       // Separate vouchers into two groups
       const activeAndValidVouchers = data.filter(
         (voucher) =>
-          voucher.is_active &&
-          new Date(voucher.valid_to) >= new Date() // Active and not expired
+          voucher.is_active && new Date(voucher.valid_to) >= new Date() // Active and not expired
       );
 
       const expiredVouchers = data.filter(
@@ -64,13 +64,10 @@ const Vouchers = () => {
         <button className="button-variant-1">Save voucher</button>
       </div>
       <Divider />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-on-surface/20 p-2">
         {isLoading
           ? Array.from({ length: 8 }).map((_, index) => (
-              <div
-                key={index}
-                className="shadow-md flex flex-row border-2 bg-surface border-on-primary"
-              >
+              <div key={index} className="relative flex flex-row voucher">
                 <div className="flex items-center justify-center aspect-square h-full bg-on-primary text-primary text-4xl">
                   <FontAwesomeIcon icon={faShoppingBag} />
                 </div>
@@ -86,9 +83,13 @@ const Vouchers = () => {
               </div>
             ))
           : vouchers.map((voucher) => (
-              <div key={voucher.voucher_code} className="relative shadow-md flex flex-row border-2 bg-surface border-on-primary">
-                <div className="flex items-center justify-center aspect-square h-full bg-on-primary text-primary text-4xl">
-                  <FontAwesomeIcon icon={faShoppingBag} />
+              <div
+                key={voucher.voucher_code}
+                className={`relative max-h-[100px] w-full items-center flex flex-row voucher ${(!voucher.is_active ||
+                  new Date(voucher.valid_to) < new Date())&&'opacity-30 blur-[2px]'}`}
+              >
+                <div className="flex items-center justify-center h-full aspect-square bg-on-primary grow max-w-[100px] text-primary text-3xl font-bold">
+                  {voucher.discount_amount}%
                 </div>
                 <div className="p-2 flex flex-col overflow-x-scroll no-scrollbar whitespace-nowrap gap-2 ">
                   <h3 className="text-xl font-bold ">{voucher.voucher_code}</h3>
@@ -101,12 +102,6 @@ const Vouchers = () => {
                     </h5>
                   </div>
                 </div>
-                {(!voucher.is_active ||
-                  new Date(voucher.valid_to) < new Date()) && (
-                  <div className="absolute hover:text-transparent hover:bg-transparent hover:backdrop-blur-0 size-full backdrop-blur-sm bg-surface/70 z-10 font-bold flex items-center justify-center select-none">
-                    Voucher expired
-                  </div>
-                )}
               </div>
             ))}
       </div>

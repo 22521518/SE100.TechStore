@@ -5,9 +5,10 @@ import { useSession } from "@node_modules/next-auth/react";
 import { patchAccount } from "@service/account";
 import { toastError, toastSuccess, toastWarning } from "@util/toaster";
 import React, { useState } from "react";
+import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 
 const ChangePassword = () => {
-  const {data:session} = useSession()
+  const session = useSelector((state) => state.session);
   const [password,setPassword] = useState({
     current_password:'',
     new_password:'',

@@ -29,12 +29,18 @@ import { toastError, toastSuccess, toastWarning } from "@util/toaster";
 import { useSession } from "@node_modules/next-auth/react";
 import CommentTag from "@components/UI/FeedbackTag";
 import FeedbackTag from "@components/UI/FeedbackTag";
+import {
+  useDispatch,
+  useSelector,
+} from "@node_modules/react-redux/dist/react-redux";
+import { addItem } from "@provider/redux/cart/cartSlice";
 
 const Product = () => {
-  const {data:session} = useSession()
-  const router = useRouter()
+  const session = useSelector((state) => state.session);
+  const dispatch = useDispatch();
+  const router = useRouter();
   const params = useParams();
-  const [isLoading,setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   const [feedback, setFeedback] = useState({ rating: 0, content: "" });
   const [feedbackFilter, setFeedbackFilter] = useState(-1);
   const [products, setProducts] = useState([]);
@@ -115,21 +121,24 @@ const Product = () => {
   };
 
   const handleAddToCart = () => {
-    if(!session) {
-      toastError('You need to login to proceed')
-      return
+    if (!session.isAuthenticated) {
+      toastError("You need to login to proceed");
+      return;
     }
-    const cartButton = document.getElementById('CartButton')
-    cartButton.classList.add('animate-bounce')
-    setTimeout(()=>cartButton.classList.remove('animate-bounce'),1500)
-    toastSuccess('Product added to cart')
-  }
 
-  
+    dispatch(
+      addItem({
+        id:product.product_id
+      })
+    );
+
+    toastSuccess("Product added to cart");
+  };
+
   const handleBuyNow = () => {
-    handleAddToCart()
-    router.push('/cart')
-  }
+    handleAddToCart();
+    router.push("/cart");
+  };
 
   const handleSetSelectedId = (index) => {
     const imageList = productImageListRef.current;
@@ -185,10 +194,10 @@ const Product = () => {
   }, [product?.images]);
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     fetchProducts();
     fetchProductDetails(params.id);
-    setTimeout(()=>setIsLoading(false),1000)
+    setTimeout(() => setIsLoading(false), 1000);
   }, [params]);
 
   return (
@@ -276,7 +285,9 @@ const Product = () => {
               <button className="button-variant-1" onClick={handleAddToCart}>
                 Add to cart <FontAwesomeIcon icon={faCartShopping} />
               </button>
-              <button className="button-variant-1" onClick={handleBuyNow}>Buy now</button>
+              <button className="button-variant-1" onClick={handleBuyNow}>
+                Buy now
+              </button>
             </div>
           </div>
         </div>
@@ -397,17 +408,20 @@ const Product = () => {
           </h2>
           <ul className="flex flex-col gap-4 py-4">
             {isLoading
-            ?Array.from({length:3}).map((_,index)=> (
-              <FeedbackTag key={index} loading={true}/>
-            ))
-            :productFeedbacks
-              .filter(
-                (item) =>
-                  item.rating === feedbackFilter || feedbackFilter === -1
-              )
-              .map((feedback) => (
-                <FeedbackTag key={feedback.feedback_id} feedback={feedback}/>
-              ))}
+              ? Array.from({ length: 3 }).map((_, index) => (
+                  <FeedbackTag key={index} loading={true} />
+                ))
+              : productFeedbacks
+                  .filter(
+                    (item) =>
+                      item.rating === feedbackFilter || feedbackFilter === -1
+                  )
+                  .map((feedback) => (
+                    <FeedbackTag
+                      key={feedback.feedback_id}
+                      feedback={feedback}
+                    />
+                  ))}
           </ul>
         </div>
       </div>
@@ -416,24 +430,26 @@ const Product = () => {
       </p>
       <ul className="w-full overflow-scroll no-scrollbar flex flex-row gap-2">
         {isLoading
-        ?Array.from({ length: 8 }).map((_, index) => (
-          <ProductCard key={index} loading={true} />
-        ))
-        :products
-          .filter((pd) => pd.categories[0].category_id === product?.categories[0].category_id)
-          .map((pd) => (
-            <ProductCard key={pd.product_id} product={pd} />
-          ))}
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <ProductCard key={index} loading={true} />
+            ))
+          : products
+              .filter(
+                (pd) =>
+                  pd.categories[0].category_id ===
+                  product?.categories[0].category_id
+              )
+              .map((pd) => <ProductCard key={pd.product_id} product={pd} />)}
       </ul>
       <p className="text-2xl font-semibold my-4 ">Explore other products</p>
       <ul className="grid grid-cols-2 md:grid-cols-4 gap-2 overflow-visible w-full">
         {isLoading
-        ?Array.from({ length: 16 }).map((_, index) => (
-          <ProductCard key={index} loading={true} />
-        ))
-        :products.map((item) => (
-          <ProductCard key={item.product_id} product={item} />
-        ))}
+          ? Array.from({ length: 16 }).map((_, index) => (
+              <ProductCard key={index} loading={true} />
+            ))
+          : products.map((item) => (
+              <ProductCard key={item.product_id} product={item} />
+            ))}
       </ul>
     </section>
   );

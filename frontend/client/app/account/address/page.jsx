@@ -16,9 +16,10 @@ import { useSession } from "@node_modules/next-auth/react";
 import { toastError, toastSuccess, toastWarning } from "@util/toaster";
 import { FontAwesomeIcon } from "@node_modules/@fortawesome/react-fontawesome";
 import { faTrash } from "@node_modules/@fortawesome/free-solid-svg-icons";
+import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 
 const Address = () => {
-  const { data: session } = useSession();
+  const session = useSelector((state) => state.session);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdatingAddresses, setIsUpdatingAddresses] = useState("");
   const [addresses, setAddresses] = useState([]);
@@ -33,7 +34,7 @@ const Address = () => {
     province: "",
     district: "",
     ward: "",
-    default: false,
+    is_primary: false,
   });
   const [skip_flag, setSkip_Flag] = useState(false);
   const [provinces, setProvinces] = useState();
@@ -147,7 +148,7 @@ const Address = () => {
         province: "",
         district: "",
         ward: "",
-        default: false,
+        is_primary: false,
       });
     }
   }, [isUpdatingAddresses]);
@@ -205,7 +206,7 @@ const Address = () => {
   const handleSetDefaultAddress = (id) => {
     setAddresses(
       addresses.map((address) => {
-        return { ...address, default: address.id === id ? true : false };
+        return { ...address, is_primary: address.id === id ? true : false };
       })
     );
   };
@@ -384,7 +385,7 @@ const Address = () => {
                   </h3>
                 </div>
                 <div className="w-full flex flex-wrap justify-between col-span-2">
-                  {item.default && (
+                  {item.is_primary && (
                     <div className="rounded-lg border-2 border-green-500 px-2 text-green-500">
                       Default
                     </div>
@@ -399,7 +400,7 @@ const Address = () => {
                     >
                       Update
                     </button>
-                    {!item.default && (
+                    {!item.is_primary && (
                       <button
                         className="button-variant-2"
                         onClick={() => handleSetDefaultAddress(item.id)}

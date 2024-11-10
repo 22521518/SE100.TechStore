@@ -1,12 +1,14 @@
 import "@styles/globals.css";
-import { Toaster, toast } from 'sonner'
+import { Toaster, toast } from "sonner";
 import Nav from "@components/UI/Nav";
 import Footer from "@components/UI/Footer";
 import { config, icon } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import SupportChatBox from "@components/Chat/SupportChatBox";
 import ThemeProvider from "@components/theme/ThemeProvider";
-import Provider from "@provider/AuthProvider";
+import Providers from "@provider/ReduxProvider";
+import useSyncSession from "@provider/redux/useSyncSession";
+
 config.autoAddCss = false;
 
 export const metadata = {
@@ -18,24 +20,27 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en">
       <body>
-        <Provider>
-          <ThemeProvider>
+        <ThemeProvider>
+          <Providers>
+            {" "}
+            {/* Wrap with Providers */}
             <div className="min-h-[100vh] flex flex-col background">
-              <Nav></Nav>
+              <Nav />
               <div className="grow h-fit flex justify-center">
                 <div className="max-w-[1200px] w-full px-2 py-4">
                   {children}
                 </div>
               </div>
-              <Footer></Footer>
+              <Footer />
               <SupportChatBox />
             </div>
-            <Toaster  richColors   position="bottom-right"/>
-          </ThemeProvider>
-        </Provider>
+            <Toaster richColors position="bottom-right" />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

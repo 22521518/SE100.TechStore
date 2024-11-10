@@ -77,19 +77,19 @@ const imageSets = [
   },
 ];
 
-export const generateDummyProductData = (num = 1) => {  
+export const generateDummyProductData = (num = 1) => {
   const dummyProducts = [];
 
   for (let i = 0; i < num; i++) {
     const productId = `cm${Math.random().toString(36)}`;
     const createdAt = new Date().toISOString();
     const randomPrice = Math.floor(Math.random() * 50000000) + 500;
-    const randomDiscount = Math.floor(Math.random() * 30);
+    const randomDiscount = Math.floor(Math.random() * 30) + 10;
     const randomStock = Math.floor(Math.random() * 100) + 1;
     const randomRating = Math.floor(Math.random() * 5) + 1;
 
     // Select a random set for each product
-    const selectedSet = imageSets[Math.floor(Math.random() * imageSets.length)]
+    const selectedSet = imageSets[Math.floor(Math.random() * imageSets.length)];
 
     dummyProducts.push({
       product_id: productId,
@@ -117,7 +117,7 @@ export const generateDummyProductData = (num = 1) => {
   }
 
   return dummyProducts;
-}
+};
 
 export const generateDummyProductDetailData = () => {
   const productId = `cm${Math.random().toString(36)}`;
@@ -162,4 +162,4 @@ export const generateDummyProductDetailData = () => {
       })
     ),
   };
-}
+};

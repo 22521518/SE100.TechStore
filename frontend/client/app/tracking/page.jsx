@@ -24,7 +24,6 @@ import React, { useEffect, useState } from "react";
 
 export default function Tracking() {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: session } = useSession();
   const [orderIdInput, setOrderIdInput] = useState("");
   const [order, setOrder] = useState();
   const searchParams = useSearchParams();
@@ -32,11 +31,6 @@ export default function Tracking() {
 
   const fetchOrder = async (id = "") => {
     
-    console.log(id);
-    // if (!session) {
-    //   toastError("Please log in before tracking you order");
-    //   return;
-    // }
     if (!id) {
       toastWarning("Please type in your orderId");
       return;
@@ -178,9 +172,11 @@ export default function Tracking() {
               <p>
                 {order?.shipping_address.address.address +
                   ", " +
-                  order?.shipping_address.address.city +
+                  order?.shipping_address.address.ward +
                   ", " +
-                  order?.shipping_address.address.state}
+                  order?.shipping_address.address.district +
+                  ", " +
+                  order?.shipping_address.address.province}
               </p>
             </div>
             <div className="grid grid-cols-[auto_1fr] gap-2 items-start">

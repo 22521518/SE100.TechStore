@@ -154,7 +154,7 @@ export default function Home() {
                 <p className="text-2xl font-semibold my-4">
                   Products from {item.category_name}
                 </p>
-                <ul className="w-full overflow-scroll no-scrollbar flex flex-row gap-2">
+                <ul className="w-full overflow-x-scroll overflow-y-visible no-scrollbar flex flex-row gap-2">
                   {products
                     .filter(
                       (pd) => pd.categories[0].category_id === item.category_id

@@ -1,3 +1,4 @@
+import { generateDummyCart } from "@util/generator/cart";
 import { randomImage } from "@util/generator/customer";
 import { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider, {
@@ -49,6 +50,7 @@ export const options = {
         session.user.id = token.id; // Add user ID
         session.user.name = token.name; // Add user name
         session.user.image = token.image; // Add user image
+        session.user.cart = generateDummyCart(Math.round(Math.random()*5)+1)
       }
       return session;
     },

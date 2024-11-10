@@ -43,10 +43,7 @@ export const generateDummyOrderData = () => {
       { id: 2, name: "Size", detail: "Medium" },
     ],
     images: [
-      {
-        name: `sample_image_${id}.jpg`,
-        url: "https://cdn.viettelstore.vn/Images/Product/ProductImage/1743276577.jpeg",
-      },
+        "https://cdn.viettelstore.vn/Images/Product/ProductImage/1743276577.jpeg",
     ],
   });
 
@@ -82,6 +79,9 @@ export const generateDummyOrderData = () => {
       address: "123 Main St",
       city: "Hometown",
       state: "CA",
+      province: 'Thành Phố Hồ Chí Minh',
+      district: 'Huyện Cần Giờ',
+      ward: 'Xã Bình Khánh',
     },
   };
 

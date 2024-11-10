@@ -14,9 +14,10 @@ import { handleImage } from "@util/image";
 import { toastSuccess, toastWarning } from "@util/toaster";
 import { Input } from "postcss";
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 
 const Account = () => {
-  const { data: session, update } = useSession();
+  const session = useSelector((state) => state.session);
   const [email, setEmail] = useState("");
   const [customer, setCustomer] = useState();
   const [image,setImage] = useState({name:'',url:''})
@@ -47,7 +48,7 @@ const Account = () => {
   };
 
   const fetchUser = () => {
-    getCustomer(session?.user.email).then((data) => {
+    getCustomer(session?.user?.id||'').then((data) => {
       setImage({name:'user',url:data.image})
       setEmail(data.account.email);
       setCustomer(data);

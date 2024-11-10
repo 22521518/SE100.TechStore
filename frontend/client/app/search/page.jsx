@@ -84,7 +84,7 @@ export default function Search() {
   return (
     <section className="flex flex-col gap-4 overflow-visible">
       {/* filter */}
-      <div className="flex-wrap-reverse gap-4 flex items-center justify-end h-fit rounded-xl w-full bg-surface    py-2 px-4">
+      <div className="flex-wrap-reverse gap-4 flex items-center justify-end h-fit shadow-lg rounded-xl w-full bg-surface    py-2 px-4">
         <h2 className="text-lg mr-auto font-bold">
           {filteredProducts.length} results
         </h2>
@@ -93,7 +93,7 @@ export default function Search() {
           name={"price range"}
           options={priceRange}
           onChange={setSelectedPriceRange}
-        />
+        /> 
         <DropDownButton
           value={selectedCategory}
           name={"category"}
