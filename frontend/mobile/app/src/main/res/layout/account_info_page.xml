@@ -55,9 +55,11 @@
             android:id="@+id/userInfoImage"
             android:layout_width="120dp"
             android:layout_height="120dp"
+            android:layout_marginRight="16dp"
             android:src="@drawable/ic_user_icon" />
 
         <Button
+            android:layout_weight="1"
             android:id="@+id/userInfoChangePhotoButton"
             android:layout_width="wrap_content"
             android:layout_height="48dp"

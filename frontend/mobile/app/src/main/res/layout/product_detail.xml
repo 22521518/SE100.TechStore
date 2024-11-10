@@ -15,50 +15,52 @@
             android:layout_width="362dp"
             android:layout_height="211dp"
             android:layout_gravity="center"
+            android:background="#CCCCCC"
             android:contentDescription="Main product image"
-            android:background="#CCCCCC" />
+            android:scaleType="centerInside"
+            android:src="@drawable/banner" />
 
         <!-- Thumbnail Images -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
             android:weightSum="5">
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="70dp"
-                android:layout_weight="1"
                 android:layout_marginEnd="4dp"
+                android:layout_weight="1"
                 android:background="#CCCCCC"
                 android:contentDescription="Thumbnail 1" />
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="70dp"
-                android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
+                android:layout_weight="1"
                 android:background="#CCCCCC"
                 android:contentDescription="Thumbnail 2" />
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="70dp"
-                android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
+                android:layout_weight="1"
                 android:background="#CCCCCC"
                 android:contentDescription="Thumbnail 3" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="70dp"
-                android:layout_weight="1"
                 android:layout_marginStart="4dp"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="+4 more"
                 android:textColor="#000000"
@@ -68,7 +70,7 @@
 
         <!-- Product Rating and Price -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
@@ -78,63 +80,58 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Name"
-                android:textSize="28sp"
                 android:textColor="#000000"
+                android:textSize="28sp"
                 android:textStyle="bold" />
 
             <!-- Rating Section -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
 
                 <!-- Rating Stars -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginStart="8dp">
+                    android:layout_marginStart="8dp"
+                    android:orientation="horizontal">
 
                     <!-- Star icons can be actual image icons for stars -->
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star"
-                        android:tint="#FFD700" />
+                        android:src="@drawable/ic_star_icon" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star"
-                        android:tint="#FFD700" />
+                        android:src="@drawable/ic_star_icon" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star"
-                        android:tint="#FFD700" />
+                        android:src="@drawable/ic_star_icon" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star"
-                        android:tint="#FFD700" />
+                        android:src="@drawable/ic_star_icon" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star"
-                        android:tint="#FFD700" />
+                        android:src="@drawable/ic_star_icon" />
                 </LinearLayout>
                 <!-- Review Count -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text="Reviews count"
-                    android:textSize="14sp"
                     android:textColor="#000000"
-                    android:layout_marginStart="8dp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
 
@@ -142,41 +139,41 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:orientation="vertical">
 
                 <!-- Discounted Price -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="600.000VNĐ"
-                    android:textSize="24sp"
                     android:textColor="#000000"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
                     <!-- Original Price -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="900.000VNĐ"
-                        android:textSize="18sp"
-                        android:textColor="#B0B0B0"
                         android:layout_marginEnd="35dp"
-                        android:paintFlags="strikeThruText" />
+                        android:paintFlags="strikeThruText"
+                        android:text="900.000VNĐ"
+                        android:textColor="#B0B0B0"
+                        android:textSize="18sp" />
 
                     <!-- Discount Percentage -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-33%"
-                        android:textSize="18sp"
-                        android:textColor="#FF0000" />
+                        android:textColor="#FF0000"
+                        android:textSize="18sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -185,10 +182,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="in-stock count"
-                android:textSize="14sp"
                 android:textColor="#808080"
-                android:layout_marginTop="4dp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
 
@@ -196,58 +193,58 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:layout_marginBottom="8dp">
+            android:orientation="horizontal">
 
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="#ffffff"
                 android:text="Buy now"
-                android:textColor="#000000"
-                android:layout_marginStart="8dp" />
+                android:textColor="#000000" />
 
 
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="#000000"
                 android:text="Buy now"
-                android:textColor="#FFFFFF"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"/>
+                android:textColor="#FFFFFF" />
         </LinearLayout>
 
         <!-- Product Details -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Product Detail"
+            android:layout_marginBottom="8dp"
             android:background="#777777"
-            android:textColor="#FFFFFF"
             android:padding="8dp"
-            android:layout_marginBottom="8dp" />
+            android:text="Product Detail"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Detail"
-            android:textColor="#000000"
+            android:layout_marginBottom="8dp"
             android:padding="8dp"
-            android:layout_marginBottom="8dp" />
+            android:text="Detail"
+            android:textColor="#000000" />
 
         <!-- Product Specs -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Product Specs"
+            android:layout_marginBottom="8dp"
             android:background="#777777"
-            android:textColor="#FFFFFF"
             android:padding="8dp"
-            android:layout_marginBottom="8dp" />
+            android:text="Product Specs"
+            android:textColor="#FFFFFF" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -257,15 +254,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="Spec1"
-                    android:layout_marginStart="20dp"
                     android:textColor="#000000" />
 
                 <TextView
@@ -284,11 +281,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Customer Review"
+            android:layout_marginBottom="8dp"
             android:background="#777777"
-            android:textColor="#FFFFFF"
             android:padding="8dp"
-            android:layout_marginBottom="8dp" />
+            android:text="Customer Review"
+            android:textColor="#FFFFFF" />
 
         <!-- Review Summary -->
 
@@ -298,54 +295,56 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <!-- First Column -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_gravity="center" >
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
                     android:text="5 / 5"
                     android:textColor="#000000"
-                    android:textSize="20sp"
-                    android:layout_marginEnd="16dp" />
+                    android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★★★★★"
                     android:textColor="#000000"
                     android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
                     android:text="Count"
                     android:textColor="#000000"
-                    android:textSize="20sp"
-                    android:layout_marginEnd="16dp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#CCCCCC"
                 android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"/>
+                android:layout_marginEnd="24dp"
+                android:background="#CCCCCC" />
 
             <!-- Second Column -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_gravity="center" >
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -353,24 +352,28 @@
                     android:text="★★★★★ (0)"
                     android:textColor="#000000"
                     android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★★★★★ (0)"
                     android:textColor="#000000"
                     android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★★★★★ (0)"
                     android:textColor="#000000"
                     android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★★★★★ (0)"
                     android:textColor="#000000"
                     android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -384,11 +387,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:padding="8dp"
-            android:background="#ffffff">
+            android:background="#ffffff"
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -416,16 +419,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
             android:gravity="center"
-            android:layout_marginTop="16dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="145dp"
                 android:layout_height="142dp"
+                android:layout_marginEnd="8dp"
                 android:background="#CCCCCC"
-                android:contentDescription="Recommended product 1"
-                android:layout_marginEnd="8dp" />
+                android:contentDescription="Recommended product 1" />
 
             <ImageView
                 android:layout_width="145dp"

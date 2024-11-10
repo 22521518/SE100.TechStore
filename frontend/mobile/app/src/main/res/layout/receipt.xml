@@ -1,217 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/border"
-        android:orientation="vertical"
-        android:layout_margin="20dp"
-        >
+        android:padding="8dp"
+        android:orientation="vertical">
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:src="@drawable/ok"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ok" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thanks for your order!"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
+            android:text="Thanks for your order!"
+            android:textColor="@android:color/holo_green_light"
             android:textSize="30dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="10dp"/>
+            android:textStyle="bold" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
             android:text="Transaction date"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="10dp"/>
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Monday, October 9th, 2024"
-            android:textSize="15dp"
-            android:textColor="@color/black"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="10dp"/>
+            android:text="Monday, October 9th, 2024"
+            android:textSize="15dp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#000000"
             android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"/>
+            android:background="#000000" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
             android:text="Payment method"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="10dp"/>
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/payment_method"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cash on delivery"
-            android:textSize="15dp"
-            android:textColor="@color/black"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="10dp"/>
+            android:text="Cash on delivery"
+            android:textSize="15dp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#000000"
             android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"/>
+            android:background="#000000" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
             android:text="Shipping method"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="10dp"/>
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/shipping_method"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Free shipping"
-            android:textSize="15dp"
-            android:textColor="@color/black"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="10dp"/>
+            android:text="Free shipping"
+            android:textSize="15dp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#000000"
             android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp" />
+            android:background="#000000" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
             android:text="Your order"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginLeft="10dp"
-            android:layout_marginVertical="5dp"/>
-        <ListView
-            android:id="@+id/list_receipt"
+            android:textStyle="bold" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rc_trend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </ScrollView>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginHorizontal="10dp">
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Subtotal"
-                android:textStyle="bold"
                 android:textSize="20dp"
-                android:textColor="@color/black"/>
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/receipt_subtotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="00000vnd"
-                android:textStyle="bold"
                 android:textSize="20dp"
-                android:textColor="@color/black"/>
+                android:textStyle="bold" />
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#000000"
             android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp" />
+            android:background="#000000" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginHorizontal="10dp">
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Discount"
-                android:textSize="15dp"
-                android:textColor="@color/black"/>
+                android:textSize="15dp" />
+
             <TextView
                 android:id="@+id/receipt_discount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="00000vnd"
-                android:textSize="15dp"
-                android:textColor="@color/black"/>
+                android:textSize="15dp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="3dp">
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Shipment cost"
-                android:textSize="15dp"
-                android:textColor="@color/black"/>
+                android:textSize="15dp" />
+
             <TextView
                 android:id="@+id/receipt_shipment_cost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="00000vnd"
-                android:textSize="15dp"
-                android:textColor="@color/black"/>
+                android:textSize="15dp" />
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#000000"
             android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp" />
+            android:background="#000000" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginHorizontal="10dp">
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Grand total"
-                android:textStyle="bold"
                 android:textSize="20dp"
-                android:textColor="@color/black"/>
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/receipt_grand_total"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="00000vnd"
-                android:textStyle="bold"
                 android:textSize="20dp"
-                android:textColor="@color/black"/>
+                android:textStyle="bold" />
         </LinearLayout>
+
         <Button
             android:id="@+id/continue_shopping"
             android:layout_width="match_parent"
+            android:background="@drawable/button_border"
             android:layout_height="50dp"
-            android:text="Continue shopping"/>
+            android:text="Continue shopping" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

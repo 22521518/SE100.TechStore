@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_product"
-    android:layout_width="100dp"
-    android:layout_height="170dp"
+    android:layout_width="150dp"
+    android:layout_weight="0.5"
+    android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:elevation="3dp"
-    app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="5dp">
 
 
@@ -22,20 +22,15 @@
 
         <ImageView
             android:id="@+id/img_product"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:srcCompat="@drawable/ic_user" />
-
-        <Button
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:backgroundTint="#8E8E8E"
-            android:clickable="false"/>
+            android:layout_height="150dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/banner" />
 
         <LinearLayout
+            android:padding="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#EDEDED"
             android:orientation="vertical">
 
 
@@ -44,15 +39,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginHorizontal="4dp"
                 android:layout_marginTop="0.6dp"
                 android:inputType="textMultiLine"
                 android:maxLines="2"
-                android:singleLine="true"
-                android:text="NAME"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="12sp" />
+                android:textStyle="bold"
+                android:text="Product name "
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/retail_price"
@@ -62,9 +54,7 @@
                 android:layout_marginTop="1dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="1.900.000VNĐ"
-                android:textAlignment="center"
-                android:textColor="#F9A503"
-                android:textSize="12sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/original_price"
@@ -73,22 +63,32 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="1dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="2.000.000VNĐ"
-                android:textAlignment="center"
-                android:textColor="#F9A503"
+                android:text="-30%"
+                android:textColor="@android:color/holo_red_light"
                 android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/product_rate"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="1dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="4.9/5"
-                android:textAlignment="center"
-                android:textColor="#F9A503"
-                android:textSize="12sp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_star_icon"
+                    android:layout_marginRight="4dp"/>
+                <TextView
+                    android:id="@+id/product_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="1dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="4.9"
+                    android:textColor="#F9A503"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+
         </LinearLayout>
     </LinearLayout>
 
