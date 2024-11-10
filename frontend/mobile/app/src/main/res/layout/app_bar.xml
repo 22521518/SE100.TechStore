@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.appbar.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" android:padding="4dp">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:padding="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/search_bar_background">
+            <EditText
+                android:paddingHorizontal="8dp"
+                android:textColorHint="@color/black"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:textSize="16sp"
+                android:hint="Search product..."
+                android:background="none"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                android:contentDescription="search"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="none"
+                android:src="@drawable/ic_search_icon"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:contentDescription="cart"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_cart_icon"
+            android:background="none"/>
+        <ImageButton
+            android:contentDescription="account"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ic_user"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:textColor="@color/white"
+            android:background="none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Home" />
+
+        <Button
+            android:textColor="@color/white"
+            android:background="none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Product" />
+
+        <Button
+            android:textColor="@color/white"
+            android:background="none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tracking" />
+
+        <Button
+            android:textColor="@color/white"
+            android:background="none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Support" />
+    </LinearLayout>
+
+</com.google.android.material.appbar.AppBarLayout>
