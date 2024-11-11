@@ -153,7 +153,7 @@ const Cart = () => {
                 onChecked={() => setAllCheckState(true)}
                 onUnchecked={() => setAllCheckState(false)}
               />
-              <h3 className="text-left">Product</h3>
+              <h3 className="text-left">Products ({cartItems.filter(item=>item.checked===true).length||0}/{cartItems.length||0})</h3>
               <h3 className="hidden sm:inline-block text-center ml-auto">
                 Quantity
               </h3>

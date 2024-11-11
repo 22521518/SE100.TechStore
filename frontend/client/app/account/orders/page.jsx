@@ -25,7 +25,7 @@ const Orders = () => {
 
   const fetchOrders = () => {
     setIsLoading(true);
-    getOrders(session?.user.id).then((data) => setOrders(data));
+    getOrders(session?.user?.id).then((data) => setOrders(data));
     setTimeout(() => setIsLoading(false), 1000);
   };
   useEffect(() => {
@@ -108,7 +108,7 @@ const Orders = () => {
                 </h2>
                 <CollapsibleContainer
                   content={
-                    <ul className="flex flex-col gap-4 py-4">
+                    <ul className="flex flex-col gap-4 py-4 w-full">
                       {Array.from({length:2}).map((_,index) => (
                         <OrderItem
                           key={index}

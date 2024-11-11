@@ -151,7 +151,7 @@ const Payment = () => {
 
           <label
             className=" py-4 gap-4 rounded-xl bg-surface my-2 flex flex-row justify-between  h-fit items-center px-4"
-            htmlFor="App wallet"
+            htmlFor="MOMO"
           >
             <div className="flex flex-row gap-4 items-center">
               <RadioButton
@@ -243,20 +243,20 @@ const Payment = () => {
               {vouchers.map((vc) => (
                 <div
                   key={vc.voucher_code}
-                  className="relative max-h-[80px] w-full flex flex-row  items-center cursor-pointer voucher "
+                  className="relative h-[80px] w-full flex flex-row  items-center cursor-pointer voucher "
                   onClick={() => setVoucher(v=>v?.voucher_code===vc.voucher_code?null:vc)}
                 >
                   <div className="flex items-center justify-center h-full aspect-square bg-on-primary grow max-w-[80px] text-primary text-3xl font-bold">
                     {vc.discount_amount}%
                   </div>
-                  <div className="p-2 flex flex-col overflow-x-scroll no-scrollbar whitespace-nowrap gap-[1px] ">
+                  <div className="p-2 flex flex-col gap-[1px] ">
                     <h3 className="text-base font-bold ">
                     {voucher?.voucher_code===vc.voucher_code&&<FontAwesomeIcon icon={faCheckCircle} className="text-lg"/>} {vc.voucher_code}
                     </h3>
                     <h4 className="opacity-60 text-xs ">
                       {vc.description}
                     </h4>
-                    <div className="flex flex-row items-center gap-2 text-xs">
+                    <div className="flex flex-row items-center gap-2 text-xs white">
                       <FontAwesomeIcon icon={faClock} />
                       <h5>
                         {formattedDate(vc.valid_from)} to{" "}

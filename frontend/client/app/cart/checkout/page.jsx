@@ -286,13 +286,13 @@ const Checkout = () => {
                       />
                       <FontAwesomeIcon icon={faLocationDot} />
                     </div>
-                    <div className="flex flex-col items-start h-full justify-around text-xs gap-2">
+                    <div className="flex flex-col items-start justify-around text-xs gap-2">
                       <div className="flex flex-wrap gap-2">
                         <div className="h-4 rounded-lg bg-primary animate-pulse w-[70px]"></div>
                         <div className="h-4 rounded-lg bg-primary animate-pulse w-[70px]"></div>
                       </div>
                       <div className="opacity-50 h-4 rounded-lg bg-primary animate-pulse w-[120px]"></div>
-                      <div className="opacity-50 h-4 rounded-lg bg-primary animate-pulse w-[300px]"></div>
+                      <div className="opacity-50 h-4 rounded-lg bg-primary animate-pulse w-full max-w-[300px]"></div>
                     </div>
                   </label>
                 ))
@@ -311,7 +311,7 @@ const Checkout = () => {
                       />
                       <FontAwesomeIcon icon={faLocationDot} />
                     </div>
-                    <div className="flex flex-col items-start h-full justify-around text-xs">
+                    <div className="flex flex-col items-start justify-around text-xs">
                       <h4>
                         {item.full_name} | {item.phone_number}
                       </h4>

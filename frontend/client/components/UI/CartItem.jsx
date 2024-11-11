@@ -41,7 +41,7 @@ const CartItem = ({ reCalculate, cartItem, removeItem }) => {
   };
 
   return (
-    <div className="grid grid-cols-[auto_1fr_1fr] sm:grid-cols-[auto_1fr_auto_20%] items-center gap-2 pb-2 last:border-none">
+    <div className="grid grid-cols-[auto_1fr_1fr] sm:grid-cols-[auto_1fr_auto_20%] items-center gap-2 pb-2 last:border-none h-fit border-b-2 ">
       <CheckBox
         onChecked={() => setIsChecked(true)}
         onUnchecked={() => {
@@ -50,7 +50,7 @@ const CartItem = ({ reCalculate, cartItem, removeItem }) => {
         checked={cartItem.checked}
       />
 
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 items-center">
         <div className="min-w-[50px] max-w-[50px] md:min-w-[100px] md:max-w-[100px]  scale-95 md:scale-[1] transition-transform duration-200 aspect-square">
           <Image
             src={
@@ -132,7 +132,7 @@ const CartItem = ({ reCalculate, cartItem, removeItem }) => {
           Remove
         </button>
       </div>
-      <div className="flex flex-col items-end sm:justify-center justify-between h-full">
+      <div className="flex flex-col items-end sm:justify-center justify-between">
         <div className="text-xs text-right font-semibold">
           <div className="opacity-70">
             {formattedPrice(cartItem.product.price)}{" "}
@@ -148,7 +148,7 @@ const CartItem = ({ reCalculate, cartItem, removeItem }) => {
           </div>
         </div>
         <button
-          className="flex sm:hidden flex-row items-center justify-center gap-2 underline text-sm md:text-base "
+          className="flex sm:hidden flex-row items-center justify-center gap-2 underline text-sm md:text-base mt-auto"
           onClick={handleRemoveItem}
         >
           <FontAwesomeIcon icon={faTrash} />

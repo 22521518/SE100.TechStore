@@ -76,7 +76,7 @@ const Address = () => {
   };
   const fetchAddress = () => {
     setIsLoading(true);
-    getCustomerAddresses(session?.user.id).then((data) => {
+    getCustomerAddresses(session?.user?.id).then((data) => {
       setAddresses(data.map((a, index) => ({ id: index, ...a })));
     });
 
@@ -343,21 +343,21 @@ const Address = () => {
         </div>
       )}
       {/* address list section */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-full">
         {isLoading
           ? Array.from({ length: 3 }).map((_, index) => (
               <li
                 key={index}
                 className="grid grid-cols gap-3 items-start w-full bg-surface rounded-lg p-2 min-h-[70px]"
               >
-                <div className="flex flex-col items-start gap-2 h-full justify-around text-base">
+                <div className="flex flex-col items-start gap-2 justify-around text-base">
                   <h2 className="flex items-center gap-2">
                     <div className="h-7 font-semibold w-[100px] bg-primary rounded-lg animate-pulse"></div>
 
                     <div className="h-6 w-[100px] bg-primary rounded-lg animate-pulse"></div>
                   </h2>
                   <h3 className="h-6 w-[150px] bg-primary rounded-lg animate-pulse"></h3>
-                  <h3 className="h-6 w-[400px] bg-primary rounded-lg animate-pulse"></h3>
+                  <h3 className="h-6 w-full  max-w-[400px] bg-primary rounded-lg animate-pulse"></h3>
                 </div>
                 <div className="w-full flex flex-wrap justify-between col-span-2">
                   <div className="flex flex-wrap flex-row-reverse gap-2 ml-auto ">
@@ -372,7 +372,7 @@ const Address = () => {
                 key={item.id}
                 className="grid grid-cols gap-3 items-start w-full bg-surface rounded-lg p-2 min-h-[70px]"
               >
-                <div className="flex flex-col items-start gap-2 h-full justify-around text-base">
+                <div className="flex flex-col items-start gap-2 justify-around text-base">
                   <h2>
                     <span className="text-xl font-semibold">
                       {item.full_name}

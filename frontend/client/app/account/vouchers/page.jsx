@@ -1,6 +1,7 @@
 "use client";
 import InputBox from "@components/Input/InputBox";
 import Divider from "@components/UI/Divider";
+import Voucher from "@components/UI/Voucher";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { faShoppingBag, faTicket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -67,42 +68,10 @@ const Vouchers = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-on-surface/20 p-2">
         {isLoading
           ? Array.from({ length: 8 }).map((_, index) => (
-              <div key={index} className="relative flex flex-row voucher">
-                <div className="flex items-center justify-center aspect-square h-full bg-on-primary text-primary text-4xl">
-                  <FontAwesomeIcon icon={faShoppingBag} />
-                </div>
-                <div className="p-2 flex flex-col overflow-x-scroll no-scrollbar whitespace-nowrap gap-2">
-                  <h3 className="h-7 w-[100px] rounded-lg animate-pulse bg-primary"></h3>
-                  <div className="h-6 w-[200px] rounded-lg animate-pulse bg-primary"></div>
-                  <div className="flex flex-row items-center gap-2 text-xs">
-                    <FontAwesomeIcon icon={faClock} />
-                    <div className="h-4 w-[50px] rounded-lg animate-pulse bg-primary"></div>
-                    <div className="h-4 w-[50px] rounded-lg animate-pulse bg-primary"></div>
-                  </div>
-                </div>
-              </div>
+              <Voucher key={index} loading={true} />
             ))
           : vouchers.map((voucher) => (
-              <div
-                key={voucher.voucher_code}
-                className={`relative max-h-[100px] w-full items-center flex flex-row voucher ${(!voucher.is_active ||
-                  new Date(voucher.valid_to) < new Date())&&'opacity-30 blur-[2px]'}`}
-              >
-                <div className="flex items-center justify-center h-full aspect-square bg-on-primary grow max-w-[100px] text-primary text-3xl font-bold">
-                  {voucher.discount_amount}%
-                </div>
-                <div className="p-2 flex flex-col overflow-x-scroll no-scrollbar whitespace-nowrap gap-2 ">
-                  <h3 className="text-xl font-bold ">{voucher.voucher_code}</h3>
-                  <h4 className="opacity-60 ">{voucher.description}</h4>
-                  <div className="flex flex-row items-center gap-2 text-xs">
-                    <FontAwesomeIcon icon={faClock} />
-                    <h5>
-                      {formattedDate(voucher.valid_from)} to{" "}
-                      {formattedDate(voucher.valid_to)}
-                    </h5>
-                  </div>
-                </div>
-              </div>
+            <Voucher key={voucher.voucher_code} voucher={voucher}/>
             ))}
       </div>
     </section>

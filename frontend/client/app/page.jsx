@@ -108,7 +108,7 @@ export default function Home() {
 
       {/* product categories */}
       <div className="flex gap-2 justify-center items-center">
-        <ul className="px-4 py-2 min-h-[48px] flex-wrap items-center bg-surface text-on-surface gap-6 flex rounded-xl text-lg">
+        <ul className="px-4 py-2 min-h-[48px] flex-wrap items-center bg-surface text-on-surface gap-6 flex rounded-xl text-base sm:text-lg shadow-md">
           {categories.slice(0, 5).map((item) => (
             <li
               key={item.category_id}
@@ -135,26 +135,25 @@ export default function Home() {
                 <ProductCard key={item.product_id} product={item} />
               ))}
       </ul>
-      <ul className="flex flex-col gap-2">
+
+      <ul className="flex flex-col gap-2 w-full">
         {isLoading
           ? Array.from({ length: 4 }).map((_, index) => (
-            <li key={index}>
-            <p className="text-2xl font-semibold my-4">
-              Products from ...
-            </p>
-            <ul className="w-full overflow-scroll no-scrollbar flex flex-row gap-2">
-              {Array.from({ length: 16 }).map((_, index) => (
-              <ProductCard key={index} loading={true} />
-            ))}
-            </ul>
-          </li>
+              <li key={index}>
+                <p className="text-2xl font-semibold my-4">Products from ...</p>
+                <ul className="w-full overflow-scroll no-scrollbar flex flex-row gap-2">
+                  {Array.from({ length: 16 }).map((_, index) => (
+                    <ProductCard key={index} loading={true} />
+                  ))}
+                </ul>
+              </li>
             ))
           : categories?.slice(0, 4).map((item) => (
               <li key={item.category_id}>
                 <p className="text-2xl font-semibold my-4">
                   Products from {item.category_name}
                 </p>
-                <ul className="w-full overflow-x-scroll overflow-y-visible no-scrollbar flex flex-row gap-2">
+                <ul className="w-full overflow-x-scroll no-scrollbar flex flex-row gap-2 shadow-inner">
                   {products
                     .filter(
                       (pd) => pd.categories[0].category_id === item.category_id

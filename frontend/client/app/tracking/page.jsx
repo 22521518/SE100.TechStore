@@ -30,7 +30,6 @@ export default function Tracking() {
   const orderId = searchParams.get("orderId");
 
   const fetchOrder = async (id = "") => {
-    
     if (!id) {
       toastWarning("Please type in your orderId");
       return;
@@ -48,7 +47,7 @@ export default function Tracking() {
   };
   useEffect(() => {
     if (orderId) {
-      setOrderIdInput(orderId)
+      setOrderIdInput(orderId);
       fetchOrder(orderId);
     }
   }, [orderId]);
@@ -170,18 +169,17 @@ export default function Tracking() {
             <div className="grid grid-cols-[auto_1fr] gap-2 items-start">
               <FontAwesomeIcon icon={faHouse} />
               <p>
-                {order?.shipping_address.address.address +
-                  ", " +
-                  order?.shipping_address.address.ward +
-                  ", " +
-                  order?.shipping_address.address.district +
-                  ", " +
-                  order?.shipping_address.address.province}
+                {order?.shipping_address?.address?.address &&
+                order?.shipping_address?.address?.ward &&
+                order?.shipping_address?.address?.district &&
+                order?.shipping_address?.address?.province
+                  ? `${order.shipping_address.address.address}, ${order.shipping_address.address.ward}, ${order.shipping_address.address.district}, ${order.shipping_address.address.province}`
+                  : null}
               </p>
             </div>
             <div className="grid grid-cols-[auto_1fr] gap-2 items-start">
               <FontAwesomeIcon icon={faPhone} />
-              <p>{order?.customer.phone_number}</p>
+              <p>{order?.customer.phone_number || ""}</p>
             </div>
           </div>
 

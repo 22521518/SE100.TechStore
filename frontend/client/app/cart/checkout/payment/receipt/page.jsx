@@ -149,12 +149,12 @@ const Payment = () => {
         <Divider />
         <h3 className="font-bold md:text-xl">Voucher</h3>
 
-        {order.order_voucher && (
-          <div className="relative max-h-[80px]  flex flex-row items-center cursor-pointer voucher">
+        {order.order_voucher&& (
+          <div className="relative h-[80px]  flex flex-row items-center cursor-pointer voucher">
             <div className="flex items-center justify-center h-full aspect-square bg-on-primary grow max-w-[80px] text-primary text-3xl font-bold">
               {order.order_voucher?.discount_amount}%
             </div>
-            <div className="p-2 flex flex-col overflow-x-scroll no-scrollbar whitespace-nowrap gap-[1px] ">
+            <div className="p-2 flex flex-col  gap-[1px] ">
               <h3 className="text-base font-bold ">
                 {order.order_voucher?.voucher_code}
               </h3>

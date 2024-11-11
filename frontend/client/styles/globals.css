@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+
   /* Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
@@ -44,22 +44,31 @@
     --on-surface: 255, 255, 255; /* White */
     --on-error: 255, 255, 255; /* White */
   }
-}
+
+
+
 .background {
   background: linear-gradient(
       0deg,
       rgba(var(--primary), 1),
       rgba(var(--primary), 1)
     ),
-    radial-gradient(   rgba(var(--on-primary), 0.1), 3px , transparent 0),
-    linear-gradient(to bottom left, rgba(var(--on-primary), 0.4), transparent, rgba(var(--on-primary), 0.4));
-  background-size: 100%,60px 60px,100%;
+    radial-gradient(rgba(var(--on-primary), 0.1), 3px, transparent 5px),
+    linear-gradient(
+      to bottom left,
+      rgba(var(--on-primary), 0.4),
+      transparent,
+      rgba(var(--on-primary), 0.4)
+    ),
+    radial-gradient(rgba(var(--on-primary), 0.15) 3.5px, transparent 0px);
+
+  background-size: 100%,60px 60px, 100%, 120px 120px;
   background-blend-mode: overlay;
   color: rgb(var(--on-background));
 }
-html,
-body {
-  background: none;
+
+html,body {
+  background: black;
 }
 
 @layer utilities {
@@ -121,7 +130,7 @@ body {
   }
 
   .account-nav-bar-item {
-    @apply  grid grid-cols-[auto_1fr] gap-2 items-center hover:bg-secondary hover:text-on-secondary rounded-lg p-2  text-left justify-items-start  w-full min-w-fit;
+    @apply grid grid-cols-[auto_1fr] gap-2 items-center hover:bg-secondary hover:text-on-secondary rounded-lg p-2  text-left justify-items-start  w-full min-w-fit;
   }
 
   .account-nav-bar-selected-item {
@@ -129,6 +138,7 @@ body {
   }
 
   .voucher {
+    padding-right: 10%;
     z-index: 1;
   }
 
@@ -153,5 +163,17 @@ body {
       0 100% /* Keep bottom straight */
     ); /* Fewer jagged points on the sides, straight top and bottom */
     z-index: -1; /* Position the border behind the content */
+  }
+
+  .my-message {
+    @apply message-base ml-auto
+  }
+
+  .message-base {
+    @apply whitespace-normal break-all text-base rounded-3xl bg-on-primary text-primary size-fit p-2 px-3 max-w-[80%] 
+  }
+
+  .other-message {
+    @apply message-base mr-auto
   }
 }

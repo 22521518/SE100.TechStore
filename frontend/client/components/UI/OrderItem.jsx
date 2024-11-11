@@ -6,7 +6,7 @@ import React from "react";
 const OrderItem = ({ orderItem, loading }) => {
   if (loading)
     return (
-      <div className="w-full min-h-[90px]  bg-surface text-on-surface rounded-xl grid grid-cols-[auto_1fr_auto] gap-2 p-2">
+      <div className="w-full max-h-[90px]  bg-surface text-on-surface rounded-xl grid grid-cols-[auto_1fr_auto] gap-2 p-2">
         <div className="size-full aspect-square bg-primary animate-pulse rounded-lg"></div>
 
         <div className="flex flex-col justify-between items-start">
@@ -15,13 +15,13 @@ const OrderItem = ({ orderItem, loading }) => {
           <div className="h-5 md:h-7 bg-primary animate-pulse w-[50px] rounded-lg"></div>
         </div>
 
-        <div className="flex flex-col justify-between items-end">
-          <div className="font-semibold h-5 w-[100px] bg-primary animate-pulse  rounded-lg">
+        <div className="flex flex-col justify-between items-end gap-2">
+          <div className="font-semibold h-5 w-full max-w-[100px] bg-primary animate-pulse  rounded-lg">
             
           </div>
-          <div className="text-red-500 font-semibold  h-3 w-[50px] bg-primary animate-pulse rounded-lg">
+          <div className="  h-3 w-[50px] bg-primary animate-pulse rounded-lg">
           </div>
-          <div className="font-semibold h-6 w-[150px] bg-primary animate-pulse rounded-lg">
+          <div className="font-semibold h-5 w-full max-w-[150px] bg-primary animate-pulse rounded-lg">
           </div>
         </div>
       </div>
