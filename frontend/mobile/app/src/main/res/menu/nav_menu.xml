@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Account Section -->
+    <group
+        android:id="@+id/account_section"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Account"
+            android:icon="@drawable/ic_user_icon" />
+    </group>
+
+    <!-- Home & Cart Section -->
+    <group
+        android:id="@+id/shop_section"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home"
+            android:icon="@drawable/ic_shopping_bag_icon" />
+        <item
+            android:id="@+id/nav_product"
+            android:title="Cart"
+            android:icon="@drawable/ic_cart_1_icon" />
+    </group>
+    <!-- Tracking Section -->
+    <group
+        android:id="@+id/tracking_section"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_track"
+            android:title="Tracking"
+            android:icon="@drawable/ic_truck_icon" />
+    </group>
+
+    <!-- Support Section -->
+    <group
+        android:id="@+id/support_section"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_cart"
+            android:title="Support"
+            android:icon="@drawable/ic_help_icon" />
+    </group>
+
+
+</menu>

@@ -4,6 +4,7 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="android:statusBarColor">?android:colorBackground</item>
     </style>
 
     <style name="Theme.ElectroHive" parent="Base.Theme.ElectroHive" />

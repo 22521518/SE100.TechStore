@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Corners: rounded at the bottom only -->
+    <corners
+        android:topLeftRadius="0dp"
+        android:topRightRadius="0dp"
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp"/>
+    <!-- Only bottom border with fade effect -->
+
+    <gradient
+        android:startColor="?android:colorBackground"
+        android:endColor="?android:colorPrimary"
+        android:centerX="0.5"
+        android:gradientRadius="300%"
+        android:centerY="0"
+        android:type="radial" />
+
+</shape>
