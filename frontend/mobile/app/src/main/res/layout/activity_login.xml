@@ -4,7 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:gravity="center_horizontal"
+    android:padding="8dp">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/button_border"
+        android:src="@mipmap/app_logo_round"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:text="@string/app_name"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/loginTextView"
@@ -12,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
         android:text="Login"
-        android:textColor="@color/black"
         android:textSize="32sp"
         android:textStyle="bold" />
 
@@ -49,10 +61,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
-        android:backgroundTint="@color/black"
         android:text="Login"
         android:textSize="24sp"
-        android:textColor="@color/white"/>
+        android:background="@drawable/button_border"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

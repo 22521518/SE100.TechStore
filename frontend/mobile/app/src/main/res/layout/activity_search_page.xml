@@ -43,7 +43,12 @@
                 android:contentDescription="category"/>
         </LinearLayout>
 
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
 
         <!-- Product Item -->
         <androidx.recyclerview.widget.RecyclerView

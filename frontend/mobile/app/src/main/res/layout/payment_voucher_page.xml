@@ -6,24 +6,24 @@
     android:padding="8dp">
 
     <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <Button
-            android:layout_marginEnd="16dp"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/ic_arrow_left_icon"/>
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/ic_arrow_left_icon" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select District"
+            android:text="Select a voucher"
             android:textSize="24sp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
     <View
@@ -32,11 +32,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="@android:color/darker_gray" />
-
-
-
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rc_trend"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent" />
 </LinearLayout>
