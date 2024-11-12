@@ -52,7 +52,6 @@
                 android:layout_height="match_parent" />
 
 
-
             <!-- Repeat the above item layout for more items as needed -->
 
         </LinearLayout>

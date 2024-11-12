@@ -46,8 +46,11 @@
         android:background="@android:color/darker_gray" />
 
     <HorizontalScrollView
+        android:layout_marginTop="8dp"
+        android:elevation="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/border"
         android:scrollbars="none">
 
         <LinearLayout
@@ -123,16 +126,12 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
 
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/darker_gray" />
-
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rc_trend"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp" />
 
 
 </LinearLayout>

@@ -25,5 +25,6 @@
         android:fillColor="#00000000"
         android:strokeColor="#ffffff"
         android:strokeLineCap="round"/>
+
   </group>
 </vector>

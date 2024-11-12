@@ -34,6 +34,7 @@
         android:background="@android:color/darker_gray" />
     <!-- Order Details Section -->
     <LinearLayout
+        android:background="@drawable/border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -146,6 +147,7 @@
 
     <!-- Order Summary -->
     <LinearLayout
+        android:background="@drawable/border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -160,6 +162,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:text="Total: 3,996,000 VND (4 items)"
             android:textStyle="bold" />
 
