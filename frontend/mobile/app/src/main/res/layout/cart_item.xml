@@ -4,68 +4,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp"
-    android:background="@drawable/border"
     android:gravity="center_vertical">
-   <RelativeLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content">
-       <CheckBox
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_alignParentStart="true"
-           android:paddingEnd="4dp"
-           android:paddingBottom="4dp" />
-       <LinearLayout
-           android:layout_centerInParent="true"
-           android:layout_alignParentEnd="true"
-           android:background="@drawable/sharp_border"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_gravity="end"
-           android:orientation="horizontal"
-           android:gravity="center_vertical"
-           android:layout_marginTop="8dp">
-
-           <!-- Minus Button as TextView -->
-           <TextView
-               android:layout_width="32dp"
-               android:layout_height="32dp"
-               android:text="-"
-               android:background="?android:attr/selectableItemBackground"
-               android:textSize="18sp"
-               android:gravity="center"
-               android:clickable="true"
-               android:focusable="true" />
-
-           <!-- Quantity -->
-           <TextView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="1"
-               android:textSize="16sp"
-               android:textStyle="bold"
-               android:padding="8dp" />
-
-           <!-- Plus Button as TextView -->
-           <TextView
-               android:layout_width="32dp"
-               android:layout_height="32dp"
-               android:text="+"
-               android:background="?android:attr/selectableItemBackground"
-               android:textSize="18sp"
-               android:gravity="center"
-               android:clickable="true"
-               android:focusable="true" />
-       </LinearLayout>
-   </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="#E0E0E0"
+            android:src="@drawable/banner"
+            android:scaleType="centerCrop"
             android:layout_marginEnd="8dp" />
 
         <!-- Product Details -->
@@ -93,39 +42,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="600.000 VNĐ"
-                android:textSize="20sp"
-                android:layout_gravity="end" />
+                android:textStyle="bold"
+                android:textSize="20sp" />
 
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="end|top">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <!-- Checkbox at top-right -->
+            <ImageButton
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_minus_icon" /> <!-- Place at the top -->
 
-
-            <!--Spacer-->
-            <TextView
-                android:layout_width="wrap_content"
+            <EditText
+                android:background="@android:color/transparent"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="16sp"
-                android:textColor="#000000"
-                android:layout_gravity="end" />
+                android:inputType="number"
+                android:digits="0123456789"
+                android:text="1"
+                android:gravity="center"
+                android:maxLines="1"
+                android:ems="2"
+                android:layout_centerInParent="true"
+                android:layout_alignParentBottom="true" /> <!-- Place at the bottom -->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="16sp"
-                android:textColor="#000000"
-                android:layout_gravity="end" />
 
-            <!-- Product Price below Checkbox --
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>

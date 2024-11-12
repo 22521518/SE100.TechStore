@@ -1,8 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -10,13 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:background="@drawable/header_border"
         android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/ic_arrow_left_icon" />
+            android:padding="12dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_left_icon"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,17 +27,12 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/darker_gray" />
     <!-- Order Details Section -->
     <LinearLayout
         android:background="@drawable/border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -55,10 +51,12 @@
                 android:padding="4dp"
                 android:textSize="16sp" />
 
-            <Button
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_border"
+                android:background="@drawable/border"
+                android:src="@drawable/ic_search_icon"
+                android:textSize="16sp"
                 android:text="Track" />
 
 
@@ -70,6 +68,7 @@
             android:background="#D3D3D3" />
 
         <RelativeLayout
+            android:paddingVertical="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -95,6 +94,7 @@
             android:background="#D3D3D3" />
 
         <LinearLayout
+            android:paddingVertical="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -124,6 +124,7 @@
             android:background="#D3D3D3" />
 
         <RelativeLayout
+            android:paddingVertical="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -150,7 +151,7 @@
         android:background="@drawable/border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_margin="8dp"
         android:orientation="vertical">
 
         <TextView
@@ -160,6 +161,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:paddingVertical="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"

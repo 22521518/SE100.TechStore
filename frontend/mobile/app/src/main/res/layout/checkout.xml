@@ -3,20 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp">
+    >
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@drawable/header_border"
         android:gravity="center_vertical">
 
-        <Button
-            android:layout_marginEnd="16dp"
+        <ImageButton
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/ic_arrow_left_icon"/>
+            android:padding="12dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_left_icon"/>>
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,15 +28,11 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/darker_gray" />
+
 
 
     <LinearLayout
+        android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border"
@@ -80,15 +78,16 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Specific address">
+            android:layout_marginTop="8dp"
+            android:hint="Province/District/Ward">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/generalAddress"
+                android:id="@+id/addressInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_angle_right_icon"
                 android:focusable="false"
-                android:inputType="text" />
+                android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
         <!-- Address Field -->
 
@@ -111,6 +110,7 @@
 
     <!-- Divider -->
     <TextView
+        android:layout_margin="8dp"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -146,8 +146,10 @@
 
     <!-- Continue to Payment Button -->
     <Button
+        android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:text="Continue to payment"
         android:background="@drawable/button_border"
         android:layout_marginTop="20dp" />

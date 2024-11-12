@@ -2,5 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Transparent background --><!-- Border color -->
 
-    <corners android:radius="12sp"/> <!-- Optional padding inside the border -->
+    <corners android:radius="12sp"/>
+    <padding
+        android:bottom="8dp"
+        android:left="8dp"
+        android:right="8dp"
+        android:top="8dp" />
+    <!-- Optional padding inside the border -->
 </shape>

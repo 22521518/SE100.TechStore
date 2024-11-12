@@ -11,7 +11,7 @@
         android:gravity="center_vertical" android:padding="4dp">
         <LinearLayout
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:padding="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -20,18 +20,18 @@
                 android:paddingHorizontal="8dp"
                 android:textColorHint="@color/black"
                 android:textColor="@color/black"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:textSize="16sp"
                 android:hint="Search product..."
-                android:background="none"
+                android:background="@android:color/transparent"
                 android:layout_weight="1"/>
 
             <ImageButton
                 android:contentDescription="search"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="none"
+                android:background="@android:color/transparent"
                 android:src="@drawable/ic_search_icon"/>
         </LinearLayout>
 
@@ -40,7 +40,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/ic_cart_icon"
-            android:background="none"/>
+            android:background="@android:color/transparent"/>
         <ImageButton
             android:contentDescription="account"
             android:layout_width="48dp"
@@ -55,7 +55,7 @@
 
         <Button
             android:textColor="@color/white"
-            android:background="none"
+            android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -63,7 +63,7 @@
 
         <Button
             android:textColor="@color/white"
-            android:background="none"
+            android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -71,7 +71,7 @@
 
         <Button
             android:textColor="@color/white"
-            android:background="none"
+            android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -79,7 +79,7 @@
 
         <Button
             android:textColor="@color/white"
-            android:background="none"
+            android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

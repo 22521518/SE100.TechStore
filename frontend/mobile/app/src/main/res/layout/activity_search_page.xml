@@ -25,13 +25,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:background="@color/white"
+            android:layout_height="wrap_content"
             >
             <Spinner
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/header_border"
                 android:contentDescription="Price">
 
 
@@ -39,25 +39,18 @@
             <Spinner
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/header_border"
                 android:contentDescription="category"/>
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@android:color/darker_gray" />
+
 
         <!-- Product Item -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rc_trend"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp" />
+            android:layout_height="500dp" />
 
 
     </LinearLayout>

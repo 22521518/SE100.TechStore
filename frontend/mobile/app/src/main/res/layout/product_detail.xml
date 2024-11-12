@@ -2,13 +2,25 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
-    android:padding="8dp">
+    android:scrollbars="none">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/header_border">
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_left_icon"/>
+        </LinearLayout>
+
 
         <!-- Main Product Image -->
         <ImageView
@@ -73,6 +85,7 @@
 
         <!-- Add to Cart and Buy Now Buttons -->
         <LinearLayout
+            android:padding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -162,9 +175,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="35dp"
-                        android:paintFlags="strikeThruText"
                         android:text="900.000VNĐ"
-                        android:textColor="#B0B0B0"
+                        android:alpha="0.8"
                         android:textSize="18sp" />
 
                     <!-- Discount Percentage -->
@@ -191,8 +203,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
+            android:padding="8dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -267,6 +278,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
+            android:padding="8dp"
             android:orientation="horizontal">
 
             <!-- First Column -->
@@ -293,7 +305,7 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_star_icon"
+                        android:src="@drawable/ic_star_icon"/>
                 </LinearLayout>
 
 

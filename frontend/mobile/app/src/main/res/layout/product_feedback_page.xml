@@ -2,21 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:background="@drawable/header_border"
         android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/ic_arrow_left_icon" />
+            android:padding="12dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_left_icon"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,14 +27,10 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/darker_gray" />
+
 
     <LinearLayout
+        android:layout_margin="8dp"
         android:background="@drawable/border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -186,23 +183,16 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/darker_gray" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rc_trend"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border"
+        android:background="@drawable/footer_border"
         android:gravity=""
         android:orientation="vertical">
 
@@ -221,6 +211,8 @@
             android:background="@drawable/search_bar_background"
             android:gravity="top|start"
             android:hint="Let us know what you think"
+            android:textColor="@color/black"
+            android:textColorHint="@color/lightgray"
             android:inputType="textMultiLine"
             android:lines="5"
             android:maxLines="10"

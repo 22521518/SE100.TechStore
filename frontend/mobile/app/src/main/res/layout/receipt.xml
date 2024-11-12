@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/header_border"
     android:padding="8dp">
 
 
@@ -214,6 +215,8 @@
             android:id="@+id/continue_shopping"
             android:layout_width="match_parent"
             android:background="@drawable/button_border"
+            android:layout_marginTop="16dp"
             android:layout_height="50dp"
+            android:textSize="20sp"
             android:text="Continue shopping" />
 </LinearLayout>
