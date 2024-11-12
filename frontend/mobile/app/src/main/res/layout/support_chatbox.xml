@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="24dp">
+
+    <TextView
+        android:id="@+id/chatboxTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Support chatbox"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@color/black"
+    />
+    
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:id="@+id/supporterTextView_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Et fuerant principio vix di animus plagae deducite flexi campoque."
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:maxWidth="250dp"
+                android:background="@drawable/button_border"
+                android:backgroundTint="#eeeeee"/>
+
+            <TextView
+                android:id="@+id/supporterTextView_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nullo erant lapidosos omni flexi his utque bene acervo praecipites."
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:maxWidth="250dp"
+                android:background="@drawable/button_border"
+                android:backgroundTint="#eeeeee"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Nullo erant lapidosos omni flexi his utque bene acervo praecipites."
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:maxWidth="250dp"
+                android:background="@drawable/button_border"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Nullo erant lapidosos omni flexi his utque bene acervo praecipites."
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:maxWidth="250dp"
+                android:background="@drawable/button_border"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+        
+    </ScrollView>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/black">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:hint="Add text here"
+            app:cornerRadius="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textchatInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_border"
+                android:backgroundTint="@color/white"
+                android:focusable="true"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/sendBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_send_btn"
+            android:layout_margin="8dp"
+            android:backgroundTint="@color/white"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
