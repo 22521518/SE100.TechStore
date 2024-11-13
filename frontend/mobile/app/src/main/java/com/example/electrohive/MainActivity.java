@@ -7,8 +7,10 @@ import com.google.android.material.navigation.NavigationView;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -16,12 +18,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_page);
+        setContentView(R.layout.activity_home_page);
 
         // Find the DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
+        ImageButton menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.openDrawer(GravityCompat.START); // Open the drawer from the start (left side)
+                } else {
+                    drawerLayout.closeDrawer(GravityCompat.START); // Close the drawer if it's already open
+                }
+            }
+        });
         // You can set up the navigation item listener here if needed
         navigationView.setNavigationItemSelectedListener(item -> {
             // Handle navigation item clicks here

@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="56dp"
+    android:fitsSystemWindows="true"
     android:elevation="10dp"
     android:background="@drawable/header_border">
     <LinearLayout
@@ -12,6 +13,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
         <ImageButton
+            android:id="@+id/menuButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_menu_icon"
