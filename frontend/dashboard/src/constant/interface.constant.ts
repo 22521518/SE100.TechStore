@@ -45,6 +45,7 @@ export interface ICategory {
 export interface IProductFeedback {
   feedback_id: string;
   customer_id?: string;
+  customer?: ICustomer;
   product_id?: string;
   rating: number;
   feedback: string;
