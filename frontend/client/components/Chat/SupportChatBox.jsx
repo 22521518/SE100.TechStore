@@ -39,7 +39,6 @@ const SupportChatBox = () => {
   }, [isOpen]);
 
   useEffect(() => {
-    console.log(messageLog)
     setUnreadMessage(
       messageLog.reduce((acc, item) => acc + (item.is_seen ? 0 : 1), 0) > 0
     );
