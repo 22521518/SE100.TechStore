@@ -14,12 +14,15 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.electrohive.Models.District;
 import com.example.electrohive.Models.Province;
 import com.example.electrohive.Models.Ward;
 import com.example.electrohive.R;
-import com.example.electrohive.api.ApiService;
+import com.example.electrohive.ViewModel.LocationViewModel;
+import com.example.electrohive.api.LocationService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -36,7 +39,11 @@ public class WardPage extends AppCompatActivity {
 
 
     private ListView wardListView;
-    private ArrayList<Ward> wards;
+
+    private LocationViewModel viewModel;
+
+    private ArrayAdapter<String> adapter;
+    private List<Ward> wards = new ArrayList<>();
     private TextView provinceName;
 
     private TextView districtName;
@@ -56,6 +63,7 @@ public class WardPage extends AppCompatActivity {
         Intent intent = getIntent();
         province = (Province) intent.getSerializableExtra("PROVINCE");
         district = (District) intent.getSerializableExtra("DISTRICT");
+        viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
 
         provinceName = findViewById(R.id.selectedProvinceText);
         provinceName.setText(province.getProvinceName());
@@ -74,87 +82,49 @@ public class WardPage extends AppCompatActivity {
         wards = new ArrayList<>();
 
         // Set up Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://vapi.vnappmob.com/") // Base URL
-                .addConverterFactory(GsonConverterFactory.create()) // Use Gson for JSON parsing
-                .build();
-
-        // Create an instance of the API service
-        ApiService apiService = retrofit.create(ApiService.class);
-
-        // Make the API call
-        Call<JsonObject> call = apiService.getWards(district.getDistrictId());  // This now returns JsonObject
-
-        call.enqueue(new Callback<JsonObject>() {
+        viewModel.getWards(district.getDistrictId()).observe(this, new Observer<List<Ward>>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        // Extract the "results" array from the response body
-                        JsonArray resultsArray = response.body().getAsJsonArray("results");
+            public void onChanged(List<Ward> updatedWards) {
+                wards = updatedWards;
 
-                        // Iterate over the "results" array to extract each province's data
-                        for (int i = 0; i < resultsArray.size(); i++) {
-                            JsonObject wardJson = resultsArray.get(i).getAsJsonObject();
-                            String wardId = wardJson.get("ward_id").getAsString();
-                            String wardName = wardJson.get("ward_name").getAsString();
+                // Update UI
+                List<String> wardNames = new ArrayList<>();
+                for (Ward ward : wards) {
+                    wardNames.add(ward.getWardName());
+                }
 
-                            // Create a new Province object
-                            Ward ward = new Ward(wardId, wardName);
-
-                            // Add the Province object to the provinces list
-                            wards.add(ward);
-                        }
-
-
-                        // Create a list of province names for display
-                        List<String> wardNames = new ArrayList<>();
-                        for (Ward ward : wards) {
-                            String wardName = ward.getWardName();
-                            if (wardName == null) {
-                                wardName = "Unknown District"; // Default if null
-                            }
-                            wardNames.add(wardName);
-                        }
-
-                        // Set up ArrayAdapter for the ListView
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(WardPage.this, android.R.layout.simple_list_item_1, wardNames);
-                        wardListView.setAdapter(adapter);
-
-                        // Set an onClickListener to handle item clicks
-                        wardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Ward clickedWard = wards.get(position);
-
-                                Intent resultIntent = new Intent();
-                                resultIntent.putExtra("WARD", clickedWard);
-                                resultIntent.putExtra("DISTRICT",district);
-                                resultIntent.putExtra("PROVINCE",province);
-                                setResult(RESULT_OK, resultIntent);
-
-                                // Close WardPage and return to DistrictPage
-                                finish();
-                            }
-                        });
-
-                    } catch (Exception e) {
-                        Log.e("API Error", "Error parsing response: " + e.getMessage());
-                        Toast.makeText(WardPage.this, "Error parsing data", Toast.LENGTH_SHORT).show();
-                    }
+                // Create adapter if null, otherwise update data
+                if (adapter == null) {
+                    adapter = new ArrayAdapter<>(WardPage.this, android.R.layout.simple_list_item_1, wardNames);
+                    wardListView.setAdapter(adapter);
                 } else {
-                    // Handle unsuccessful response
-                    Log.e("API Error", "Failed to load wards: " + response.code());
-                    Toast.makeText(WardPage.this, "Failed to load data", Toast.LENGTH_SHORT).show();
+                    adapter.clear();
+                    adapter.addAll(wardNames);
+                    adapter.notifyDataSetChanged();
                 }
             }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                // Handle failure (e.g., network error, server issue)
-                Log.e("API Error", "Error making request: " + t.getMessage());
-                Toast.makeText(WardPage.this, "Failed to load data", Toast.LENGTH_SHORT).show();
-            }
         });
+
+// Handle ListView clicks
+        wardListView.setOnItemClickListener((parent, view, position, id) -> {
+
+            Ward clickedWard = wards.get(position);
+
+            // Create intent to hold result
+            Intent resultIntent = new Intent();
+
+            // Pass selected data back to the previous activity
+            resultIntent.putExtra("PROVINCE", province);
+            resultIntent.putExtra("DISTRICT", district);
+            resultIntent.putExtra("WARD", clickedWard);
+
+            // Set result for the calling activity
+            setResult(RESULT_OK, resultIntent);
+
+            // Close this activity
+            finish();
+
+        });
+
     }
 }

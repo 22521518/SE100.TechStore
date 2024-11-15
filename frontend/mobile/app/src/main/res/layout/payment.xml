@@ -146,12 +146,16 @@
                 android:hint="Add voucher code here"
                 android:textSize="15dp" />
 
-            <Button
+            <TextView
+                android:clickable="true"
+                android:focusable="true"
+                android:textAlignment="center"
+                android:textSize="16sp"
                 android:id="@+id/discount_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/clickable_textview_button"
                 android:text="Select" />
         </LinearLayout>
 
@@ -246,13 +250,15 @@
 
         </LinearLayout>
 
-        <Button
+        <TextView
+            android:clickable="true"
+            android:focusable="true"
+            android:textAlignment="center"
             android:id="@+id/finish_payment"
             android:layout_width="match_parent"
-            android:background="@drawable/button_border"
+            android:background="@drawable/clickable_textview_button"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_gravity="bottom"
             android:layout_marginTop="30dp"
             android:text="Finish paymet" />
     </LinearLayout>

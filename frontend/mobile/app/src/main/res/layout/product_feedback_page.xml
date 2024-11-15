@@ -214,18 +214,21 @@
             android:gravity="top|start"
             android:hint="Let us know what you think"
             android:textColor="@color/black"
-            android:textColorHint="@color/lightgray"
             android:inputType="textMultiLine"
             android:lines="5"
             android:maxLines="10"
             android:padding="10dp"
             android:scrollbars="vertical" />
 
-        <Button
+        <TextView
+            android:clickable="true"
+            android:focusable="true"
+            android:textAlignment="center"
+            android:textSize="20sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/button_border"
+            android:background="@drawable/clickable_textview_button"
             android:text="Send feedback" />
     </LinearLayout>
 

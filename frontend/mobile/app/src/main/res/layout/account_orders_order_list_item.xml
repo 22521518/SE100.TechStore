@@ -2,26 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/border">
+    android:layout_marginVertical="8dp"
+    android:background="@drawable/border"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
+            android:id="@+id/order_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
             android:text="OrderId: 12345678"
-            android:textStyle="bold"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <TextView
-            android:layout_alignParentEnd="true"
+            android:id="@+id/order_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/order_status"
             android:text="Status"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
     <View
@@ -31,11 +38,24 @@
         android:background="@android:color/darker_gray" />
 
     <TextView
+        android:id="@+id/order_totalprice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:layout_marginVertical="8dp"
         android:text="total: 4,000,000 VND"
-        android:textSize="24sp"/>
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/order_items_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
     <View
         android:layout_width="match_parent"
@@ -43,45 +63,25 @@
         android:layout_marginTop="8dp"
         android:background="@android:color/darker_gray" />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scrollbars="none"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/darker_gray" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginVertical="8dp"
-        android:gravity="end">
-        <Button
-            android:layout_marginLeft="8dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/action_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_border"
-            android:text="Track"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
-        <Button
+            android:layout_height="42dp"
             android:layout_marginLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_border"
-            android:text="Reorder"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
-        <Button
-            android:layout_marginLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_border"
+            android:background="@drawable/clickable_textview_button"
+            android:clickable="true"
+            android:focusable="true"
             android:text="Cancel"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 

@@ -152,11 +152,14 @@
         </LinearLayout>
 
         <!-- Checkout Button -->
-        <Button
+        <TextView
+            android:focusable="true"
+            android:clickable="true"
+            android:textAlignment="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Checkout now"
-            android:background="@drawable/button_border"
+            android:background="@drawable/clickable_textview_button"
             android:textAllCaps="false"
             android:textSize="20sp"
             android:layout_marginTop="16dp" />

@@ -164,14 +164,17 @@
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <TextView
+        android:clickable="true"
+        android:focusable="true"
+        android:textAlignment="center"
         android:id="@+id/signupButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Create account"
         android:textSize="24sp"
-        android:background="@drawable/button_border"/>
+        android:background="@drawable/clickable_textview_button"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

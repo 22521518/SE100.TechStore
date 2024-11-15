@@ -9,20 +9,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/header_border"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/backbutton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="12dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_arrow_left_icon"/>
+            android:padding="12dp"
+            android:src="@drawable/ic_arrow_left_icon" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,24 +47,33 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="8dp">
-        <Button
-            android:id="@+id/userInfoChangePhotoButton"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/button_border"
-            android:padding="4dp"
-            android:text="Add address"
-            android:textSize="20sp" />
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rc_trend"
+            android:id="@+id/address_listview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-/>
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/footer_border">
+            <TextView
+                android:id="@+id/userAddressAddAddressButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/clickable_textview_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="4dp"
+                android:text="Add address"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+
     </LinearLayout>
-
-
 
 
 </LinearLayout>

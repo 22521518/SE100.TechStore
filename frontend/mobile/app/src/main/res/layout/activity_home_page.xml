@@ -104,6 +104,7 @@
 
     <!-- Drawer content (Navigation menu) -->
     <com.google.android.material.navigation.NavigationView
+        android:fitsSystemWindows="true"
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

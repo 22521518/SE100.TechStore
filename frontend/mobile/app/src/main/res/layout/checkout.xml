@@ -147,13 +147,16 @@
 
 
     <!-- Continue to Payment Button -->
-    <Button
+    <TextView
+        android:clickable="true"
+        android:focusable="true"
+        android:textAlignment="center"
         android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="Continue to payment"
-        android:background="@drawable/button_border"
+        android:background="@drawable/clickable_textview_button"
         android:layout_marginTop="20dp" />
 
 </LinearLayout>

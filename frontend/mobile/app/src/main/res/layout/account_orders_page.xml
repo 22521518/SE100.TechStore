@@ -57,9 +57,11 @@
             android:orientation="horizontal">
 
             <TextView
+                android:background="@drawable/clickable_item_background"
+                android:id="@+id/AllOrders"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="100dp"
                 android:paddingVertical="8dp"
@@ -68,9 +70,11 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:background="@drawable/clickable_item_background"
+                android:id="@+id/PendingOrders"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="100dp"
                 android:paddingVertical="8dp"
@@ -79,20 +83,37 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:background="@drawable/clickable_item_background"
+                android:id="@+id/ConfirmedOrders"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="100dp"
                 android:paddingVertical="8dp"
-                android:text="Shipping"
+                android:text="Confirmed"
                 android:textAlignment="center"
                 android:textSize="20sp" />
 
             <TextView
+                android:background="@drawable/clickable_item_background"
+                android:id="@+id/ShippedOrder"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:paddingVertical="8dp"
+                android:text="Shipped"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:background="@drawable/clickable_item_background"
+                android:id="@+id/DeliveredOrders"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="100dp"
                 android:paddingVertical="8dp"
@@ -101,35 +122,27 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:background="@drawable/clickable_item_background"
+                android:id="@+id/CancelledOrders"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="100dp"
                 android:paddingVertical="8dp"
-                android:text="Canceled"
+                android:text="Cancelled"
                 android:textAlignment="center"
                 android:textSize="20sp" />
 
-            <TextView
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:minWidth="100dp"
-                android:paddingVertical="8dp"
-                android:text="Refunded"
-                android:textAlignment="center"
-                android:textSize="20sp" />
         </LinearLayout>
     </HorizontalScrollView>
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rc_trend"
+        android:id="@+id/orders_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="8dp" />
+        android:padding="8dp" />
 
 
 </LinearLayout>

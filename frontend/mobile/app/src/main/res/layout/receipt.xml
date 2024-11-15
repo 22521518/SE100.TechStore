@@ -212,12 +212,15 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <Button
+        <TextView
+            android:clickable="true"
+            android:focusable="true"
             android:id="@+id/continue_shopping"
             android:layout_width="match_parent"
-            android:background="@drawable/button_border"
+            android:background="@drawable/clickable_textview_button"
+            android:textAlignment="center"
             android:layout_marginTop="16dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:textSize="20sp"
             android:text="Continue shopping" />
 </LinearLayout>

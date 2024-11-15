@@ -16,10 +16,7 @@
             android:name=".Activities.search_page"
             android:exported="false" />
         <activity
-            android:name=".Activities.home_page"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.ProvincePage"
+            android:name=".Activities.AccountPage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,8 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activities.ProvincePage"/>
         <activity android:name=".Activities.DistrictPage"/>
         <activity android:name=".Activities.WardPage"/>
+        <activity android:name=".Activities.AccountInfoPage"/>
+        <activity android:name=".Activities.AccountAddressPage"/>
+        <activity android:name=".Activities.AccountChangePassword"/>
+        <activity android:name=".Activities.AccountOrderPage"/>
+        <activity android:name=".Activities.AccountVoucherPage"/>
+        <activity android:name=".Activities.AccountAddAddressPage"/>
+        <activity android:name=".Activities.AccountEditAddressPage"/>
+
+
 
     </application>
 
