@@ -42,7 +42,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     @NonNull
     @Override
     public AddressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(context).inflate(R.layout.account_address_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.account_address_item, parent, false);
         return new AddressViewHolder(itemView);
     }
 
@@ -68,7 +68,6 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         // Optionally, handle set default button clicks
         holder.setDefaultButton.setOnClickListener(v -> {
             setDefaultAddress(position);  // Set the selected address as default
-            Toast.makeText(context, "Update Default Address", Toast.LENGTH_SHORT).show();
             notifyDataSetChanged();  // Notify the adapter to refresh the views
         });
 

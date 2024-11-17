@@ -2,38 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp"
     android:background="@drawable/border"
-    android:orientation="vertical"
-    android:layout_marginVertical="8dp">
+    android:orientation="vertical">
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/addressFullname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:orientation="horizontal">
+        android:text="John Doe"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/addressFullname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="John Doe"
-            android:textSize="20sp"
-            android:textStyle="bold" />
 
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="8dp"
-            android:background="@android:color/darker_gray" />
+    <TextView
+        android:id="@+id/addressNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:text="1234 567 890"
+        android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/addressNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:alpha="0.8"
-            android:text="1234 567 890"
-            android:textSize="18sp" />
-    </LinearLayout>
 
     <TextView
         android:id="@+id/addressSpecificAddress"
@@ -61,43 +51,43 @@
 
         <TextView
             android:id="@+id/primaryText"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Defaut"
-            android:textSize="16sp"
-            android:textColor="#FF0000"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:background="@drawable/default_address_border"
-            android:textStyle="bold"
+            android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
-            android:paddingHorizontal="12dp"/>
+            android:text="Defaut"
+            android:textColor="#FF0000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/setDefaultButton"
-            android:clickable="true"
-            android:focusable="true"
-            android:textAlignment="center"
-            android:layout_alignParentStart="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/clickable_textview_button"
+            android:clickable="true"
+            android:focusable="true"
             android:text="Set default"
+            android:textAlignment="center"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/clickable_textview_button"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/updateButton"
-            android:clickable="true"
-            android:focusable="true"
-            android:textAlignment="center"
-            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/clickable_textview_button"
+            android:clickable="true"
+            android:focusable="true"
             android:text="Update"
+            android:textAlignment="center"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/clickable_textview_button"/>
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </LinearLayout>

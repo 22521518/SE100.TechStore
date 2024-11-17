@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DistrictPage extends AppCompatActivity {
+    private ProgressBar loadingSpinner;
 
     private ListView districtListView;
     private LocationViewModel viewModel;
@@ -78,6 +80,8 @@ public class DistrictPage extends AppCompatActivity {
 
         Intent intent = getIntent();
         province = (Province) intent.getSerializableExtra("PROVINCE");
+        loadingSpinner = findViewById(R.id.loading_spinner);
+
         viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
 
 
@@ -94,6 +98,9 @@ public class DistrictPage extends AppCompatActivity {
         });
         // Initialize the list to hold provinces
         districts = new ArrayList<>();
+
+        loadingSpinner.setVisibility(View.VISIBLE); // Hide spinner once data loads
+
 
         viewModel.getDistricts(province.getProvinceId()).observe(this, new Observer<List<District>>() {
             @Override
@@ -115,6 +122,8 @@ public class DistrictPage extends AppCompatActivity {
                     adapter.addAll(districtNames);
                     adapter.notifyDataSetChanged();
                 }
+                loadingSpinner.setVisibility(View.GONE); // Hide spinner once data loads
+
             }
         });
 

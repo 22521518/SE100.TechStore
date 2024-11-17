@@ -46,22 +46,16 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/order_items_listview"
+        android:background="@drawable/list_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/darker_gray" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,14 +67,14 @@
         <TextView
             android:id="@+id/action_button"
             android:layout_width="wrap_content"
-            android:layout_height="42dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:background="@drawable/clickable_textview_button"
             android:clickable="true"
             android:focusable="true"
             android:text="Cancel"
             android:textAlignment="center"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
 

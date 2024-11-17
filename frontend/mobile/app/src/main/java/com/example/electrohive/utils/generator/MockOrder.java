@@ -31,38 +31,6 @@ public class MockOrder {
 
 
     // Method to generate random product
-    private static Product generateRandomProduct(int id) {
-        Random random = new Random();
-        int price = random.nextInt(100000000) + 5000000; // Random price between 5,000,000 and 100,000,000
-        int discount = random.nextInt(70) + 10; // Random discount between 10 and 80
-        int stockQuantity = random.nextInt(50) + 1; // Random stock quantity between 1 and 50
-
-        // Create categories
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Electronics", "Electronic devices and gadgets"));
-
-        // Create product attributes
-        List<ProductAttribute> attributes = new ArrayList<>();
-        attributes.add(new ProductAttribute(1, "Color", "Black"));
-        attributes.add(new ProductAttribute(2, "Size", "Medium"));
-
-        // Create product images (using ProductImage objects)
-        List<ProductImage> images = new ArrayList<>();
-        images.add(new ProductImage("","https://cdn.viettelstore.vn/Images/Product/ProductImage/1743276577.jpeg"));
-
-        // Return a new Product object with all the required parameters
-        return new Product(
-                "prod_" + id, // productId
-                "Sample Product " + id, // productName
-                images, // images
-                "This is a sample product description.", // description
-                price, // price
-                (double) discount, // discount
-                stockQuantity, // stockQuantity
-                categories, // categories
-                attributes // attributes
-        );
-    }
 
 
     // Method to generate random order items
@@ -71,7 +39,7 @@ public class MockOrder {
         int numberOfItems = random.nextInt(5) + 1; // Random number of items between 1 and 5
         List<OrderItem> items = new ArrayList<>();
         for (int i = 0; i < numberOfItems; i++) {
-            Product product = generateRandomProduct(i + 1);
+            Product product = MockProduct.generateRandomProduct(i + 1);
             int quantity = random.nextInt(5) + 1; // Random quantity between 1 and 5
             double unitPrice = product.getPrice() - (product.getPrice() * product.getDiscount() / 100);
             double totalPrice = quantity * unitPrice;
@@ -81,16 +49,10 @@ public class MockOrder {
     }
 
     // Method to generate random order data
-    public static Order generateDummyOrderData() {
+    public static Order createMockOrderData() {
         Random random = new Random();
         // Dummy customer
-        Customer dummyCustomer = new Customer(
-                "cust_12345",
-                "john_doe",
-                "John Doe",
-                "123-456-7890",
-                "2024-11-15T10:00:00Z"
-        );
+        Customer dummyCustomer = MockCustomer.createMockCustomerData();
 
 
         // Create the Address object
@@ -136,17 +98,10 @@ public class MockOrder {
     public static List<Order> createMockOrdersData(int num) {
         List<Order> ordersList = new ArrayList<>();
         for (int i = 0; i < num; i++) {
-            ordersList.add(generateDummyOrderData());
+            ordersList.add(createMockOrderData());
         }
         return ordersList;
     }
 
-    // Main method for testing
-    public static void main(String[] args) {
-        List<Order> dummyOrders = createMockOrdersData(5);
-        for (Order order : dummyOrders) {
-            System.out.println(order.getOrderId());
-        }
-    }
 }
 

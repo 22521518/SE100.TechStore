@@ -42,38 +42,40 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="32dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminate="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/address_listview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_weight="1" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:layout_height="wrap_content"
+        android:background="@drawable/footer_border">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/address_listview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/userAddressAddAddressButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/footer_border">
-            <TextView
-                android:id="@+id/userAddressAddAddressButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/clickable_textview_button"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="4dp"
-                android:text="Add address"
-                android:textAlignment="center"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-
+            android:background="@drawable/clickable_textview_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp"
+            android:text="Add address"
+            android:textAlignment="center"
+            android:textSize="20sp" />
     </LinearLayout>
 
 
 </LinearLayout>
+

@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -30,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProvincePage extends AppCompatActivity {
+
+    private ProgressBar loadingSpinner;
 
     private ListView provinceListView;
     private LocationViewModel viewModel;
@@ -66,6 +69,8 @@ public class ProvincePage extends AppCompatActivity {
         setContentView(R.layout.province_page);
 
         provinceListView = findViewById(R.id.province_listview);
+        loadingSpinner = findViewById(R.id.loading_spinner);
+
         viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
 
         backButton = findViewById(R.id.backbutton);
@@ -78,10 +83,15 @@ public class ProvincePage extends AppCompatActivity {
         // Initialize the list to hold provinces
         provinces = new ArrayList<>();
 
+        loadingSpinner.setVisibility(View.VISIBLE); // Hide spinner once data loads
+
+
+
         // Set up Retrofit
         viewModel.getProvinces().observe(this, new Observer<List<Province>>() {
             @Override
             public void onChanged(List<Province> updatedProvinces) {
+
                 provinces = updatedProvinces;
 
                 // Update UI
@@ -99,6 +109,7 @@ public class ProvincePage extends AppCompatActivity {
                     adapter.addAll(provinceNames);
                     adapter.notifyDataSetChanged();
                 }
+                loadingSpinner.setVisibility(View.GONE);
             }
         });
 

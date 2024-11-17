@@ -1,6 +1,7 @@
 package com.example.electrohive.Models;
 
 public class Account {
+
     private String email;
     private String password;
 

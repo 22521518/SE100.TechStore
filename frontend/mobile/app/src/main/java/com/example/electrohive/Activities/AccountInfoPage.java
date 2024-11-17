@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,7 +20,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.example.electrohive.Models.Customer;
 import com.example.electrohive.R;
+import com.example.electrohive.utils.PreferencesHelper;
+import com.example.electrohive.utils.format.Format;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -30,11 +35,24 @@ public class AccountInfoPage extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private EditText birthDateInput;
+    private EditText lastnameInput;
+    private EditText firstnameInput;
+    private EditText usernameInput;
+    private EditText phonenumberInput;
+
+    private RadioButton radioMale;
+
+    private RadioButton radioFemale;
+    private Customer sessionCustomer;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.account_info_page);
+
+        sessionCustomer = PreferencesHelper.getCustomerData();
 
         ImageButton backButton = findViewById(R.id.backbutton);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -45,8 +63,42 @@ public class AccountInfoPage extends AppCompatActivity {
         });
 
         birthDateInput = findViewById(R.id.birthDateInput);
+        lastnameInput = findViewById(R.id.lastnameInput);
+        firstnameInput = findViewById(R.id.firstnameInput);
+        phonenumberInput = findViewById(R.id.phonenumberInput);
+        radioFemale = findViewById(R.id.radioFemale);
+        radioMale = findViewById(R.id.radioMale);
         userInfoImage = findViewById(R.id.userInfoImage);
         userInfoChangePhotoButton = findViewById(R.id.userInfoChangePhotoButton);
+
+        Glide.with(AccountInfoPage.this)
+                .load(sessionCustomer.getImage()) // URL to the image
+                .placeholder(R.drawable.ic_user_icon) // Optional placeholder
+                .error(R.drawable.ic_image_error_icon) // Optional error image
+                .into(userInfoImage); // Your ImageView
+
+        String fullName = sessionCustomer.getFullName();
+        String[] nameParts = fullName.split("\\s+"); // This splits by one or more spaces
+
+        if (nameParts.length > 1) {
+            // Assuming the first part is the first name and the last part is the last name
+            firstnameInput.setText(nameParts[0]); // First name
+            lastnameInput.setText(nameParts[nameParts.length - 1]); // Last name (last part)
+        } else {
+            // In case the full name is just one word (single name)
+            firstnameInput.setText(nameParts[0]);
+            lastnameInput.setText(""); // If no last name exists, you can leave this empty
+        }
+
+        phonenumberInput.setText(sessionCustomer.getPhoneNumber());
+
+        birthDateInput.setText(sessionCustomer.getBirthDate().toString());
+
+        if(sessionCustomer.getMale()) {
+            radioMale.setChecked(true);
+        } else {
+            radioFemale.setChecked(true);
+        }
 
         // Initialize the image picker launcher
         imagePickerLauncher = registerForActivityResult(

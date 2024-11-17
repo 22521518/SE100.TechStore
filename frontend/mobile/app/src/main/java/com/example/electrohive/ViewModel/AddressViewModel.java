@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.electrohive.Models.Address;
 import com.example.electrohive.Repository.AddressRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddressViewModel extends ViewModel {
@@ -26,6 +27,23 @@ public class AddressViewModel extends ViewModel {
         }
         return addresses;
     }
+
+    // Add a new address
+    public void addAddress(Address newAddress) {
+        List<Address> currentAddresses = addresses.getValue();  // Get current addresses from LiveData
+
+        if (currentAddresses == null) {
+            currentAddresses = new ArrayList<>();  // Initialize the list if it's null
+        }
+
+        // Add the new address to the list
+        currentAddresses.add(newAddress);
+        addresses.setValue(currentAddresses);  // Notify LiveData observers
+
+        // Update the repository with the new address
+        repository.addAddress(newAddress);  // Ensure the repository method is implemented
+    }
+
 
     // Update a specific address
     public void updateAddress(Address updatedAddress) {

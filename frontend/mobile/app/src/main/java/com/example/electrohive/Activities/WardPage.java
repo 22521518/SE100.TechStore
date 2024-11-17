@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WardPage extends AppCompatActivity {
 
+    private ProgressBar loadingSpinner;
 
     private ListView wardListView;
 
@@ -63,6 +65,8 @@ public class WardPage extends AppCompatActivity {
         Intent intent = getIntent();
         province = (Province) intent.getSerializableExtra("PROVINCE");
         district = (District) intent.getSerializableExtra("DISTRICT");
+        loadingSpinner = findViewById(R.id.loading_spinner);
+
         viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
 
         provinceName = findViewById(R.id.selectedProvinceText);
@@ -80,6 +84,8 @@ public class WardPage extends AppCompatActivity {
         });
         // Initialize the list to hold provinces
         wards = new ArrayList<>();
+        loadingSpinner.setVisibility(View.VISIBLE); // Hide spinner once data loads
+
 
         // Set up Retrofit
         viewModel.getWards(district.getDistrictId()).observe(this, new Observer<List<Ward>>() {
@@ -102,6 +108,8 @@ public class WardPage extends AppCompatActivity {
                     adapter.addAll(wardNames);
                     adapter.notifyDataSetChanged();
                 }
+                loadingSpinner.setVisibility(View.GONE); // Hide spinner once data loads
+
             }
         });
 

@@ -15,16 +15,21 @@ public class Customer {
     private List<Order> orders;  // Assuming Order class is defined
     private List<Address> addresses; // Assuming Address class is defined
     private String image;
-    private Boolean male;
+    private Boolean male =false;
     private Object birthDate;  // Can be Date or String
 
     // Constructor
-    public Customer(String customerId, String accountId, String username, String fullName, String phoneNumber) {
+
+    public Customer(){};
+    public Customer(String customerId, String accountId, String username, String fullName, String phoneNumber,String image,Object birthDate,Object dateJoined) {
         this.customerId = customerId;
         this.accountId = accountId;
         this.username = username;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
+        this.image = image;
+        this.birthDate = birthDate;
+        this.dateJoined = dateJoined;
     }
 
     // Getters and Setters

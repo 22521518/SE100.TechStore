@@ -8,16 +8,16 @@
     android:background="@drawable/profile_image_rounded"
     android:backgroundTint="?android:colorBackground"
     android:gravity="center_vertical">
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_image"
-        android:layout_alignParentStart="true"
-        android:layout_centerInParent="true"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleType="centerCrop"
         android:src="@drawable/banner"
         app:shapeAppearance="@style/RoundedImageShape" />
     <TextView
+        android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/profile_image"
@@ -27,6 +27,7 @@
         android:layout_marginLeft="12dp"
         android:textStyle="bold"/>
     <ImageButton
+        android:id="@+id/sign_out_button"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
         android:layout_width="48dp"

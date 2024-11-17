@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,13 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountAddressPage extends AppCompatActivity {
+    private ProgressBar loadingSpinner;
 
     private TextView userAddressAddAddressButton;
 
     private AddressViewModel addressViewModel;
     private AddressAdapter addressAdapter;
 
-    private final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> updateAddressLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
@@ -49,6 +52,21 @@ public class AccountAddressPage extends AppCompatActivity {
             }
     );
 
+    private final ActivityResultLauncher<Intent> addAddressLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    // Handle the result here, for example, refresh the address list
+                    Intent data = result.getData();
+                    if (data != null) {
+                        Address updatedAddress = (Address) data.getSerializableExtra("NEW_ADDRESS");
+                        // You can update the address list or refresh the UI
+                        addressViewModel.addAddress(updatedAddress);  // Assuming you have a method in your ViewModel to update the address
+                    }
+                }
+            }
+    );
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +75,16 @@ public class AccountAddressPage extends AppCompatActivity {
 
         addressViewModel = new AddressViewModel();
 
-        RecyclerView ordersRecyclerView = findViewById(R.id.address_listview);  // Ensure this ID exists in your layout XML
-        ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        loadingSpinner = findViewById(R.id.loading_spinner);
+
+        RecyclerView addressRecyclerView = findViewById(R.id.address_listview);  // Ensure this ID exists in your layout XML
+        addressRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        loadingSpinner.setVisibility(View.VISIBLE);
         // Set up adapter
-        addressAdapter = new AddressAdapter(getApplicationContext(),new ArrayList<>(),resultLauncher);
-        ordersRecyclerView.setAdapter(addressAdapter);
+        addressAdapter = new AddressAdapter(AccountAddressPage.this,new ArrayList<>(),updateAddressLauncher);
+        addressRecyclerView.setAdapter(addressAdapter);
+
 
         // Observe orders LiveData
         addressViewModel.getAddress("userId_here").observe(this, new Observer<List<Address>>() {
@@ -69,6 +92,7 @@ public class AccountAddressPage extends AppCompatActivity {
             public void onChanged(List<Address> addresses) {
                 if (addresses != null) {
                     addressAdapter.updateAddress(addresses);
+                    loadingSpinner.setVisibility(View.GONE);
                 }
             }
         });
@@ -86,8 +110,10 @@ public class AccountAddressPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AccountAddressPage.this,AccountAddAddressPage.class);
-                startActivity(intent);
+                addAddressLauncher.launch(intent);
             }
         });
     }
+
+
 }

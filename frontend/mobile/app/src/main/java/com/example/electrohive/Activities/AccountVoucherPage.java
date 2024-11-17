@@ -3,6 +3,7 @@ package com.example.electrohive.Activities;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class AccountVoucherPage extends AppCompatActivity {
 
+    private ProgressBar loadingSpinner;
     private VoucherViewModel voucherViewModel;
 
     private List<Voucher> vouchers;
@@ -32,6 +34,8 @@ public class AccountVoucherPage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.account_vouchers_page);
 
+        loadingSpinner = findViewById(R.id.loading_spinner);
+        loadingSpinner.setVisibility(View.VISIBLE);
         // Initialize the RecyclerView
         RecyclerView voucherRecyclerView = findViewById(R.id.voucher_listview);
         voucherRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -55,6 +59,7 @@ public class AccountVoucherPage extends AppCompatActivity {
                 if (vouchers != null) {
                     voucherAdapter.updateVouchers(vouchers);  // Method to update the adapter data
                 }
+                loadingSpinner.setVisibility(View.GONE);
             }
         });
     }

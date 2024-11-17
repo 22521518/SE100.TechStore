@@ -1,6 +1,10 @@
 package com.example.electrohive.Adapters;
 
+import static androidx.core.content.ContextCompat.startActivities;
+
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -13,10 +17,12 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.electrohive.Activities.TrackPage;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.Models.OrderItem;
 import com.example.electrohive.R;
+import com.example.electrohive.ViewModel.OrderViewModel;
 import com.example.electrohive.utils.format.Format;
 
 import java.util.List;
@@ -56,27 +62,21 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 holder.orderStatus.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080"))); // Grey tint for pending
                 holder.actionButton.setText("Cancel Order");
                 holder.actionButton.setVisibility(View.VISIBLE);
-                holder.actionButton.setOnClickListener(v -> {
-                    // Handle cancel order
-                });
+                holder.actionButton.setOnClickListener(v -> cancelOrder(order.getOrderId(),position));
                 break;
 
             case CONFIRMED:
                 holder.orderStatus.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#000000"))); // Black tint for confirmed
                 holder.actionButton.setText("Track Order");
                 holder.actionButton.setVisibility(View.VISIBLE);
-                holder.actionButton.setOnClickListener(v -> {
-                    // Handle track order
-                });
+                holder.actionButton.setOnClickListener(v -> trackOrder(order.getOrderId()));
                 break;
 
             case SHIPPED:
                 holder.orderStatus.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0000FF"))); // Blue tint for shipped
                 holder.actionButton.setText("Track Order");
                 holder.actionButton.setVisibility(View.VISIBLE);
-                holder.actionButton.setOnClickListener(v -> {
-                    // Handle track order
-                });
+                holder.actionButton.setOnClickListener(v -> trackOrder(order.getOrderId()));
                 break;
 
             case DELIVERED:
@@ -128,4 +128,28 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             orderItemsRecyclerView = view.findViewById(R.id.order_items_listview);
         }
     }
+
+    public void trackOrder(String orderId) {
+        Intent intent = new Intent(context, TrackPage.class);
+        intent.putExtra("ORDER_ID",orderId);
+        context.startActivity(intent);
+    }
+
+    public void cancelOrder(String orderId,int position) {
+        // Create an AlertDialog to confirm cancel
+        new AlertDialog.Builder(context)
+                .setTitle("Cancel Order")
+                .setMessage("Are you sure you want to cancel this order?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Handle cancellation here, update order status
+                    OrderViewModel.cancelOrder(orderId); // Method to cancel the order
+
+                    // Optionally, rerender the RecyclerView by updating the order list
+                    notifyItemChanged(position);
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+
 }

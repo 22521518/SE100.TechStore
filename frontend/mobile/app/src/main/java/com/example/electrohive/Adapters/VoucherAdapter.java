@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.R;
+import com.example.electrohive.utils.format.Format;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,9 +42,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
         holder.voucherCode.setText(voucher.getVoucherCode());
         holder.voucherDescription.setText(voucher.getDescription());
 
-        // Format the valid date range
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        holder.voucherExpireDate.setText(sdf.format(voucher.getValidTo()));
+        holder.voucherExpireDate.setText(Format.getFormattedDate(voucher.getValidTo()));
 
         // Check if the voucher has expired
         if (voucher.getValidTo().before(new Date())) {

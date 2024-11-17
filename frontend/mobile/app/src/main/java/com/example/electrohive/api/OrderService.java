@@ -8,5 +8,8 @@ import retrofit2.http.Path;
 
 public interface OrderService {
     @GET("/orders/{id}")
-    Call<JsonObject> getUserVouchers(@Path("id") String userId);
+    Call<JsonObject> getUserOrders(@Path("id") String userId);
+
+    @GET("/orders/{id}")
+    Call<JsonObject> getOrder(@Path("id") String orderId);
 }

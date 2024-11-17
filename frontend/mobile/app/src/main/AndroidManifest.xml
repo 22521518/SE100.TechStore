@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
+        android:name=".MainActivity"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,28 +15,77 @@
         android:theme="@style/Theme.ElectroHive"
         tools:targetApi="31">
         <activity
-            android:name=".Activities.search_page"
-            android:exported="false" />
+            android:name=".Activities.SearchPage"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".Activities.AccountPage"
-            android:exported="true">
+            android:name=".Activities.LoginPage"
+            android:configChanges="orientation"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.ProvincePage"/>
-        <activity android:name=".Activities.DistrictPage"/>
-        <activity android:name=".Activities.WardPage"/>
-        <activity android:name=".Activities.AccountInfoPage"/>
-        <activity android:name=".Activities.AccountAddressPage"/>
-        <activity android:name=".Activities.AccountChangePassword"/>
-        <activity android:name=".Activities.AccountOrderPage"/>
-        <activity android:name=".Activities.AccountVoucherPage"/>
-        <activity android:name=".Activities.AccountAddAddressPage"/>
-        <activity android:name=".Activities.AccountEditAddressPage"/>
-
+        <activity
+            android:name=".Activities.ProvincePage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.DistrictPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.WardPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.AccountPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.AccountInfoPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.AccountAddressPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.AccountChangePassword"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.AccountOrderPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.AccountVoucherPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.AccountAddAddressPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.AccountEditAddressPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.SignUpPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.TrackPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.HomePage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
 
 
     </application>

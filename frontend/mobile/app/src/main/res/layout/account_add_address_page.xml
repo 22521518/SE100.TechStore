@@ -41,6 +41,7 @@
             android:hint="Fullname">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address_fullname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" />
@@ -54,6 +55,8 @@
             android:hint="Phone">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address_phonenumber"
+                android:maxLength="11"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone" />
@@ -67,7 +70,7 @@
             android:hint="Province/District/Ward">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/addressInput"
+                android:id="@+id/address_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_angle_right_icon"
@@ -83,12 +86,14 @@
             android:hint="Specific address">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:id="@+id/save_address_button"
             android:clickable="true"
             android:focusable="true"
             android:textAlignment="center"

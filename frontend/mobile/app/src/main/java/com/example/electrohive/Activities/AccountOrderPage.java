@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,8 @@ import java.util.List;
 
 public class AccountOrderPage extends AppCompatActivity {
 
+    private ProgressBar loadingSpinner;
+
     private ORDER_STATUS filter = null;
     private OrderViewModel orderViewModel;
     @Override
@@ -31,6 +34,9 @@ public class AccountOrderPage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.account_orders_page);
 
+
+        loadingSpinner = findViewById(R.id.loading_spinner);
+        loadingSpinner.setVisibility(View.VISIBLE);
         // Initialize ViewModel
         orderViewModel = new OrderViewModel();
 
@@ -39,7 +45,7 @@ public class AccountOrderPage extends AppCompatActivity {
         ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Set up adapter
-        OrderAdapter orderAdapter = new OrderAdapter(getApplicationContext(),new ArrayList<>());
+        OrderAdapter orderAdapter = new OrderAdapter(AccountOrderPage.this,new ArrayList<>());
         ordersRecyclerView.setAdapter(orderAdapter);
 
         // Observe orders LiveData
@@ -49,6 +55,7 @@ public class AccountOrderPage extends AppCompatActivity {
                 if (orders != null) {
                     orderAdapter.updateOrders(orders);
                 }
+                loadingSpinner.setVisibility(View.GONE);
             }
         });
         setupFilterButtons();

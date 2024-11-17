@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.Models.Province;
 import com.example.electrohive.Models.Voucher;
@@ -39,6 +40,31 @@ public class OrderRepository {
 
         orderService = retrofit.create(OrderService.class);
     }
+
+    public LiveData<Order> getOrder(String orderId) {
+        MutableLiveData<Order> orderData = new MutableLiveData<>();
+
+        Order mockOrder = MockOrder.createMockOrderData();
+        orderData.setValue(mockOrder);
+//        orderService.getOrder(orderId).enqueue(new Callback<Order>() {
+//            @Override
+//            public void onResponse(Call<Order> call, Response<Order> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    orderData.setValue(response.body());
+//                } else {
+//                    Log.e("OrderRepository", "Error fetching order: " + response.code());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Order> call, Throwable t) {
+//                Log.e("OrderRepository", "Error fetching order: " + t.getMessage());
+//            }
+//        });
+
+        return orderData;
+    }
+
 
     public LiveData<List<Order>> getOrders(String userId) {
         MutableLiveData<List<Order>> orderData = new MutableLiveData<>();
@@ -101,4 +127,9 @@ public class OrderRepository {
         return orderData;
 
     }
+
+    public void updateOrderStatus(String orderId, ORDER_STATUS status) {
+
+    }
+
 }
