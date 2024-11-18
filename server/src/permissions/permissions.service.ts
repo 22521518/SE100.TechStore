@@ -3,7 +3,7 @@ import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 import { Prisma } from '@prisma/client';
-import { Permission } from './entities/permission.entity';
+import { CustomerDefaultPermissionsList } from './permissions.config';
 
 @Injectable()
 export class PermissionsService {
@@ -27,30 +27,50 @@ export class PermissionsService {
     }
   }
 
-  async findAll() {
+  async findByRole(roleId: number) {
     try {
-      const permissions = await this.prismaDbService.permissions.findMany();
-      return [
-        ...permissions,
-        ...[
-          // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-          // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-          // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-          // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-          // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-          // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-        ].map(
-          (i) =>
-            new Permission(
-              'permision_id' +
-                i +
-                `${Math.random() % (i + Math.random() * 1000)}`,
-            ),
-        ),
-      ];
+      if (roleId === 0) {
+        return CustomerDefaultPermissionsList;
+      }
+
+      const permissions = await this.prismaDbService.permissions.findMany({
+        where: {
+          role_permissions: {
+            some: {
+              role_id: roleId,
+            },
+          },
+        },
+      });
+      return permissions;
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Error fetching permissions');
+    }
+  }
+
+  async findAll() {
+    try {
+      const permissions = await this.prismaDbService.permissions.findMany();
+      return [...permissions];
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching permissions');
+    }
+  }
+
+  async findByPermissionName(permissionName: string) {
+    try {
+      const permission = await this.prismaDbService.permissions.findUnique({
+        where: {
+          permission_name: permissionName,
+        },
+      });
+
+      return permission;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching permission');
     }
   }
 
@@ -99,6 +119,16 @@ export class PermissionsService {
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Error deleting permission');
+    }
+  }
+
+  async removeAll() {
+    try {
+      const permissions = await this.prismaDbService.permissions.deleteMany();
+      return permissions;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error deleting permissions');
     }
   }
 }

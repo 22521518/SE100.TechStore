@@ -20,7 +20,7 @@ model Orders {
     voucher_code String?
     created_at DateTime @default(now())
 
-    payment_method PAYMENT_METHOD
+    payment_method PAYMENT_METHOD?
 
     customer Customers? @relation(fields: [customer_id], references: [customer_id], onDelete: SetNull)
     order_items Order_Items[]

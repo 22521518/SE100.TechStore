@@ -9,22 +9,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login/store')
   async signInByStore(@Body() signInDto: SignInDto) {
-    try {
-      const { email, password } = signInDto;
-      return await this.authService.signInByCustomer(email, password);
-    } catch (error) {
-      console.log(error);
-    }
+    const { email, password } = signInDto;
+    return await this.authService.signInByCustomer(email, password);
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('login/dashboard')
   async signInByDashboard(@Body() signInDto: SignInDto) {
-    try {
-      const { email, password } = signInDto;
-      return await this.authService.signInByStaff(email, password);
-    } catch (error) {
-      console.log(error);
-    }
+    const { email, password } = signInDto;
+    return await this.authService.signInByStaff(email, password);
   }
 }

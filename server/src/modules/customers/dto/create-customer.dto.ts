@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateAccountsDto } from 'src/modules/accounts/dto/create-accounts.dto';
-import { ImageDto } from 'src/modules/common-dto/ImageDto';
+import { ImageDto } from 'src/dto/ImageDto';
 
 export class CreateCustomerDto {
   @IsString()

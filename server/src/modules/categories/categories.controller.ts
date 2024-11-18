@@ -13,12 +13,14 @@ import { CategoriesService } from './categories.service';
 import { Prisma } from '@prisma/client';
 import { CreateCategoriesDto } from './dto/create-categories.dto';
 import { UpdateCategoriesDto } from './dto/update-categories.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @Permissions(['category-create'])
   async create(@Body() createCategoryDto: CreateCategoriesDto) {
     try {
       const categoryDto: Prisma.CategoriesCreateInput = {
@@ -34,6 +36,7 @@ export class CategoriesController {
   }
 
   @Get()
+  @Permissions(['category-read'])
   async findAll(@Query('category') contain_category_name: string) {
     try {
       const category = await this.categoriesService.findAll(
@@ -47,6 +50,7 @@ export class CategoriesController {
   }
 
   @Get(':id')
+  @Permissions(['category-read'])
   async findOne(@Param('id') id: string) {
     try {
       const category = await this.categoriesService.findOne(+id);
@@ -58,6 +62,7 @@ export class CategoriesController {
   }
 
   @Patch(':id')
+  @Permissions(['category-update'])
   async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoriesDto,
@@ -76,6 +81,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
+  @Permissions(['category-delete'])
   async remove(@Param('id') id: string) {
     try {
       const category = await this.categoriesService.remove(+id);

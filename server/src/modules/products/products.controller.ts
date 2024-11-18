@@ -17,12 +17,14 @@ import { CreateProductDto } from './dto/create-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import sharp from 'sharp';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @Permissions(['product-create'])
   async create(
     @Body()
     createProductDto: CreateProductDto,
@@ -84,6 +86,7 @@ export class ProductsController {
   }
 
   @Get()
+  @Permissions(['product-read'])
   async findAll(
     @Query('pageSize') limit: string,
     @Query('current') offset: string,
@@ -95,12 +98,6 @@ export class ProductsController {
         (+offset > 0 ? +offset - 1 : 0) * +limit,
         product_name,
       );
-      console.log('product_name', product_name);
-      console.log('offset', offset);
-      console.log('limit', limit);
-      console.log('length', product.length);
-      console.log('\n--------\n');
-
       return product;
     } catch (error) {
       console.error(error);
@@ -109,6 +106,7 @@ export class ProductsController {
   }
 
   @Get(':id')
+  @Permissions(['product-read'])
   async findOne(@Param('id') id: string) {
     try {
       const product = await this.productsService.findOne(id);
@@ -120,6 +118,7 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @Permissions(['product-update'])
   @UseInterceptors(FilesInterceptor('images', 6))
   async update(
     @Param('id') id: string,
@@ -183,6 +182,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Permissions(['product-delete'])
   async remove(@Param('id') id: string) {
     try {
       const product = await this.productsService.remove(id);
@@ -194,6 +194,7 @@ export class ProductsController {
   }
 
   @Delete()
+  @Permissions(['product-delete'])
   async removeAll() {
     try {
       const product = await this.productsService.removeAll();

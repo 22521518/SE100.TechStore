@@ -12,12 +12,14 @@ import { ImportationsService } from './importations.service';
 import { Prisma } from '@prisma/client';
 import { CreateImportationDto } from './dto/create-importation.dto';
 import { UpdateImportationDto } from './dto/update-importation.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('importations')
 export class ImportationsController {
   constructor(private readonly importationsService: ImportationsService) {}
 
   @Post()
+  @Permissions(['importation-create'])
   async create(
     @Body()
     createImportationDto: CreateImportationDto,
@@ -58,6 +60,7 @@ export class ImportationsController {
   }
 
   @Get()
+  @Permissions(['importation-read'])
   async findAll() {
     try {
       const importation = await this.importationsService.findAll();
@@ -69,6 +72,7 @@ export class ImportationsController {
   }
 
   @Get(':id')
+  @Permissions(['importation-read'])
   async findOne(@Param('id') id: string) {
     try {
       const importation = await this.importationsService.findOne(+id);
@@ -80,6 +84,7 @@ export class ImportationsController {
   }
 
   @Patch(':id')
+  @Permissions(['importation-update'])
   async update(
     @Param('id') id: string,
     @Body() updateImportationDto: UpdateImportationDto,
@@ -100,6 +105,7 @@ export class ImportationsController {
   }
 
   @Delete(':id')
+  @Permissions(['importation-delete'])
   async remove(@Param('id') id: string) {
     try {
       const importation = await this.importationsService.remove(+id);

@@ -13,12 +13,14 @@ import { AddressesService } from './addresses.service';
 import { Prisma } from '@prisma/client';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('addresses')
 export class AddressesController {
   constructor(private readonly addressesService: AddressesService) {}
 
   @Post(':id')
+  @Permissions(['address-create'])
   async create(
     @Param('id') customerId: string,
     @Body() createAddressDto: CreateAddressDto,
@@ -41,6 +43,7 @@ export class AddressesController {
   }
 
   @Get(':id')
+  @Permissions(['address-read'])
   async findAll(@Param('id') customerId: string) {
     try {
       const address = await this.addressesService.findAll(customerId);
@@ -52,6 +55,7 @@ export class AddressesController {
   }
 
   @Get(':id/:address_id')
+  @Permissions(['address-read'])
   async findOne(
     @Param('id') customerId: string,
     @Param('address_id', ParseIntPipe) addressId: number,
@@ -69,6 +73,7 @@ export class AddressesController {
   }
 
   @Patch(':id/:address_id')
+  @Permissions(['address-update'])
   async update(
     @Param('id') customerId: string,
     @Param('address_id', ParseIntPipe) addressId: number,
@@ -91,6 +96,7 @@ export class AddressesController {
   }
 
   @Delete(':id/:address_id')
+  @Permissions(['address-delete'])
   async remove(
     @Param('id') customerId: string,
     @Param('address_id', ParseIntPipe) addressId: number,
@@ -105,6 +111,7 @@ export class AddressesController {
   }
 
   @Delete(':id')
+  @Permissions(['address-delete'])
   async removeAll(@Param('id') customerId: string) {
     try {
       const address = await this.addressesService.removeAll(customerId);

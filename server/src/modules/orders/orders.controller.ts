@@ -13,12 +13,14 @@ import { OrdersService } from './orders.service';
 import { Prisma } from '@prisma/client';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post(':id')
+  @Permissions(['order-create'])
   async create(
     @Param('id') customerId: string,
     @Body()
@@ -56,6 +58,7 @@ export class OrdersController {
   }
 
   @Get()
+  @Permissions(['order-read'])
   async findAll(@Query('customer_id') customerId: string) {
     try {
       const orders = await this.ordersService.findAll(customerId);
@@ -67,6 +70,7 @@ export class OrdersController {
   }
 
   @Get(':id')
+  @Permissions(['order-read'])
   async findAllWithCustomer(@Param('id') customerId: string) {
     try {
       const order = await this.ordersService.findAllWithCustomer(customerId);
@@ -78,6 +82,7 @@ export class OrdersController {
   }
 
   @Get(':id/:order_id')
+  @Permissions(['order-read'])
   async findOne(
     @Param('id') customerId: string,
     @Param('order_id') orderId: string,
@@ -92,6 +97,7 @@ export class OrdersController {
   }
 
   @Patch(':id/:order_id')
+  @Permissions(['order-update'])
   async update(
     @Param('id') customerId: string,
     @Param('order_id') orderId: string,
@@ -110,6 +116,7 @@ export class OrdersController {
   }
 
   @Delete(':id/:order_id')
+  @Permissions(['order-delete'])
   async remove(
     @Param('id') customerId: string,
     @Param('order_id') orderId: string,

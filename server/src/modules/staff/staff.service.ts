@@ -79,11 +79,7 @@ export class StaffService {
           account_id,
         },
         include: {
-          role: {
-            include: {
-              role_permissions: true,
-            },
-          },
+          role: true,
           account: true,
         },
       });

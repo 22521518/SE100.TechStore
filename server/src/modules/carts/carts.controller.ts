@@ -13,12 +13,14 @@ import { CartsService } from './carts.service';
 import { Prisma } from '@prisma/client';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('carts')
 export class CartsController {
   constructor(private readonly cartsService: CartsService) {}
 
   @Post(':id')
+  @Permissions(['cart-create'])
   async create(
     @Param('id') customerId: string,
     @Body()
@@ -47,6 +49,7 @@ export class CartsController {
   }
 
   @Get(':id')
+  @Permissions(['cart-read'])
   async findAll(@Param('id') customerId: string) {
     try {
       const item = await this.cartsService.findAll(customerId);
@@ -58,6 +61,7 @@ export class CartsController {
   }
 
   @Put(':id')
+  @Permissions(['cart-update'])
   async updateWhole(
     @Param('id') customerId: string,
     @Body()
@@ -88,6 +92,7 @@ export class CartsController {
   }
 
   @Patch(':id/:product_id')
+  @Permissions(['cart-update'])
   async update(
     @Param('id') customerId: string,
     @Param('product_id') productId: string,
@@ -111,6 +116,7 @@ export class CartsController {
   }
 
   @Delete(':id/:product_id')
+  @Permissions(['cart-delete'])
   async remove(
     @Param('id') customerId: string,
     @Param('product_id') productId: string,
@@ -125,6 +131,7 @@ export class CartsController {
   }
 
   @Delete(':id')
+  @Permissions(['cart-delete'])
   async removeAll(@Param('id') customerId: string) {
     try {
       const item = await this.cartsService.removeAll(customerId);

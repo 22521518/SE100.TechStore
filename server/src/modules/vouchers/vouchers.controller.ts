@@ -13,12 +13,14 @@ import { VouchersService } from './vouchers.service';
 import { Prisma } from '@prisma/client';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('vouchers')
 export class VouchersController {
   constructor(private readonly vouchersService: VouchersService) {}
 
   @Post()
+  @Permissions(['voucher-create'])
   async create(@Body() createVoucherDto: CreateVoucherDto) {
     try {
       const voucherDto: Prisma.VouchersCreateInput = {
@@ -37,6 +39,7 @@ export class VouchersController {
   }
 
   @Get()
+  @Permissions(['voucher-read'])
   async findAll(
     @Query('voucher_code') voucher_code: string,
     @Query('voucher_name') voucher_name: string,
@@ -54,6 +57,7 @@ export class VouchersController {
   }
 
   @Get(':id')
+  @Permissions(['voucher-read'])
   async findOne(@Param('id') id: string) {
     try {
       const voucher = await this.vouchersService.findOne(id);
@@ -65,6 +69,7 @@ export class VouchersController {
   }
 
   @Patch(':id')
+  @Permissions(['voucher-update'])
   async update(
     @Param('id') id: string,
     @Body() updateVoucherDto: UpdateVoucherDto,
@@ -86,6 +91,7 @@ export class VouchersController {
   }
 
   @Delete(':id')
+  @Permissions(['voucher-delete'])
   async remove(@Param('id') id: string) {
     try {
       const voucher = await this.vouchersService.remove(id);

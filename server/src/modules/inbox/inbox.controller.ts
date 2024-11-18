@@ -10,12 +10,14 @@ import {
 import { InboxService } from './inbox.service';
 import { UpdateInboxDto } from './dto/update-inbox.dto';
 import { CreateInboxMessageDto } from './dto/create-inbox.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('inbox')
 export class InboxController {
   constructor(private readonly inboxService: InboxService) {}
 
   @Post(':customer_id')
+  @Permissions(['inbox-create'])
   async create(
     @Param('customer_id') customer_id: string,
     @Body() createInboxDto: CreateInboxMessageDto,
@@ -24,16 +26,26 @@ export class InboxController {
   }
 
   @Get()
+  @Permissions(['inbox-read'])
   async findAll() {
     return this.inboxService.findAll();
   }
 
   @Get(':customer_id')
+  @Permissions(['inbox-read'])
   async findOne(@Param('customer_id') customer_id: string) {
-    return this.inboxService.getMessageByRoom(customer_id, 0, 20, true);
+    const messages = await this.inboxService.getMessageByRoom(
+      customer_id,
+      0,
+      20,
+      true,
+    );
+
+    return messages;
   }
 
   @Patch(':id')
+  @Permissions(['inbox-update'])
   async update(
     @Param('id') id: string,
     @Body() updateInboxDto: UpdateInboxDto,
@@ -42,6 +54,7 @@ export class InboxController {
   }
 
   @Delete(':id')
+  @Permissions(['inbox-delete'])
   async remove(@Param('id') id: string) {
     return this.inboxService.remove(id);
   }

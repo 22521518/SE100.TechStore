@@ -20,7 +20,12 @@ export class InboxService {
   private async findCustomer(customer_id: string) {
     let customer = null;
     try {
-      customer = await this.customerService.findOne(customer_id);
+      customer = await this.customerService.findOne(
+        customer_id,
+        false,
+        false,
+        false,
+      );
     } finally {
       return customer;
     }

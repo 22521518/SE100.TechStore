@@ -6,7 +6,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { ImageDto } from 'src/modules/common-dto/ImageDto';
+import { ImageDto } from 'src/dto/ImageDto';
 
 export class UpdateCustomerDto {
   @IsOptional()

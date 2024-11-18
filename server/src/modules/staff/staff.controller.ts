@@ -14,6 +14,7 @@ import { Prisma } from '@prisma/client';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('staff')
 export class StaffController {
@@ -23,6 +24,7 @@ export class StaffController {
   ) {}
 
   @Post()
+  @Permissions(['staff-create'])
   async create(
     @Body()
     createStaffDto: CreateStaffDto,
@@ -60,6 +62,7 @@ export class StaffController {
   }
 
   @Get()
+  @Permissions(['staff-read'])
   async findAll(
     @Query('full_name') full_name: string,
     @Query('staff_id') staff_id: string,
@@ -75,6 +78,7 @@ export class StaffController {
   }
 
   @Get(':id')
+  @Permissions(['staff-read'])
   async findOne(@Param('id') id: string) {
     try {
       const staff = await this.staffService.findOne(id);
@@ -86,6 +90,7 @@ export class StaffController {
   }
 
   @Patch(':id')
+  @Permissions(['staff-update'])
   async update(
     @Param('id') id: string,
     @Body()
@@ -114,6 +119,7 @@ export class StaffController {
   }
 
   @Delete(':id')
+  @Permissions(['staff-delete'])
   async remove(@Param('id') id: string) {
     try {
       const staff = await this.staffService.remove(id);

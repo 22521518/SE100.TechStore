@@ -2,6 +2,9 @@
 CREATE TYPE "ORDER_STATUS" AS ENUM ('PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 
 -- CreateEnum
+CREATE TYPE "PAYMENT_METHOD" AS ENUM ('COD', 'CREDIT_CARD', 'ELECTRO_WALLET');
+
+-- CreateEnum
 CREATE TYPE "EMPLOY_STATUS" AS ENUM ('ACTIVE', 'INACTIVE', 'SUSPENDED', 'RESIGNED');
 
 -- CreateTable
@@ -23,6 +26,9 @@ CREATE TABLE "Customers" (
     "full_name" VARCHAR(100) NOT NULL,
     "phone_number" VARCHAR(10) NOT NULL,
     "date_joined" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "image" TEXT,
+    "male" BOOLEAN DEFAULT true,
+    "birth_date" TIMESTAMP(3),
 
     CONSTRAINT "Customers_pkey" PRIMARY KEY ("customer_id")
 );
@@ -31,10 +37,13 @@ CREATE TABLE "Customers" (
 CREATE TABLE "Customer_Address" (
     "address_id" SERIAL NOT NULL,
     "customer_id" VARCHAR(50) NOT NULL,
-    "address" TEXT NOT NULL,
     "city" VARCHAR(50) NOT NULL,
-    "state" VARCHAR(50) NOT NULL,
+    "district" VARCHAR(50),
+    "ward" VARCHAR(50),
+    "address" TEXT NOT NULL,
     "is_primary" BOOLEAN NOT NULL DEFAULT true,
+    "full_name" VARCHAR(100),
+    "phone_number" CHAR(10),
 
     CONSTRAINT "Customer_Address_pkey" PRIMARY KEY ("address_id")
 );
@@ -91,6 +100,7 @@ CREATE TABLE "Orders" (
     "total_price" DOUBLE PRECISION NOT NULL,
     "voucher_code" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "payment_method" "PAYMENT_METHOD",
 
     CONSTRAINT "Orders_pkey" PRIMARY KEY ("order_id")
 );
@@ -172,6 +182,9 @@ CREATE TABLE "Staff" (
     "role_id" INTEGER,
     "full_name" VARCHAR(100) NOT NULL,
     "phone_number" VARCHAR(10) NOT NULL,
+    "male" BOOLEAN DEFAULT true,
+    "birth_date" TIMESTAMP(3),
+    "image" VARCHAR(255),
     "employee_status" "EMPLOY_STATUS" NOT NULL DEFAULT 'INACTIVE',
     "hire_date" TIMESTAMP(3) NOT NULL,
 
@@ -189,7 +202,7 @@ CREATE TABLE "Roles" (
 
 -- CreateTable
 CREATE TABLE "Permissions" (
-    "permission_id" SERIAL NOT NULL,
+    "permission_id" VARCHAR(50) NOT NULL,
     "permission_name" VARCHAR(50) NOT NULL,
     "description" TEXT NOT NULL,
 
@@ -217,7 +230,7 @@ CREATE TABLE "_CategoriesToProducts" (
 
 -- CreateTable
 CREATE TABLE "_PermissionsToRoles" (
-    "A" INTEGER NOT NULL,
+    "A" VARCHAR(50) NOT NULL,
     "B" INTEGER NOT NULL
 );
 

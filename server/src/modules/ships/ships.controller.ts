@@ -12,12 +12,14 @@ import { ShipsService } from './ships.service';
 import { Prisma } from '@prisma/client';
 import { CreateShipDto } from './dto/create-ship.dto';
 import { UpdateShipDto } from './dto/update-ship.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('ships')
 export class ShipsController {
   constructor(private readonly shipsService: ShipsService) {}
 
   @Post()
+  @Permissions(['ship-create'])
   async create(
     @Body()
     createShipDto: CreateShipDto,
@@ -45,6 +47,7 @@ export class ShipsController {
   }
 
   @Get()
+  @Permissions(['ship-read'])
   async findAll() {
     try {
       const ship = await this.shipsService.findAll();
@@ -56,6 +59,7 @@ export class ShipsController {
   }
 
   @Get(':id')
+  @Permissions(['ship-read'])
   async findOne(@Param('id') id: string) {
     try {
       const ship = await this.shipsService.findOne(id);
@@ -67,6 +71,7 @@ export class ShipsController {
   }
 
   @Patch(':id')
+  @Permissions(['ship-update'])
   async update(@Param('id') id: string, @Body() updateShipDto: UpdateShipDto) {
     try {
       const { delivery_date, shipping_status } = updateShipDto;
@@ -83,6 +88,7 @@ export class ShipsController {
   }
 
   @Delete(':id')
+  @Permissions(['ship-delete'])
   async remove(@Param('id') id: string) {
     try {
       const ship = await this.shipsService.remove(id);
