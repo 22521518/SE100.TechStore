@@ -10,7 +10,6 @@ type InboxShowProps = {
 };
 
 const InboxShow = ({ showRoom }: InboxShowProps) => {
-  const identity = '--admin';
   const { data, isLoading, isError } = useOne<IInboxRoom, HttpError>({
     resource: 'inbox',
     id: showRoom.customer.customer_id

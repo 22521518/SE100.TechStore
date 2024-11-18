@@ -32,7 +32,8 @@ const InboxBox = ({
           ${isSender ? 'justify-end ' : 'justify-start '}`}
       >
         <Typography
-          className={`w-max max-w-full col-span-4 rounded-3xl py-2.5 px-4 text-sm
+          noWrap
+          className={`w-max max-w-full col-span-4 rounded-3xl py-2.5 px-4 text-sm no-wrap overflow-hidden whitespace-nowrap text-ellipsis
           ${
             isSender
               ? 'bg-accent text-white w-max order-1 ml-auto ' +
@@ -44,7 +45,7 @@ const InboxBox = ({
           }
         `}
         >
-          {message.message} / {message.sender.sender_id}
+          {message.message} 
         </Typography>
         <Typography
           className={`text-[0.75rem] lg:w-max text-secondary-300 flex-1 lg:min-w-max ${

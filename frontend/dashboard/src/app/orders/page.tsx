@@ -20,6 +20,11 @@ import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import { ORDER_STATUS } from '@constant/enum.constant';
 import OrderShow from './show/[id]/page';
 
+type OrderCustomerId = {
+  order_id: string;
+  customer_id: string;
+};
+
 const OrderList = () => {
   const filterList = [
     ORDER_STATUS.PENDING,
@@ -38,10 +43,7 @@ const OrderList = () => {
     });
   };
   const { dataGridProps } = useDataGrid<IOrder>();
-  const records = dataGridProps.rows as IOrder[];
-
-  const [dummyOrders, setDummyOrder] = React.useState<IOrder[]>(records || []);
-  const [orderDetail, setOrderDetail] = React.useState<IOrder | null>(null);
+  const [orderIdDetail, setOrderIdDetail] = React.useState<OrderCustomerId>();
 
   const columns = React.useMemo<GridColDef<IOrder>[]>(
     () => [
@@ -94,6 +96,7 @@ const OrderList = () => {
     ],
     []
   );
+
   return (
     <Box className="grid grid-cols-5 h-full gap-2">
       <CommonContainer className="col-span-3">
@@ -136,15 +139,14 @@ const OrderList = () => {
           </FormControl>
         </Box>
         <DataGrid
-          // {...dataGridProps}
           columns={columns}
-          rows={dummyOrders}
+          {...dataGridProps}
           getRowId={(row: IOrder) => row.order_id}
           onCellClick={(cell) => {
-            const order = dummyOrders.find(
-              (order) => order.order_id === cell.row.order_id
-            );
-            setOrderDetail(order || null);
+            setOrderIdDetail({
+              order_id: cell.row.order_id,
+              customer_id: cell.row.customer_id
+            });
           }}
           sx={{
             color: 'black',
@@ -163,7 +165,10 @@ const OrderList = () => {
         />
       </CommonContainer>
       <Box className="col-span-2">
-        <OrderShow order={orderDetail} />
+        <OrderShow
+          orderId={orderIdDetail?.order_id}
+          customerId={orderIdDetail?.customer_id}
+        />
       </Box>
     </Box>
   );
