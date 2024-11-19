@@ -9,6 +9,7 @@ import com.example.electrohive.Models.Province;
 import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.api.VoucherService;
 import com.example.electrohive.api.VoucherService;
+import com.example.electrohive.utils.RetrofitClient;
 import com.example.electrohive.utils.generator.MockVoucher;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -29,12 +30,8 @@ public class VoucherRepository {
     private final VoucherService voucherService;
 
     public VoucherRepository() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://se100-techstore.onrender.com") // Base URL
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        voucherService = retrofit.create(VoucherService.class);
+        voucherService =  RetrofitClient.getClient().create(VoucherService.class);
     }
 
     public LiveData<List<Voucher>> getVouchers(String userId) {

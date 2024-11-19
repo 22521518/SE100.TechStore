@@ -34,14 +34,13 @@ public class AccountViewModel extends ViewModel {
         accountRepository.login(email, password).observeForever(accessToken -> {
             if (accessToken != null) {
                 // Save the access token
-                PreferencesHelper preferencesHelper = new PreferencesHelper();
-                preferencesHelper.saveAccessToken(accessToken);
+                PreferencesHelper.saveAccessToken(accessToken);
 
                 // Fetch user details with the token
                 customerRepository.getCustomer(accessToken).observeForever(customer -> {
                     if (customer != null) {
                         // Save customer data
-                        preferencesHelper.saveCustomerData(customer);
+                        PreferencesHelper.saveCustomerData(customer);
                         successLiveData.setValue(true);
                     } else {
                         successLiveData.setValue(false);

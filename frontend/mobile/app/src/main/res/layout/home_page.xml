@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true"
@@ -28,75 +29,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Promotional Banner 1 -->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:padding="10dp">
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_centerInParent="true"
-                        android:background="@color/white"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/banner" />
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_margin="10dp"
-                        android:background="#000000"
-                        android:text="Buy now"
-                        android:textColor="#FFFFFF" />
-                </RelativeLayout>
-
+                <ProgressBar
+                    android:id="@+id/loading_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="32dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:indeterminate="true" />
                 <!-- Trending Products -->
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rc_trend"
+                    android:id="@+id/product_listview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_height="wrap_content" />
 
-                <!-- Promotional Banner 2 -->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:padding="10dp">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_centerInParent="true"
-                        android:background="@color/white"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/banner" />
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_margin="10dp"
-                        android:background="#000000"
-                        android:text="Buy now"
-                        android:textColor="#FFFFFF" />
-                </RelativeLayout>
-
-                <!-- Trending Products 2 -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rc_trend_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="16dp" />
 
             </LinearLayout>
         </ScrollView>

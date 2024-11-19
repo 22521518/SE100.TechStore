@@ -5,6 +5,11 @@ public class ProductImage {
     private String url;
 
     // Constructor
+
+    public ProductImage(String url) {
+        this.name = "";
+        this.url = url;
+    }
     public ProductImage(String name, String url) {
         this.name = name;
         this.url = url;

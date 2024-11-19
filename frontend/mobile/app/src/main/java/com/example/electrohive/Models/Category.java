@@ -1,22 +1,27 @@
 package com.example.electrohive.Models;
 
 public class Category {
-    private Integer categoryId; // Optional field, can be null
+    private int categoryId; // Optional field, can be null
     private String categoryName;
     private String description;
 
     // Constructor
+    public Category(int id,String categoryName, String description) {
+        this.categoryId = id;
+        this.categoryName = categoryName;
+        this.description = description;
+    }
     public Category(String categoryName, String description) {
         this.categoryName = categoryName;
         this.description = description;
     }
 
     // Getters and Setters
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 

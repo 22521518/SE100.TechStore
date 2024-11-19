@@ -37,6 +37,8 @@ public class LoginPage extends AppCompatActivity {
         accountViewModel = new AccountViewModel();
         customerViewModel = new CustomerViewModel();
 
+        checkLoginStatus();
+
         email_input = findViewById(R.id.emailInput);
         password_input  = findViewById(R.id.passwordInput);
 
@@ -49,7 +51,7 @@ public class LoginPage extends AppCompatActivity {
 
     private void checkLoginStatus () {
         SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        String savedCustomerId = preferences.getString("customer_id", null);
+        String savedCustomerId = preferences.getString("user_id", null);
 
         if (savedCustomerId != null) {
             customerViewModel.getCustomer(savedCustomerId).observe(this, new Observer<Customer>() {

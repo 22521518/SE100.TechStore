@@ -11,6 +11,7 @@ import com.example.electrohive.Models.Account;
 import com.example.electrohive.api.AccountService;
 import com.example.electrohive.api.CustomerService;
 import com.example.electrohive.utils.PreferencesHelper;
+import com.example.electrohive.utils.RetrofitClient;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
@@ -27,12 +28,8 @@ public class AccountRepository {
 
 
     public AccountRepository() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://se100-techstore.onrender.com") // Base URL
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        accountService = retrofit.create(AccountService.class);
+        accountService =  RetrofitClient.getClient().create(AccountService.class);
 
     }
 

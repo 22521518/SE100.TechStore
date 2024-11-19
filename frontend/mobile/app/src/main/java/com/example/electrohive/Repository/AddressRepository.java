@@ -9,6 +9,7 @@ import com.example.electrohive.Models.Address;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.api.AddressService;
 import com.example.electrohive.api.OrderService;
+import com.example.electrohive.utils.RetrofitClient;
 import com.example.electrohive.utils.generator.MockAddress;
 import com.example.electrohive.utils.generator.MockOrder;
 import com.google.gson.JsonArray;
@@ -27,12 +28,7 @@ public class AddressRepository {
     private final AddressService addressService;
 
     public AddressRepository() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://se100-techstore.onrender.com") // Base URL
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        addressService = retrofit.create(AddressService.class);
+        addressService =  RetrofitClient.getClient().create(AddressService.class);
     }
 
     public MutableLiveData<List<Address>> getAddress(String userId) {

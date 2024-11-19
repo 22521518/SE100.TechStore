@@ -7,15 +7,18 @@ public class Product {
     private String productName;
     private List<ProductImage> images; // Assuming ProductImage class is defined
     private String description;
-    private double price;
-    private Double discount; // Can be null
+    private float price;
+    private float discount; // Can be null
     private Integer stockQuantity; // Can be null
     private List<Category> categories; // Assuming Category class is defined
+
+    private List<ProductFeedback> productFeedbacks;
+    private float averageRating;
     private List<ProductAttribute> attributes; // Assuming ProductAttribute class is defined
 
     // Constructor
-    public Product(String productId, String productName, List<ProductImage> images, String description, double price,
-                   Double discount, Integer stockQuantity, List<Category> categories, List<ProductAttribute> attributes) {
+    public Product(String productId, String productName, List<ProductImage> images, String description, float price,
+                   float discount, Integer stockQuantity, List<Category> categories, List<ProductAttribute> attributes) {
         this.productId = productId;
         this.productName = productName;
         this.images = images;
@@ -27,9 +30,26 @@ public class Product {
         this.attributes = attributes;
     }
 
+
+    public void setProductFeedbacks(List<ProductFeedback> productFeedbackList) {
+        this.productFeedbacks = productFeedbackList;
+    }
+
+    public List<ProductFeedback> getProductFeedbacks(){
+        return this.productFeedbacks;
+    }
+
     // Getters and Setters
     public String getProductId() {
         return productId;
+    }
+
+    public void setAverageRating(float rating) {
+        this.averageRating = rating;
+    }
+
+    public float getAverageRating() {
+        return averageRating;
     }
 
     public void setProductId(String productId) {
@@ -64,15 +84,15 @@ public class Product {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
-    public Double getDiscount() {
+    public float getDiscount() {
         return discount;
     }
 
-    public void setDiscount(Double discount) {
+    public void setDiscount(float discount) {
         this.discount = discount;
     }
 

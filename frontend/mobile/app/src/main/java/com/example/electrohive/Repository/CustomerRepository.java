@@ -6,6 +6,7 @@ import com.example.electrohive.Models.Address;
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.api.AddressService;
 import com.example.electrohive.api.CustomerService;
+import com.example.electrohive.utils.RetrofitClient;
 import com.example.electrohive.utils.generator.MockAddress;
 import com.example.electrohive.utils.generator.MockCustomer;
 
@@ -18,12 +19,8 @@ public class CustomerRepository {
     private final CustomerService customerService;
 
     public CustomerRepository() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://se100-techstore.onrender.com") // Base URL
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        customerService = retrofit.create(CustomerService.class);
+        customerService =  RetrofitClient.getClient().create(CustomerService.class);
     }
 
     public MutableLiveData<Customer> getCustomer(String userId) {

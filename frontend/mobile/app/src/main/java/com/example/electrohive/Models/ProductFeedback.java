@@ -12,10 +12,13 @@ public class ProductFeedback {
     private Object createdAt; // Can be Date or String
 
     // Constructor
-    public ProductFeedback(String feedbackId, int rating, String feedback) {
+    public ProductFeedback(String feedbackId, String customerId,String productId, int rating, String feedback,Object createdAt) {
         this.feedbackId = feedbackId;
+        this.customerId = customerId;
+        this.productId = productId;
         this.rating = rating;
         this.feedback = feedback;
+        this.createdAt = createdAt;
     }
 
     // Getters and Setters

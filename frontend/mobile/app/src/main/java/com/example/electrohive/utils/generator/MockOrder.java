@@ -39,7 +39,7 @@ public class MockOrder {
         int numberOfItems = random.nextInt(5) + 1; // Random number of items between 1 and 5
         List<OrderItem> items = new ArrayList<>();
         for (int i = 0; i < numberOfItems; i++) {
-            Product product = MockProduct.generateRandomProduct(i + 1);
+            Product product = MockProduct.createMockProductData(i + 1);
             int quantity = random.nextInt(5) + 1; // Random quantity between 1 and 5
             double unitPrice = product.getPrice() - (product.getPrice() * product.getDiscount() / 100);
             double totalPrice = quantity * unitPrice;

@@ -1,6 +1,7 @@
 package com.example.electrohive.api;
 
 import com.example.electrohive.Models.Address;
+import com.example.electrohive.Models.Customer;
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
@@ -14,6 +15,8 @@ import retrofit2.http.Path;
 
 public interface CustomerService {
     @GET("/customers/{id}")
-    Call<JsonObject> getUserAddresses(@Path("id") String userId);
+    Call<JsonObject> getCustomer(@Path("id") String userId);
 
+    @POST("/customers")
+    Call<JsonObject> signUp(Object customer);
 }

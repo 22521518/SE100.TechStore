@@ -12,6 +12,7 @@ import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.api.OrderService;
 import com.example.electrohive.api.VoucherService;
 import com.example.electrohive.api.VoucherService;
+import com.example.electrohive.utils.RetrofitClient;
 import com.example.electrohive.utils.generator.MockOrder;
 import com.example.electrohive.utils.generator.MockVoucher;
 import com.google.gson.JsonArray;
@@ -33,12 +34,7 @@ public class OrderRepository {
     private final OrderService orderService;
 
     public OrderRepository() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://se100-techstore.onrender.com") // Base URL
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        orderService = retrofit.create(OrderService.class);
+        orderService =  RetrofitClient.getClient().create(OrderService.class);
     }
 
     public LiveData<Order> getOrder(String orderId) {
