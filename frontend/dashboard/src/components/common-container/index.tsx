@@ -22,7 +22,7 @@ const CommonContainer: React.FC<CommonContainerProps> = ({
         isModal
           ? 'bg-white'
           : 'bg-primary-200 border-2 border-solid border-white border-opacity-50 '
-      } rounded-lg h-max shadow-lg ${className}`}
+      } rounded-lg shadow-lg ${className}`}
     >
       {children}
     </div>

@@ -13,9 +13,10 @@ const ProductSatistics = ({ feedbackList }: ProductSatisticsProps) => {
   const totalReviews = feedbackList.length;
 
   // Calculate average rating
-  const averageRating =
-    feedbackList.reduce((acc, feedback) => acc + feedback.rating, 0) /
-    totalReviews;
+  const averageRating = !feedbackList.length
+    ? 0
+    : feedbackList.reduce((acc, feedback) => acc + feedback.rating, 0) /
+      totalReviews;
 
   // Count ratings distribution
   const ratingDistribution = Array(5).fill(0);
@@ -28,7 +29,7 @@ const ProductSatistics = ({ feedbackList }: ProductSatisticsProps) => {
       <Stack className="md:hidden lg:flex flex-col min-w-max w-72 gap-1">
         <Box className="flex flex-row gap-4 items-center py-2 ">
           <Typography variant="h6" className="text-5xl text-star font-bold">
-            {averageRating.toFixed(1)} / 5
+            {averageRating.toFixed(1) ?? 0} / 5
           </Typography>
           <StarIcon className="text-5xl text-star" />
         </Box>

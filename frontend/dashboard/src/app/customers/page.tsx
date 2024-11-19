@@ -35,7 +35,11 @@ const CustomerList = () => {
         renderCell: ({ row }) => {
           return (
             <Box className="flex h-full items-center justify-center">
-              <AvatarImage src={dummyAvatar} alt={row.full_name} size={32} />
+              <AvatarImage
+                src={row.image || dummyAvatar}
+                alt={row.full_name}
+                size={32}
+              />
             </Box>
           );
         }

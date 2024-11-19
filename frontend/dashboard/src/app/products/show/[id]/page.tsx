@@ -11,7 +11,10 @@ import React from 'react';
 
 const ProductShow = () => {
   const { edit, list } = useNavigation();
-  const { query, formLoading } = useForm<IProductReceive, HttpError>();
+  const { query, formLoading } = useForm<IProductReceive, HttpError>({
+    resource: 'products',
+    action: 'clone'
+  });
   const record = query?.data?.data;
 
   const [productValue, setProductValue] = React.useState<IProductReceive>({

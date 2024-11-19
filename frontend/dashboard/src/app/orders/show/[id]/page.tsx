@@ -15,14 +15,29 @@ import {
 } from '@utils/transform.util';
 import ProductCard from '@components/order/product-card';
 import { dummyAvatar } from '@constant/value.constant';
+import { HttpError, useForm } from '@refinedev/core';
 
 type OrderShowProps = {
-  order?: IOrder | null;
+  customerId?: string;
+  orderId?: string;
 };
 
-const OrderShow = ({ order }: OrderShowProps) => {
+const OrderShow = ({ orderId, customerId }: OrderShowProps) => {
+  const { query, formLoading } = useForm<IOrder, HttpError>({
+    resource: 'orders/' + customerId,
+    id: orderId,
+    action: 'clone'
+  });
+
+  const order = query?.data?.data;
+
   const orderItems = order?.order_items;
   const totalItem = orderItems?.reduce((acc, item) => acc + item.quantity, 0);
+  const orgTotalPrice =
+    orderItems?.reduce(
+      (acc, item) => acc + item.unit_price * item.quantity,
+      0
+    ) || 0;
   const customer = order?.customer;
   const address = order?.shipping_address?.address;
 
@@ -75,7 +90,8 @@ const OrderShow = ({ order }: OrderShowProps) => {
                 variant="caption"
                 className="text-base text-secondary-border-secondary-300"
               >
-                {order.order_status === ORDER_STATUS.DELIVERED &&
+                {order.shipping_address.shipping_status ===
+                  ORDER_STATUS.DELIVERED &&
                 order.shipping_address?.delivery_date
                   ? transformDateWithMonthText(
                       order.shipping_address?.delivery_date?.toString()
@@ -91,7 +107,7 @@ const OrderShow = ({ order }: OrderShowProps) => {
                   variant="caption"
                   className="text-base text-secondary-border-secondary-300"
                 >
-                  {address?.address}, {address?.state}, {address?.city}
+                  {address?.address}, {address?.district}, {address?.city}
                 </Typography>
               </Box>
               <Box className="flex flex-row gap-4 items-center">
@@ -107,7 +123,7 @@ const OrderShow = ({ order }: OrderShowProps) => {
           </CommonContainer>
 
           <CommonContainer>
-            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
+            <Box className="flex flex-row gap-2 justify-between items-center">
               <Box className="flex flex-row gap-2 items-center">
                 <Typography className="font-semibold text-sm">
                   Amounts:
@@ -120,6 +136,29 @@ const OrderShow = ({ order }: OrderShowProps) => {
                 </Typography>
                 <Typography className="text-sm">
                   {transformVNMoney(order.total_price)}
+                </Typography>
+              </Box>
+            </Box>
+            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
+              <Box className="flex flex-row gap-2 items-center">
+                <Typography className="font-semibold text-sm">
+                  Voucher:
+                </Typography>
+                <Typography className="text-sm">
+                  {order.voucher
+                    ? order.voucher.voucher_code +
+                      `${order.voucher.discount_amount}%`
+                    : 'None'}
+                </Typography>
+              </Box>
+              <Box className="flex flex-row gap-2 items-center">
+                <Typography className="font-semibold text-sm">
+                  -{' '}
+                  {transformVNMoney(
+                    order.voucher
+                      ? order.voucher.discount_amount * orgTotalPrice
+                      : 0
+                  )}{' '}
                 </Typography>
               </Box>
             </Box>

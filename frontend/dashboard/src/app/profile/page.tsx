@@ -14,19 +14,25 @@ import PasswordIcon from '@mui/icons-material/Password';
 import CallOutlinedIcon from '@mui/icons-material/CallOutlined';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import { Box, Divider, Stack, Typography } from '@mui/material';
-import { TMockUser } from '@providers/auth-provider';
 import { useGetIdentity } from '@refinedev/core';
 import React from 'react';
 import { transformDate } from '@utils/transform.util';
 import { generateRandomStaffList } from '@utils/random.util';
 import { dummyAvatar } from '@constant/value.constant';
+import { IStaff } from '@constant/interface.constant';
 
 const ProfileShow = () => {
-  const { data: identity } = useGetIdentity<TMockUser>();
+  const { data: identity } = useGetIdentity<IStaff>();
   console.log(identity);
-  const personalInfo = generateRandomStaffList(1)[0];
+  const personalInfo = React.useMemo(() => {
+    return identity;
+  }, [identity]);
   const dummyGender = 'male';
   const dummyBirthday = '1-1-2003';
+
+  React.useEffect(() => {
+    console.log(identity);
+  }, [identity]);
 
   return (
     <>
@@ -41,23 +47,23 @@ const ProfileShow = () => {
           <Box className="flex flex-row gap-4 items-center">
             <Typography className="text-xl font-bold">Status:</Typography>
             <Typography className="text-lg">
-              {personalInfo.employee_status}
+              {personalInfo?.employee_status}
             </Typography>
-            <EmployStatusIcon status={personalInfo.employee_status} />
+            <EmployStatusIcon status={personalInfo?.employee_status} />
           </Box>
         </Box>
         <Box className="flex flex-row gap-4 items-center p-2">
           <AvatarImage
             src={dummyAvatar}
-            alt={personalInfo?.full_name}
+            alt={personalInfo?.full_name ?? 'Avatar'}
             size={96}
           />
           <Stack className="justify-start gap-5">
             <Typography className="text-lg font-bold">
-              {personalInfo.full_name}
+              {personalInfo?.full_name}
             </Typography>
             <Typography className="text-lg text-slate-500 font-bold">
-              ID: {personalInfo.staff_id}
+              ID: {personalInfo?.staff_id}
             </Typography>
           </Stack>
 
@@ -79,7 +85,7 @@ const ProfileShow = () => {
                 Full name:
               </Typography>
               <Typography className="text-lg">
-                {personalInfo.full_name}
+                {personalInfo?.full_name}
               </Typography>
             </Box>
 
@@ -89,7 +95,7 @@ const ProfileShow = () => {
                 Phone number:
               </Typography>
               <Typography className="text-lg">
-                {personalInfo.phone_number}
+                {personalInfo?.phone_number}
               </Typography>
             </Box>
           </Stack>
@@ -116,8 +122,8 @@ const ProfileShow = () => {
               </Typography>
               <Typography className="text-lg">
                 {(() => {
-                  const date = personalInfo.hire_date
-                    ? new Date(personalInfo.hire_date)
+                  const date = personalInfo?.hire_date
+                    ? new Date(personalInfo?.hire_date)
                     : new Date();
                   return <span>{transformDate(date.toISOString())}</span>;
                 })()}
@@ -141,7 +147,7 @@ const ProfileShow = () => {
               Email:
             </Typography>
             <Typography className="text-lg">
-              {personalInfo.account?.email}
+              {personalInfo?.account?.email}
             </Typography>
           </Box>
           <Box className="flex flex-row gap-4 items-center">

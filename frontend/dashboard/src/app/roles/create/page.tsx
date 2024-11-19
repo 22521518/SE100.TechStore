@@ -27,9 +27,7 @@ const RoleCreate = () => {
     resource: 'permissions'
   });
   const permissions = React.useMemo<IPermission[]>(() => {
-    return !permissionsList?.data?.length
-      ? permissionsList?.data || []
-      : Array.from({ length: 40 }, () => generateRandomPermission());
+    return permissionsList?.data || [];
   }, [permissionsList]);
 
   const { onFinish } = useForm<IRole>();
@@ -93,13 +91,13 @@ const RoleCreate = () => {
   }, [roleCheck]);
 
   return (
-    <div className="flex h-full w-full overflow-hidden justify-center">
+    <div className="flex place-content-center h-[100%] w-full overflow-hidden">
       <form
         onSubmit={onSubmit}
-        className="grid grid-cols-8 gap-1 h-[100%]justify-center w-11/12"
+        className="grid grid-cols-8 gap-1 h-[100%] justify-center w-11/12 items-center"
       >
         <CommonContainer
-          className="flex flex-col col-span-2 overflow-hidden h-[90%]"
+          className="flex flex-col col-span-2 overflow-hidden w-full h-[92%]"
           heightMin={false}
           heightMax={false}
         >
@@ -109,32 +107,31 @@ const RoleCreate = () => {
                 color: 'inherit'
               }
             }}
-            className="h-full relative"
+            className="h-[100%] w-full relative flex items-center justify-around"
           >
-            <FormLabel className="mx-2 mb-2">Permissions</FormLabel>
-            <FormGroup className="flex flex-col overflow-y-scroll h-[90%] left-4 relative">
+            <FormLabel className="mx-2">Permissions</FormLabel>
+            <FormGroup className="flex flex-row overflow-y-scroll overflow-x-hidden -ms-4 h-[90%] left-4 relative">
               {permissions &&
                 permissions.map((permission) => {
                   return (
-                    <>
-                      <FormControlLabel
-                        key={permission.permission_id}
-                        control={
-                          <Checkbox
-                            checked={
-                              roleCheck.find(
-                                (p) =>
-                                  p.permission.permission_id ===
-                                  permission.permission_id
-                              )?.checked
-                            }
-                            onChange={handlePermissionCheck}
-                            name={permission.permission_id}
-                          />
-                        }
-                        label={permission.permission_name}
-                      />
-                    </>
+                    <FormControlLabel
+                      key={permission.permission_id}
+                      className="w-full"
+                      control={
+                        <Checkbox
+                          checked={
+                            roleCheck.find(
+                              (p) =>
+                                p.permission.permission_id ===
+                                permission.permission_id
+                            )?.checked
+                          }
+                          onChange={handlePermissionCheck}
+                          name={permission.permission_id}
+                        />
+                      }
+                      label={permission.permission_name}
+                    />
                   );
                 })}
             </FormGroup>
@@ -142,7 +139,7 @@ const RoleCreate = () => {
         </CommonContainer>
 
         <CommonContainer
-          className="flex flex-col col-span-4 min-h-max h-[90%]"
+          className="flex flex-col col-span-4 gap-4 min-h-max h-[92%]"
           heightMin={false}
           heightMax={false}
         >
@@ -150,7 +147,11 @@ const RoleCreate = () => {
             Create Role
           </Typography>
           <FormControl>
-            <FormLabel className="mx-2 mb-2">Role Name</FormLabel>
+            <FormLabel className="mx-2">Role ID</FormLabel>
+            <TextField type="text" value={roleValue.role_id} disabled />
+          </FormControl>
+          <FormControl>
+            <FormLabel className="mx-2">Role Name</FormLabel>
             <TextField
               type="text"
               value={roleValue.role_name}
@@ -162,7 +163,7 @@ const RoleCreate = () => {
             />
           </FormControl>
           <FormControl>
-            <FormLabel className="mx-2 mb-2">Description</FormLabel>
+            <FormLabel className="mx-2">Description</FormLabel>
             <TextField
               type="text"
               value={roleValue.description}
@@ -175,7 +176,7 @@ const RoleCreate = () => {
               }
             />
           </FormControl>
-          <Box className="grid grid-cols-2 gap-4 items-center mt-6 mt-auto">
+          <Box className="grid grid-cols-2 gap-4 items-center mt-auto">
             <ButtonAction type="submit" className="w-full">
               Create
             </ButtonAction>
@@ -190,7 +191,7 @@ const RoleCreate = () => {
         </CommonContainer>
 
         <CommonContainer
-          className="col-span-2 overflow-hidden h-[90%] py-2"
+          className="flex flex-col col-span-2 overflow-hidden w-full h-[92%]"
           heightMin={false}
           heightMax={false}
         >
@@ -200,15 +201,15 @@ const RoleCreate = () => {
                 color: 'inherit'
               }
             }}
-            className="h-full"
+            className="flex flex-col h-[100%] w-full relative justify-around"
           >
-            <Typography className="mx-2 mb-2">
+            <Typography className="mx-2 font-bold">
               Permissions{' '}
               {`(total: ${
                 roleCheck.filter((checkedPer) => checkedPer.checked).length
               })`}
             </Typography>
-            <ul className="h-[95%] flex flex-col gap-2 overflow-y-scroll">
+            <ul className="flex flex-col overflow-y-scroll overflow-x-hidden -ms-4 h-[90%] left-4 relative">
               {permissions &&
                 roleCheck
                   .filter((checkedPer) => checkedPer.checked)
