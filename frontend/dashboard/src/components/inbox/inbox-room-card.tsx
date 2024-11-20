@@ -19,7 +19,6 @@ const InboxRoomCard = ({
   onClick
 }: InboxRoomCardProps) => {
   const message = room.latestMessage;
-  const sender = message.sender;
   const isSeen = message.is_seen;
 
   return (
@@ -33,7 +32,11 @@ const InboxRoomCard = ({
       `}
       onClick={onClick}
     >
-      <AvatarImage src={dummyAvatar} size={46} alt="avatar" />
+      <AvatarImage
+        src={room.customer.image || dummyAvatar}
+        size={46}
+        alt="avatar"
+      />
       <Stack className="col-span-4">
         <div className="flex flex-row items-center">
           <div className="flex flex-col">

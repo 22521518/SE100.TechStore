@@ -8,8 +8,6 @@ import React, { Suspense } from 'react';
 import { authProvider } from '@providers/auth-provider';
 import { dataProvider } from '@providers/data-provider';
 import '@styles/global.css';
-import { SocketProvider } from '@providers/live-provider/socketClient';
-import { liveProvider } from '@providers/live-provider';
 
 export const metadata: Metadata = {
   title: 'Hive Electro',
@@ -28,76 +26,74 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Suspense>
-          <SocketProvider>
-            <RefineKbarProvider>
-              <DevtoolsProvider>
-                <Refine
-                  routerProvider={routerProvider}
-                  dataProvider={dataProvider}
-                  authProvider={authProvider}
-                  liveProvider={liveProvider}
-                  resources={[
-                    {
-                      name: 'products',
-                      list: '/products',
-                      create: '/products/create',
-                      edit: '/products/edit/:id',
-                      show: '/products/show/:id'
-                    },
-                    {
-                      name: 'orders',
-                      list: '/orders',
-                      show: '/orders/show/:id'
-                    },
-                    {
-                      name: 'customers',
-                      list: '/customers',
-                      show: '/customers/show/:id'
-                    },
-                    {
-                      name: 'vouchers',
-                      list: '/vouchers',
-                      create: '/vouchers/create',
-                      edit: '/vouchers/edit/:id',
-                      show: '/vouchers/show/:id'
-                    },
-                    {
-                      name: 'inbox',
-                      list: '/inbox',
-                      show: '/inbox/show/:id'
-                    },
-                    {
-                      name: 'staff',
-                      list: '/staff',
-                      create: '/staff/create',
-                      edit: '/staff/edit/:id',
-                      show: '/staff/show/:id'
-                    },
-                    {
-                      name: 'roles',
-                      list: '/roles',
-                      create: '/roles/create',
-                      edit: '/roles/edit/:id',
-                      show: '/roles/show/:id'
-                    },
-                    {
-                      name: 'profile',
-                      list: `/profile`
-                    }
-                  ]}
-                  options={{
-                    syncWithLocation: true,
-                    warnWhenUnsavedChanges: true,
-                    useNewQueryKeys: true,
-                    projectId: '6jWiTj-5IAvHN-bzVnmf'
-                  }}
-                >
-                  {children}
-                  <RefineKbar />
-                </Refine>
-              </DevtoolsProvider>
-            </RefineKbarProvider>
-          </SocketProvider>
+          <RefineKbarProvider>
+            <DevtoolsProvider>
+              <Refine
+                routerProvider={routerProvider}
+                dataProvider={dataProvider}
+                authProvider={authProvider}
+                resources={[
+                  {
+                    name: 'products',
+                    list: '/products',
+                    create: '/products/create',
+                    edit: '/products/edit/:id',
+                    show: '/products/show/:id'
+                  },
+                  {
+                    name: 'orders',
+                    list: '/orders',
+                    show: '/orders/show/:id'
+                  },
+                  {
+                    name: 'customers',
+                    list: '/customers',
+                    show: '/customers/show/:id'
+                  },
+                  {
+                    name: 'vouchers',
+                    list: '/vouchers',
+                    create: '/vouchers/create',
+                    edit: '/vouchers/edit/:id',
+                    show: '/vouchers/show/:id'
+                  },
+                  {
+                    name: 'inbox',
+                    list: '/inbox',
+                    show: '/inbox/show/:id'
+                  },
+                  {
+                    name: 'staff',
+                    list: '/staff',
+                    create: '/staff/create',
+                    edit: '/staff/edit/:id',
+                    show: '/staff/show/:id'
+                  },
+                  {
+                    name: 'roles',
+                    list: '/roles',
+                    create: '/roles/create',
+                    edit: '/roles/edit/:id',
+                    show: '/roles/show/:id'
+                  },
+                  {
+                    name: 'profile',
+                    list: `/profile`
+                  }
+                ]}
+                options={{
+                  syncWithLocation: true,
+                  warnWhenUnsavedChanges: true,
+                  useNewQueryKeys: true,
+                  projectId: '6jWiTj-5IAvHN-bzVnmf',
+                  liveMode: 'auto'
+                }}
+              >
+                {children}
+                <RefineKbar />
+              </Refine>
+            </DevtoolsProvider>
+          </RefineKbarProvider>
         </Suspense>
       </body>
     </html>

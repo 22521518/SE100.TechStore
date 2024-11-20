@@ -3,10 +3,13 @@
 import CommonContainer from '@components/common-container';
 import { IAccountWithPassword } from '@constant/interface.constant';
 import { Button, FormControl, TextField, Typography } from '@mui/material';
-import { useLogin } from '@refinedev/core';
+import { useGo, useIsAuthenticated, useLogin } from '@refinedev/core';
 import React from 'react';
 
 const LoginPage = () => {
+  const { isLoading, data } = useIsAuthenticated();
+  const go = useGo();
+
   const [autoComplete, setAutocomplete] = React.useState('on');
   const [account, setAccount] = React.useState<IAccountWithPassword>({
     email: '',
@@ -19,6 +22,15 @@ const LoginPage = () => {
     e.preventDefault();
     mutate({ ...account });
   };
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (data?.authenticated) {
+    go({ to: '/', type: 'replace' });
+    return null;
+  }
 
   return (
     <div className="w-full h-dvh overflow-hidden flex items-center justify-center bg-secondary-100">

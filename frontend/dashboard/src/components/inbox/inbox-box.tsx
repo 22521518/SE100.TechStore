@@ -45,7 +45,7 @@ const InboxBox = ({
           }
         `}
         >
-          {message.message} 
+          {message.message}
         </Typography>
         <Typography
           className={`text-[0.75rem] lg:w-max text-secondary-300 flex-1 lg:min-w-max ${

@@ -115,11 +115,13 @@ export const authProvider: AuthProvider = {
         Authorization: `Bearer ${access_token}`
       }
     })
-      .then((response) => {
+      .then(async (response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.text().then((text) => (text ? JSON.parse(text) : {}));
+        return await response
+          .text()
+          .then((text) => (text ? JSON.parse(text) : {}));
       })
       .then((data) => {
         return data;

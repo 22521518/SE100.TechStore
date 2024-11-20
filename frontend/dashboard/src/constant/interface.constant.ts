@@ -204,3 +204,8 @@ export interface IInboxMessage {
   created_at: Date | string;
   is_seen: boolean;
 }
+export interface IStaffUser {
+  user_id: string;
+  socket_id: string;
+  role: 'staff';
+}

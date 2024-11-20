@@ -1,14 +1,22 @@
 'use client';
 
 import { Divider, Typography } from '@mui/material';
-import { useLogout, useMenu } from '@refinedev/core';
+import { useLogout, useMenu, usePublish } from '@refinedev/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import logo from '@/public/images/logo.svg';
+import React from 'react';
+import { useSocket } from '@components/socket/socketClient';
 
 export const Menu = ({ className = '' }: { className: string }) => {
   const { mutate: logout } = useLogout();
   const { menuItems, selectedKey } = useMenu();
+
+  const handleLogout = () => {
+    return () => {
+      logout();
+    };
+  };
 
   return (
     <nav className={`menu ${className}`}>

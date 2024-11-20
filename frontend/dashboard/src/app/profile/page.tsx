@@ -23,15 +23,8 @@ import { IStaff } from '@constant/interface.constant';
 
 const ProfileShow = () => {
   const { data: identity } = useGetIdentity<IStaff>();
-  console.log(identity);
   const personalInfo = React.useMemo(() => {
     return identity;
-  }, [identity]);
-  const dummyGender = 'male';
-  const dummyBirthday = '1-1-2003';
-
-  React.useEffect(() => {
-    console.log(identity);
   }, [identity]);
 
   return (
@@ -106,14 +99,19 @@ const ProfileShow = () => {
                 <CakeOutlinedIcon />
                 Birthday:
               </Typography>
-              <Typography className="text-lg">{dummyBirthday}</Typography>
+              <Typography className="text-lg">
+                {personalInfo?.birth_date?.toString() ||
+                  new Date('01/01/1900').toISOString()}
+              </Typography>
             </Box>
             <Box className="flex flex-row gap-2 items-center">
               <Typography className="text-lg flex flex-row items-center gap-3">
-                <GenderIcon male={dummyGender === 'male'} />
+                <GenderIcon male={personalInfo?.male || false} />
                 Gender:
               </Typography>
-              <Typography className="text-lg">{dummyGender}</Typography>
+              <Typography className="text-lg">
+                {personalInfo?.male || false}
+              </Typography>
             </Box>
             <Box className="flex flex-row gap-4 items-center">
               <Typography className="text-lg flex flex-row items-center gap-3">
