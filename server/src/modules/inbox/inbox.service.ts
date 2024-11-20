@@ -26,6 +26,7 @@ export class InboxService {
         false,
         false,
       );
+      customer = customer.toObject();
     } finally {
       return customer;
     }
@@ -34,7 +35,7 @@ export class InboxService {
   private async createSender(sender: Sender) {
     try {
       const existingSender = await this.senderModel.findOne({
-        sender_name: sender.sender_name,
+        sender_id: sender.sender_id,
       });
 
       if (existingSender) {
@@ -112,9 +113,12 @@ export class InboxService {
       inboxRoom.messages.push(newInboxMessage._id);
       await inboxRoom.save();
 
-      const room = await this.getMessageByRoom(customer_id, 0, 20, false);
+      // const room = await this.getMessageByRoom(customer_id, 0, 1, false);
+      const mess = newInboxMessage.toObject();
       return {
-        ...room,
+        ...mess,
+        sender: sender,
+        message_id: newInboxMessage._id,
       };
     } catch (error) {
       console.log(error);
@@ -151,7 +155,7 @@ export class InboxService {
           },
           {
             $lookup: {
-              from: 'senders', // replace with the actual sender collection name
+              from: 'senders',
               localField: 'allMessages.sender',
               foreignField: '_id',
               as: 'senderInfo',
@@ -198,7 +202,7 @@ export class InboxService {
             await this.inboxRoomModel.findByIdAndDelete(room.room_id);
           }
           return {
-            room_id: room.room_id,
+            room_id: room.customer_id,
             customer: {
               customer_id: customer.customer_id,
               account_id: customer.account_id,
@@ -206,6 +210,7 @@ export class InboxService {
               full_name: customer.full_name,
               phone_number: customer.phone_number,
               date_joined: customer.date_joined,
+              image: customer.image,
               account: {
                 email: customer.account.email,
               },
@@ -219,7 +224,12 @@ export class InboxService {
           };
         }),
       );
-
+      resolvedRooms.sort((a, b) => {
+        return (
+          new Date(b.latestMessage.created_at).getTime() -
+          new Date(a.latestMessage.created_at).getTime()
+        );
+      });
       return resolvedRooms;
     } catch (error) {
       console.error(error);
@@ -256,7 +266,6 @@ export class InboxService {
             _id: {
               $in: room.messages,
             },
-            is_seen: false,
           },
           { is_seen: true },
         );
@@ -311,10 +320,13 @@ export class InboxService {
               _id: 0,
               room_id: '$_id',
               customer_id: 1,
-              customer: customer,
+              customer: {
+                ...customer,
+                male: customer.male.toString(),
+              },
               messages: {
                 $map: {
-                  input: { $slice: ['$messages', skip, limit] },
+                  input: { $slice: ['$messages', skip * limit, limit] },
                   as: 'message',
                   in: {
                     message_id: '$$message._id',
@@ -339,6 +351,33 @@ export class InboxService {
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Fetching inbox failed');
+    }
+  }
+
+  async setSeen(customer_id: string) {
+    try {
+      const findCustomer = await this.findCustomer(customer_id);
+      if (!findCustomer) {
+        throw new BadRequestException('Customer not found');
+      }
+
+      const room = await this.findOrCreateInboxRoom(customer_id);
+
+      await this.inboxMessageModel.updateMany(
+        {
+          _id: {
+            $in: room.messages,
+          },
+        },
+        { is_seen: true },
+      );
+
+      return {
+        message: 'Seen status updated',
+      };
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Setting seen failed');
     }
   }
 

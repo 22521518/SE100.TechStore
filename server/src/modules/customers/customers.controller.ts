@@ -54,8 +54,7 @@ export class CustomersController {
       const customer = await this.customersService.create(customerDto);
       return customer;
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Creating customer failed');
+      throw new BadRequestException(error.message);
     }
   }
 

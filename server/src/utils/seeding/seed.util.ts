@@ -4,7 +4,7 @@ import * as path from 'path';
 const prisma = new PrismaClient();
 
 export default async function main(seed_name_file: string) {
-  const filePath = path.resolve(__dirname, seed_name_file);
+  const filePath = path.resolve(__dirname, '../../' + seed_name_file);
   const seedSql = fs.readFileSync(filePath, { encoding: 'utf8' });
 
   // Split SQL file into individual statements based on semicolon (;) as delimiter

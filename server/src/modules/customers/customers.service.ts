@@ -13,8 +13,23 @@ export class CustomersService {
       });
       return customer;
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Error creating customer');
+      // Safely handle the `meta` property
+      const errorDetails = [];
+      for (const err in error.meta) {
+        if (error.meta[err][0] === 'username') {
+          errorDetails.push('username exists');
+        }
+        if (error.meta[err][0] === 'email') {
+          errorDetails.push('email exists');
+        }
+        if (error.meta[err][0] === 'birt_date') {
+          errorDetails.push('invalid birth date');
+        }
+      }
+      console.log('error', error);
+
+      const message = `Error creating customer, \n Invalid information: ${errorDetails}`;
+      throw new BadRequestException(message);
     }
   }
 

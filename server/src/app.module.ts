@@ -27,7 +27,6 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { PermissionsGuard } from './common/guards/permission.guard';
 import { ProfileModule } from './modules/profile/profile.module';
-import { EventMessageService } from './event-message/event-message.service';
 import { EventMessageModule } from './event-message/event-message.module';
 import { SeedingModule } from './seeding/seeding.module';
 
@@ -70,7 +69,6 @@ import { SeedingModule } from './seeding/seeding.module';
       provide: APP_GUARD,
       useClass: PermissionsGuard,
     },
-    EventMessageService,
   ],
 })
 export class AppModule {}

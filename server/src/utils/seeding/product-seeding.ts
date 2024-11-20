@@ -78,6 +78,6 @@ async function getFileNamesFromDirectory(rootPath: string): Promise<string[]> {
 }
 
 export async function seedProducts() {
-  seed('../../data/seed-2-product.sql');
+  seed('data/seed-2-product.sql');
   getFileNamesFromDirectory(process.env.IMAGE_DIRECTORY);
 }
