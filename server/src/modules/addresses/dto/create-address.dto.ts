@@ -1,4 +1,4 @@
-import { IsString, Max, Min } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateAddressDto {
   @IsString()
@@ -17,7 +17,10 @@ export class CreateAddressDto {
   full_name: string;
 
   @IsString()
-  @Min(10)
-  @Max(10)
+  @Length(10, 10)
   phone_number: string;
+
+  @IsOptional()
+  @IsBoolean()
+  is_primary: boolean;
 }

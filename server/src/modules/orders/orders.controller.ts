@@ -27,6 +27,7 @@ export class OrdersController {
     createOrderDto: CreateOrderDto,
   ) {
     try {
+      console.log('createOrderDto', createOrderDto);
       const { order_items, voucher_code, ...ord } = createOrderDto;
       const orderDto: Prisma.OrdersCreateInput = {
         ...ord,
@@ -49,7 +50,7 @@ export class OrdersController {
         },
       };
 
-      const order = await this.ordersService.create(orderDto);
+      const order = await this.ordersService.create(orderDto, order_items);
       return order;
     } catch (error) {
       console.error(error);

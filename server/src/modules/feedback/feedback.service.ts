@@ -19,6 +19,9 @@ export class FeedbackService {
             },
             create: createFeedbackDto,
             update: createFeedbackDto,
+            include: {
+              customer: true,
+            },
           });
         },
       );
@@ -36,6 +39,9 @@ export class FeedbackService {
           where: {
             product_id: product_id,
           },
+          include: {
+            customer: true,
+          },
         });
       return feedbacks;
     } catch (error) {
@@ -50,6 +56,9 @@ export class FeedbackService {
           where: {
             product_id: product_id,
             feedback_id: feedback_id,
+          },
+          include: {
+            customer: true,
           },
         });
       return feedback;
@@ -73,6 +82,9 @@ export class FeedbackService {
               },
             },
             data: updateFeedbackDto,
+            include: {
+              customer: true,
+            },
           });
         },
       );

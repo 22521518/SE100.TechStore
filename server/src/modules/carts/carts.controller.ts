@@ -65,9 +65,7 @@ export class CartsController {
   async updateWhole(
     @Param('id') customerId: string,
     @Body()
-    updateCartDto: Prisma.Cart_ItemCreateInput & {
-      product_id: string;
-    },
+    updateCartDto: UpdateCartDto,
   ) {
     try {
       const cartDto: Prisma.Cart_ItemCreateInput = {
@@ -91,11 +89,10 @@ export class CartsController {
     }
   }
 
-  @Patch(':id/:product_id')
+  @Patch(':id')
   @Permissions(['cart-update'])
   async update(
     @Param('id') customerId: string,
-    @Param('product_id') productId: string,
     @Body()
     updateCartDto: UpdateCartDto,
   ) {
@@ -105,7 +102,7 @@ export class CartsController {
       };
       const item = await this.cartsService.update(
         customerId,
-        productId,
+        updateCartDto.product_id,
         cartDto,
       );
       return item;

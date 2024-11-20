@@ -10,6 +10,7 @@ enum PAYMENT_METHOD {
   COD
   CREDIT_CARD
   ELECTRO_WALLET
+  MOMO
 }
 
 model Orders {
