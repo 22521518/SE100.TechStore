@@ -31,7 +31,7 @@ public class AccountPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+
         setContentView(R.layout.account_page);
 
         // Initialize views
@@ -56,7 +56,7 @@ public class AccountPage extends AppCompatActivity {
         Glide.with(AccountPage.this)
                 .load(sessionCustomer.getImage()) // URL to the image
                 .placeholder(R.drawable.ic_user_icon) // Optional placeholder
-                .error(R.drawable.ic_image_error_icon) // Optional error image
+                .error(R.drawable.ic_user_icon) // Optional error image
                 .into(userImageView); // Your ImageView
 
         menuItemUserInfo = findViewById(R.id.menuItemUserInfo);

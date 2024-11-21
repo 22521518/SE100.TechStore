@@ -19,7 +19,7 @@
             android:title="Home"
             android:icon="@drawable/ic_shopping_bag_icon" />
         <item
-            android:id="@+id/nav_product"
+            android:id="@+id/nav_cart"
             android:title="Cart"
             android:icon="@drawable/ic_cart_1_icon" />
     </group>
@@ -38,7 +38,7 @@
         android:id="@+id/support_section"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_cart"
+            android:id="@+id/nav_support"
             android:title="Support"
             android:icon="@drawable/ic_help_icon" />
     </group>

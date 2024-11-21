@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import kotlin.collections.EmptyList;
+
 public class MockProduct {
 
     private static List<List<String>> imageSets = List.of(
@@ -60,8 +62,8 @@ public class MockProduct {
 
         // Create product attributes
         List<ProductAttribute> attributes = new ArrayList<>();
-        attributes.add(new ProductAttribute(1, "Color", "Black"));
-        attributes.add(new ProductAttribute(2, "Size", "Medium"));
+        attributes.add(new ProductAttribute("1","1", "Color", "Black"));
+        attributes.add(new ProductAttribute("1","1", "Size", "Medium"));
 
         // Random image set
         List<String> selectedImageSet = imageSets.get(random.nextInt(imageSets.size())); // Inclusive selection
@@ -76,6 +78,7 @@ public class MockProduct {
         // Calculate average rating based on feedbacks
         float averageRating = calculateAverageRating(feedbacks);
 
+        List<ProductImage> list = new ArrayList<>();
         // Return a new Product object with all the required parameters
         Product product = new Product(
                 "prod_" + id, // productId

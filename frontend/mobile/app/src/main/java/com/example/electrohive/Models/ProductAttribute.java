@@ -1,23 +1,26 @@
 package com.example.electrohive.Models;
 
 public class ProductAttribute {
-    private int id;
+    private String id;
     private String name;
+
+    private String product_id;
     private String detail;
 
     // Constructor
-    public ProductAttribute(int id, String name, String detail) {
+    public ProductAttribute(String id, String product_id, String name, String detail) {
         this.id = id;
+        this.product_id = product_id;
         this.name = name;
         this.detail = detail;
     }
 
     // Getters and Setters
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

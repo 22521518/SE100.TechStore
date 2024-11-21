@@ -17,7 +17,6 @@
         <activity
             android:name=".Activities.SearchPage"
             android:configChanges="orientation"
-            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.LoginPage"
@@ -86,6 +85,23 @@
             android:name=".Activities.HomePage"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
+        <activity
+        android:name=".Activities.ProductDetailPage"
+        android:configChanges="orientation"
+        android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.ProductFeedbackPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.CartPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.FullScreenImageActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+
 
 
     </application>

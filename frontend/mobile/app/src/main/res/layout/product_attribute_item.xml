@@ -5,6 +5,7 @@
     android:orientation="horizontal"
     android:paddingVertical="4dp">
     <TextView
+        android:id="@+id/attribute_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -12,6 +13,7 @@
         android:text="Spec1" />
 
     <TextView
+        android:id="@+id/attribute_detail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

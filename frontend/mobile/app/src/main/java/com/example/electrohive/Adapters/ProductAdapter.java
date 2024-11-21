@@ -1,6 +1,7 @@
 package com.example.electrohive.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,10 @@ import com.example.electrohive.Models.Product;
 import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.R;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
@@ -46,50 +49,63 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        Product product = productList.get(position);
-
-        // Set product name
-        holder.productName.setText(product.getProductName());
-
-        // Set price
-        holder.productPrice.setText(String.format("%.0f VNĐ", product.getPrice()));
-
-        // Set discount if available
-        if (product.getDiscount() > 0) {
-            holder.productDiscount.setVisibility(View.VISIBLE);
-            holder.productDiscount.setText(String.format("-%.0f%%", product.getDiscount()));
-        } else {
-            holder.productDiscount.setVisibility(View.GONE);
+        // Check if productList is null or empty before proceeding
+        if (productList == null || productList.isEmpty()) {
+            holder.itemView.setVisibility(View.GONE);
+            return;
         }
+            Product product = productList.get(position);
 
-        // Set rating
-        holder.productRating.setText(String.valueOf(product.getAverageRating()));
+            // Set product name
+            holder.productName.setText(product.getProductName());
 
-        // Load product image using Glide
-        if (product.getImages() != null && !product.getImages().isEmpty()) {
-            Glide.with(context)
-                    .load(product.getImages().get(0).getUrl()) // URL to the image
-                    .placeholder(R.drawable.banner) // Optional placeholder
-                    .error(R.drawable.banner) // Optional error image
-                    .into(holder.productImage); // Your ImageView
-        } else {
-            holder.productImage.setImageResource(R.drawable.banner); // Fallback image
-        }
+            NumberFormat currencyFormat = NumberFormat.getInstance(Locale.US);
 
-        // Set click listener for the card
-        holder.cardView.setOnClickListener(v -> onItemClickListener.onItemClick(product));
+            holder.productPrice.setText(String.format("%s VNĐ", currencyFormat.format(product.getRetailPrice())));
+            holder.productOriginalPrice.setText(String.format("%s VNĐ", currencyFormat.format(product.getPrice())));
+
+            // Set discount if available
+            if (product.getDiscount() > 0) {
+                holder.productDiscount.setVisibility(View.VISIBLE);
+                holder.productDiscount.setText(String.format("-%.0f%%", product.getDiscount()));
+            } else {
+                holder.productDiscount.setVisibility(View.GONE);
+            }
+
+            // Set rating
+            holder.productRating.setText(String.format("%.1f", product.getAverageRating()));
+
+            //Ser category
+            if (product.getCategories() != null && !product.getCategories().isEmpty()) {
+                holder.productCategory.setText(product.getCategories().get(0).getCategoryName());
+            }
+
+            // Load product image using Glide
+            if (product.getImages() != null && !product.getImages().isEmpty()) {
+                Glide.with(context)
+                        .load(product.getImages().get(0).getUrl()) // URL to the image
+                        .placeholder(R.drawable.placeholder ) // Optional placeholder
+                        .error(R.drawable.ic_image_error_icon   ) // Optional error image
+                        .into(holder.productImage); // Your ImageView
+            } else {
+                holder.productImage.setImageResource(R.drawable.placeholder); // Fallback image
+            }
+
+            // Set click listener for the card
+            holder.cardView.setOnClickListener(v -> onItemClickListener.onItemClick(product));
+
     }
 
     @Override
     public int getItemCount() {
-        return productList.size();
+        return productList != null ? productList.size() : 0;
     }
 
     // ViewHolder class
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         ImageView productImage;
-        TextView productName, productPrice, productDiscount, productRating;
+        TextView productName, productPrice,productOriginalPrice, productDiscount, productRating,productCategory;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,13 +113,24 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productImage = itemView.findViewById(R.id.product_image);
             productName = itemView.findViewById(R.id.product_name);
             productPrice = itemView.findViewById(R.id.product_price);
+            productOriginalPrice = itemView.findViewById(R.id.product_original_price);
             productDiscount = itemView.findViewById(R.id.product_discount);
             productRating = itemView.findViewById(R.id.product_rating);
+            productCategory = itemView.findViewById(R.id.product_category);
         }
     }
 
-    public void updateProducts(List<Product> updatedProducts) {
-        this.productList = updatedProducts != null ? updatedProducts : new ArrayList<>();
-        notifyDataSetChanged();
+    public void updateProducts(List<Product> products) {
+        if (products != null) {
+            this.productList.clear();
+            this.productList.addAll(products);
+            notifyDataSetChanged();
+        } else {
+            // Handle the case where products are null or empty
+            this.productList.clear();
+            notifyDataSetChanged();
+        }
     }
+
+
 }

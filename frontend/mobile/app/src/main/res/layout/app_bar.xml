@@ -29,22 +29,26 @@
             android:background="@drawable/search_bar_background">
 
             <EditText
+                android:id="@+id/search_input"
                 android:paddingHorizontal="8dp"
                 android:textColorHint="@color/black"
                 android:textColor="@color/black"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:textSize="16sp"
+                android:maxLines="1"
                 android:hint="Search product..."
                 android:background="@android:color/transparent"
                 android:layout_weight="1"/>
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/profile_image"
+                android:clickable="true"
+                android:focusable="true"
+                android:id="@+id/search_button"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:scaleType="center"
                 android:background="@color/black"
                 android:src="@drawable/ic_search_icon"

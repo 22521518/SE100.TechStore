@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:scrollbars="none">
 
@@ -10,76 +11,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/header_border">
-            <ImageButton
-                android:id="@+id/backbutton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_arrow_left_icon"/>
-        </LinearLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/display_image"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"/>
+
+            <me.relex.circleindicator.CircleIndicator3
+                android:background="@drawable/sharp_border"
+                android:backgroundTint="#500F0F0F"
+                android:id="@+id/display_image_indicator"
+                android:layout_gravity="center"
+                android:paddingHorizontal="8dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp" />
+        </RelativeLayout>
 
         <!-- Main Product Image -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="211dp"
-            android:layout_gravity="center"
-            android:background="#CCCCCC"
-            android:contentDescription="Main product image"
-            android:scaleType="centerInside"
-            android:src="@drawable/banner" />
 
-        <!-- Thumbnail Images -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="#CCCCCC"
-                android:contentDescription="Thumbnail 1" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="#CCCCCC"
-                android:contentDescription="Thumbnail 2" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="#CCCCCC"
-                android:contentDescription="Thumbnail 3" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="+4 more"
-                android:textColor="#000000"
-                android:textSize="12sp" />
-        </LinearLayout>
 
 
         <!-- Product Rating and Price -->
@@ -87,13 +41,16 @@
 
         <!-- Add to Cart and Buy Now Buttons -->
         <LinearLayout
-            android:padding="8dp"
+            android:layout_marginVertical="4dp"
+            android:background="@drawable/border"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <!-- Product Name -->
             <TextView
+                android:id="@+id/product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Name"
@@ -116,32 +73,38 @@
 
                     <!-- Star icons can be actual image icons for stars -->
                     <ImageView
+                        android:id="@+id/star1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star_icon" />
+                        android:src="@drawable/ic_empty_star_icon" />
 
                     <ImageView
+                        android:id="@+id/star2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star_icon" />
+                        android:src="@drawable/ic_empty_star_icon" />
 
                     <ImageView
+                        android:id="@+id/star3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star_icon" />
+                        android:src="@drawable/ic_empty_star_icon" />
 
                     <ImageView
+                        android:id="@+id/star4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star_icon" />
+                        android:src="@drawable/ic_empty_star_icon" />
 
                     <ImageView
+                        android:id="@+id/star5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_star_icon" />
+                        android:src="@drawable/ic_empty_star_icon" />
                 </LinearLayout>
                 <!-- Review Count -->
                 <TextView
+                    android:id="@+id/product_feedback_count_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -160,9 +123,10 @@
 
                 <!-- Discounted Price -->
                 <TextView
+                    android:id="@+id/product_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="600.000VNĐ"
+                    android:text="600.000 VNĐ"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -174,15 +138,17 @@
 
                     <!-- Original Price -->
                     <TextView
+                        android:id="@+id/product_original_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="35dp"
-                        android:text="900.000VNĐ"
                         android:alpha="0.8"
+                        android:text="900.000 VNĐ"
                         android:textSize="18sp" />
 
                     <!-- Discount Percentage -->
                     <TextView
+                        android:layout_marginStart="8dp"
+                        android:id="@+id/product_discount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-33%"
@@ -194,133 +160,206 @@
 
             <!-- In-Stock Count -->
             <TextView
+                android:id="@+id/product_stock_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="in-stock count"
                 android:textColor="#808080"
                 android:textSize="14sp" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:background="@drawable/border"
-                android:gravity="center"
-                android:drawableStart="@drawable/ic_cart_1_icon"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textStyle="bold"
-                android:text="Add to cart" />
+                android:layout_marginTop="16dp"
+                android:background="@drawable/footer_border"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quantity:"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/product_quantity_input"
+                        android:layout_marginHorizontal="8dp"
+                        android:maxLength="3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/search_bar_background"
+                        android:textColor="@color/black"
+                        android:digits="0123456789"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:text="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/product_add_to_cart_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/clickable_textview_button"
+                        android:drawableStart="@drawable/ic_cart_1_icon"
+                        android:gravity="center"
+                        android:text="Add to cart"
+                        android:textStyle="bold" />
 
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:textSize="16sp"
-                android:clickable="true"
-                android:focusable="true"
-                android:textAlignment="center"
-                android:background="@drawable/clickable_textview_button"
-                android:text="Buy now" />
+                    <TextView
+                        android:id="@+id/product_buy_now_button"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clickable_textview_button"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="Buy now"
+                        android:textAlignment="center"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
         </LinearLayout>
+
 
         <!-- Product Details -->
-        <TextView
+        <LinearLayout
+            android:layout_marginVertical="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="#777777"
-            android:padding="8dp"
-            android:text="Product Detail"
-            android:textColor="#FFFFFF" />
+            android:background="@drawable/border"
+            android:orientation="vertical">
+            <TextView
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/sharp_border"
+                android:backgroundTint="#777777"
+                android:padding="8dp"
+                android:text="Product Detail"
+                android:textColor="#FFFFFF" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:padding="8dp"
-            android:text="Detail" />
+            <TextView
+                android:id="@+id/product_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:padding="8dp"
+                android:text="Detail" />
+        </LinearLayout>
+
 
         <!-- Product Specs -->
+    <LinearLayout
+        android:layout_marginVertical="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:orientation="vertical">
         <TextView
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="#777777"
+            android:background="@drawable/sharp_border"
+            android:backgroundTint="#777777"
             android:padding="8dp"
             android:text="Product Specs"
             android:textColor="#FFFFFF" />
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/product_attribute_listview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
+
+    <LinearLayout
+        android:layout_marginVertical="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:orientation="vertical">
         <!-- Customer Reviews -->
         <TextView
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="#777777"
+            android:background="@drawable/sharp_border"
+            android:backgroundTint="#777777"
             android:padding="8dp"
             android:text="Customer Review"
             android:textColor="#FFFFFF" />
 
-        <!-- Review Summary -->
-
-
-        <!--    00000000000000000000     -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:padding="8dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="8dp">
 
             <!-- First Column -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="start"
                 android:layout_weight="1"
+                android:gravity="start"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
                     <TextView
+                        android:id="@+id/product_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
-                        android:text="5 / 5"
+                        android:text="5.0 / 5"
                         android:textColor="#F9A503"
-                        android:textStyle="bold"
-                        android:textSize="48sp" />
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+
                     <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_star_icon"/>
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_star_icon" />
                 </LinearLayout>
 
 
                 <TextView
+                    android:id="@+id/product_feedback_count_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:text="From 1000 reiviews"
-                    android:textSize="20sp" />
+                    android:text="From ... reiviews"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <View
@@ -333,13 +372,14 @@
             <!-- Second Column -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:gravity="start"
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/product_5_star_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★★★★★ (0)"
@@ -347,6 +387,7 @@
                     android:textSize="20sp" />
 
                 <TextView
+                    android:id="@+id/product_4_star_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★★★★ (0)"
@@ -354,6 +395,7 @@
                     android:textSize="20sp" />
 
                 <TextView
+                    android:id="@+id/product_3_star_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★★★ (0)"
@@ -361,6 +403,7 @@
                     android:textSize="20sp" />
 
                 <TextView
+                    android:id="@+id/product_2_star_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★★ (0)"
@@ -368,12 +411,15 @@
                     android:textSize="20sp" />
 
                 <TextView
+                    android:id="@+id/product_1_star_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="★ (0)"
                     android:textColor="#F9A503"
                     android:textSize="20sp" />
+
                 <TextView
+                    android:id="@+id/product_0_star_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="(0)"
@@ -384,23 +430,35 @@
 
 
         <TextView
-            android:focusable="true"
-            android:clickable="true"
+            android:id="@+id/see_feedback_button"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_angle_right_icon"
+            android:background="@drawable/clickable_textview_button"
+            android:focusable="true"
             android:gravity="center"
             android:text="See reviews here"
-            android:textSize="24sp"
-            android:drawableEnd="@drawable/ic_angle_right_icon"
-            />
+            android:textSize="18sp" />
+    </LinearLayout>
+
+
 
         <!-- Individual Review Example -->
 
+        <ProgressBar
+            android:id="@+id/loading_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="32dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
 
         <!-- Recommended Products -->
         <!-- Product Item -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rc_trend"
+            android:id="@+id/product_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="8dp"

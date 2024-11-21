@@ -84,6 +84,11 @@ public class Product {
         return price;
     }
 
+    public double getRetailPrice() {
+        return price*(1-discount/100);
+    }
+
+
     public void setPrice(float price) {
         this.price = price;
     }

@@ -31,7 +31,7 @@ public class AccountVoucherPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+
         setContentView(R.layout.account_vouchers_page);
 
         loadingSpinner = findViewById(R.id.loading_spinner);

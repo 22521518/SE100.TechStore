@@ -53,7 +53,7 @@ public class AccountAddAddressPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+
         setContentView(R.layout.account_add_address_page);
 
         ImageButton backButton = findViewById(R.id.backbutton);

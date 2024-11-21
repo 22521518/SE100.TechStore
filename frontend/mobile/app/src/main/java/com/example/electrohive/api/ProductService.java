@@ -11,9 +11,6 @@ import retrofit2.http.Query;
 public interface ProductService {
 
     @GET("/products")
-    Call<JsonArray> getAllProducts();
-
-    @GET("/products")
     Call<JsonArray> getProducts(@Query("pageSize") int pageSize);
 
     @GET("/products/{id}")

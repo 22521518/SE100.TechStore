@@ -11,6 +11,7 @@ import com.example.electrohive.Models.ProductAttribute;
 import com.example.electrohive.Models.ProductFeedback;
 import com.example.electrohive.Models.ProductImage;
 import com.example.electrohive.api.ProductService;
+import com.example.electrohive.utils.Model.ProductUtils;
 import com.example.electrohive.utils.RetrofitClient;
 import com.example.electrohive.utils.generator.MockProduct;
 import com.google.gson.JsonArray;
@@ -32,97 +33,38 @@ public class ProductRepository {
         productService = RetrofitClient.getClient().create(ProductService.class);
     }
 
-    private List<Product> parseProducts(JsonArray resultsArray) {
-        List<Product> products = new ArrayList<>();
-        for (JsonElement element : resultsArray) {
-            JsonObject productJson = element.getAsJsonObject();
 
-            // Extract individual fields from JSON
-            String productId = productJson.get("product_id").getAsString();
-            String productName = productJson.get("product_name").getAsString();
-            JsonArray imagesArray = productJson.get("images").getAsJsonArray();
-            String description = productJson.get("description").getAsString();
-            float price = productJson.get("price").getAsFloat();
-            float discount = productJson.get("discount").getAsFloat();
-            int stockQuantity = productJson.get("stock_quantity").getAsInt();
-            JsonArray categoriesArray = productJson.get("categories").getAsJsonArray();
-            float averageRating = productJson.has("average_rating") ? productJson.get("average_rating").getAsFloat() : 0;
-            JsonArray attributesArray = productJson.get("attributes").getAsJsonArray();
 
-            // Convert JSON arrays to lists of objects
-            List<ProductImage> imageList = parseImages(imagesArray);
-            List<Category> categoryList = parseCategories(categoriesArray);
-            List<ProductAttribute> attributeList = parseAttributes(attributesArray);
 
-            // Create Product object and add it to the list
-            Product product = new Product(
-                    productId, productName, imageList, description, price, discount,
-                    stockQuantity, categoryList, attributeList
-            );
-            product.setAverageRating(averageRating);  // Optional if not in constructor
-            products.add(product);
-        }
-        return products;
-    }
+    public LiveData<List<Product>> searchProducts(String searchText, String category, String priceRange) {
+        MutableLiveData<List<Product>> filteredProductData = new MutableLiveData<>();
 
-    private List<ProductImage> parseImages(JsonArray imagesArray) {
-        List<ProductImage> imageList = new ArrayList<>();
-        for (int j = 0; j < imagesArray.size(); j++) {
-            String imageUrl = imagesArray.get(j).getAsString();
-            imageList.add(new ProductImage(imageUrl));
-        }
-        return imageList;
-    }
+        // Fetch all products if not already fetched
+        getProducts(0).observeForever(products -> {
+            if (products != null && !products.isEmpty()) {
+                List<Product> filteredProducts = new ArrayList<>(products);
 
-    private List<Category> parseCategories(JsonArray categoriesArray) {
-        List<Category> categoryList = new ArrayList<>();
-        for (int k = 0; k < categoriesArray.size(); k++) {
-            JsonObject categoryJson = categoriesArray.get(k).getAsJsonObject();
-            int categoryId = categoryJson.get("category_id").getAsInt();
-            String categoryName = categoryJson.get("category_name").getAsString();
-            String categoryDescription = categoryJson.get("description").getAsString();
-            categoryList.add(new Category(categoryId, categoryName, categoryDescription));
-        }
-        return categoryList;
-    }
-
-    private List<ProductAttribute> parseAttributes(JsonArray attributesArray) {
-        List<ProductAttribute> attributeList = new ArrayList<>();
-        for (int l = 0; l < attributesArray.size(); l++) {
-            JsonObject attributeJson = attributesArray.get(l).getAsJsonObject();
-            int attributeId = attributeJson.get("id").getAsInt();
-            String attributeName = attributeJson.get("name").getAsString();
-            String attributeValue = attributeJson.get("detail").getAsString();
-            attributeList.add(new ProductAttribute(attributeId, attributeName, attributeValue));
-        }
-        return attributeList;
-    }
-
-    public LiveData<List<Product>> getAllProducts() {
-        MutableLiveData<List<Product>> productData = new MutableLiveData<>();
-
-        productService.getAllProducts().enqueue(new Callback<JsonArray>() {
-            @Override
-            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        List<Product> products = parseProducts(response.body());
-                        productData.postValue(products);
-                    } catch (Exception e) {
-                        Log.e("Repository Error", "Error parsing response: " + e.getMessage());
-                    }
-                } else {
-                    Log.e("Repository Error", "Failed to load products: " + response.code());
+                // Filter by search text (product name)
+                if (searchText != null && !searchText.isEmpty()) {
+                    filteredProducts = ProductUtils.filterBySearchText(filteredProducts, searchText);
                 }
-            }
 
-            @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {
-                Log.e("Repository Error", "Error making request: " + t.getMessage());
+                // Filter by category
+                if (category != null && !category.isEmpty()) {
+                    filteredProducts = ProductUtils.filterByCategory(filteredProducts, category);
+                }
+
+                // Filter by price range
+                if (priceRange != null && !priceRange.isEmpty()) {
+                    filteredProducts = ProductUtils.filterByPriceRange(filteredProducts, priceRange);
+                }
+
+                // Post filtered data
+                filteredProductData.postValue(filteredProducts);
             }
         });
 
-        return productData;
+        return filteredProductData;
     }
 
     public LiveData<List<Product>> getProducts(int pageSize) {
@@ -133,9 +75,7 @@ public class ProductRepository {
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
-                        Log.d("ProductResponse", response.body().toString());
-
-                        List<Product> products = parseProducts(response.body());
+                        List<Product> products = ProductUtils.parseProducts(response.body());
                         productData.postValue(products);
                     } catch (Exception e) {
                         Log.d("Repository Error", "Error parsing response: " + e.getMessage());
@@ -177,10 +117,10 @@ public class ProductRepository {
                         JsonArray attributesArray = resultProduct.get("attributes").getAsJsonArray();
 
                         // Convert JSON arrays to lists
-                        List<ProductImage> imageList = parseImages(imagesArray);
-                        List<Category> categoryList = parseCategories(categoriesArray);
+                        List<ProductImage> imageList = ProductUtils.parseImages(imagesArray);
+                        List<Category> categoryList = ProductUtils.parseCategories(categoriesArray);
                         List<ProductFeedback> productFeedbackList = parseProductFeedbacks(productFeedbacksArray);
-                        List<ProductAttribute> attributeList = parseAttributes(attributesArray);
+                        List<ProductAttribute> attributeList = ProductUtils.parseAttributes(attributesArray);
 
                         // Create Product object
                         Product product = new Product(

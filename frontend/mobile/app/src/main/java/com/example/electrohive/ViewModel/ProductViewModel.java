@@ -20,9 +20,14 @@ public class ProductViewModel extends ViewModel {
         repository = new ProductRepository();
     }
 
+    public LiveData<List<Product>> searchProducts(String searchText, String category,String priceRange) {
+        return repository.searchProducts(searchText, category, priceRange);
+    }
+
+
     public LiveData<List<Product>> getAllProducts() {
         if (products == null || !products.hasObservers()) {
-            products = repository.getAllProducts(); // Ensure repository method is implemented
+            products = repository.getProducts(0); // Ensure repository method is implemented
         }
         return products;
     }

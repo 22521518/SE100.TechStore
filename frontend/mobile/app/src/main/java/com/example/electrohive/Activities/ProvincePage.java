@@ -65,7 +65,7 @@ public class ProvincePage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+
         setContentView(R.layout.province_page);
 
         provinceListView = findViewById(R.id.province_listview);

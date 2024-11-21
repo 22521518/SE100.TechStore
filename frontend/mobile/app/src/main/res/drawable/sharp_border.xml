@@ -3,6 +3,6 @@
     <stroke
         android:width="2dp"
         android:tint="?android:colorAccent"/> <!-- Border color -->
-    <corners android:radius="12sp" />
+    <corners android:radius="8sp" />
     <!-- Optional padding inside the border -->
 </shape>

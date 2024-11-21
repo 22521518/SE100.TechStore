@@ -6,4 +6,11 @@
         <item>Category 2</item>
         <item>Category 3</item>
     </string-array>
+
+    <string-array name="price_range_options">
+        <item>All</item>
+        <item>-10,000,000 VNĐ</item>
+        <item>10,000,000-50,000,000 VNĐ</item>
+        <item>50,000,000+</item>
+    </string-array>
 </resources>
