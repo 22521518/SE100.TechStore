@@ -23,6 +23,6 @@ public interface AccountService {
     Call<JsonObject> patchAccount(
             @Path("id") String addressId,
             @Header("access_token") String accessToken,
-            @Body Address payload
+            @Body JsonObject payload
     );
 }

@@ -81,20 +81,29 @@ public class DrawerBasePage  extends AppCompatActivity {
 
             if (id == R.id.nav_logout) {
                 // Account selected (Logout or Account screen)
-                Intent intent = new Intent(DrawerBasePage.this,AccountPage.class);
+                Intent intent = new Intent(getApplicationContext(),AccountPage.class);
                 startActivity(intent);
             } else if (id == R.id.nav_home) {
-                Intent intent = new Intent(DrawerBasePage.this,HomePage.class);
-                startActivity(intent);
-                finish();
+                // Check if already on HomePage
+                if (!(this instanceof HomePage)) {
+                    Intent intent = new Intent(getApplicationContext(), HomePage.class);
+                    startActivity(intent);
+
+                }
                 // Home selected
-            } else if (id == R.id.nav_cart) {
-                // Cart selectedthis, "Cart Selected", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(DrawerBasePage.this,SearchPage.class);
+            }   else if (id == R.id.nav_product) {
+                if (!(this instanceof SearchPage)) {
+                    Intent intent = new Intent(getApplicationContext(),SearchPage.class);
+                    startActivity(intent);
+                }
+                // Home selected
+            }  else if (id == R.id.nav_cart) {
+                // Cart selected this, "Cart Selected", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(),SearchPage.class);
                 startActivity(intent);
             } else if (id == R.id.nav_track) {
                 // Tracking selected
-                Intent intent = new Intent(DrawerBasePage.this,TrackPage.class);
+                Intent intent = new Intent(getApplicationContext(),TrackPage.class);
                 startActivity(intent);
             } else if (id == R.id.nav_support) {
                 // Support selected

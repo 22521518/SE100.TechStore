@@ -11,6 +11,7 @@ import com.example.electrohive.Models.ProductAttribute;
 import com.example.electrohive.Models.ProductFeedback;
 import com.example.electrohive.Models.ProductImage;
 import com.example.electrohive.api.ProductService;
+import com.example.electrohive.utils.Model.FeedbackUtils;
 import com.example.electrohive.utils.Model.ProductUtils;
 import com.example.electrohive.utils.RetrofitClient;
 import com.example.electrohive.utils.generator.MockProduct;
@@ -119,7 +120,7 @@ public class ProductRepository {
                         // Convert JSON arrays to lists
                         List<ProductImage> imageList = ProductUtils.parseImages(imagesArray);
                         List<Category> categoryList = ProductUtils.parseCategories(categoriesArray);
-                        List<ProductFeedback> productFeedbackList = parseProductFeedbacks(productFeedbacksArray);
+                        List<ProductFeedback> productFeedbackList = FeedbackUtils.parseProductFeedbacks(productFeedbacksArray);
                         List<ProductAttribute> attributeList = ProductUtils.parseAttributes(attributesArray);
 
                         // Create Product object
@@ -148,20 +149,5 @@ public class ProductRepository {
         return productData;
     }
 
-    private List<ProductFeedback> parseProductFeedbacks(JsonArray feedbackArray) {
-        List<ProductFeedback> productFeedbackList = new ArrayList<>();
-        for (int i = 0; i < feedbackArray.size(); i++) {
-            JsonObject feedbackJson = feedbackArray.get(i).getAsJsonObject();
-            String feedbackId = feedbackJson.get("feedback_id").getAsString();
-            String productId = feedbackJson.get("product_id").getAsString();
-            String customerId = feedbackJson.get("customer_id").getAsString();
-            String feedback = feedbackJson.get("feedback").getAsString();
-            int rating = feedbackJson.get("rating").getAsInt();
-            String createdAt = feedbackJson.get("created_at").getAsString();
 
-            ProductFeedback productFeedback = new ProductFeedback(feedbackId, customerId, productId, rating, feedback, createdAt);
-            productFeedbackList.add(productFeedback);
-        }
-        return productFeedbackList;
-    }
 }

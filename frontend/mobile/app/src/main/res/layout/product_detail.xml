@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:scrollbars="none">
 
@@ -15,25 +15,25 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="300dp">
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/display_image"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"/>
+                android:layout_height="300dp" />
 
             <me.relex.circleindicator.CircleIndicator3
-                android:background="@drawable/sharp_border"
-                android:backgroundTint="#500F0F0F"
                 android:id="@+id/display_image_indicator"
-                android:layout_gravity="center"
-                android:paddingHorizontal="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp" />
+                android:layout_gravity="center"
+                android:background="@drawable/rounded_corners"
+                android:backgroundTint="#500F0F0F"
+                android:paddingHorizontal="8dp" />
         </RelativeLayout>
 
         <!-- Main Product Image -->
-
 
 
         <!-- Product Rating and Price -->
@@ -41,10 +41,11 @@
 
         <!-- Add to Cart and Buy Now Buttons -->
         <LinearLayout
-            android:layout_marginVertical="4dp"
-            android:background="@drawable/border"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="4dp"
+            android:background="@drawable/border"
             android:orientation="vertical"
             android:padding="8dp">
 
@@ -57,61 +58,7 @@
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
-            <!-- Rating Section -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
 
-                <!-- Rating Stars -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Star icons can be actual image icons for stars -->
-                    <ImageView
-                        android:id="@+id/star1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_empty_star_icon" />
-
-                    <ImageView
-                        android:id="@+id/star2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_empty_star_icon" />
-
-                    <ImageView
-                        android:id="@+id/star3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_empty_star_icon" />
-
-                    <ImageView
-                        android:id="@+id/star4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_empty_star_icon" />
-
-                    <ImageView
-                        android:id="@+id/star5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_empty_star_icon" />
-                </LinearLayout>
-                <!-- Review Count -->
-                <TextView
-                    android:id="@+id/product_feedback_count_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Reviews count"
-                    android:textColor="#F9A503"
-                    android:textSize="14sp" />
-            </LinearLayout>
 
 
             <!-- Price Section -->
@@ -127,6 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="600.000 VNĐ"
+                    android:textColor="@android:color/holo_green_dark"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -147,10 +95,10 @@
 
                     <!-- Discount Percentage -->
                     <TextView
-                        android:layout_marginStart="8dp"
                         android:id="@+id/product_discount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:text="-33%"
                         android:textColor="#FF0000"
                         android:textSize="18sp" />
@@ -176,9 +124,9 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_marginBottom="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -190,19 +138,19 @@
 
                     <EditText
                         android:id="@+id/product_quantity_input"
-                        android:layout_marginHorizontal="8dp"
-                        android:maxLength="3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_centerInParent="true"
+                        android:layout_marginHorizontal="8dp"
                         android:background="@drawable/search_bar_background"
-                        android:textColor="@color/black"
                         android:digits="0123456789"
                         android:gravity="center"
                         android:inputType="number"
+                        android:maxLength="3"
                         android:maxLines="1"
-                        android:text="1" />
+                        android:text="1"
+                        android:textColor="@color/black" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -244,13 +192,14 @@
 
         <!-- Product Details -->
         <LinearLayout
-            android:layout_marginVertical="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="4dp"
             android:background="@drawable/border"
             android:orientation="vertical">
+
             <TextView
-                android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -258,7 +207,8 @@
                 android:backgroundTint="#777777"
                 android:padding="8dp"
                 android:text="Product Detail"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/product_detail"
@@ -271,177 +221,175 @@
 
 
         <!-- Product Specs -->
-    <LinearLayout
-        android:layout_marginVertical="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:orientation="vertical">
-        <TextView
-            android:textStyle="bold"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/sharp_border"
-            android:backgroundTint="#777777"
-            android:padding="8dp"
-            android:text="Product Specs"
-            android:textColor="#FFFFFF" />
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="4dp"
+            android:background="@drawable/border"
+            android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/product_attribute_listview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/sharp_border"
+                android:backgroundTint="#777777"
+                android:padding="8dp"
+                android:text="Product Specs"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
 
-
-    <LinearLayout
-        android:layout_marginVertical="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:orientation="vertical">
-        <!-- Customer Reviews -->
-        <TextView
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/sharp_border"
-            android:backgroundTint="#777777"
-            android:padding="8dp"
-            android:text="Customer Review"
-            android:textColor="#FFFFFF" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/product_attribute_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            android:layout_marginVertical="2dp"
+            android:layout_marginHorizontal="4dp"
+            android:background="@drawable/border"
+            android:orientation="vertical">
+            <!-- Customer Reviews -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/sharp_border"
+                android:backgroundTint="#777777"
+                android:padding="8dp"
+                android:text="Customer Review"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
 
-            <!-- First Column -->
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="start"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
 
+                <!-- First Column -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/product_rating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:text="5.0 / 5"
-                        android:textColor="#F9A503"
-                        android:textSize="32sp"
-                        android:textStyle="bold" />
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_star_icon" />
+
+                        <TextView
+                            android:id="@+id/product_rating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5.0 / 5"
+                            android:textColor="#F9A503"
+                            android:textSize="32sp"
+                            android:textStyle="bold" />
+
+
+
+                        <RatingBar
+                            android:id="@+id/product_average_rating"
+                            style="@style/Product_rating_bar"
+                            android:theme="@style/Product_rating_bar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:stepSize="0.5" />
+
+
+                        <TextView
+                            android:id="@+id/product_feedback_count_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reviews count"
+                            android:textColor="#F9A503"
+                            android:textSize="14sp" />
+
                 </LinearLayout>
 
-
-                <TextView
-                    android:id="@+id/product_feedback_count_2"
+                <!-- Second Column -->
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="From ... reiviews"
-                    android:textSize="16sp" />
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="start"
+                    android:background="@drawable/sharp_border"
+                    android:padding="8dp"
+                    android:elevation="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/product_5_star_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="★★★★★"
+                        android:textColor="#F9A503"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/product_4_star_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="★★★★"
+                        android:textColor="#F9A503"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/product_3_star_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="★★★"
+                        android:textColor="#F9A503"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/product_2_star_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="★★"
+                        android:textColor="#F9A503"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/product_1_star_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="★"
+                        android:textColor="#F9A503"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/product_0_star_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="#F9A503"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:background="#CCCCCC" />
 
-            <!-- Second Column -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/see_feedback_button"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="start"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/product_5_star_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="★★★★★ (0)"
-                    android:textColor="#F9A503"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/product_4_star_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="★★★★ (0)"
-                    android:textColor="#F9A503"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/product_3_star_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="★★★ (0)"
-                    android:textColor="#F9A503"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/product_2_star_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="★★ (0)"
-                    android:textColor="#F9A503"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/product_1_star_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="★ (0)"
-                    android:textColor="#F9A503"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/product_0_star_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="(0)"
-                    android:textColor="#F9A503"
-                    android:textSize="20sp" />
-            </LinearLayout>
+                android:layout_height="48dp"
+                android:background="@drawable/clickable_textview_button"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_angle_right_icon"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="See reviews here"
+                android:textSize="18sp" />
         </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/see_feedback_button"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:clickable="true"
-            android:drawableEnd="@drawable/ic_angle_right_icon"
-            android:background="@drawable/clickable_textview_button"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="See reviews here"
-            android:textSize="18sp" />
-    </LinearLayout>
-
 
 
         <!-- Individual Review Example -->

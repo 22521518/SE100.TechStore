@@ -43,6 +43,8 @@ dependencies {
 
     implementation ("me.relex:circleindicator:2.1.6")
 
+    //powerspinner
+    implementation ("com.github.skydoves:powerspinner:1.2.7")
     //viewpager2
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
     implementation ("com.google.android.material:material:1.9.0")

@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,7 +48,7 @@ public class ProductDetailPage extends DrawerBasePage {
 
     private CartViewModel cartViewModel;
 
-    private ImageView display_image;
+    private RatingBar product_average_rating;
     private TextView product_name;
     private TextView product_feedback_count_1;
     private TextView product_feedback_count_2;
@@ -91,15 +93,17 @@ public class ProductDetailPage extends DrawerBasePage {
         super.onCreate(savedInstanceState);
         setContent(R.layout.product_detail);
 
+
+
         loadingSpinner = findViewById(R.id.loading_spinner);
         loadingSpinner.setVisibility(View.VISIBLE);
 
         imageSlider = findViewById(R.id.display_image);
         indicator  = findViewById(R.id.display_image_indicator );
 
+        product_average_rating = findViewById(R.id.product_average_rating);
         product_name = findViewById(R.id.product_name);
         product_feedback_count_1 = findViewById(R.id.product_feedback_count_1);
-        product_feedback_count_2 = findViewById(R.id.product_feedback_count_2);
         product_price = findViewById(R.id.product_price);
         product_original_price = findViewById(R.id.product_original_price);
         product_discount = findViewById(R.id.product_discount);
@@ -167,10 +171,9 @@ public class ProductDetailPage extends DrawerBasePage {
 
                     product_name.setText(product.getProductName());
                     product_feedback_count_1.setText(product.getProductFeedbacks().size() + " reviews");
-                    setStarRating(calculateAverageRating(product.getProductFeedbacks()));
-                    product_feedback_count_2.setText("from " + product.getProductFeedbacks().size() + " reviews");
-                    product_price.setText(Format.getFormattedTotalPrice(product.getRetailPrice()) + "VNĐ");
-                    product_original_price.setText(Format.getFormattedTotalPrice(product.getPrice()) + "VNĐ");
+                    product_average_rating.setRating(calculateAverageRating(product.getProductFeedbacks()));
+                    product_price.setText(Format.getFormattedTotalPrice(product.getRetailPrice()) + " VNĐ");
+                    product_original_price.setText(Format.getFormattedTotalPrice(product.getPrice()) + "  VNĐ");
                     product_discount.setText("-" + product.getDiscount() + "%");
                     product_stock_count.setText(product.getStockQuantity() + " in-stocks");
                     product_add_to_cart_button.setOnClickListener(v -> addItemToCart(productId, Integer.parseInt(product_quantity_input.getText().toString())));
@@ -208,58 +211,6 @@ public class ProductDetailPage extends DrawerBasePage {
                 }
             }
         });
-
-    }
-
-    private void setStarRating(float averageRating) {
-        // Define star image resources
-        int fullStar = R.drawable.ic_star_icon;  // Full star
-        int halfStar = R.drawable.ic_half_star_icon;  // Half star
-
-
-        // Get the star ImageViews
-        ImageView star1 = findViewById(R.id.star1);
-        ImageView star2 = findViewById(R.id.star2);
-        ImageView star3 = findViewById(R.id.star3);
-        ImageView star4 = findViewById(R.id.star4);
-        ImageView star5 = findViewById(R.id.star5);
-
-        // Determine how many stars should be full, half, and empty
-        int fullStars = (int) averageRating;
-        int halfStars = (int) (averageRating % 1 >= 0.5 ? 1 : 0);
-
-        // Set full stars
-        if (fullStars > 0) {
-            star1.setImageResource(fullStar);
-        }
-        if (fullStars > 1) {
-            star2.setImageResource(fullStar);
-        }
-        if (fullStars > 2) {
-            star3.setImageResource(fullStar);
-        }
-        if (fullStars > 3) {
-            star4.setImageResource(fullStar);
-        }
-        if (fullStars > 4) {
-            star5.setImageResource(fullStar);
-        }
-
-        // Set half star
-        if (halfStars > 0) {
-            if (fullStars == 0) {
-                star1.setImageResource(halfStar);
-            } else if (fullStars == 1) {
-                star2.setImageResource(halfStar);
-            } else if (fullStars == 2) {
-                star3.setImageResource(halfStar);
-            } else if (fullStars == 3) {
-                star4.setImageResource(halfStar);
-            } else if (fullStars == 4) {
-                star5.setImageResource(halfStar);
-            }
-        }
-
 
     }
 

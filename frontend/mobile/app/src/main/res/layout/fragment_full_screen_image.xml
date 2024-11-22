@@ -11,7 +11,7 @@
         android:layout_height="match_parent"/>
 
     <me.relex.circleindicator.CircleIndicator3
-        android:background="@drawable/sharp_border"
+        android:background="@drawable/rounded_corners"
         android:backgroundTint="#500F0F0F"
         android:id="@+id/display_image_indicator"
         android:layout_gravity="center"

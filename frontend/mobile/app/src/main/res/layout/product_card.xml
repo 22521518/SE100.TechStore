@@ -50,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="1dp"
+                android:textColor="@android:color/holo_green_light"
                 android:fontFamily="sans-serif-medium"
                 android:text="1.900.000 đ"
                 android:textSize="16sp" />
@@ -75,6 +76,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="1dp"
                     android:fontFamily="sans-serif-medium"
+                    android:layout_marginStart="4dp"
                     android:text="-30%"
                     android:textColor="@android:color/holo_red_light"
                     android:textSize="12sp" />

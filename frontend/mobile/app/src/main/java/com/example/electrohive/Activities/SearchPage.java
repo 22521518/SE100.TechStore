@@ -3,6 +3,7 @@ package com.example.electrohive.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,8 +13,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -31,6 +34,8 @@ import com.example.electrohive.ViewModel.CategoryViewModel;
 import com.example.electrohive.ViewModel.ProductViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.google.android.material.navigation.NavigationView;
+import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
+import com.skydoves.powerspinner.PowerSpinnerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +51,13 @@ public class SearchPage extends DrawerBasePage {
     private ProductAdapter productAdapter;
     private RecyclerView products_listview;
 
-    private Spinner spinner_price_range;
-    private Spinner spinner_category;
+    private PowerSpinnerView spinner_price_range;
+    private PowerSpinnerView spinner_category;
 
     private String searchText = "";
     private String priceRange = "";
     private String category = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,26 +77,12 @@ public class SearchPage extends DrawerBasePage {
         loadingSpinner.setVisibility(View.VISIBLE);
 
         // Price Range Spinner
-        ArrayAdapter<CharSequence> priceRangeAdapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.price_range_options,
-                android.R.layout.simple_spinner_item
-        );
-        priceRangeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_price_range.setAdapter(priceRangeAdapter);
-
-        // Set listener for price range spinner
-        spinner_price_range.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                priceRange = parent.getItemAtPosition(position).toString();
-                // Trigger the search again with the updated price range
-                fetchProducts();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Optional: handle no selection
+        spinner_price_range.setItems(R.array.price_range_options);
+        spinner_price_range.selectItemByIndex(0);
+        spinner_price_range.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
+            @Override public void onItemSelected(int oldIndex, @Nullable String oldItem, int newIndex, String newItem) {
+               priceRange = newItem;
+               fetchProducts();
             }
         });
 
@@ -111,28 +103,15 @@ public class SearchPage extends DrawerBasePage {
                     Log.d("CategoryViewModel", "No categories found or error fetching data");
                 }
 
-                // Create adapter for spinner
-                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                        SearchPage.this,
-                        android.R.layout.simple_spinner_item,
-                        categoryNames
-                );
-                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner_category.setAdapter(categoryAdapter);
-
-                spinner_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        category = parent.getItemAtPosition(position).toString();
-                        // Treat "All" as no category filter
+                // Set up the spinner for categories
+                spinner_category.setItems(categoryNames);
+                spinner_category.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
+                    @Override public void onItemSelected(int oldIndex, @Nullable String oldItem, int newIndex, String newItem) {
+                        priceRange = newItem;
                         fetchProducts();
                     }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        // Optional: handle no selection
-                    }
                 });
+                spinner_category.selectItemByIndex(0);
 
                 loadingSpinner.setVisibility(View.GONE);
             }
@@ -148,6 +127,8 @@ public class SearchPage extends DrawerBasePage {
         products_listview = findViewById(R.id.product_listview);
         products_listview.setLayoutManager(new GridLayoutManager(SearchPage.this, 2));
         products_listview.setAdapter(productAdapter);
+
+
     }
 
     private void fetchProducts() {
@@ -174,4 +155,6 @@ public class SearchPage extends DrawerBasePage {
         intent.putExtra("PRODUCT_ID", productId);
         startActivity(intent);
     }
+
+
 }

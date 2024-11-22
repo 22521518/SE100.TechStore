@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/search_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -11,25 +11,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:background="@drawable/border">
+        android:background="@drawable/border"
+        android:orientation="horizontal">
 
-        <Spinner
+        <com.skydoves.powerspinner.PowerSpinnerView
             android:id="@+id/spinner_price_range"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="Price">
+            android:background="@drawable/rounded_corners"
+            android:gravity="center"
+            android:hint="Price range"
+            android:padding="10dp"
+            android:textSize="16sp"
+            app:spinner_arrow_gravity="end"
+            app:spinner_arrow_padding="8dp"
+            app:spinner_arrow_tint="?android:colorAccent"
+            app:spinner_dismiss_notified_select="true"
+            app:spinner_item_array="@array/price_range_options"
+            app:spinner_item_height="46dp"
+            app:spinner_popup_animation="dropdown"
+            app:spinner_popup_background="@drawable/spinner_popup_background" />
 
-
-        </Spinner>
-
-        <Spinner
+        <com.skydoves.powerspinner.PowerSpinnerView
             android:id="@+id/spinner_category"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="category" />
+            android:background="@drawable/rounded_corners"
+            android:gravity="center"
+            android:hint="Category"
+            android:padding="10dp"
+            android:textSize="16sp"
+            app:spinner_arrow_gravity="end"
+            app:spinner_arrow_padding="8dp"
+            app:spinner_arrow_tint="?android:colorAccent"
+            app:spinner_popup_animation="dropdown"
+            app:spinner_popup_background="@drawable/spinner_popup_background"
+            app:spinner_popup_height="200dp" />
+
+
     </LinearLayout>
+
 
     <ProgressBar
         android:id="@+id/loading_spinner"
@@ -45,4 +68,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+
 </LinearLayout>

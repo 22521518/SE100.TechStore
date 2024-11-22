@@ -20,14 +20,14 @@ public interface AddressService {
     Call<Boolean> postCustomerAddress(
             @Path("userId") String userId,
             @Header("access_token") String accessToken,
-            @Body Address payload
+            @Body JsonObject payload
     );
 
     @PATCH("addresses/{id}")
     Call<Boolean> patchCustomerAddress(
             @Path("id") String addressId,
             @Header("access_token") String accessToken,
-            @Body Address payload
+            @Body JsonObject payload
     );
 
     @DELETE("addresses/{id}")

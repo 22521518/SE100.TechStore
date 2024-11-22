@@ -136,17 +136,17 @@ public class ProductUtils {
             double price = product.getPrice();
 
             switch (priceRange) {
-                case "-10,000,000 VNĐ":
+                case "-10tr VNĐ":
                     if (price >= 0 && price <= 10000000) {
                         filteredList.add(product);
                     }
                     break;
-                case "10,000,000-50,000,000 VNĐ":
+                case "10tr-50yt VNĐ":
                     if (price > 10000000 && price <= 50000000) {
                         filteredList.add(product);
                     }
                     break;
-                case "50,000,000+":
+                case "50tr+":
                     if (price > 50000000) {
                         filteredList.add(product);
                     }

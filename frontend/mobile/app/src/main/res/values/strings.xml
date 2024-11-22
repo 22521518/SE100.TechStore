@@ -9,8 +9,18 @@
 
     <string-array name="price_range_options">
         <item>All</item>
-        <item>-10,000,000 VNĐ</item>
-        <item>10,000,000-50,000,000 VNĐ</item>
-        <item>50,000,000+</item>
+        <item>-10tr VNĐ</item>
+        <item>10tr - 50tr VNĐ</item>
+        <item>50tr+</item>
+    </string-array>
+
+    <string-array name="rating_filter">
+        <item>All</item>
+        <item>5</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>0</item>
     </string-array>
 </resources>

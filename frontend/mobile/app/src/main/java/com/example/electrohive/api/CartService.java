@@ -20,11 +20,11 @@ public interface CartService {
 
     @POST("/carts/{id}")
     Call<JsonObject> addCartItem(@Path("id") String userid,
-                                 @Body Object payload);
+                                 @Body JsonObject payload);
 
     @PATCH("/carts/{id}")
     Call<JsonObject> updateCartItem(@Path("id") String userId,
-                                    @Body Object payload);
+                                    @Body JsonObject payload);
 
     @DELETE("/carts/{id}")
     Call<ResponseBody> deleteAllCartItems(@Path("id") String userId);
