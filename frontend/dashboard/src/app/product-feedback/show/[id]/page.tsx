@@ -6,6 +6,7 @@ import StarIcon from '@mui/icons-material/Star';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React from 'react';
 import { transformDate } from '@utils/transform.util';
+import CommonContainer from '@components/common-container';
 
 type ProductFeedbackListProps = {
   feedbacklist: IProductFeedback[];
@@ -52,22 +53,21 @@ const ProductFeedbackList = ({ feedbacklist }: ProductFeedbackListProps) => {
   );
 
   return (
-    <Box className="flex flex-row justify-between px-8 py-5 bg-white rounded-lg">
+    <CommonContainer className="flex flex-row items-center justify-between">
       <DataGrid
         columns={columns}
         rows={feedbacklist}
         getRowId={(row: IProductFeedback) => row.feedback_id}
         sx={{
-          color: 'black',
-          '& .MuiDataGrid-row': {
-            '&:nth-of-type(odd)': {
-              backgroundColor: 'rgba(0,0,0,0.04)'
+          '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
+            {
+              backgroundColor: 'transparent !important',
+              color: 'black'
             }
-          }
         }}
-        className="text-accent my-4"
+        className="text-accent my-4 bg-transparent"
       />
-    </Box>
+    </CommonContainer>
   );
 };
 

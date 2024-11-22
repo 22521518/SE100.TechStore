@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+
+    <!-- Main content of the screen -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Include your app bar or toolbar here -->
+        <include
+            layout="@layout/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Scrollable content (Products, Banners, etc.) -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="56dp">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Promotional Banner 1 -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/banner" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="10dp"
+                        android:background="#000000"
+                        android:text="Buy now"
+                        android:textColor="#FFFFFF" />
+                </RelativeLayout>
+
+                <!-- Trending Products -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rc_trend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Promotional Banner 2 -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/banner" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="10dp"
+                        android:background="#000000"
+                        android:text="Buy now"
+                        android:textColor="#FFFFFF" />
+                </RelativeLayout>
+
+                <!-- Trending Products 2 -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rc_trend_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="16dp" />
+
+            </LinearLayout>
+        </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!-- Drawer content (Navigation menu) -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@drawable/drawer_background"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/nav_menu">
+        <RelativeLayout
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_centerInParent="true"
+                android:layout_alignParentStart="true"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@mipmap/app_logo"
+                android:background="@android:color/transparent"/>
+            <TextView
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:textColor="?android:colorBackground"
+                android:text="@string/app_name"/>
+        </RelativeLayout>
+    </com.google.android.material.navigation.NavigationView>
+
+</androidx.drawerlayout.widget.DrawerLayout>

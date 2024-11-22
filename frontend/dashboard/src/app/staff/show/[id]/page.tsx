@@ -6,7 +6,6 @@ import { Box, Button, Divider, Stack, Typography } from '@mui/material';
 import { useForm, useNavigation } from '@refinedev/core';
 import React from 'react';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
-import { generateRandomStaffList } from '@utils/random.util';
 import AvatarImage from '@components/avatar';
 import { dummyAvatar } from '@constant/value.constant';
 import CallOutlinedIcon from '@mui/icons-material/CallOutlined';
@@ -29,37 +28,40 @@ const StaffShow = () => {
     redirect: 'show'
   });
   const record = query?.data?.data;
-  const staffInfo = record || generateRandomStaffList(1)[0];
-  const dummyGender = 'male';
-  const dummyBirthday = '1-1-2003';
 
   const [staffValue, setStaffValue] = React.useState<IStaff>({
-    staff_id: staffInfo.staff_id,
-    full_name: staffInfo.full_name,
-    phone_number: staffInfo.phone_number,
-    hire_date: staffInfo.hire_date,
-    role: staffInfo.role,
-    account: staffInfo.account,
-    employee_status: staffInfo.employee_status
+    staff_id: record?.staff_id || '',
+    full_name: record?.full_name || '',
+    phone_number: record?.phone_number || '',
+    hire_date: record?.hire_date || '',
+    role: record?.role || { role_id: -1, role_name: '', description: '' },
+    account_id: record?.account_id || '',
+    employee_status: record?.employee_status,
+    account: record?.account || { email: '' },
+    male: record?.male || false,
+    birth_date: record?.birth_date || new Date('2003-01-01')
   });
 
   React.useEffect(() => {
     if (record) {
       setStaffValue({
-        staff_id: record.staff_id,
-        full_name: record.full_name,
-        phone_number: record.phone_number,
-        hire_date: record.hire_date,
-        role: record.role,
-        account: record.account,
-        employee_status: record.employee_status
+        staff_id: record?.staff_id || '',
+        full_name: record?.full_name || '',
+        phone_number: record?.phone_number || '',
+        hire_date: record?.hire_date || '',
+        role: record?.role || { role_id: -1, role_name: '', description: '' },
+        account_id: record?.account_id || '',
+        employee_status: record?.employee_status,
+        account: record?.account || { email: '' },
+        male: record?.male || false,
+        birth_date: record?.birth_date || new Date('2003-01-01')
       });
     }
   }, [record]);
 
-  // if (formLoading) return <div>Loading...</div>;
+  if (formLoading) return <div>Loading...</div>;
   return (
-    <Stack className="gap-4 px-32 ">
+    <Stack className="gap-4 xl:px-32 px-20 h-full justify-center">
       <CommonContainer className="w-full">
         <Box className="flex flex-row justify-between items-center p-3">
           <Box className="flex flex-row items-center gap-2">
@@ -86,13 +88,13 @@ const StaffShow = () => {
             <Typography className="text-lg font-bold">
               {staffValue.full_name}
             </Typography>
-            <Typography className="text-lg text-slate-500 font-bold">
+            <Typography className="text-lg text-secondary-100 font-bold">
               ID: {staffValue.staff_id}
             </Typography>
           </Stack>
         </Box>
         <Divider className="h-[1px] bg-slate-500 my-4 opacity-50" />
-        <Box className="grid grid-cols-2 px-6 items-start justify-center">
+        <Box className="grid grid-cols-1 lg:grid-cols-2 px-6 items-start justify-center">
           <Stack className="p-4 gap-10">
             <Box className="flex flex-row gap-6 items-center">
               <Typography className="text-lg flex flex-row items-center gap-3">
@@ -108,7 +110,7 @@ const StaffShow = () => {
                 <ManageAccountsOutlinedIcon /> Role:
               </Typography>
               <Typography className="text-lg">
-                {staffValue?.role?.role_name}
+                {staffValue.role?.role_name}
               </Typography>
             </Box>
 
@@ -118,7 +120,7 @@ const StaffShow = () => {
                 Email:
               </Typography>
               <Typography className="text-lg">
-                {staffValue.account.email}
+                {staffValue.account?.email}
               </Typography>
             </Box>
             <Box className="flex flex-row gap-4 items-center">
@@ -138,14 +140,20 @@ const StaffShow = () => {
                 <CakeOutlinedIcon className="text-lg" />
                 Birthday:
               </Typography>
-              <Typography className="text-lg">{dummyBirthday}</Typography>
+              <Typography className="text-lg">
+                {staffValue.birth_date
+                  ? transformDate(staffValue.birth_date.toString())
+                  : 'N/A'}
+              </Typography>
             </Box>
             <Box className="flex flex-row gap-6 items-center">
               <Typography className="text-lg flex flex-row items-center gap-3">
-                <GenderIcon male={dummyGender === 'male'} />
+                <GenderIcon male={staffValue.male || false} />
                 Gender:
               </Typography>
-              <Typography className="text-lg">{dummyGender}</Typography>
+              <Typography className="text-lg">
+                {staffValue.male ? 'Male' : 'Female'}
+              </Typography>
             </Box>
             <Box className="flex flex-row gap-4 items-center">
               <Typography className="text-lg flex flex-row items-center gap-3">

@@ -8,12 +8,42 @@ import {
   IOrder,
   IOrderItem,
   IPermission,
+  IProduct,
+  IProductAttribute,
   IProductFeedback,
   IRole,
   ISender,
   IStaff,
   IVoucher
 } from '@constant/interface.constant';
+export function generateRandomAttribute(loops: number): IProductAttribute[] {
+  const attributes: IProductAttribute[] = [];
+
+  for (let i = 0; i < loops; i++) {
+    attributes.push({
+      id: i + 1,
+      name: `Attribute ${i + 1}`,
+      detail: `Value ${i + 1}`
+    });
+  }
+  return attributes;
+}
+
+export function generateRandomProduct(): IProduct {
+  return {
+    product_id: `product-${Math.floor(Math.random() * 1000)}`, // Random product id
+    product_name: `Product Name ${Math.random().toString(36).substr(2, 5)}`, // Random product name
+    images: [],
+    description: `This is a random product description for ${Math.random()
+      .toString(36)
+      .substr(2, 5)}.`,
+    price: parseFloat((Math.random() * 100 + 5).toFixed(2)), // Random price between 5 and 105
+    discount: parseFloat((Math.random() * 20).toFixed(2)), // Random discount
+    stock_quantity: Math.floor(Math.random() * 100), // Random stock quantity
+    categories: [],
+    attributes: generateRandomAttribute(5) // Random attributes
+  };
+}
 
 export function generateProductFeedback(loop: number): IProductFeedback[] {
   const feedbacks: IProductFeedback[] = [];
@@ -93,6 +123,7 @@ export function generateRandomAccountList(
 export function generateRandomCustomer(id?: string): ICustomer {
   return {
     customer_id: id || `customer-${Math.floor(Math.random() * 1000)}`,
+    account_id: `account-${Math.floor(Math.random() * 1000)}`,
     username: `user_${Math.random().toString(36).substr(2, 5)}`,
     full_name: `Full Name ${Math.random().toString(36).substr(2, 5)}`,
     phone_number: `+1${Math.floor(Math.random() * 9000000000) + 1000000000}`,
@@ -191,7 +222,7 @@ export function getRandomEmployeeStatus(): EMPLOY_STATUS {
   return statuses[randomIndex] as EMPLOY_STATUS;
 }
 
-function generateRandomPermission(): IPermission {
+export function generateRandomPermission(): IPermission {
   return {
     permission_id: `permission-${Math.floor(Math.random() * 1000)}`,
     permission_name: `Permission ${Math.floor(Math.random() * 100)}`,
@@ -207,10 +238,10 @@ function generateRandomRole(permissionCount: number): IRole {
   }
 
   return {
-    role_id: `role-${Math.floor(Math.random() * 1000)}`,
+    role_id: Math.floor(Math.random() * 1000),
     role_name: `Role ${Math.floor(Math.random() * 100)}`,
     description: `Description for role ${Math.floor(Math.random() * 100)}`,
-    permissions: permissions
+    role_permissions: permissions
   };
 }
 
@@ -284,24 +315,21 @@ export function generateRandomVoucher(loops: number): IVoucher[] {
   return vouchers;
 }
 
-function generateRandomSender(seen: boolean, id?: string): ISender {
+function generateRandomSender(id?: string): ISender {
   return {
     sender_id: id || `sender-${Math.floor(Math.random() * 1000)}`,
-    sender_name: `Sender Name ${Math.random().toString(36).substr(2, 5)}`,
-    is_seen: true
+    sender_name: `Sender Name ${Math.random().toString(36).substr(2, 5)}`
   };
 }
 
 function generateRandomMessage(seen: boolean = true): IInboxMessage {
   return {
-    sender: generateRandomSender(
-      seen,
-      Math.random() > 0.5 ? '--admin' : '--customer'
-    ),
+    sender: generateRandomSender(),
     message_id: `message-${Math.floor(Math.random() * 1000)}`,
     message: `This is a random message with id ${Math.floor(
       Math.random() * 1000
     )}`,
+    is_seen: seen,
     created_at: new Date().toISOString()
   };
 }
@@ -328,7 +356,6 @@ export function generateRandomInboxRoom(loops: number): IInboxRoom[] {
     const messageCount = 20;
     rooms.push({
       room_id: `room-${i + 1}`,
-      room_name: `Room Name ${Math.random().toString(36).substr(2, 5)}`,
       customer: generateRandomCustomer(
         Math.random() > 0.5 ? '--admin' : '--customer'
       ),

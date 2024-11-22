@@ -1,4 +1,6 @@
 "use client";
+import { formattedPrice } from "@util/format";
+import { getProductDetail, getAllProduct } from "@service/product";
 import CollapsibleContainer from "@components/UI/CollapsibleBanner";
 import ProductCard from "@components/UI/ProductCard";
 import ReviewStar from "@components/UI/ReviewStar";
@@ -15,88 +17,36 @@ import {
   faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useParams, useRouter } from "@node_modules/next/navigation";
+import { idText } from "@node_modules/typescript/lib/typescript";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
+import InputBox from "@components/Input/InputBox";
+import InputArea from "@components/Input/InputArea";
+import Link from "@node_modules/next/link";
+import { addFeedback } from "@service/feedback";
+import { toastError, toastSuccess, toastWarning } from "@util/toaster";
+import { useSession } from "@node_modules/next-auth/react";
+import CommentTag from "@components/UI/FeedbackTag";
+import FeedbackTag from "@components/UI/FeedbackTag";
+import {
+  useDispatch,
+  useSelector,
+} from "@node_modules/react-redux/dist/react-redux";
+import { addItem } from "@provider/redux/cart/cartSlice";
 
-const Product = ({ params }) => {
-  const [product, setProduct] = useState({
-    id: "ABC123",
-    name: "Iphone 19 Pro Max",
-    category: "smart phone",
-    description: `<p><strong>Product Name:</strong> QuantumX Pro Wireless Earbuds</p>
-  <p><strong>Description:</strong> Experience sound like never before with the QuantumX Pro Wireless Earbuds. Engineered with precision and designed for comfort, these earbuds deliver crystal-clear audio and deep bass, all while being incredibly lightweight. Whether you're working out, commuting, or relaxing at home, the QuantumX Pro offers premium sound quality that adapts to your lifestyle.</p>
+const Product = () => {
+  const session = useSelector((state) => state.session);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const params = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [feedback, setFeedback] = useState({ rating: 0, content: "" });
+  const [feedbackFilter, setFeedbackFilter] = useState(-1);
+  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState(null);
 
-  <br/>
-  <p><strong>Key Features:</strong></p>
-  <ul>
-    <li><strong>Advanced Noise Cancellation:</strong> Immerse yourself in music with active noise-canceling technology that blocks out unwanted background noise.</li>
-    <li><strong>Long Battery Life:</strong> Enjoy up to 10 hours of playback on a single charge, with an additional 30 hours available through the sleek charging case.</li>
-    <li><strong>Ergonomic Design:</strong> Crafted for all-day comfort, the QuantumX Pro comes with three different ear tip sizes for the perfect fit.</li>
-    <li><strong>IPX5 Water Resistance:</strong> Sweatproof and splash-resistant, ideal for intense workouts and outdoor activities.</li>
-    <li><strong>Touch Controls:</strong> Easily manage your music, take calls, and activate voice assistants with intuitive touch-sensitive controls on each earbud.</li>
-    <li><strong>Bluetooth 5.2:</strong> Seamless connection with improved range and stability, ensuring uninterrupted sound quality up to 50 feet away.</li>
-  </ul>
-    <br/>
-  <p><strong>Included in the Box:</strong></p>
-  <ul>
-    <li>QuantumX Pro Wireless Earbuds</li>
-    <li>Charging Case</li>
-    <li>USB-C Charging Cable</li>
-    <li>Multiple Ear Tip Sizes</li>
-    <li>Quick Start Guide</li>
-    <li>Warranty: 1-year limited warranty</li>
-  </ul>
-
-  <p>Take your listening experience to the next level with the QuantumX Pro Wireless Earbuds—where innovation meets comfort.</p>`,
-    specs: {
-      Display: "6.7-inch Super Retina XDR",
-      Processor: "A19 Bionic Chip",
-      Storage: "256GB",
-      Camera: "Triple 200MP + 48MP + 12MP rear, 48MP front",
-      Battery: "4500mAh, 25W Fast Charging",
-      WaterResistance: "IP68 water and dust resistance",
-      OperatingSystem: "iOS 18",
-      Connectivity: "5G, Wi-Fi 6E, Bluetooth 5.3",
-    },
-    price: 49000000,
-    discount: 30,
-    stockCounts: 1230,
-    images: [
-      "https://happyphone.vn/wp-content/uploads/2024/05/iPhone-19-Pro-va-Pro-Max-se-ra-mat-vao-nam-2027.jpg",
-      "https://i.ytimg.com/vi/MXt2O05hw0I/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGogaihqMA8=&rs=AOn4CLBiRdQP0wDe0U9Jz-iTO2kDHS_zSA",
-      "https://happyphone.vn/wp-content/uploads/2024/05/He-lo-thong-tin-ve-iPhone-19-Series.jpg",
-      "https://happyphone.vn/wp-content/uploads/2024/05/Camera-chinh-cua-iPhone-19-Pro-va-Pro-Max-co-do-phan-giai-200MP.jpg",
-      "https://chamsocdidongviet.com/upload/product/iphone-13-pro-max-1-3-1-4517.jpg",
-      "https://i.ytimg.com/vi/g7F9uZhHTZE/maxresdefault.jpg",
-    ],
-  });
-
-  const [productFeedbacks, setProductFeedBacks] = useState([
-    {
-      id: "1",
-      product_id: "1",
-      customer_id: "123",
-      rating: 5,
-      feedback: "excellent product!!! Would buy again for my dog",
-      created_at: "1/1/2024",
-    },
-    {
-      id: "2",
-      product_id: "1",
-      customer_id: "1223",
-      rating: 3,
-      feedback: "the shipping is ok",
-      created_at: "4/1/2024",
-    },
-    {
-      id: "3",
-      product_id: "1",
-      customer_id: "14423",
-      rating: 0,
-      feedback: "very bad product!!! broke when i first opened",
-      created_at: "2/3/2024",
-    },
-  ]);
+  const [productFeedbacks, setProductFeedBacks] = useState([]);
 
   const [selectedImageId, setSelectedImageId] = useState(0);
 
@@ -113,6 +63,83 @@ const Product = ({ params }) => {
       : 0;
   const productImageListRef = useRef(null);
 
+  const handleAddFeedback = async () => {
+    if (feedback.content.trim() === "") {
+      toastWarning("Please add your feedback before submit");
+      return;
+    }
+    const newFeedback = {
+      feedback_id: Math.random() * 1000 + 5,
+      product_id: "cm2rnv4vf00039thyjfemcq9h",
+      customer_id: "cm2rntc4r00001ly99t53s0cl",
+      feedback: feedback.content,
+      rating: feedback.rating,
+      created_at: new Date(),
+    };
+
+    setProductFeedBacks((prev) => [...prev, newFeedback]);
+    setFeedback({ content: "", rating: 0 });
+    // addFeedback(newFeedback)
+    switch (feedback.rating) {
+      case 0:
+        toastSuccess(
+          "We are sorry to hear you had a bad experience. Thank you for your feedback."
+        );
+        break;
+      case 1:
+        toastSuccess(
+          "Thank you for your feedback. We strive to improve your experience."
+        );
+        break;
+      case 2:
+        toastSuccess(
+          "Thank you for your input. We are working on making things better."
+        );
+        break;
+      case 3:
+        toastSuccess(
+          "Thank you! We appreciate your feedback and will continue to improve."
+        );
+        break;
+      case 4:
+        toastSuccess(
+          "Great to hear you had a good experience! Thank you for your feedback."
+        );
+        break;
+      case 5:
+        toastSuccess(
+          "Awesome! Your feedback means a lot to us. Thank you for using our products!"
+        );
+        break;
+      default:
+        toastSuccess("Thank you for your feedback! We appreciate your input.");
+        break;
+    }
+  };
+  const handleSetFeedbackFilter = (rate) => {
+    setFeedbackFilter(rate === feedbackFilter ? -1 : rate);
+  };
+
+  const handleAddToCart = () => {
+    if (!session.isAuthenticated) {
+      toastError("You need to login to proceed");
+      return;
+    }
+
+    dispatch(
+      addItem({
+        id:product.product_id
+      })
+    );
+
+    toastSuccess("Product added to cart");
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart();
+    router.push("/cart");
+  };
+
   const handleSetSelectedId = (index) => {
     const imageList = productImageListRef.current;
     if (imageList) {
@@ -124,6 +151,17 @@ const Product = ({ params }) => {
         imageList.scrollTo({ left: offsetLeft, behavior: "smooth" });
       }
     }
+  };
+
+  const fetchProducts = () => {
+    getAllProduct().then((data) => setProducts(data));
+  };
+
+  const fetchProductDetails = (id) => {
+    getProductDetail(id).then((data) => {
+      setProduct(data);
+      setProductFeedBacks(data.product_feedbacks);
+    });
   };
 
   useEffect(() => {
@@ -153,14 +191,25 @@ const Product = ({ params }) => {
 
     // Cleanup observer on component unmount
     return () => observer.disconnect();
-  }, [product.images]);
+  }, [product?.images]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchProducts();
+    fetchProductDetails(params.id);
+    setTimeout(() => setIsLoading(false), 1000);
+  }, [params]);
 
   return (
     <section className="size-full flex flex-col items-center gap-4 p-4 overflow-visible">
       <ul className="flex flex-row items-center justify-start gap-2 w-full">
-        <h3 className="text-xl opacity-50">{product.category}</h3>
+        <h3 className="text-xl opacity-50 hover:opacity-100">
+          <Link href={`/search?category=${product?.categories[0].category_id}`}>
+            {product?.categories[0].category_name}
+          </Link>
+        </h3>
         <span className="size-2 sm:size-3 bg-on-background rounded-full opacity-50"></span>
-        <h3 className="text-xl">{product.name}</h3>
+        <h3 className="text-xl">{product?.product_name}</h3>
       </ul>
       <div className="panel-2 w-full">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 md:gap-10">
@@ -168,22 +217,27 @@ const Product = ({ params }) => {
             <div className="w-full relative">
               <ul
                 ref={productImageListRef}
-                className="w-full size-fit flex flex-row items-center overflow-x-scroll no-scrollbar snap-mandatory snap-x gap-2 bg-secondary/50"
+                className="w-full size-fit flex flex-row items-center overflow-x-scroll no-scrollbar snap-mandatory snap-x gap-4 bg-secondary/50"
               >
-                {product.images.map((image, index) => (
-                  <Image
+                {product?.images.map((image, index) => (
+                  <li
                     key={index}
-                    src={image}
-                    alt="product image"
-                    width={800}
-                    height={800}
-                    className="size-full object-scale-down snap-start"
-                  />
+                    className="min-w-full h-fit relative flex items-center justify-center "
+                  >
+                    <Image
+                      src={image}
+                      alt="product image"
+                      width={0}
+                      height={0}
+                      layout="responsive"
+                      className="size-full object-contain snap-start"
+                    />
+                  </li>
                 ))}
               </ul>
             </div>
             <ul className="flex flex-row gap-2 w-full py-1 overflow-x-scroll no-scrollbar snap-x snap-mandatory">
-              {product.images.map((image, index) => (
+              {product?.images.map((image, index) => (
                 <button
                   key={index}
                   className={`aspect-square cursor-zoom-in max-w-[100px] min-w-[80px] snap-start transition-transform duration-200 ${
@@ -205,32 +259,35 @@ const Product = ({ params }) => {
             </ul>
           </div>
           <div className="flex flex-col gap-4 md:p-8">
-            <h3 className="font-bold text-xl md:text-3xl">{product.name}</h3>
+            <h3 className="font-bold text-xl md:text-3xl">
+              {product?.product_name}
+            </h3>
             <div className="flex flex-row gap-1 items-center text-yellow-400">
               <ReviewStar rating={productRating} />
-              53 reviews
+              {productFeedbacks.length} reviews
             </div>
             <div className="text-xl sm:text-2xl md:text-3xl">
-              {Intl.NumberFormat("en-US").format(
-                product.price - (product.price / 100) * product.discount
-              )}{" "}
-              VNĐ
+              {formattedPrice(
+                product?.price - (product?.price / 100) * product?.discount
+              )}
             </div>
-            {product.discount > 0 && (
+            {product?.discount > 0 && (
               <div className="flex gap-2 items-center text-base sm:text-lg md:text-xl">
                 <span className="opacity-70">
-                  {Intl.NumberFormat("en-US").format(product.price)} VNĐ
+                  {formattedPrice(product?.price)}
                 </span>
-                <span className="text-red-500">-{product.discount}%</span>
+                <span className="text-red-500">-{product?.discount}%</span>
               </div>
             )}
-            <div>{product.stockCounts} in-stocks</div>
+            <div>{product?.stock_quantity} in-stocks</div>
 
             <div className="flex flex-row gap-4">
-              <button className="button-variant-1">
+              <button className="button-variant-1" onClick={handleAddToCart}>
                 Add to cart <FontAwesomeIcon icon={faCartShopping} />
               </button>
-              <button className="button-variant-1">Buy now</button>
+              <button className="button-variant-1" onClick={handleBuyNow}>
+                Buy now
+              </button>
             </div>
           </div>
         </div>
@@ -242,12 +299,7 @@ const Product = ({ params }) => {
           </div>
           <CollapsibleContainer
             maxHeight={400}
-            content={
-              <div
-                className="font-sans"
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              />
-            }
+            content={<div className="font-sans">{product?.description}</div>}
           />
         </div>
         <div className="panel-2 w-full  md:max-w-[350px] h-fit ">
@@ -258,15 +310,15 @@ const Product = ({ params }) => {
             maxHeight={400}
             content={
               <ul className="flex flex-col gap-2 py-2">
-                {Object.entries(product.specs).map(([spec, detail], index) => (
+                {product?.attributes?.map((item) => (
                   <li
-                    key={index}
+                    key={item._id}
                     className="grid-cols-2 break-all grid odd:bg-surface odd:text-on-surface rounded-lg p-2"
                   >
                     <div>
-                      <b>{spec}</b>
+                      <b>{item.name}</b>
                     </div>
-                    <div>{detail}</div>
+                    <div>{item.detail}</div>
                   </li>
                 ))}
               </ul>
@@ -277,6 +329,41 @@ const Product = ({ params }) => {
           <div className="bg-primary-variant rounded-md text-on-primary md:text-xl font-bold text-center p-2">
             Product ratings
           </div>
+
+          <div className="flex flex-col gap-4 bg-surface p-4 overflow-hidden rounded-lg">
+            <div className="w-full grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-2">
+              <span className="text-3xl">
+                <FontAwesomeIcon icon={faUserCircle} />
+              </span>
+              <div className="flex flex-col gap-2 items-start">
+                <ReviewStar
+                  rating={feedback.rating}
+                  onChange={(num) =>
+                    setFeedback((fb) => ({ ...fb, rating: num }))
+                  }
+                  size={"text-xl"}
+                  editable={true}
+                />
+                <span className="text-xs opacity-50">
+                  {new Date().toISOString().split("T")[0]}
+                </span>
+                <InputArea
+                  value={feedback.content}
+                  onTextChange={(e) =>
+                    setFeedback((fb) => ({ ...fb, content: e.target.value }))
+                  }
+                  placeholder="add a feedback"
+                />
+              </div>
+            </div>
+            <button
+              className="w-full button-variant-1"
+              onClick={handleAddFeedback}
+            >
+              Add feedback
+            </button>
+          </div>
+
           <div className="flex flex-col md:flex-row gap-2 justify-start items-center shadow-inner rounded-xl p-2">
             <div className="flex flex-col gap-2 items-center">
               <span className="text-2xl md:text-3xl text-yellow-400 font-bold">
@@ -286,52 +373,83 @@ const Product = ({ params }) => {
               <ReviewStar rating={productRating} size={"text-2xl"} />
             </div>
             <ul className="flex flex-wrap gap-4">
-              {[5,4,3,2,1,0].map((value) => (
-                <span
+              {[5, 4, 3, 2, 1, 0].map((value) => (
+                <button
                   key={value}
-                  className="flex flex-row gap-1 items-center text-yellow-400 text-sm p-2 bg-surface rounded-xl"
+                  onClick={() => handleSetFeedbackFilter(value)}
+                  className={`flex flex-row gap-1 items-center ${
+                    feedbackFilter === value
+                      ? "border-yellow-400"
+                      : "border-surface"
+                  } border-2  bg-surface   text-sm p-2  rounded-xl`}
                 >
                   <ReviewStar rating={value} />
                   <span className="text-on-surface">
                     (
                     {
                       productFeedbacks.filter(
-                        (feedback) => feedback.rating ===value
+                        (feedback) => feedback.rating === value
                       ).length
                     }
                     )
                   </span>
-                </span>
+                </button>
               ))}
             </ul>
           </div>
+          <h2>
+            {
+              productFeedbacks.filter(
+                (item) =>
+                  item.rating === feedbackFilter || feedbackFilter === -1
+              ).length
+            }{" "}
+            reviews
+          </h2>
           <ul className="flex flex-col gap-4 py-4">
-            {productFeedbacks.map((feedback) => (
-              <li
-                key={feedback.id}
-                className="w-full grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-2"
-              >
-                <span className="text-3xl">
-                  <FontAwesomeIcon icon={faUserCircle} />
-                </span>
-                <div className="flex flex-col gap-2 items-start">
-                  <span className="font-semibold">{feedback.customer_id}</span>
-                  <ReviewStar rating={feedback.rating} size={'text-xs'}/>
-                  <span className="text-xs opacity-50">
-                    {feedback.created_at}
-                  </span>
-
-                  <p className="text-sm">{feedback.feedback}</p>
-                </div>
-              </li>
-            ))}
+            {isLoading
+              ? Array.from({ length: 3 }).map((_, index) => (
+                  <FeedbackTag key={index} loading={true} />
+                ))
+              : productFeedbacks
+                  .filter(
+                    (item) =>
+                      item.rating === feedbackFilter || feedbackFilter === -1
+                  )
+                  .map((feedback) => (
+                    <FeedbackTag
+                      key={feedback.feedback_id}
+                      feedback={feedback}
+                    />
+                  ))}
           </ul>
         </div>
       </div>
+      <p className="text-2xl font-semibold my-4 ">
+        Other products from {product?.categories[0].category_name}
+      </p>
+      <ul className="w-full overflow-scroll no-scrollbar flex flex-row gap-2">
+        {isLoading
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <ProductCard key={index} loading={true} />
+            ))
+          : products
+              .filter(
+                (pd) =>
+                  pd.categories[0].category_id ===
+                  product?.categories[0].category_id
+              )
+              .map((pd) => <ProductCard key={pd.product_id} product={pd} />)}
+      </ul>
+      <p className="text-2xl font-semibold my-4 ">Explore other products</p>
       <ul className="grid grid-cols-2 md:grid-cols-4 gap-2 overflow-visible w-full">
-        {Array.from({ length: 16 }).map((item, index) => (
-          <ProductCard key={index} />
-        ))}
+        {isLoading
+          ? Array.from({ length: 16 }).map((_, index) => (
+              <ProductCard key={index} loading={true} />
+            ))
+          : products.map((item) => (
+              <ProductCard key={item.product_id} product={item} />
+            ))}
       </ul>
     </section>
   );

@@ -1,7 +1,8 @@
 "use client";
 import CheckBox from "@components/Input/CheckBox";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formattedPrice } from "@util/format";
 import Image from "next/image";
 import React, { useState, useEffect, useReducer } from "react";
 
@@ -10,34 +11,53 @@ function reducer(state, action) {
     return { quantity: state.quantity + 1 };
   } else if (action.type === "decremented_quantity" && state.quantity > 1) {
     return { quantity: state.quantity - 1 };
+  } else if (action.type === "change_quantity") {
+    return { quantity: action.payload };
   }
   return state;
 }
 
-const CartItem = ({reCalculate, cartItem , removeItem }) => {
+const CartItem = ({ reCalculate, cartItem, removeItem }) => {
   const [isChecked, setIsChecked] = useState(cartItem.checked);
-  const [state,dispatch] = useReducer(reducer,{quantity:cartItem.quantity})
+  const [state, dispatch] = useReducer(reducer, {
+    quantity: cartItem.quantity,
+  });
 
   useEffect(() => {
-    reCalculate(cartItem.id,state.quantity,isChecked);
-  }, [state.quantity,isChecked]);
+    reCalculate(cartItem.product_id, state.quantity, isChecked);
+  }, [state.quantity, isChecked]);
 
   useEffect(() => {
     setIsChecked(cartItem.checked);
   }, [cartItem.checked]);
 
   const handleRemoveItem = () => {
-    removeItem(cartItem.id)
-  }
+    removeItem(cartItem.product_id);
+  };
+
+  const handleChangeQuantity = (e) => {
+    const value = parseInt(e.target.value, 10) || 1; // default to 1 if input is invalid
+    dispatch({ type: "change_quantity", payload: value });
+  };
 
   return (
-    <div className="grid grid-cols-[auto_1fr_1fr] sm:grid-cols-[auto_1fr_auto_20%] items-center gap-2 pb-2 last:border-none">
-      <CheckBox onChecked={() => setIsChecked(true)} onUnchecked={() => {setIsChecked(false)}} checked={cartItem.checked}/>
+    <div className="grid grid-cols-[auto_1fr_1fr] sm:grid-cols-[auto_1fr_auto_20%] items-center gap-2 pb-2 last:border-none h-fit border-b-2 ">
+      <CheckBox
+        onChecked={() => setIsChecked(true)}
+        onUnchecked={() => {
+          setIsChecked(false);
+        }}
+        checked={cartItem.checked}
+      />
 
-      <div className="flex flex-row">
-        <div className="w-[70px] md:w-[100px]  md:scale-[1.2] transition-transform duration-200 aspect-square">
+      <div className="flex flex-row gap-2 items-center">
+        <div className="min-w-[50px] max-w-[50px] md:min-w-[100px] md:max-w-[100px]  scale-95 md:scale-[1] transition-transform duration-200 aspect-square">
           <Image
-            src="https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-15-Pro/Blue-Titanium/Apple-iPhone-15-Pro-Blue-Titanium-thumbnail.png"
+            src={
+              cartItem?.product.images[0]
+                ? cartItem.product.images[0]
+                : process.env.NEXT_PUBLIC_APP_LOGO
+            }
             alt="product image"
             width={300}
             height={300}
@@ -45,65 +65,95 @@ const CartItem = ({reCalculate, cartItem , removeItem }) => {
           />
         </div>
         <div className="flex flex-col justify-around items-start">
-          <h1 className="text-sm">{cartItem.name}</h1>
-          <h2 className="text-xs text-on-surface/40">{cartItem.category}</h2>
+          <h1 className="text-sm">{cartItem.product.product_name}</h1>
+          <div className="sm:hidden flex-col gap-2 items-end justify-center flex">
+            <div className="bg-secondary/40 border-2 border-on-surface rounded-xl  w-fit text-on-surface grid grid-cols-3 ">
+              <button
+                className="size-5 text-sm flex items-center justify-center hover:scale-105 active:scale-95"
+                onClick={() => dispatch({ type: "decremented_quantity" })}
+              >
+                <FontAwesomeIcon icon={faMinus} />
+              </button>
+              <input
+                type="number"
+                value={state.quantity}
+                onChange={handleChangeQuantity}
+                style={{
+                  appearance: "textfield",
+                  MozAppearance: "textfield",
+                  WebkitAppearance: "none",
+                }}
+                min={1}
+                className="size-5 text-base flex items-center justify-center bg-transparent outline-none text-center"
+              ></input>
+              <button
+                className="size-5 text-sm flex items-center justify-center hover:scale-105 active:scale-95"
+                onClick={() => dispatch({ type: "incremented_quantity" })}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-      <div className='sm:flex flex-col gap-2 items-center justify-center hidden'>
+      <div className="sm:flex flex-col gap-2 items-center justify-center hidden">
         <div className="bg-secondary/40 border-2 border-on-surface rounded-xl  w-fit text-on-surface grid grid-cols-3 ml-auto">
           <button
-            className="size-7 text-xl flex items-center justify-center"
-            onClick={() =>  dispatch({ type: "decremented_quantity" })}
-        
+            className="size-7 text-base flex items-center justify-center hover:scale-105 active:scale-95"
+            onClick={() => dispatch({ type: "decremented_quantity" })}
           >
-            -
+            <FontAwesomeIcon icon={faMinus} />
           </button>
-          <div className="size-7 text-xl flex items-center justify-center">
-            {state.quantity}
-          </div>
+          <input
+            type="number"
+            value={state.quantity}
+            style={{
+              appearance: "textfield",
+              MozAppearance: "textfield",
+              WebkitAppearance: "none",
+            }}
+            min={1}
+            onChange={handleChangeQuantity}
+            className="size-7 text-base flex items-center justify-center bg-transparent outline-none text-center"
+          ></input>
           <button
-            className="size-7 text-xl flex items-center justify-center"
+            className="size-7 text-xl flex items-center justify-center hover:scale-105 active:scale-95"
             onClick={() => dispatch({ type: "incremented_quantity" })}
-        
           >
-            +
+            <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
 
-        <button className='flex flex-row items-center justify-center gap-2 underline text-sm md:text-base'  onClick={handleRemoveItem}>
-          <FontAwesomeIcon icon={faTrash}/>
-           Remove
+        <button
+          className="flex flex-row items-center justify-center gap-2 underline text-sm md:text-base"
+          onClick={handleRemoveItem}
+        >
+          <FontAwesomeIcon icon={faTrash} />
+          Remove
         </button>
       </div>
-      <div className="flex flex-col items-end sm:justify-center justify-between h-full">
-        <span className="text-sm sm:text-base font-semibold">
-          {Intl.NumberFormat("en-US").format(cartItem.price)} VNĐ
-        </span>
-        <div className='sm:hidden flex-col gap-2 items-end justify-center flex'>
-          <div className="bg-secondary/40 border-2 border-on-surface rounded-xl  w-fit text-on-surface grid grid-cols-3 ">
-            <button
-              className="size-5 text-base flex items-center justify-center"
-              onClick={() => dispatch({ type: "decremented_quantity" })}
-          
-            >
-              -
-            </button>
-            <div className="size-5 text-base flex items-center justify-center">
-              {state.quantity}
-            </div>
-            <button
-              className="size-5 text-base flex items-center justify-center"
-              onClick={() => dispatch({ type: "incremented_quantity" })}
-          
-            >
-              +
-            </button>
+      <div className="flex flex-col items-end sm:justify-center justify-between">
+        <div className="text-xs text-right font-semibold">
+          <div className="opacity-70">
+            {formattedPrice(cartItem.product.price)}{" "}
+            <span className="font-bold text-red-500">
+              -{cartItem.product.discount}%
+            </span>
           </div>
-          <button className='flex flex-row items-center justify-center gap-2 underline text-sm md:text-base' onClick={handleRemoveItem}>
-            <FontAwesomeIcon icon={faTrash}/>
-             Remove
-          </button>
+          <div className="text-base sm:text-lg font-bold">
+            {formattedPrice(
+              cartItem.product.price -
+                (cartItem.product.price / 100) * cartItem.product.discount
+            )}
+          </div>
         </div>
+        <button
+          className="flex sm:hidden flex-row items-center justify-center gap-2 underline text-sm md:text-base mt-auto"
+          onClick={handleRemoveItem}
+        >
+          <FontAwesomeIcon icon={faTrash} />
+          Remove
+        </button>
       </div>
     </div>
   );

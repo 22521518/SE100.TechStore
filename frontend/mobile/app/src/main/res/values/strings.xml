@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">ElectroHive</string>
+    <string name="app_name">Electro Hive</string>
+    <string-array name="category_array">
+        <item>Chọn mục</item> <!-- Mục mặc định -->
+        <item>Category 1</item>
+        <item>Category 2</item>
+        <item>Category 3</item>
+    </string-array>
 </resources>

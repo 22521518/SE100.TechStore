@@ -14,6 +14,7 @@ import {
   transformVNMoney
 } from '@utils/transform.util';
 import ProductCard from '@components/order/product-card';
+import { dummyAvatar } from '@constant/value.constant';
 
 type OrderShowProps = {
   order?: IOrder | null;
@@ -51,7 +52,7 @@ const OrderShow = ({ order }: OrderShowProps) => {
             <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               <Box className="flex flex-row gap-2 items-start">
                 <AvatarImage
-                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src={dummyAvatar}
                   alt={customer?.username || 'avatar'}
                   size={48}
                 />

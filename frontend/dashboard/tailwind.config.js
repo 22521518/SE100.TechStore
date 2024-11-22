@@ -25,7 +25,7 @@ module.exports = {
         accent: '#08050c'
       },
       white: '#f7f5ff',
-      star: '#eab308'
+      star: '#99AABB'
     }
   },
   plugins: [require('tailwind-scrollbar')]

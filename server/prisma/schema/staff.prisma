@@ -11,6 +11,9 @@ model Staff {
     role_id   Int?
     full_name  String   @db.VarChar(100)
     phone_number String   @db.VarChar(10)
+    male       Boolean? @default(true)
+    birth_date DateTime?
+    image     String?   @db.VarChar(255) 
     employee_status EMPLOY_STATUS @default(INACTIVE)
     hire_date  DateTime
     
@@ -28,7 +31,7 @@ model Roles {
 }
 
 model Permissions {
-    permission_id   Int   @id @default(autoincrement())
+    permission_id   String  @id @db.VarChar(50) @default(cuid())
     permission_name String   @db.VarChar(50) @unique
     description     String   @db.Text
 

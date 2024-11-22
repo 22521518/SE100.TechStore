@@ -1,14 +1,14 @@
 'use client';
 
 import AvatarImage from '@components/avatar';
-import { IInboxRoom } from '@constant/interface.constant';
+import { IInboxRoomCard } from '@constant/interface.constant';
 import { dummyAvatar } from '@constant/value.constant';
 import { Box, Stack, Typography } from '@mui/material';
 import { transformDate } from '@utils/transform.util';
 import React from 'react';
 
 type InboxRoomCardProps = {
-  room: IInboxRoom;
+  room: IInboxRoomCard;
   isChoosen: boolean;
   onClick: () => void;
 };
@@ -18,10 +18,9 @@ const InboxRoomCard = ({
   isChoosen = false,
   onClick
 }: InboxRoomCardProps) => {
-  const message = room.messages[room.messages.length - 1];
+  const message = room.latestMessage;
   const sender = message.sender;
-  const isSeen =
-    sender.is_seen && sender.sender_id === room.customer.customer_id;
+  const isSeen = message.is_seen;
 
   return (
     <Box

@@ -1,47 +1,42 @@
 "use client";
-import { fetchDistricts, fetchProvinces, fetchWards } from "@actions/address";
-import DatePicker from "@components/Input/DatePicker";
+import {
+  deleteCustomerAddress,
+  fetchDistricts,
+  fetchProvinces,
+  fetchWards,
+  getCustomerAddresses,
+  postCustomerAddress,
+} from "@service/address";
 import DropDownButton from "@components/Input/DropDownButton";
 import InputBox from "@components/Input/InputBox";
 import PhoneInput from "@components/Input/PhoneInput";
-import RadioButton from "@components/Input/RadioButton";
 import Divider from "@components/UI/Divider";
-import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Input } from "postcss";
 import React, { useEffect, useState } from "react";
+import { useSession } from "@node_modules/next-auth/react";
+import { toastError, toastSuccess, toastWarning } from "@util/toaster";
+import { FontAwesomeIcon } from "@node_modules/@fortawesome/react-fontawesome";
+import { faTrash } from "@node_modules/@fortawesome/free-solid-svg-icons";
+import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 
 const Address = () => {
+  const session = useSelector((state) => state.session);
+  const [isLoading, setIsLoading] = useState(true);
   const [isUpdatingAddresses, setIsUpdatingAddresses] = useState("");
-  const [addresses, setAddresses] = useState([
-    {
-      id: "123",
-      fullname: "John Doe",
-      phone: "1234 567 890",
-      specificAddress: "123 Street",
-      address: "Xã Bình Khánh, Huyện Cần Giờ, Thành phố Hồ Chí Minh",
-      default: true,
-    },
-    {
-      id: "456",
-      fullname: "John Nguyễn",
-      phone: "1234 567 890",
-      specificAddress: "123 Street",
-      address: "Thị trấn Tây Đằng, Huyện Ba Vì, Thành phố Hà Nội",
-      default: false,
-    },
-  ]);
+  const [addresses, setAddresses] = useState([]);
 
-  const [newAdddress, setNewAddress] = useState({
+  const [newAddress, setNewAddress] = useState({
     id: "",
-    fullname: "",
-    phone: "",
-    specificAddress: "",
+    city: "",
+    state: "",
+    full_name: "",
+    phone_number: "",
     address: "",
-    type: "",
-    default: false,
+    province: "",
+    district: "",
+    ward: "",
+    is_primary: false,
   });
-  const [skipflag, setSkipFlag] = useState(false);
+  const [skip_flag, setSkip_Flag] = useState(false);
   const [provinces, setProvinces] = useState();
   const [districts, setDistricts] = useState();
   const [wards, setWards] = useState();
@@ -49,24 +44,53 @@ const Address = () => {
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
 
-  const handleChangeProvince = (province) => {
-    setProvince(province);
+  const checkEmptyInput = () => {
+    if (
+      !newAddress.address.trim() ||
+      !newAddress.full_name.trim() ||
+      !newAddress.phone_number.trim() ||
+      !province.name.trim() ||
+      !district.name.trim() ||
+      !ward.name.trim()
+    ) {
+      toastWarning("Please fill out all field");
+      return true;
+    }
+    return false;
   };
-  const handleChangeDistrict = (district) => {
-    setDistrict(district);
+  const deleteAddress = () => {
+    deleteCustomerAddress({ user_id: session.user.id, ...newAddress }).then(
+      (data) =>
+        data
+          ? toastSuccess("Address deleted")
+          : toastError("Failed to delete address")
+    );
   };
-  const handleChangeWard = (ward) => {
-    setWard(ward);
+  const addAddress = () => {
+    postCustomerAddress({ user_id: session.user.id, ...newAddress }).then(
+      (data) =>
+        data
+          ? toastSuccess("Address added")
+          : toastError("Failed to add address")
+    );
+  };
+  const fetchAddress = () => {
+    setIsLoading(true);
+    getCustomerAddresses(session?.user?.id).then((data) => {
+      setAddresses(data.map((a, index) => ({ id: index, ...a })));
+    });
+
+    setTimeout(() => setIsLoading(false), 1000);
   };
 
   useEffect(() => {
-    if (skipflag) return;
+    if (skip_flag) return;
     setDistrict(null);
     getDistricts(province?.id || "");
   }, [province]);
 
   useEffect(() => {
-    if (skipflag) return;
+    if (skip_flag) return;
     setWard(null);
     getWards(district?.id || "");
   }, [district]);
@@ -103,44 +127,65 @@ const Address = () => {
 
   useEffect(() => {
     getProvinces();
+    fetchAddress();
   }, []);
 
   useEffect(() => {
     if (!isUpdatingAddresses) {
       setWards([]);
       setDistricts([]);
-    } else if(isUpdatingAddresses==='Adding') {
-        setProvince(null)
-        setDistrict(null)
-        setWard(null)
-        setNewAddress({
-            id: "",
-            fullname: "",
-            phone: "",
-            specificAddress: "",
-            address: "",
-            default: false,
-          })
+    } else if (isUpdatingAddresses === "Adding") {
+      setProvince(null);
+      setDistrict(null);
+      setWard(null);
+      setNewAddress({
+        id: "",
+        city: "",
+        state: "",
+        full_name: "",
+        phone_number: "",
+        address: "",
+        province: "",
+        district: "",
+        ward: "",
+        is_primary: false,
+      });
     }
   }, [isUpdatingAddresses]);
 
   const handleAddNewAddress = () => {
+    if (checkEmptyInput()) return;
     setAddresses((prev) => [
       ...prev,
       {
-        ...newAdddress,
-        address: [ward.name, district.name, province.name].join(", "),
+        ...newAddress,
+        province: province.name,
+        district: district.name,
+        ward: ward.name,
       },
     ]);
+
+    addAddress();
   };
 
+  const handleDeleteAddress = (id) => {
+    setAddresses(
+      addresses.filter(address=>address.id!==id)
+    )
+
+    deleteAddress()
+  }
+
   const handleUpdateAddress = () => {
+    if (checkEmptyInput()) return;
     setAddresses(
       addresses.map((address) => {
-        return address.id === newAdddress.id
+        return address.id === newAddress.id
           ? {
-              ...newAdddress,
-              address: [ward.name, district.name, province.name].join(", "),
+              ...newAddress,
+              province: province.name,
+              district: district.name,
+              ward: ward.name,
             }
           : address;
       })
@@ -148,33 +193,32 @@ const Address = () => {
     setIsUpdatingAddresses("");
   };
 
-  const handleFullnameChange = (text) => {
-    setNewAddress((prev) => ({ ...prev, fullname: text }));
+  const handleFull_nameChange = (text) => {
+    setNewAddress((prev) => ({ ...prev, full_name: text }));
   };
   const handlePhoneChange = (text) => {
-    setNewAddress((prev) => ({ ...prev, phone: text }));
+    setNewAddress((prev) => ({ ...prev, phone_number: text }));
   };
   const handleSpecificAddressChange = (text) => {
-    setNewAddress((prev) => ({ ...prev, specificAddress: text }));
+    setNewAddress((prev) => ({ ...prev, address: text }));
   };
 
   const handleSetDefaultAddress = (id) => {
     setAddresses(
       addresses.map((address) => {
-        return { ...address, default: address.id === id ? true : false };
+        return { ...address, is_primary: address.id === id ? true : false };
       })
     );
   };
 
   const handleInitUpdateAddress = async (id) => {
     setIsUpdatingAddresses("");
-    setSkipFlag(true);
+    setSkip_Flag(true);
 
     const selectedAddress = addresses.find((item) => item.id === id);
     setNewAddress(selectedAddress);
 
-    const [wardName, districtName, provinceName] =
-      selectedAddress.address.split(", ");
+    const { ward, district, province } = selectedAddress;
 
     const provinceList = await fetchProvinces();
     const formattedProvinces = provinceList.map((prov) => {
@@ -183,7 +227,7 @@ const Address = () => {
     setProvinces(formattedProvinces);
 
     const selectedProvince = formattedProvinces.find(
-      (prov) => prov.name === provinceName
+      (prov) => prov.name === province
     );
 
     if (selectedProvince) {
@@ -195,24 +239,22 @@ const Address = () => {
       setDistricts(formattedDistricts);
 
       const selectedDistrict = formattedDistricts.find(
-        (dist) => dist.name === districtName
+        (dist) => dist.name === district
       );
       if (selectedDistrict) {
         setDistrict(selectedDistrict);
         const wardList = await fetchWards(selectedDistrict.id);
-        const formattedWards = wardList.map((ward) => {
-          return { id: ward.ward_id, name: ward.ward_name };
+        const formattedWards = wardList.map((w) => {
+          return { id: w.ward_id, name: w.ward_name };
         });
         setWards(formattedWards);
 
-        const selectedWard = formattedWards.find(
-          (ward) => ward.name === wardName
-        );
+        const selectedWard = formattedWards.find((w) => w.name === ward);
         setWard(selectedWard);
       }
     }
     setIsUpdatingAddresses("Updating");
-    setSkipFlag(false);
+    setSkip_Flag(false);
   };
 
   return (
@@ -237,12 +279,12 @@ const Address = () => {
         <div className="z-20">
           <div className="flex flex-col py-4 gap-4 bg-surface rounded-lg p-2">
             <InputBox
-              value={newAdddress.fullname}
+              value={newAddress.full_name}
               name={"Full name *"}
-              onChange={handleFullnameChange}
+              onChange={handleFull_nameChange}
             />
             <PhoneInput
-              value={newAdddress.phone}
+              value={newAddress.phone_number}
               name={"Phone number *"}
               onChange={handlePhoneChange}
               maxLength={12}
@@ -252,26 +294,26 @@ const Address = () => {
                 value={province}
                 options={provinces}
                 name="province"
-                onChange={handleChangeProvince}
+                onChange={setProvince}
                 zIndex={70}
               />
               <DropDownButton
                 value={district}
                 options={districts}
                 name="district"
-                onChange={handleChangeDistrict}
+                onChange={setDistrict}
                 zIndex={60}
               />
               <DropDownButton
                 value={ward}
                 options={wards}
                 name="ward"
-                onChange={handleChangeWard}
+                onChange={setWard}
                 zIndex={50}
               />
             </div>
             <InputBox
-              value={newAdddress.specificAddress}
+              value={newAddress.address}
               name={"Specific address *"}
               onChange={handleSpecificAddressChange}
             />
@@ -301,45 +343,75 @@ const Address = () => {
         </div>
       )}
       {/* address list section */}
-      <div className="flex flex-col gap-4">
-        {addresses.map((item) => (
-          <div
-            key={item.id}
-            className="grid grid-cols gap-3 items-start w-full bg-surface rounded-lg p-2 min-h-[70px]"
-          >
-            <div className="flex flex-col items-start gap-2 h-full justify-around text-base">
-              <h2>
-                <span className="text-xl font-semibold">{item.fullname}</span> |{" "}
-                {item.phone}
-              </h2>
-              <h3 className="opacity-50">{item.specificAddress}</h3>
-              <h3 className="opacity-50">{item.address}</h3>
-            </div>
-            <div className="w-full flex flex-wrap justify-between col-span-2">
-              {item.default && (
-                <div className="rounded-lg border-2 border-green-500 px-2 text-green-500">
-                  Default
+      <div className="flex flex-col gap-4 w-full">
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <li
+                key={index}
+                className="grid grid-cols gap-3 items-start w-full bg-surface rounded-lg p-2 min-h-[70px]"
+              >
+                <div className="flex flex-col items-start gap-2 justify-around text-base">
+                  <h2 className="flex items-center gap-2">
+                    <div className="h-7 font-semibold w-[100px] bg-primary rounded-lg animate-pulse"></div>
+
+                    <div className="h-6 w-[100px] bg-primary rounded-lg animate-pulse"></div>
+                  </h2>
+                  <h3 className="h-6 w-[150px] bg-primary rounded-lg animate-pulse"></h3>
+                  <h3 className="h-6 w-full  max-w-[400px] bg-primary rounded-lg animate-pulse"></h3>
                 </div>
-              )}
-              <div className="flex flex-wrap flex-row-reverse gap-2 ml-auto ">
-                <button
-                  className="button-variant-2"
-                  onClick={() => handleInitUpdateAddress(item.id)}
-                >
-                  Update
-                </button>
-                {!item.default && (
-                  <button
-                    className="button-variant-2"
-                    onClick={() => handleSetDefaultAddress(item.id)}
-                  >
-                    Set default
-                  </button>
-                )}
+                <div className="w-full flex flex-wrap justify-between col-span-2">
+                  <div className="flex flex-wrap flex-row-reverse gap-2 ml-auto ">
+                    <div className="h-7 w-[70px] bg-primary rounded-lg animate-pulse"></div>
+                    <div className="h-7 w-[60px] bg-primary rounded-lg animate-pulse"></div>
+                  </div>
+                </div>
+              </li>
+            ))
+          : addresses.map((item) => (
+              <div
+                key={item.id}
+                className="grid grid-cols gap-3 items-start w-full bg-surface rounded-lg p-2 min-h-[70px]"
+              >
+                <div className="flex flex-col items-start gap-2 justify-around text-base">
+                  <h2>
+                    <span className="text-xl font-semibold">
+                      {item.full_name}
+                    </span>{" "}
+                    | {item.phone_number}
+                  </h2>
+                  <h3 className="opacity-50">{item.address}</h3>
+                  <h3 className="opacity-50">
+                    {[item.ward, item.district, item.province].join(", ")}
+                  </h3>
+                </div>
+                <div className="w-full flex flex-wrap justify-between col-span-2">
+                  {item.is_primary && (
+                    <div className="rounded-lg border-2 border-green-500 px-2 text-green-500">
+                      Default
+                    </div>
+                  )}
+                  <div className="flex flex-wrap flex-row-reverse gap-2 ml-auto items-center ">
+                    <button className="button-variant-1" onClick={()=>handleDeleteAddress(item.id)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                    <button
+                      className="button-variant-2"
+                      onClick={() => handleInitUpdateAddress(item.id)}
+                    >
+                      Update
+                    </button>
+                    {!item.is_primary && (
+                      <button
+                        className="button-variant-2"
+                        onClick={() => handleSetDefaultAddress(item.id)}
+                      >
+                        Set default
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))}
       </div>
     </section>
   );

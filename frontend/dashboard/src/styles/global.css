@@ -60,7 +60,7 @@
   }
 
   .layout .content {
-    @apply flex flex-col flex-grow overflow-scroll scroll-m-0 scroll-p-0;
+    @apply flex flex-col flex-grow overflow-y-scroll overflow-x-hidden scroll-m-0 scroll-p-0;
   }
 
   .breadcrumb {

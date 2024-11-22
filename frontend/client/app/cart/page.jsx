@@ -5,8 +5,19 @@ import Divider from "@components/UI/Divider";
 import { faCheckSquare } from "@fortawesome/free-regular-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getSession, useSession } from "@node_modules/next-auth/react";
+import { deleteCartItem } from "@service/cart";
+import { formattedPrice } from "@util/format";
+import { toastSuccess, toastWarning } from "@util/toaster";
 import { useRouter } from "next/navigation";
-import React, { useReducer, useState, useEffect } from "react";
+import React, { useReducer, useState, useEffect, useContext } from "react";
+
+import {
+  useDispatch,
+  useSelector,
+} from "@node_modules/react-redux/dist/react-redux";
+import { removeItem } from "@provider/redux/cart/cartSlice";
+import { setOrderItems, setOrderState, setOrderStateAsync } from "@provider/redux/order/orderSlice";
 
 function reducer(state, action) {
   if (action.type === "change_subtotal" && action.payload >= 0) {
@@ -20,47 +31,41 @@ function reducer(state, action) {
 }
 
 const Cart = () => {
-  const router = useRouter()
-  const [cartItems, setCartItems] = useState([
-    {
-      id: "1",
-      name: "iPhone 16 Pro Max",
-      category: "smart phone",
-      price: 16000000,
-      quantity: 1,
-      checked: false,
-    },
-    {
-      id: "2",
-      name: "Laptop dell",
-      category: "laptop",
-      price: 45000000,
-      quantity: 1,
-      checked: false,
-    },
-    {
-      id: "3",
-      name: "PS5",
-      category: "game console",
-      price: 7000000,
-      quantity: 1,
-      checked: false,
-    },
-  ]);
+  const session = useSelector((state) => state.session);
+  const cart = useSelector((state) => state.cart.items);
+  const reduxDispatch = useDispatch();
+  const router = useRouter();
+  const [cartItems, setCartItems] = useState([]);
   const [receipt, dispatch] = useReducer(reducer, {
     subtotal: 0,
     discount: 0,
     total: 0,
   });
 
-  useEffect ( () => {
+  const deleteItem = (id) => {
+    deleteCartItem(session.user.id, id);
+    reduxDispatch(
+      removeItem({
+        id: id,
+      })
+    );
+  };
+  useEffect(() => {
+    session && setCartItems(cart.map((item) => ({ checked: false, ...item })));
+  }, [session]);
+
+  useEffect(() => { 
     const newSubtotal = cartItems.reduce((acc, item) => {
-      return item.checked ? acc + item.price * item.quantity : acc;
+      return item.checked
+        ? acc +
+            (item.product.price -
+              (item.product.price / 100) * item.product.discount) *
+              item.quantity
+        : acc;
     }, 0);
 
     dispatch({ type: "change_subtotal", payload: newSubtotal });
-
-  },[cartItems])
+  }, [cartItems]);
 
   useEffect(() => {
     const total = receipt.subtotal - receipt.discount;
@@ -68,20 +73,43 @@ const Cart = () => {
   }, [receipt.subtotal, receipt.discount]);
 
   const handleCheckout = async () => {
-    router.push('cart/checkout')
-  }
+    if (cartItems.filter((item) => item.checked).length <= 0) {
+      toastWarning("Please select at least one item before checking out");
+      return;
+    }
+    const orderItems = cartItems
+      .filter((item) => item.checked)
+      .map((item) => ({
+        order_id: "",
+        product_id: item.product_id,
+        product: item.product,
+        quantity: item.quantity,
+        unit_price:  item.product.price -
+        (item.product.price / 100) * item.product.discount,
+        total_price:
+          (item.product.price -
+          (item.product.price / 100) * item.product.discount)*item.quantity ,
+      }));
 
-  const handleRemoveItem = (id) => {
-    const newCart = cartItems.filter(item => item.id!==id)
-    
-    setCartItems(newCart)
-
+    // Dispatching the order items to Redux
+    reduxDispatch(setOrderItems({ items: orderItems }));
+    await reduxDispatch(setOrderStateAsync(1));
+    router.push("cart/checkout");
   };
 
-  
+  const handleRemoveItem = async (id) => {
+    const newCart = cartItems.filter((item) => item.product_id !== id);
+    deleteItem(id);
+    setCartItems(newCart);
+    toastSuccess("item deleted");
+  };
 
-  const handleRemoveAllItems = () => {
-    setCartItems([])
+  const handleRemoveAllItems = async () => {
+    cartItems.forEach((item) => {
+      deleteItem(item.product_id);
+    });
+    setCartItems([]);
+    toastSuccess("items deleted");
   };
 
   const setAllCheckState = (checked) => {
@@ -89,20 +117,18 @@ const Cart = () => {
       return { ...item, checked };
     });
 
-    setCartItems(newCart)
+    setCartItems(newCart);
   };
-
 
   const handleCalculateSubtotal = (id, quantity, checked) => {
     const newCart = cartItems.map((item) => {
-      if (item.id === id) {
+      if (item.product_id === id) {
         return { ...item, checked, quantity };
       }
       return item;
     });
 
-    setCartItems(newCart)
-
+    setCartItems(newCart);
   };
 
   return (
@@ -127,17 +153,17 @@ const Cart = () => {
                 onChecked={() => setAllCheckState(true)}
                 onUnchecked={() => setAllCheckState(false)}
               />
-              <h3 className="text-left">Produt</h3>
+              <h3 className="text-left">Products ({cartItems.filter(item=>item.checked===true).length||0}/{cartItems.length||0})</h3>
               <h3 className="hidden sm:inline-block text-center ml-auto">
-                Quanity
+                Quantity
               </h3>
               <h3 className="text-right">Price</h3>
             </div>
-            <Divider/>
+            <Divider />
             <ul className="flex flex-col gap-4 py-4">
-              {cartItems.map((item) => (
+              {cartItems?.map((item) => (
                 <CartItem
-                  key={item.id}
+                  key={item.product_id}
                   reCalculate={handleCalculateSubtotal}
                   cartItem={item}
                   removeItem={handleRemoveItem}
@@ -151,27 +177,26 @@ const Cart = () => {
         <div className="panel-1 flex flex-col gap-10 text-base min-w-[250px] md:row-start-2">
           <div className="flex flex-row justify-between items-center gap-4">
             <h3 className="opacity-70">Subtotal</h3>
-            <span className="">
-              {Intl.NumberFormat("en-US").format(receipt.subtotal)} VNĐ
-            </span>
+            <span className="">{formattedPrice(receipt.subtotal)}</span>
           </div>
           <div className="flex flex-row justify-between items-center gap-4">
             <h3 className="opacity-70">Discount</h3>
-            <span>
-              {Intl.NumberFormat("en-US").format(receipt.discount)} VNĐ
-            </span>
+            <span>{formattedPrice(receipt.discount)}</span>
           </div>
 
-          <Divider/>
+          <Divider />
 
           <div className="flex flex-row justify-between items-center gap-4">
             <h3>Grand total</h3>
             <span className="font-bold text-lg">
-              {Intl.NumberFormat("en-US").format(receipt.total)} VNĐ
+              {formattedPrice(receipt.total)}
             </span>
           </div>
 
-          <button className="button-variant-1 w-full" onClick={handleCheckout}> Checkout now</button>
+          <button className="button-variant-1 w-full" onClick={handleCheckout}>
+            {" "}
+            Checkout now
+          </button>
         </div>
       </div>
     </section>

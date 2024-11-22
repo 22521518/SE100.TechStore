@@ -1,72 +1,182 @@
-'use client'
+"use client";
 import DatePicker from "@components/Input/DatePicker";
 import InputBox from "@components/Input/InputBox";
 import PhoneInput from "@components/Input/PhoneInput";
 import RadioButton from "@components/Input/RadioButton";
 import Divider from "@components/UI/Divider";
+import ProfileImageHolder from "@components/UI/ProfileImageHolder";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getSession, useSession } from "@node_modules/next-auth/react";
+import { getCustomer } from "@service/customer";
+import { formattedDate } from "@util/format";
+import { handleImage } from "@util/image";
+import { toastSuccess, toastWarning } from "@util/toaster";
 import { Input } from "postcss";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 
 const Account = () => {
-  const [email,setEmail] = useState('JohnDoe@gmail.com')
-  const [gender,setGender] = useState('Male');
+  const session = useSelector((state) => state.session);
+  const [email, setEmail] = useState("");
+  const [customer, setCustomer] = useState();
+  const [image,setImage] = useState({name:'',url:''})
+  const [gender, setGender] = useState("Male");
+  const imagePicker = useRef(null)
   const handleRadioSelectionChange = (value) => {
     setGender(value);
   };
+
+  const checkEmptyInput = () => {
+    if (
+      !customer.full_name.trim() ||
+      !customer.phone_number.trim() ||
+      !customer.username.trim() ||
+      !customer.birth_date.trim() 
+    ) {
+      toastWarning("Please fill out all field");
+      return true;
+    }
+    return false;
+  };
+
+  const handleEditCustomer = async () => {
+    if(checkEmptyInput()) return 
+    const newSession = await getSession();
+    await update(newSession);
+    toastSuccess("Information updated");
+  };
+
+  const fetchUser = () => {
+    getCustomer(session?.user?.id||'').then((data) => {
+      setImage({name:'user',url:data.image})
+      setEmail(data.account.email);
+      setCustomer(data);
+      setGender(data.male ? "Male" : "Female");
+    });
+  };
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const handleFirstNameChange = (firstName) => {
+    setCustomer((c) => ({
+      ...c,
+      full_name: `${firstName} ${c.full_name.split(" ").slice(1).join(" ")}`,
+    }));
+  };
+
+  const handleLastNameChange = (lastName) => {
+    setCustomer((c) => ({
+      ...c,
+      full_name: `${c.full_name.split(" ")[0]} ${lastName}`,
+    }));
+  };
+
+  const changeImage = ({ name, url }) => {
+    setImage({
+      name,url
+    });
+  };
+
+  const handleImageChange = async (e) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      await handleImage(files[0], changeImage);
+    }
+  };
+
+  const handleOpenImage = () => {
+    imagePicker.current&&imagePicker.current.click()
+  }
+
   return (
     <section className="w-full flex flex-col gap-2">
       <div className="w-full flex flex-col gap-2">
         <div className="text-xl font-semibold">My Profile</div>
-        <div className="text-sm opacity-60">Manage your personal information</div>
+        <div className="text-sm opacity-60">
+          Manage your personal information
+        </div>
       </div>
-      <Divider/>
+      <Divider />
       <div className="flex flex-col md:flex-row">
         <div className="flex flex-col gap-4 items-center p-4">
-          <FontAwesomeIcon icon={faUserCircle} className="text-6xl" />
-          <button>Change photo</button>
+          <ProfileImageHolder url={image.url}/>
+          <button className="button-variant-1" onClick={handleOpenImage}>Change photo</button>
+          <input type="file" accept="image/" className="hidden" ref={imagePicker} onChange={handleImageChange}/>
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-4 md:flex-row">
-              <span className="grid grid-rows-[auto_1fr] md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-10 ">
-                <span>Last name</span>
-                <InputBox/>
-              </span>
-              <span className="grid grid-rows-[auto_1fr] md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-10 ">
-                <span>First name</span>
-                <InputBox />
-              </span>
+            <span className="grid grid-cols-1 md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-x-10 gap-y-4 ">
+              <span>Last name</span>
+              <InputBox
+                value={
+                  customer?.full_name
+                    .split(" ")
+                    .filter((_, index) => index !== 0)
+                    .join(" ") || ""
+                }
+                onChange={handleLastNameChange}
+              />
+            </span>
+            <span className="grid grid-cols-1 md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-x-10 gap-y-4 ">
+              <span>First name</span>
+              <InputBox
+                value={customer?.full_name.split(" ")[0] || ""}
+                onChange={handleFirstNameChange}
+              />
+            </span>
           </div>
           <span className="grid grid-cols-1 md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-x-10 gap-y-4 ">
             <span>Username</span>
-            <InputBox />
+            <InputBox
+              value={customer?.username || ""}
+              onChange={(s) => setCustomer((c) => ({ ...c, username: s }))}
+            />
             <span>Email</span>
-            <InputBox value={email}/>
+            <InputBox value={email} onChange={() => {}} />
             <span>Phone</span>
-            <PhoneInput/>
+            <PhoneInput
+              value={customer?.phone_number || ""}
+              onChange={(s) => setCustomer((c) => ({ ...c, phone_number: s }))}
+            />
             <span>Gender</span>
             <div className="flex flex-row gap-4">
-                <label
-                className="flex gap-2 items-center"
-                  htmlFor='Male'
-                >
-                    <RadioButton name={'gender'} value={'Male'} checked={gender==='Male'} onChange={handleRadioSelectionChange}/>
-                    <span>Male</span>
-                </label>
-                <label
-                 className="flex gap-2 items-center"
-                htmlFor='Female'>
-                    <RadioButton name={'gender'} value={'Female'} checked={gender==='Female'} onChange={handleRadioSelectionChange}/>
-                    <span>Female</span>
-                </label>
+              <label className="flex gap-2 items-center" htmlFor="Male">
+                <RadioButton
+                  name={"gender"}
+                  value={"Male"}
+                  checked={gender === "Male"}
+                  onChange={handleRadioSelectionChange}
+                />
+                <span>Male</span>
+              </label>
+              <label className="flex gap-2 items-center" htmlFor="Female">
+                <RadioButton
+                  name={"gender"}
+                  value={"Female"}
+                  checked={gender === "Female"}
+                  onChange={handleRadioSelectionChange}
+                />
+                <span>Female</span>
+              </label>
             </div>
           </span>
           <span className="grid grid-rows-[auto_1fr] md:grid-cols-[100px_1fr] md:grid-rows-1 whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-10 ">
             <span>Birth date</span>
-            <DatePicker />
+            <DatePicker
+              value={customer? formattedDate(customer.birth_date) : ""}
+              onChange={(s) => setCustomer((c) => ({ ...c, birth_date: s }))}
+            />
           </span>
-          <div><button className="button-variant-1 ml-auto">Edit profile</button></div>
+          <div>
+            <button
+              className="button-variant-1 ml-auto"
+              onClick={handleEditCustomer}
+            >
+              Edit profile
+            </button>
+          </div>
         </div>
       </div>
     </section>

@@ -32,7 +32,7 @@ const ProductSatistics = ({ feedbackList }: ProductSatisticsProps) => {
           </Typography>
           <StarIcon className="text-5xl text-star" />
         </Box>
-        <Typography variant="h6" className="text-slate-400 text-2xl">
+        <Typography variant="h6" className="text-secondary-100 text-2xl">
           from {totalReviews} reviews{' '}
         </Typography>
         {ratingDistribution.reverse().map((count, index) => {

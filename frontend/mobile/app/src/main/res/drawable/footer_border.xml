@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Corners: rounded at the bottom only -->
+    <corners
+        android:topLeftRadius="12dp"
+        android:topRightRadius="12dp"
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp"/>
+    <padding
+        android:bottom="8dp"
+        android:left="8dp"
+        android:right="8dp"
+        android:top="8dp" />
+    <!-- Only bottom border with fade effect -->
+
+    <!-- Create the bottom border with a fading gradient -->
+    <gradient
+        android:startColor="@android:color/transparent"
+        android:endColor="#60B0B0B0"
+        android:angle="90" /> <!-- Horizontal gradient for the fading effect -->
+</shape>

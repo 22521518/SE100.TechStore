@@ -7,20 +7,28 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { getAllCategory } from "@service/category";
 
 const Footer = () => {
+  const [categories, setCategories] = useState([]);
+
+  const fetchCategories = () => {
+    getAllCategory().then((data) => setCategories(data));
+  };
+
+  useEffect(()=>{fetchCategories()},[])
+
   return (
     <div className="h-fit w-full bg-secondary text-on-secondary flex sm:flex-row gap-4 flex-col px-10 md:px-20 py-10">
       <div className="flex sm:flex-row flex-col gap-10 grow">
         <div className="flex flex-col gap-2">
           <span className="font-bold">Products</span>
           <ul className="flex sm:flex-col gap-1 text-sm text-on-secondary/50 ">
-            <li className="hover:text-on-secondary cursor-pointer">Category</li>
-            <li className="hover:text-on-secondary cursor-pointer">Category</li>
-            <li className="hover:text-on-secondary cursor-pointer">Category</li>
-            <li className="hover:text-on-secondary cursor-pointer">Category</li>
+            {categories.map(item=>
+               <li key={item.category_id} className="hover:text-on-secondary cursor-pointer"><Link href={`/search?category=${item.category_id}`}>{item.category_name}</Link></li>
+            )}
           </ul>
         </div>
         <div className="flex flex-col gap-2">
@@ -40,7 +48,6 @@ const Footer = () => {
             <li className="hover:text-on-secondary cursor-pointer">
               <Link href="/about">About us</Link>
             </li>
-            <li className="hover:text-on-secondary cursor-pointer">Careers</li>
           </ul>
         </div>
       </div>

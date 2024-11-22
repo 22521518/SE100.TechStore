@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Stack } from '@mui/material';
+import { Box } from '@mui/material';
 import React from 'react';
 
 import Typography from '@mui/material/Typography';
@@ -52,7 +52,7 @@ const CustomerList = () => {
         renderCell: ({ row }) => {
           return (
             <Typography className="h-full flex items-center">
-              {row.account.email}
+              {row.account?.email}
             </Typography>
           );
         }
@@ -94,8 +94,7 @@ const CustomerList = () => {
           </Box>
           <Box className="flex flex-col">
             <DataGrid
-              // {...dataGridProps}
-              rows={generateCustomers(10)}
+              {...dataGridProps}
               getRowId={(row) => row.customer_id}
               onCellClick={(cell) => {
                 if (cell.field !== 'actions') {
@@ -134,13 +133,11 @@ function generateCustomers(loop: number): ICustomer[] {
   for (let i = 0; i < loop; i++) {
     customers.push({
       customer_id: `customer-${i + 1}`,
+      account_id: `account-${i + 1}`,
       username: `user${i + 1}`,
       full_name: `Customer Full Name ${i + 1}`,
       phone_number: `+1234567890${i}`,
-      date_joined: new Date().toISOString(),
-      account: {
-        email: `customer${i + 1}@example.com`
-      }
+      date_joined: new Date().toISOString()
     });
   }
 

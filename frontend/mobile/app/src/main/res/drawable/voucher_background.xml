@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background gradient for the voucher with better contrast -->
+    <item>
+        <shape android:shape="rectangle">
+            <!-- Lighter gradient with an emphasis on contrast for gray text -->
+            <gradient
+                android:startColor="#FF6F61"
+            android:endColor="#D35400"
+            android:angle="90" />
+        </shape>
+    </item>
+</layer-list>

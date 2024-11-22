@@ -17,63 +17,56 @@ import { HttpError, useForm } from '@refinedev/core';
 import React from 'react';
 import GenderIcon from '@components/icons/gender-icon';
 import CustomerFeedbackList from './feedback-list';
-import {
-  generateProductFeedback,
-  generateRandomAddresses,
-  generateRandomOrder
-} from '@utils/random.util';
 import CustomerOrderList from './order-list';
 import { transformVNMoney } from '@utils/transform.util';
 import { dummyAvatar } from '@constant/value.constant';
 
 const CustomerShow = () => {
-  const { query, formLoading, onFinish } = useForm<
-    ICustomer,
-    HttpError,
-    CustomerFormValues
-  >();
+  const { query, formLoading, onFinish } = useForm<ICustomer, HttpError>();
   const record = query?.data?.data;
 
-  const { query: addressQuery, formLoading: addressLoading } = useForm<
-    IAccount,
-    HttpError
-  >({
-    resource: 'addresses',
-    action: 'edit',
-    id: record?.customer_id || 'default-customer-id'
+  const [customerValue, setCustomerValue] = React.useState<ICustomer>({
+    customer_id: record?.customer_id || '',
+    account_id: record?.account_id || '',
+    username: record?.username || '',
+    full_name: record?.full_name || '',
+    phone_number: record?.phone_number || '',
+    date_joined: record?.date_joined || '',
+    account: record?.account || { email: '' },
+    product_feedbacks: record?.product_feedbacks || [],
+    orders: record?.orders || [],
+    addresses: record?.addresses || []
   });
 
-  const addressList = generateRandomAddresses(5);
-  const feedbackList = generateProductFeedback(15);
-  const orderList = generateRandomOrder(10);
-
-  const totalSpending = orderList.reduce((acc, order) => {
+  const totalSpending = customerValue.orders?.reduce((acc, order) => {
     acc += order.total_price;
     return acc;
   }, 0);
-
-  const [customerValue, setCustomerValue] = React.useState<ICustomer>({
-    customer_id: record?.customer_id || 'default-customer-id',
-    username: record?.username || 'default_username',
-    full_name: record?.full_name || 'Default Full Name',
-    phone_number: record?.phone_number || '+10000000000',
-    date_joined: record?.date_joined || new Date().toISOString(),
-    account: record?.account || { email: 'default@example.com' }
-  });
 
   const male = true;
   const dummyBirthday = '1-1-2003';
 
   React.useEffect(() => {
     setCustomerValue({
-      customer_id: record?.customer_id || 'default-customer-id',
-      username: record?.username || 'default_username',
-      full_name: record?.full_name || 'Default Full Name',
-      phone_number: record?.phone_number || '+10000000000',
-      date_joined: record?.date_joined || new Date().toISOString(),
-      account: record?.account || { email: 'default@example.com' }
+      customer_id: record?.customer_id || '',
+      account_id: record?.account_id || '',
+      username: record?.username || '',
+      full_name: record?.full_name || '',
+      phone_number: record?.phone_number || '',
+      date_joined: record?.date_joined || '',
+      account: record?.account || { email: '' },
+      addresses: record?.addresses || []
     });
   }, [record]);
+
+  if (formLoading || !record) {
+    return (
+      <div>
+        Loading... {formLoading},{' '}
+        {record ? JSON.stringify(record) : 'no record'},
+      </div>
+    );
+  }
 
   return (
     <>
@@ -119,7 +112,7 @@ const CustomerShow = () => {
                   <Box className="flex flex-row gap-4 items-center">
                     <AlternateEmailIcon />
                     <Typography variant="body1">
-                      {customerValue.account.email}
+                      {customerValue.account?.email}
                     </Typography>
                   </Box>
                   <Box className="flex flex-row gap-4 items-center">
@@ -145,7 +138,7 @@ const CustomerShow = () => {
               </Box>
               {/* Address */}
               <Stack className="gap-4 p-4">
-                {addressList.map((address, index) => (
+                {customerValue.addresses?.map((address, index) => (
                   <Box key={index} className="flex flex-row gap-3 items-center">
                     <HouseOutlinedIcon />
                     <Typography variant="caption" className="text-slate-500">
@@ -166,13 +159,19 @@ const CustomerShow = () => {
               </Typography>
             </Box>
             <Typography variant="h4" className="text-3xl font-bold">
-              {transformVNMoney(totalSpending)}
+              {transformVNMoney(totalSpending || 0)}
             </Typography>
           </Box>
         </CommonContainer>
         <Box className="flex flex-row gap-1 w-full">
-          <CustomerFeedbackList feedbackList={feedbackList} />
-          <CustomerOrderList orderList={orderList} />
+          {customerValue.product_feedbacks && (
+            <CustomerFeedbackList
+              feedbackList={customerValue.product_feedbacks}
+            />
+          )}
+          {customerValue.orders && (
+            <CustomerOrderList orderList={customerValue.orders} />
+          )}
         </Box>
       </Stack>
     </>

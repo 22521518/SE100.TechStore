@@ -1,24 +1,25 @@
 'use client';
 
-import AvatarImage from '@components/avatar';
-import InboxBox from '@components/inbox/inbox-box';
-import InboxChatBar from '@components/inbox/inbox-chat-bar';
 import InboxRoomShow from '@components/inbox/show/inbox-show';
-import { IInboxRoom } from '@constant/interface.constant';
-import { dummyAvatar } from '@constant/value.constant';
-import { Box, Stack, Typography } from '@mui/material';
-import { generateRandomInboxRoom } from '@utils/random.util';
+import { IInboxRoom, IInboxRoomCard } from '@constant/interface.constant';
+import { HttpError, useOne } from '@refinedev/core';
 import React from 'react';
 
 type InboxShowProps = {
-  showRoom: IInboxRoom;
+  showRoom: IInboxRoomCard;
 };
 
 const InboxShow = ({ showRoom }: InboxShowProps) => {
   const identity = '--admin';
-  const roomMessage = showRoom;
+  const { data, isLoading, isError } = useOne<IInboxRoom, HttpError>({
+    resource: 'inbox',
+    id: showRoom.customer.customer_id
+  });
+  const roomMessage = data?.data;
 
-  return <InboxRoomShow showRoom={roomMessage} />;
+  if (isLoading || !data) return <div>Loading...</div>;
+
+  return <>{roomMessage && <InboxRoomShow showRoom={roomMessage} />}</>;
 };
 
 export default InboxShow;

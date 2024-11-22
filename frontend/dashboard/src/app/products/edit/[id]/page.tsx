@@ -3,8 +3,8 @@
 import React from 'react';
 import {
   ICategory,
-  IProduct,
-  IProductAttribute
+  IProductAttribute,
+  IProductReceive
 } from '@constant/interface.constant';
 import {
   Box,
@@ -22,11 +22,16 @@ import ProductAttributeFields from '@components/products';
 import Image from 'next/image';
 import { dummyProductImage } from '@constant/value.constant';
 import CommonContainer from '@components/common-container';
+import { ProductFormValues } from '@app/products/product.interface';
+import { handleImage } from '@utils/image.utils';
 
 const ProductEdit = () => {
   const { list } = useNavigation();
 
-  const { query, onFinish, formLoading } = useForm<IProduct, HttpError>();
+  const { query, onFinish, formLoading } = useForm<
+    IProductReceive,
+    HttpError
+  >();
 
   const record = query?.data?.data;
 
@@ -35,7 +40,7 @@ const ProductEdit = () => {
   });
   const categories = data?.data || [];
 
-  const [productValue, setProductValue] = React.useState<IProduct>({
+  const [productValue, setProductValue] = React.useState<IProductReceive>({
     product_name: record?.product_name || '',
     images: record?.images || [],
     description: record?.description || '',
@@ -53,11 +58,37 @@ const ProductEdit = () => {
     });
   };
 
+  const [productFormValue, setProductFormValue] =
+    React.useState<ProductFormValues>({
+      ...productValue,
+      images: [
+        {
+          name: productValue.product_name,
+          url: productValue.images[0]
+        }
+      ]
+    });
+
+  const changeImage = ({ name, url }: { name: string; url: string }) => {
+    setProductFormValue({
+      ...productFormValue,
+      images: [{ name, url }]
+    });
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      await handleImage(files[0], changeImage);
+    }
+  };
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await onFinish(productValue);
-      list('/products');
+      console.log('productFormValue', productFormValue);
+      await onFinish(productFormValue);
+      // list('/products');
     } catch (error) {
       console.log('error', error);
     }
@@ -68,6 +99,22 @@ const ProductEdit = () => {
       setProductValue({
         product_name: record?.product_name || '',
         images: record?.images || [],
+        description: record?.description || '',
+        price: record?.price || 0,
+        discount: record?.discount || 0,
+        stock_quantity: record?.stock_quantity || 0,
+        categories: record?.categories || [],
+        attributes: record?.attributes || []
+      });
+
+      setProductFormValue({
+        product_name: record?.product_name || '',
+        images: [
+          {
+            name: record?.product_name,
+            url: record?.images[0]
+          }
+        ],
         description: record?.description || '',
         price: record?.price || 0,
         discount: record?.discount || 0,
@@ -96,7 +143,7 @@ const ProductEdit = () => {
         <Stack className=" flex-1 gap-4 items-center justify-center">
           <Image
             src={
-              (productValue.images && productValue.images[0]) ||
+              (productFormValue.images && productFormValue.images[0]?.url) ||
               dummyProductImage
             }
             alt="Product Image"
@@ -104,13 +151,7 @@ const ProductEdit = () => {
             height={500}
             className="rounded-lg max-h-[500px] max-w-[500px] object-contain overflow-hidden h-max w-max"
           />
-          <Box className="grid grid-cols-5 gap-2 w-full">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Box key={i} className="col-span-1">
-                <Box className="bg-accent rounded-lg size-24"></Box>
-              </Box>
-            ))}
-          </Box>
+          <input accept="image/*" type="file" onChange={handleImageChange} />
         </Stack>
         <form
           className="flex-1 flex flex-col justify-between"

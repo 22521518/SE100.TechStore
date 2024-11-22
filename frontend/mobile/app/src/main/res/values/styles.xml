@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="RoundedImage">
+        <item name="shapeAppearanceOverlay">@style/RoundedImageShape</item>
+    </style>
+
+    <style name="RoundedImageShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item> <!-- Adjust as needed -->
+    </style>
+</resources>

@@ -1,353 +1,262 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:id="@+id/header"
+        android:background="@drawable/header_border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        >
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/backbutton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_left_icon"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="42dp"
-            android:text="Select payment method"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textColor="@color/black"
-            android:textSize="20dp"/>
+            android:text="Payment"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border">
+
+        <RadioButton
+            android:id="@+id/wallet"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/E_wallet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/wallet"
+            android:text="E-wallet" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@+id/E_wallet"
+            android:src="@drawable/momo" />
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/wallet" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/border">
+
+        <RadioButton
+            android:id="@+id/cash"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/cash"
+            android:text="Cash on delivery" />
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_money_icon" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:background="@drawable/footer_border"
+        android:orientation="vertical">
+
+        <TextView
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your order" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rc_trend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </ScrollView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discount" />
 
         <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="360dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="80dp"
-            android:background="@drawable/border"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="10dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:layout_editor_absoluteX="68dp"
-                tools:layout_editor_absoluteY="101dp">
-
-                <RadioButton
-                    android:id="@+id/credit_card"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Credit Card"
-                    android:textColor="@color/black" />
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:src="@drawable/creditcard" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="343dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="3dp"
-                android:background="#000000" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="Full name">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/fullname"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="Holder's name">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/holder_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="Expiration date (MM/YY)">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="CVV">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/cvv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="360dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/border"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-            <RadioButton
-                android:id="@+id/wallet"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="App wallet"
-                android:textColor="@color/black" />
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/wallet" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout3"
-            android:layout_width="360dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/border"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-            <RadioButton
-                android:id="@+id/cash"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cash on delivery"
-                android:textColor="@color/black" />
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/money" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout4"
-            android:layout_width="360dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/border"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Your order"
-                android:textColor="@color/black" />
-
-            <ListView
-                android:id="@+id/list_payment"
-                android:layout_width="match_parent"
-                android:layout_height="200dp" />
-
-            <View
-                android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/discount"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="683dp" />
-
-            <View
-                android:layout_width="343dp"
-                android:layout_height="1dp"
-                android:layout_marginVertical="5dp"
-                android:background="#000000" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Discount"
-                android:textColor="@color/black" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Voucher code">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/discount"
-                        android:layout_width="220dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <Button
-                    android:id="@+id/discount_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:text="Apply" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="343dp"
-                android:layout_height="1dp"
-                android:layout_marginVertical="5dp"
-                android:background="#000000" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Subtotal"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:id="@+id/payment_subtotal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="00000vnd"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Discount"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:id="@+id/payment_discount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="00000vnd"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Shipment cost"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:id="@+id/payment_shipment_cost"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="00000vnd"
-                    android:textColor="@color/black" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Grand total"
-                    android:textColor="@color/black"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/payment_grand_total"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="00000vnd"
-                    android:textColor="@color/black"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
+                android:layout_weight="1"
+                android:background="@drawable/border"
+                android:hint="Add voucher code here"
+                android:textSize="15dp" />
 
             <Button
-                android:id="@+id/finish_payment"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Finish paymet" />
+                android:id="@+id/discount_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/button_border"
+                android:text="Select" />
         </LinearLayout>
 
         <View
+            android:layout_width="343dp"
+            android:layout_height="1dp"
+            android:layout_marginVertical="5dp"
+            android:background="#000000" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subtotal" />
 
-</ScrollView>
+            <TextView
+                android:id="@+id/payment_subtotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="00000vnd" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discount" />
+
+            <TextView
+                android:id="@+id/payment_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="00000vnd" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shipment cost" />
+
+            <TextView
+                android:id="@+id/payment_shipment_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="00000vnd" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="343dp"
+            android:layout_height="1dp"
+            android:layout_marginVertical="5dp"
+            android:background="#000000" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Grand total"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/payment_grand_total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="00000vnd"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/finish_payment"
+            android:layout_width="match_parent"
+            android:background="@drawable/button_border"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="30dp"
+            android:text="Finish paymet" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

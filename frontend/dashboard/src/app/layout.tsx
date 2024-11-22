@@ -51,9 +51,16 @@ export default function RootLayout({
                     show: '/customers/show/:id'
                   },
                   {
-                    name: 'addresses',
-                    list: '/addresses/:customerId',
-                    show: '/addresses/show/:id'
+                    name: 'vouchers',
+                    list: '/vouchers',
+                    create: '/vouchers/create',
+                    edit: '/vouchers/edit/:id',
+                    show: '/vouchers/show/:id'
+                  },
+                  {
+                    name: 'inbox',
+                    list: '/inbox',
+                    show: '/inbox/show/:id'
                   },
                   {
                     name: 'staff',
@@ -63,26 +70,11 @@ export default function RootLayout({
                     show: '/staff/show/:id'
                   },
                   {
-                    name: 'vouchers',
-                    list: '/vouchers',
-                    create: '/vouchers/create',
-                    edit: '/vouchers/edit/:id',
-                    show: '/vouchers/show/:id'
-                  },
-                  {
-                    name: 'categories',
-                    list: '/categories',
-                    create: '/categories/create',
-                    edit: '/categories/edit/:id',
-                    show: '/categories/show/:id',
-                    meta: {
-                      visible: false
-                    }
-                  },
-                  {
-                    name: 'inbox',
-                    list: '/inbox',
-                    show: '/inbox/show/:id'
+                    name: 'roles',
+                    list: '/roles',
+                    create: '/roles/create',
+                    edit: '/roles/edit/:id',
+                    show: '/roles/show/:id'
                   },
                   {
                     name: 'profile',

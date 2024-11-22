@@ -1,5 +1,10 @@
 "use client";
-import { fetchDistricts, fetchProvinces, fetchWards } from "@actions/address";
+import {
+  fetchDistricts,
+  fetchProvinces,
+  fetchWards,
+  getCustomerAddresses,
+} from "@service/address";
 import CheckBox from "@components/Input/CheckBox";
 import DropDownButton from "@components/Input/DropDownButton";
 import InputBox from "@components/Input/InputBox";
@@ -19,7 +24,20 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import React, { useReducer, useState, useEffect } from "react";
+import React, { useReducer, useState, useEffect, useContext } from "react";
+import CollapsibleContainer from "@components/UI/CollapsibleBanner";
+import { formattedPrice } from "@util/format";
+import { toastWarning } from "@util/toaster";
+import {
+  useDispatch,
+  useSelector,
+} from "@node_modules/react-redux/dist/react-redux";
+import {
+  setOrderAddress,
+  setOrderState,
+  setOrderStateAsync,
+} from "@provider/redux/order/orderSlice";
+import Link from "@node_modules/next/link";
 
 function reducer(state, action) {
   if (action.type === "change_subtotal" && action.payload >= 0) {
@@ -33,31 +51,26 @@ function reducer(state, action) {
 }
 
 const Checkout = () => {
+  const session = useSelector((state) => state.session);
+  const order = useSelector((state) => state.order);
   const router = useRouter();
 
   const [provinces, setProvinces] = useState();
   const [districts, setDistricts] = useState();
   const [wards, setWards] = useState();
 
-  const [userAddresses, setUserAddresses] = useState([
-    {
-      fullname: "John Doe",
-      phone: "1234 567 890",
-      address: "123 Street, Phuong 1, Quan 2, Ho Chi Minh",
-      type: "Office",
-    },
-    {
-      fullname: "John Doe",
-      phone: "1234 567 890",
-      address: "123 Street, Phuong 1, Quan 2, Ho Chi Minh",
-      type: "Home",
-    },
-  ]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userAddresses, setUserAddresses] = useState([]);
 
   const [selectedOption, setSelectedOption] = useState(0);
 
+  const reduxDispatch = useDispatch();
+
   const [receipt, dispatch] = useReducer(reducer, {
-    subtotal: 0,
+    subtotal: order?.order_items.reduce(
+      (acc, item) => acc + item.total_price,
+      0
+    ),
     discount: 0,
     total: 0,
   });
@@ -66,29 +79,45 @@ const Checkout = () => {
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
 
+  const [address, setAddress] = useState({
+    full_name: "",
+    phone_number: "",
+    address: "",
+    province: "",
+    district: "",
+    ward: "",
+  });
+
+  const fetchAddress = () => {
+    setIsLoading(true);
+    // setIsLoading(true);
+    getCustomerAddresses(session?.user?.id).then((data) => {
+      setSelectedOption(data.findIndex((item) => item.is_primary) + 1);
+      setUserAddresses(data.map((a, index) => ({ id: index, ...a })));
+    });
+
+    setTimeout(() => setIsLoading(false), 1000);
+  };
+
   const handleRadioSelectionChange = (value) => {
     setSelectedOption(value);
   };
 
-  const handleChangeProvince = (province) => {
-    setProvince(province);
-  };
-  const handleChangeDistrict = (district) => {
-    setDistrict(district);
-  };
-  const handleChangeWard = (ward) => {
-    setWard(ward);
-  };
-
   useEffect(() => {
+    setAddress((a) => ({ ...a, province: province?.name }));
     setDistrict(null);
     getDistricts(province?.id || "");
   }, [province]);
 
   useEffect(() => {
+    setAddress((a) => ({ ...a, district: district?.name }));
     setWard(null);
     getWards(district?.id || "");
   }, [district]);
+
+  useEffect(() => {
+    setAddress((a) => ({ ...a, ward: ward?.name }));
+  }, [ward]);
 
   const getProvinces = async () => {
     const provinces = await fetchProvinces();
@@ -121,6 +150,7 @@ const Checkout = () => {
   };
 
   useEffect(() => {
+    fetchAddress();
     getProvinces();
   }, []);
 
@@ -130,6 +160,37 @@ const Checkout = () => {
   }, [receipt.subtotal, receipt.discount]);
 
   const handlePayment = async () => {
+    const checkoutAddress =
+      selectedOption === 0 ? address : userAddresses[selectedOption - 1];
+    if (selectedOption === 0) {
+      for (let key in address) {
+        if (address[key].trim() === "") {
+          toastWarning("Please fill all the field");
+          return;
+        }
+      }
+    }
+
+    // Dispatch the shipping address to Redux
+    reduxDispatch(
+      setOrderAddress({
+        address: {
+          shipping_status: "",
+          delivery_date: new Date().toISOString(),
+          address: {
+            full_name: checkoutAddress.full_name,
+            phone_number: checkoutAddress.phone_number,
+            address: checkoutAddress.address,
+            city: "",
+            state: "",
+            province: checkoutAddress.province,
+            district: checkoutAddress.district,
+            ward: checkoutAddress.ward,
+          },
+        },
+      })
+    );
+    await reduxDispatch(setOrderStateAsync(2));
     router.push("/cart/checkout/payment");
   };
 
@@ -138,11 +199,17 @@ const Checkout = () => {
       <div className="w-full grid grid-cols-1 md:grid-rows-[auto_1fr] md:grid-flow-col gap-4">
         {/* Cart header */}
         <ul className="flex flex-row items-center gap-2">
-          <h3 className="text-xl opacity-50">Cart</h3>
+          <h3 className="text-xl opacity-50">
+            <Link href={"/cart"}>Cart</Link>
+          </h3>
           <span className="size-2 sm:size-3 bg-on-background rounded-full opacity-50"></span>
-          <h3 className="font-bold text-2xl">Checkout</h3>
+          <h3 className="font-bold text-2xl">
+            <Link href={"/cart/checkout"}>Checkout</Link>
+          </h3>
           <span className="size-2 sm:size-3 bg-on-background rounded-full opacity-50"></span>
-          <h3 className="text-xl opacity-50">Payment</h3>
+          <h3 className="text-xl opacity-50">
+            <Link href={"/cart/checkout/payment"}>Payment</Link>
+          </h3>
         </ul>
         {/* Cart items list */}
         <div className="panel-1 ">
@@ -160,99 +227,127 @@ const Checkout = () => {
               />
               <FontAwesomeIcon icon={faLocationDot} />
             </div>
-            <InputBox value={""} name={"Full name *"} onChange={() => {}} />
+            <InputBox
+              value={address.full_name}
+              name={"Full name *"}
+              onChange={(s) => setAddress((a) => ({ ...a, full_name: s }))}
+            />
             <PhoneInput
-              value={""}
+              value={address.phone_number}
               name={"Phone number *"}
-              onChange={() => {}}
+              onChange={(s) => setAddress((a) => ({ ...a, phone_number: s }))}
             />
             <div className="flex gap-4 flex-wrap  items-center h-fit rounded-xl w-full z-50">
               <DropDownButton
                 value={province}
                 options={provinces}
                 name="province"
-                onChange={handleChangeProvince}
+                onChange={setProvince}
                 zIndex={70}
               />
               <DropDownButton
                 value={district}
                 options={districts}
                 name="district"
-                onChange={handleChangeDistrict}
+                onChange={setDistrict}
                 zIndex={60}
               />
               <DropDownButton
                 value={ward}
                 options={wards}
                 name="ward"
-                onChange={handleChangeWard}
+                onChange={setWard}
                 zIndex={50}
               />
             </div>
             <InputBox
-              value={""}
+              value={address.address}
               name={"Specific address *"}
-              onChange={() => {}}
+              onChange={(s) => setAddress((a) => ({ ...a, address: s }))}
             />
           </div>
 
           <h3 className="text-xl">Or choose a preset address</h3>
           <Divider />
           <ul className="flex flex-col gap-2 py-4">
-            {userAddresses.map((item, index) => (
-              <label
-                key={index}
-                className="grid grid-cols-[auto_1fr] gap-3 items-center w-full bg-surface rounded-lg p-2 min-h-[70px]"
-                htmlFor={index + 1}
-              >
-                <div className="flex flex-row gap-1 size-fit items-center">
-                  <RadioButton
-                    name={"shipping address"}
-                    value={index + 1}
-                    checked={selectedOption === index + 1}
-                    onChange={handleRadioSelectionChange}
-                  />
-                  <FontAwesomeIcon icon={faLocationDot} />
-                </div>
-                <div className="flex flex-col items-start h-full justify-around text-xs">
-                  <h4>
-                    {item.fullname} | {item.phone}
-                  </h4>
-                  <h3 className="opacity-50">{item.address}</h3>
-                </div>
-              </label>
-            ))}
+            {isLoading
+              ? Array.from({ length: 3 }).map((_, index) => (
+                  <label
+                    key={index}
+                    className="grid grid-cols-[auto_1fr] gap-3 items-center w-full bg-surface rounded-lg p-2 min-h-[70px]"
+                    htmlFor={index + 1}
+                  >
+                    <div className="flex flex-row gap-1 size-fit items-center">
+                      <RadioButton
+                        name={"shipping address"}
+                        value={index + 1}
+                        checked={false}
+                        onChange={() => {}}
+                      />
+                      <FontAwesomeIcon icon={faLocationDot} />
+                    </div>
+                    <div className="flex flex-col items-start justify-around text-xs gap-2">
+                      <div className="flex flex-wrap gap-2">
+                        <div className="h-4 rounded-lg bg-primary animate-pulse w-[70px]"></div>
+                        <div className="h-4 rounded-lg bg-primary animate-pulse w-[70px]"></div>
+                      </div>
+                      <div className="opacity-50 h-4 rounded-lg bg-primary animate-pulse w-[120px]"></div>
+                      <div className="opacity-50 h-4 rounded-lg bg-primary animate-pulse w-full max-w-[300px]"></div>
+                    </div>
+                  </label>
+                ))
+              : userAddresses.map((item, index) => (
+                  <label
+                    key={index}
+                    className="grid grid-cols-[auto_1fr] gap-3 items-center w-full bg-surface rounded-lg p-2 min-h-[70px]"
+                    htmlFor={index + 1}
+                  >
+                    <div className="flex flex-row gap-1 size-fit items-center">
+                      <RadioButton
+                        name={"shipping address"}
+                        value={index + 1}
+                        checked={selectedOption === index + 1}
+                        onChange={handleRadioSelectionChange}
+                      />
+                      <FontAwesomeIcon icon={faLocationDot} />
+                    </div>
+                    <div className="flex flex-col items-start justify-around text-xs">
+                      <h4>
+                        {item.full_name} | {item.phone_number}
+                      </h4>
+                      <h3 className="opacity-50">{item.address}</h3>
+                      <h3 className="opacity-50">
+                        {[item.ward, item.district, item.province].join(", ")}
+                      </h3>
+                    </div>
+                  </label>
+                ))}
           </ul>
         </div>
 
         {/* Total review */}
         <div className="panel-1 flex flex-col gap-4 text-base min-w-[250px] md:row-start-2">
           <h3>Your order</h3>
-          <ul className="flex flex-col gap-4">
-            <OrderItem />
-            <OrderItem />
-            <OrderItem />
-          </ul>
+          <CollapsibleContainer
+            content={
+              <ul className="flex flex-col gap-4">
+                {order?.order_items.map((item) => (
+                  <OrderItem key={item.product_id} orderItem={item} />
+                ))}
+              </ul>
+            }
+            maxHeight={300}
+          />
+
           <Divider />
 
           <div className="flex flex-row justify-between items-center gap-4">
             <h3 className="opacity-70">Subtotal</h3>
-            <span className="">
-              {Intl.NumberFormat("en-US").format(receipt.subtotal)} VNĐ
-            </span>
+            <span className="">{formattedPrice(receipt.subtotal)}</span>
           </div>
           <div className="flex flex-row justify-between items-center gap-4">
             <h3 className="opacity-70">Discount</h3>
-            <span>
-              {Intl.NumberFormat("en-US").format(receipt.discount)} VNĐ
-            </span>
-          </div>
-
-          <div className="flex flex-row justify-between items-center gap-4">
-            <h3 className="opacity-70">Shipment cost</h3>
-            <span>
-              {Intl.NumberFormat("en-US").format(receipt.discount)} VNĐ
-            </span>
+            <span>{formattedPrice(receipt.discount)}</span>
           </div>
 
           <Divider />
@@ -260,7 +355,7 @@ const Checkout = () => {
           <div className="flex flex-row justify-between items-center gap-4">
             <h3>Grand total</h3>
             <span className="font-bold text-lg">
-              {Intl.NumberFormat("en-US").format(receipt.total)} VNĐ
+              {formattedPrice(receipt.total)}
             </span>
           </div>
 
