@@ -141,7 +141,7 @@ public class ProductUtils {
                         filteredList.add(product);
                     }
                     break;
-                case "10tr-50yt VNĐ":
+                case "10tr - 50tr VNĐ":
                     if (price > 10000000 && price <= 50000000) {
                         filteredList.add(product);
                     }

@@ -14,6 +14,8 @@ import com.example.electrohive.utils.generator.MockVoucher;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,63 +36,51 @@ public class VoucherRepository {
         voucherService =  RetrofitClient.getClient().create(VoucherService.class);
     }
 
-    public LiveData<List<Voucher>> getVouchers(String userId) {
+    public LiveData<List<Voucher>> getVouchers() {
         MutableLiveData<List<Voucher>> voucherData = new MutableLiveData<>();
 
-        List<Voucher> mockVouchers = MockVoucher.createMockVoucherData();
-        voucherData.setValue(mockVouchers);
 
-//        voucherService.getUserVouchers(userId).enqueue(new Callback<JsonObject>() {
-//            @Override
-//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    try {
-//                        JsonArray resultsArray = response.body().getAsJsonArray("results");
-//                        List<Voucher> vouchers = new ArrayList<>();
-//
-//                        for (int i = 0; i < resultsArray.size(); i++) {
-//                            JsonObject provinceJson = resultsArray.get(i).getAsJsonObject();
-//                            String voucher_code = provinceJson.get("voucher_code").getAsString();
-//                            String voucher_name = provinceJson.get("voucher_name").getAsString();
-//                            String description = provinceJson.get("description").getAsString();
-//                            Double discount_amount = provinceJson.get("discount_amount").getAsDouble();
-//
-//                            // If valid_from and valid_to are strings, parse them into Date objects
-//                            String validFromString = provinceJson.get("valid_from").getAsString();
-//                            String validToString = provinceJson.get("valid_to").getAsString();
-//
-//                            // Define the date format you expect the dates to be in
-//                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-//
-//                            Date valid_from = null;
-//                            Date valid_to = null;
-//
-//                            try {
-//                                valid_from = dateFormat.parse(validFromString);
-//                                valid_to = dateFormat.parse(validToString);
-//                            } catch (Exception e) {
-//                                e.printStackTrace(); // Handle the exception if parsing fails
-//                            }
-//
-//                            Boolean is_active = provinceJson.get("is_active").getAsBoolean();
-//
-//                            // Add the voucher to the list
-//                            vouchers.add(new Voucher(voucher_code, voucher_name, description, discount_amount, valid_from, valid_to, is_active));
-//                        }
-//                        voucherData.postValue(vouchers);
-//                    } catch (Exception e) {
-//                        Log.e("Repository Error", "Error parsing response: " + e.getMessage());
-//                    }
-//                } else {
-//                    Log.e("Repository Error", "Failed to load vouchers: " + response.code());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<JsonObject> call, Throwable t) {
-//                Log.e("Repository Error", "Error making request: " + t.getMessage());
-//            }
-//        });
+        voucherService.getUserVouchers().enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        JsonArray resultsArray = response.body().getAsJsonArray();
+                        List<Voucher> vouchers = new ArrayList<>();
+
+                        for (int i = 0; i < resultsArray.size(); i++) {
+                            JsonObject provinceJson = resultsArray.get(i).getAsJsonObject();
+                            String voucher_code = provinceJson.get("voucher_code").getAsString();
+                            String voucher_name = provinceJson.get("voucher_name").getAsString();
+                            String description = provinceJson.get("description").getAsString();
+                            Double discount_amount = provinceJson.get("discount_amount").getAsDouble();
+
+                            // If valid_from and valid_to are strings, parse them into Date objects
+                            String valid_from = provinceJson.get("valid_from").getAsString();
+                            String valid_to = provinceJson.get("valid_to").getAsString();
+
+                            Boolean is_active = provinceJson.get("is_active").getAsBoolean();
+
+                            // Add the voucher to the list
+                            vouchers.add(new Voucher(voucher_code, voucher_name, description, discount_amount, valid_from, valid_to, is_active));
+                        }
+                        voucherData.postValue(vouchers);
+                    } catch (Exception e) {
+                        Log.e("Repository Error", "Error parsing response: " + e.getMessage());
+                        voucherData.postValue(new ArrayList<>());
+                    }
+                } else {
+                    Log.e("Repository Error", "Failed to load vouchers: " + response.code());
+                    voucherData.postValue(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Log.e("Repository Error", "Error making request: " + t.getMessage());
+                voucherData.postValue(new ArrayList<>());
+            }
+        });
 
         return voucherData;
 

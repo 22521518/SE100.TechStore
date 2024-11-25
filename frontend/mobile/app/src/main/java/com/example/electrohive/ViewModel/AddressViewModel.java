@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.electrohive.Models.Address;
 import com.example.electrohive.Repository.AddressRepository;
+import com.example.electrohive.utils.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,9 @@ public class AddressViewModel extends ViewModel {
     }
 
     // Fetch addresses from repository
-    public LiveData<List<Address>> getAddress(String userId) {
+    public LiveData<List<Address>> getAddress() {
         if (addresses.getValue() == null) { // Check if addresses are already fetched
-            addresses = repository.getAddress(userId); // Get addresses from repository
+            addresses = repository.getAddress(PreferencesHelper.getCustomerData().getCustomerId()); // Get addresses from repository
         }
         return addresses;
     }

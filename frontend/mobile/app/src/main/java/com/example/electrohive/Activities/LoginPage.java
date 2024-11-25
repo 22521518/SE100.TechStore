@@ -78,27 +78,25 @@ public class LoginPage extends AppCompatActivity {
         String password = password_input.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            // Notify the user to fill all fields
             Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        accountViewModel.login(email, password).observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean authenticated) {
-                if (authenticated) {
-                    // Navigate to HomePage if login is successful
-                    Intent intent = new Intent(LoginPage.this, HomePage.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    // Show error message if login failed
-                    Toast.makeText(LoginPage.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
-                }
+        accountViewModel.login(email, password).observe(this, authenticated -> {
+            if (authenticated == null) {
+                return;
+            }
+
+            if (authenticated) {
+                Intent intent = new Intent(LoginPage.this, HomePage.class);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+
 
 
     private void signUp() {

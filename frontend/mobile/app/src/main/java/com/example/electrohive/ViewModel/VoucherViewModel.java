@@ -19,9 +19,9 @@ public class VoucherViewModel extends ViewModel {
         repository = new VoucherRepository();
     }
 
-    public LiveData<List<Voucher>> getVouchers(String userId) {
+    public LiveData<List<Voucher>> getVouchers() {
         if (vouchers == null || !vouchers.hasObservers()) {
-            vouchers = repository.getVouchers(userId); // Ensure repository method is implemented
+            vouchers = repository.getVouchers(); // Ensure repository method is implemented
         }
         return vouchers;
     }

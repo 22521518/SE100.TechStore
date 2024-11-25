@@ -5,12 +5,17 @@ import com.example.electrohive.Models.Enum.SHIPPING_STATUS;
 import java.util.Date;
 
 public class ShippingAddress {
+
+    private String shippingId;
+    private String addressId;
     private SHIPPING_STATUS shippingStatus;
-    private Date deliveryDate;  // Can be String or Date
+    private Object deliveryDate;  // Can be String or Date
     private Address address;    // Assuming Address class is already defined as in the previous example
 
     // Constructor
-    public ShippingAddress(SHIPPING_STATUS shippingStatus, Date deliveryDate, Address address) {
+    public ShippingAddress(String shippingId,String addressId,SHIPPING_STATUS shippingStatus, Object deliveryDate, Address address) {
+        this.shippingId = shippingId;
+        this.addressId = addressId;
         this.shippingStatus = shippingStatus;
         this.deliveryDate = deliveryDate;
         this.address = address;
@@ -25,7 +30,7 @@ public class ShippingAddress {
         this.shippingStatus = shippingStatus;
     }
 
-    public Date getDeliveryDate() {
+    public Object getDeliveryDate() {
         return deliveryDate;
     }
 

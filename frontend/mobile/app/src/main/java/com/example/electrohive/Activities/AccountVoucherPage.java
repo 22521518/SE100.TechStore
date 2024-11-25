@@ -52,7 +52,7 @@ public class AccountVoucherPage extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
 
         // Observe the LiveData from the ViewModel
-        voucherViewModel.getVouchers("123").observe(this, new Observer<List<Voucher>>() {
+        voucherViewModel.getVouchers().observe(this, new Observer<List<Voucher>>() {
             @Override
             public void onChanged(List<Voucher> vouchers) {
                 // Update the adapter with new data

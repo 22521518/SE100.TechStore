@@ -28,6 +28,7 @@ import com.example.electrohive.utils.format.Format;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 
 public class AccountInfoPage extends AppCompatActivity {
     private ImageView userInfoImage;
@@ -65,6 +66,7 @@ public class AccountInfoPage extends AppCompatActivity {
         birthDateInput = findViewById(R.id.birthDateInput);
         lastnameInput = findViewById(R.id.lastnameInput);
         firstnameInput = findViewById(R.id.firstnameInput);
+        usernameInput = findViewById(R.id.usernameInput);
         phonenumberInput = findViewById(R.id.phonenumberInput);
         radioFemale = findViewById(R.id.radioFemale);
         radioMale = findViewById(R.id.radioMale);
@@ -90,9 +92,27 @@ public class AccountInfoPage extends AppCompatActivity {
             lastnameInput.setText(""); // If no last name exists, you can leave this empty
         }
 
+        usernameInput.setText(sessionCustomer.getUsername());
         phonenumberInput.setText(sessionCustomer.getPhoneNumber());
 
-        birthDateInput.setText(sessionCustomer.getBirthDate().toString());
+        Object birthDateObject = sessionCustomer.getBirthDate();  // This returns an Object
+
+        if (birthDateObject != null) {
+            String formattedDate = null;
+
+            // Check if the object is a Date
+            if (birthDateObject instanceof Date) {
+                formattedDate = Format.getFormattedDate((Date) birthDateObject);
+            } else if (birthDateObject instanceof String) {
+                // If it's a String, try parsing it
+                formattedDate = Format.getFormattedDateFromString((String) birthDateObject);
+            }
+
+            // Set the formatted date to the EditText
+            if (formattedDate != null) {
+                birthDateInput.setText(formattedDate);
+            }
+        }
 
         if(sessionCustomer.getMale()) {
             radioMale.setChecked(true);

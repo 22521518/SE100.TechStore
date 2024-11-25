@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.Repository.OrderRepository;
+import com.example.electrohive.utils.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class OrderViewModel extends ViewModel {
         MutableLiveData<Order> orderLiveData = new MutableLiveData<>();
 
         // Fetch order from repository asynchronously
-        repository.getOrder(orderId).observeForever(new Observer<Order>() {
+        repository.getOrder(PreferencesHelper.getCustomerData().getCustomerId(),orderId).observeForever(new Observer<Order>() {
             @Override
             public void onChanged(Order fetchedOrder) {
                 orderLiveData.setValue(fetchedOrder);  // Set fetched order
@@ -38,11 +39,11 @@ public class OrderViewModel extends ViewModel {
     }
 
     // This method will fetch the orders and apply filtering if needed
-    public LiveData<List<Order>> getOrders(String userId, ORDER_STATUS filter) {
+    public LiveData<List<Order>> getOrders(ORDER_STATUS filter) {
         // If orders are not fetched yet or no observers are present, fetch the data
         if (orders == null || !orders.hasObservers()) {
             orders = new MutableLiveData<>();
-            fetchOrders(userId);
+            fetchOrders();
         }
 
         // Apply filter on existing list if filter is provided
@@ -62,8 +63,8 @@ public class OrderViewModel extends ViewModel {
     }
 
     // Method to fetch orders from repository and store them
-    private void fetchOrders(String userId) {
-        repository.getOrders(userId).observeForever(new Observer<List<Order>>() {
+    private void fetchOrders() {
+        repository.getOrders(PreferencesHelper.getCustomerData().getCustomerId()).observeForever(new Observer<List<Order>>() {
             @Override
             public void onChanged(List<Order> fetchedOrders) {
                 if (fetchedOrders != null) {

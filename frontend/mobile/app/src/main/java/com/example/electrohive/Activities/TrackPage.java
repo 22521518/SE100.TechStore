@@ -23,6 +23,7 @@ import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.OrderViewModel;
 import com.example.electrohive.utils.format.Format;
 
+import java.util.Date;
 import java.util.List;
 
 public class TrackPage extends AppCompatActivity {
@@ -79,32 +80,7 @@ public class TrackPage extends AppCompatActivity {
         orderViewModel = new OrderViewModel();
 
         if (orderId != null) {
-            orderViewModel.getOrder(orderId).observe(this, new Observer<Order>() {
-                @Override
-                public void onChanged(Order order) {
-                    if (order != null) {
-                        List<OrderItem> items = order.getOrderItems();
-
-                        order_id_input.setText(orderId);
-                        // Update the UI with the order data
-                        order_date.setText(Format.getFormattedDate(order.getShippingAddress().getDeliveryDate()));
-                        order_fullname.setText(order.getShippingAddress().getAddress().getFullName());
-                        order_phonenumber.setText(order.getShippingAddress().getAddress().getPhoneNumber());
-                        order_address.setText(
-                                order.getShippingAddress().getAddress().getAddress() + ", " +
-                                        order.getShippingAddress().getAddress().getWard() + ", " +
-                                        order.getShippingAddress().getAddress().getDistrict() + ", " +
-                                        order.getShippingAddress().getAddress().getCity());
-                        order_payment_method.setText(order.getPaymentMethod().toString());
-                        order_id.setText("Order: "+order.getOrderId());
-                        order_total_price.setText("Total: "+Format.getFormattedTotalPrice(order.getTotalPrice())+ " ("+items.size()+" items)");
-                        // Set the order items in the adapter
-                        OrderItemAdapter adapter = new OrderItemAdapter(TrackPage.this, items);
-                        order_items_listview.setLayoutManager(new LinearLayoutManager(TrackPage.this));
-                        order_items_listview.setAdapter(adapter);
-                    }
-                }
-            });
+           fetchOrder(orderId);
         }
 
 
@@ -113,34 +89,41 @@ public class TrackPage extends AppCompatActivity {
             String orderIdInput = order_id_input.getText().toString().trim();
             if (!orderIdInput.isEmpty()) {
                 // You can update the order ID and re-fetch data here if necessary
-                orderViewModel.getOrder(orderIdInput).observe(this, new Observer<Order>() {
-                    @Override
-                    public void onChanged(Order order) {
-                        if (order != null) {
-                            List<OrderItem> items = order.getOrderItems();
-                            // Update the UI with the order data
-                            order_date.setText(Format.getFormattedDate(order.getShippingAddress().getDeliveryDate()));
-                            order_fullname.setText(order.getShippingAddress().getAddress().getFullName());
-                            order_phonenumber.setText(order.getShippingAddress().getAddress().getPhoneNumber());
-                            order_address.setText(
-                                    order.getShippingAddress().getAddress().getAddress() + ", " +
-                                            order.getShippingAddress().getAddress().getWard() + ", " +
-                                            order.getShippingAddress().getAddress().getDistrict() + ", " +
-                                            order.getShippingAddress().getAddress().getCity());
-                            order_payment_method.setText(order.getPaymentMethod().toString());
-                            order_id.setText("Order: "+order.getOrderId());
-                            order_total_price.setText("Total: "+Format.getFormattedTotalPrice(order.getTotalPrice())+ " ("+items.size()+" items)");
-
-                            // Set the order items in the adapter
-                            OrderItemAdapter adapter = new OrderItemAdapter(TrackPage.this, items);
-                            order_items_listview.setLayoutManager(new LinearLayoutManager(TrackPage.this));
-
-                            order_items_listview.setAdapter(adapter);
-                        }
-                    }
-                });
+                fetchOrder(orderIdInput);
             }
         });
 
+    }
+
+    private void fetchOrder(String orderId) {
+        orderViewModel.getOrder(orderId).observe(this, new Observer<Order>() {
+            @Override
+            public void onChanged(Order order) {
+                if (order != null) {
+                    List<OrderItem> items = order.getOrderItems();
+
+                    order_id_input.setText(orderId);
+                    if(order.getShippingAddress() != null) {
+                        order_date.setText(Format.getFormattedDate((Date) order.getShippingAddress().getDeliveryDate()));
+                        order_fullname.setText(order.getShippingAddress().getAddress().getFullName());
+                        order_phonenumber.setText(order.getShippingAddress().getAddress().getPhoneNumber());
+                        order_address.setText(
+                                order.getShippingAddress().getAddress().getAddress() + ", " +
+                                        order.getShippingAddress().getAddress().getWard() + ", " +
+                                        order.getShippingAddress().getAddress().getDistrict() + ", " +
+                                        order.getShippingAddress().getAddress().getCity());
+                    }
+                    // Update the UI with the order data
+
+                    order_payment_method.setText(order.getPaymentMethod().toString());
+                    order_id.setText("Order: "+order.getOrderId());
+                    order_total_price.setText("Total: "+Format.getFormattedTotalPrice(order.getTotalPrice())+ " ("+items.size()+" items)");
+                    // Set the order items in the adapter
+                    OrderItemAdapter adapter = new OrderItemAdapter(TrackPage.this, items);
+                    order_items_listview.setLayoutManager(new LinearLayoutManager(TrackPage.this));
+                    order_items_listview.setAdapter(adapter);
+                }
+            }
+        });
     }
 }

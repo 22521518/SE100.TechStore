@@ -40,6 +40,9 @@ dependencies {
     // Appium Java client
     implementation ("io.appium:java-client:9.3.0" ) // Update to the latest version if needed
 
+    //java-jwt
+    implementation ("com.auth0:java-jwt:4.4.0")
+
 
     implementation ("me.relex:circleindicator:2.1.6")
 

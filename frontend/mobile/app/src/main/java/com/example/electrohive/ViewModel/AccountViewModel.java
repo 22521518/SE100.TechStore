@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.electrohive.Models.Account;
 import com.example.electrohive.Models.Address;
 import com.example.electrohive.Repository.AccountRepository;
@@ -29,32 +31,48 @@ public class AccountViewModel extends ViewModel {
     public LiveData<Boolean> login(String email, String password) {
         MutableLiveData<Boolean> successLiveData = new MutableLiveData<>();
 
-        // Ensure PreferencesHelper is initialized
-
         accountRepository.login(email, password).observeForever(accessToken -> {
             if (accessToken != null) {
-                // Save the access token
-                PreferencesHelper.saveAccessToken(accessToken);
+                String userId = extractUserIdFromJWT(accessToken);
 
-                // Fetch user details with the token
-                customerRepository.getCustomer(accessToken).observeForever(customer -> {
-                    if (customer != null) {
-                        // Save customer data
-                        PreferencesHelper.saveCustomerData(customer);
-                        successLiveData.setValue(true);
-                    } else {
-                        successLiveData.setValue(false);
-                    }
-                });
+                if (userId != null) {
+                    PreferencesHelper.saveAccessToken(accessToken);
+
+                    customerRepository.getCustomer(userId).observeForever(customer -> {
+                        if (customer != null) {
+                            PreferencesHelper.saveCustomerData(customer);
+                            successLiveData.postValue(true);
+                        } else {
+                            successLiveData.postValue(false);
+                        }
+                    });
+                } else {
+                    successLiveData.postValue(false);
+                }
             } else {
-                successLiveData.setValue(false);
+                successLiveData.postValue(false);
             }
         });
 
         return successLiveData;
     }
 
+
+    private String extractUserIdFromJWT(String token) {
+        try {
+            // Decode the JWT
+            DecodedJWT decodedJWT = JWT.decode(token);
+
+            // Extract the "id" claim (adjust based on your JWT structure)
+            return decodedJWT.getClaim("id").asString();
+        } catch (Exception e) {
+            // Handle decoding errors (invalid token, missing claim, etc.)
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public String getAccessToken(Context context) {
-        return context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE).getString("access_token", null);
+        return PreferencesHelper.getAccessToken();
     }
 }

@@ -38,20 +38,30 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
     @Override
     public void onBindViewHolder(OrderItemViewHolder holder, int position) {
         OrderItem orderItem = orderItemList.get(position);
-        Glide.with(context)
-                .load(orderItem.getProduct().getImages().get(0).getUrl()) // URL to the image
-                .placeholder(R.drawable.banner) // Optional placeholder
-                .error(R.drawable.banner) // Optional error image
-                .into(holder.productImage); // Your ImageView
 
+        // Safely handle images list
+        if (orderItem.getProduct().getImages() != null && !orderItem.getProduct().getImages().isEmpty()) {
+            Glide.with(context)
+                    .load(orderItem.getProduct().getImages().get(0).getUrl()) // URL to the image
+                    .placeholder(R.drawable.placeholder) // Optional placeholder
+                    .error(R.drawable.ic_image_error_icon) // Optional error image
+                    .into(holder.productImage); // Your ImageView
+        } else {
+            // Load a default or placeholder image if no images are available
+            holder.productImage.setImageResource(R.drawable.banner);
+        }
+
+        // Set product name (assuming it's always non-null)
         holder.productName.setText(orderItem.getProduct().getProductName());
-        holder.productCategory.setText(orderItem.getProduct().getCategories().get(0).getCategoryName());
-        holder.productUnitPrice.setText(Format.getFormattedTotalPrice(orderItem.getUnitPrice()) + " VND");
-        holder.productQuantity.setText("x " + orderItem.getQuantity());
 
-        // Set product image if available
-        // holder.productImage.setImageResource(orderItem.getProduct().getImageResId()); // Uncomment and implement if needed
+
+        // Format and set unit price
+        holder.productUnitPrice.setText(Format.getFormattedTotalPrice(orderItem.getUnitPrice()) + " VND");
+
+        // Set product quantity
+        holder.productQuantity.setText("x " + orderItem.getQuantity());
     }
+
 
     @Override
     public int getItemCount() {
@@ -66,7 +76,6 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
             super(view);
             productImage = view.findViewById(R.id.order_item_product_image);
             productName = view.findViewById(R.id.order_item_product_name);
-            productCategory = view.findViewById(R.id.order_item_product_category);
             productUnitPrice = view.findViewById(R.id.order_item_product_unitprice);
             productQuantity = view.findViewById(R.id.order_item_quantity);
         }

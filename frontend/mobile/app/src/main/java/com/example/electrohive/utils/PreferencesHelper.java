@@ -15,7 +15,7 @@ public class PreferencesHelper {
         sharedPreferences.edit().putString("access_token", token).apply();
     }
 
-    public String getAccessToken() {
+    public static String getAccessToken() {
         return sharedPreferences.getString("access_token", null);
     }
 

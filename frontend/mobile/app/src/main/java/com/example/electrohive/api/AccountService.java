@@ -17,7 +17,8 @@ public interface AccountService {
 
     @POST("/auth/login/store")
     Call<JsonObject> login(
-            @Body Account account
+            @Header("Content-Type") String header,
+            @Body JsonObject account
     );
     @PATCH("/addresses/{id}")
     Call<JsonObject> patchAccount(

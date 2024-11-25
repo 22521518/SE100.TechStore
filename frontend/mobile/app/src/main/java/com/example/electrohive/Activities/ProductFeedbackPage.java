@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,8 @@ import com.example.electrohive.Adapters.ProductFeedbackAdapter;
 import com.example.electrohive.Models.ProductFeedback;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.FeedbackViewModel;
+import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
+import com.skydoves.powerspinner.PowerSpinnerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +29,7 @@ public class ProductFeedbackPage extends AppCompatActivity {
     private ProgressBar loadingSpinner;
     private FeedbackViewModel feedbackViewModel;
 
-    private Spinner feedback_filter_spinner;
+    private PowerSpinnerView feedback_filter_spinner;
 
     private ProductFeedbackAdapter productFeedbackAdapter;
 
@@ -63,22 +66,15 @@ public class ProductFeedbackPage extends AppCompatActivity {
                 android.R.layout.simple_spinner_item
         );
         priceRangeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        feedback_filter_spinner.setAdapter(priceRangeAdapter);
-
-        // Set listener for price range spinner
-        feedback_filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                rating_filter = parent.getItemAtPosition(position).toString();
-                // Trigger the search again with the updated price range
+        feedback_filter_spinner.setItems(R.array.rating_filter);
+        feedback_filter_spinner.selectItemByIndex(0);
+        feedback_filter_spinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
+            @Override public void onItemSelected(int oldIndex, @Nullable String oldItem, int newIndex, String newItem) {
+                rating_filter = newItem;
                 fetchFeedbacks();
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Optional: handle no selection
-            }
         });
+
 
         feedbackListView = findViewById(R.id.feedback_listview);
         feedbackViewModel = new FeedbackViewModel();

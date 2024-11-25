@@ -23,6 +23,7 @@ import com.example.electrohive.Models.Address;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.AddressViewModel;
+import com.example.electrohive.utils.PreferencesHelper;
 
 import org.w3c.dom.Text;
 
@@ -86,13 +87,14 @@ public class AccountAddressPage extends AppCompatActivity {
 
 
         // Observe orders LiveData
-        addressViewModel.getAddress("userId_here").observe(this, new Observer<List<Address>>() {
+        addressViewModel.getAddress().observe(this, new Observer<List<Address>>() {
             @Override
             public void onChanged(List<Address> addresses) {
                 if (addresses != null) {
                     addressAdapter.updateAddress(addresses);
-                    loadingSpinner.setVisibility(View.GONE);
                 }
+                loadingSpinner.setVisibility(View.GONE);
+
             }
         });
 

@@ -14,7 +14,6 @@ import com.example.electrohive.utils.PreferencesHelper;
 public class CustomerViewModel {
 
     private final CustomerRepository repository;
-    private PreferencesHelper preferencesHelper;
 
     public CustomerViewModel() {
         this.repository = new CustomerRepository();
@@ -26,16 +25,16 @@ public class CustomerViewModel {
 
     public LiveData<Customer> getSessionCustomer() {
         MutableLiveData<Customer> customerLiveData = new MutableLiveData<>();
-        String customerId = preferencesHelper.getCustomerData().getCustomerId();
+        String customerId = PreferencesHelper.getCustomerData().getCustomerId();
 
         if (customerId != null) {
-            Customer customer = preferencesHelper.getCustomerData();
+            Customer customer = PreferencesHelper.getCustomerData();
             customerLiveData.setValue(customer);
         } else {
             // Fetch user data from the API if not available in SharedPreferences
             repository.getCustomer(customerId).observeForever(customer -> {
                 if (customer != null) {
-                    preferencesHelper.saveCustomerData(customer);
+                    PreferencesHelper.saveCustomerData(customer);
                     customerLiveData.setValue(customer);
                 }
             });

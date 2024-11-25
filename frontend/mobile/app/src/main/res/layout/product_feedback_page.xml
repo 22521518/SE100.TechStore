@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -31,24 +32,25 @@
 
 
 
-    <LinearLayout
-        android:layout_margin="8dp"
-        android:background="@drawable/border"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:text="rating fitler"
-            android:textStyle="bold"/>
-        <Spinner
+        <com.skydoves.powerspinner.PowerSpinnerView
             android:id="@+id/feedback_filter_spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/border"
+            android:gravity="center"
+            android:hint="Rating "
+            android:padding="10dp"
+            android:textSize="16sp"
+            app:spinner_arrow_gravity="end"
+            app:spinner_arrow_padding="8dp"
+            app:spinner_arrow_tint="?android:colorAccent"
+            app:spinner_dismiss_notified_select="true"
+            app:spinner_item_array="@array/rating_filter"
+            app:spinner_item_height="46dp"
+            app:spinner_popup_animation="dropdown"
+            app:spinner_popup_background="@drawable/spinner_popup_background" />
 
-    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/loading_spinner"

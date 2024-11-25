@@ -42,10 +42,27 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
         holder.voucherCode.setText(voucher.getVoucherCode());
         holder.voucherDescription.setText(voucher.getDescription());
 
-        holder.voucherExpireDate.setText(Format.getFormattedDate(voucher.getValidTo()));
+        Object voucherValidTo = voucher.getValidTo();  // This returns an Object
+
+        if (voucherValidTo != null) {
+            String formattedDate = null;
+
+            // Check if the object is a Date
+            if (voucherValidTo instanceof Date) {
+                formattedDate = Format.getFormattedDate((Date) voucherValidTo);
+            } else if (voucherValidTo instanceof String) {
+                // If it's a String, try parsing it
+                formattedDate = Format.getFormattedDateFromString((String) voucherValidTo);
+            }
+
+            // Set the formatted date to the EditText
+            if (formattedDate != null) {
+                holder.voucherExpireDate.setText(formattedDate);
+            }
+        }
 
         // Check if the voucher has expired
-        if (voucher.getValidTo().before(new Date())) {
+        if (voucherValidTo instanceof Date && ((Date) voucherValidTo).before(new Date())) {
             // Set background to grey if expired
             holder.voucherBackground.setBackgroundColor(Color.GRAY);
         } else {

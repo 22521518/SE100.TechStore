@@ -107,7 +107,7 @@ public class SearchPage extends DrawerBasePage {
                 spinner_category.setItems(categoryNames);
                 spinner_category.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
                     @Override public void onItemSelected(int oldIndex, @Nullable String oldItem, int newIndex, String newItem) {
-                        priceRange = newItem;
+                        category = newItem;
                         fetchProducts();
                     }
                 });

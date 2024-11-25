@@ -1,6 +1,7 @@
 package com.example.electrohive.api;
 
 import com.example.electrohive.Models.Address;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
@@ -14,7 +15,7 @@ import retrofit2.http.Path;
 
 public interface AddressService {
     @GET("/addresses/{id}")
-    Call<JsonObject> getUserAddresses(@Path("id") String userId);
+    Call<JsonArray> getUserAddresses(@Path("id") String userId);
 
     @POST("addresses/{userId}")
     Call<Boolean> postCustomerAddress(

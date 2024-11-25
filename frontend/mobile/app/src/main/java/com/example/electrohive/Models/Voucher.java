@@ -7,13 +7,13 @@ public class Voucher {
     private String voucherName;
     private String description;
     private double discountAmount;
-    private Date validFrom;
-    private Date validTo;
+    private Object validFrom;
+    private Object validTo;
     private boolean isActive;
 
     // Constructor
     public Voucher(String voucherCode, String voucherName, String description,
-                   double discountAmount, Date validFrom, Date validTo, boolean isActive) {
+                   double discountAmount, Object validFrom, Object validTo, boolean isActive) {
         this.voucherCode = voucherCode;
         this.voucherName = voucherName;
         this.description = description;
@@ -56,19 +56,19 @@ public class Voucher {
         this.discountAmount = discountAmount;
     }
 
-    public Date getValidFrom() {
+    public Object getValidFrom() {
         return validFrom;
     }
 
-    public void setValidFrom(Date validFrom) {
+    public void setValidFrom(Object validFrom) {
         this.validFrom = validFrom;
     }
 
-    public Date getValidTo() {
+    public Object getValidTo() {
         return validTo;
     }
 
-    public void setValidTo(Date validTo) {
+    public void setValidTo(Object validTo) {
         this.validTo = validTo;
     }
 

@@ -27,6 +27,8 @@ public class AccountOrderPage extends AppCompatActivity {
     private ProgressBar loadingSpinner;
 
     private ORDER_STATUS filter = null;
+
+    private OrderAdapter orderAdapter;
     private OrderViewModel orderViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +47,12 @@ public class AccountOrderPage extends AppCompatActivity {
         ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Set up adapter
-        OrderAdapter orderAdapter = new OrderAdapter(AccountOrderPage.this,new ArrayList<>());
+        orderAdapter = new OrderAdapter(AccountOrderPage.this,new ArrayList<>());
         ordersRecyclerView.setAdapter(orderAdapter);
 
-        // Observe orders LiveData
-        orderViewModel.getOrders("userId_here",filter).observe(this, new Observer<List<Order>>() {
-            @Override
-            public void onChanged(List<Order> orders) {
-                if (orders != null) {
-                    orderAdapter.updateOrders(orders);
-                }
-                loadingSpinner.setVisibility(View.GONE);
-            }
-        });
+        applyFilter(null,findViewById(R.id.AllOrders));
+
+
         setupFilterButtons();
 
 
@@ -82,16 +77,7 @@ public class AccountOrderPage extends AppCompatActivity {
     }
     private void applyFilter(ORDER_STATUS newFilter,View clickedButton) {
         filter = newFilter;
-        orderViewModel.getOrders("userId_here", filter).observe(this, new Observer<List<Order>>() {
-            @Override
-            public void onChanged(List<Order> orders) {
-                // Update the orders list with new data based on the filter
-                if (orders != null) {
-                    ((OrderAdapter) ((RecyclerView) findViewById(R.id.orders_listview)).getAdapter()).updateOrders(orders);
-                }
-            }
-        });
-
+        fetchOrders(filter);
 
         resetButtonBackgrounds();
         clickedButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#80D3D3D3")));
@@ -105,6 +91,19 @@ public class AccountOrderPage extends AppCompatActivity {
         findViewById(R.id.ShippedOrder).setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
         findViewById(R.id.DeliveredOrders).setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
         findViewById(R.id.CancelledOrders).setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+    }
+
+    private void fetchOrders(ORDER_STATUS filter) {
+        // Observe orders LiveData
+        orderViewModel.getOrders(filter).observe(this, new Observer<List<Order>>() {
+            @Override
+            public void onChanged(List<Order> orders) {
+                if (orders != null) {
+                    orderAdapter.updateOrders(orders);
+                }
+                loadingSpinner.setVisibility(View.GONE);
+            }
+        });
     }
 
 }
