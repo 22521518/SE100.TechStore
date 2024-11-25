@@ -53,16 +53,8 @@ const Vouchers = () => {
   return (
     <section className="w-full flex flex-col gap-2">
       <div className="flex flex-col gap-2">
-        <div className="text-xl font-semibold">Vouchers</div>
-        <div className="text-sm opacity-60">View your vouchers </div>
-      </div>
-      <Divider />
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-center bg-primary-variant py-4">
-        <h2 className="font-bold text-xl">VOUCHER CODE</h2>
-        <div>
-          <InputBox value={voucherCode} onChange={setVoucherCode} />
-        </div>
-        <button className="button-variant-1">Save voucher</button>
+        <div className="text-xl font-semibold">Electro vouchers</div>
+        <div className="text-sm opacity-60">See our vouchers </div>
       </div>
       <Divider />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-on-surface/20 p-2">

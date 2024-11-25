@@ -1,9 +1,26 @@
 "use server";
 
+export const getFeedbacks  = async(product_id) =>  {
+  try {
+    const response = await fetch(
+      `${process.env.APP_URL}/feedback/${product_id}`
+    );
+    if(response.ok) {
+      const data  = await response.json()
+      return data
+    } else {
+      return []
+    }
+  } catch (error) {
+    console.log(error)
+    return []
+  }
+}
+
 export const addFeedback = async (payload) => {
   try {
     const response = await fetch(
-      `https://se100-techstore.onrender.com/feedback/${payload.product_id}`,
+      `${process.env.APP_URL}/feedback/${payload.product_id}`,
       {
         method: "POST",
         body: JSON.stringify({

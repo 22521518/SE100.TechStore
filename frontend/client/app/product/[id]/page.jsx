@@ -13,6 +13,8 @@ import {
   faAngleRight,
   faCartShopping,
   faStar as faFullStar,
+  faMinus,
+  faPlus,
   faStarHalfStroke,
   faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
@@ -20,11 +22,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams, useRouter } from "@node_modules/next/navigation";
 import { idText } from "@node_modules/typescript/lib/typescript";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import InputBox from "@components/Input/InputBox";
 import InputArea from "@components/Input/InputArea";
 import Link from "@node_modules/next/link";
-import { addFeedback } from "@service/feedback";
+import { addFeedback, getFeedbacks } from "@service/feedback";
 import { toastError, toastSuccess, toastWarning } from "@util/toaster";
 import { useSession } from "@node_modules/next-auth/react";
 import CommentTag from "@components/UI/FeedbackTag";
@@ -34,8 +36,27 @@ import {
   useSelector,
 } from "@node_modules/react-redux/dist/react-redux";
 import { addItem } from "@provider/redux/cart/cartSlice";
+import { addCartItem } from "@service/cart";
+import ProfileImageHolder from "@components/UI/ProfileImageHolder";
+
+function reducer(state, action) {
+  if (
+    action.type === "incremented_quantity" &&
+    state.quantity < action.product.stock_quantity
+  ) {
+    return { quantity: state.quantity + 1 };
+  } else if (action.type === "decremented_quantity" && state.quantity > 1) {
+    return { quantity: state.quantity - 1 };
+  } else if (action.type === "change_quantity") {
+    return { quantity: action.payload };
+  }
+  return state;
+}
 
 const Product = () => {
+  const [state, dp] = useReducer(reducer, {
+    quantity: 1,
+  });
   const session = useSelector((state) => state.session);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -51,7 +72,7 @@ const Product = () => {
   const [selectedImageId, setSelectedImageId] = useState(0);
 
   const productRating =
-    productFeedbacks.length > 0
+    productFeedbacks?.length > 0
       ? parseFloat(
           (
             productFeedbacks.reduce(
@@ -71,7 +92,7 @@ const Product = () => {
     const newFeedback = {
       feedback_id: Math.random() * 1000 + 5,
       product_id: "cm2rnv4vf00039thyjfemcq9h",
-      customer_id: "cm2rntc4r00001ly99t53s0cl",
+      customer_id: session.customer.customer_id,
       feedback: feedback.content,
       rating: feedback.rating,
       created_at: new Date(),
@@ -120,19 +141,39 @@ const Product = () => {
     setFeedbackFilter(rate === feedbackFilter ? -1 : rate);
   };
 
+  const handleChangeQuantity = (e) => {
+    let value = parseInt(e.target.value);
+    // Ensure value is within bounds
+    if (value < 1) value = 1;
+    if (value > product?.stock_quantity) value = product?.stock_quantity;
+
+    dp({ type: "change_quantity", payload: value });
+  };
+
   const handleAddToCart = () => {
     if (!session.isAuthenticated) {
       toastError("You need to login to proceed");
       return;
     }
 
-    dispatch(
-      addItem({
-        id:product.product_id
-      })
+    addCartItem(session.customer.customer_id, product.product_id, state.quantity).then(
+      (data) => {
+        if (data) {
+          dispatch(
+            addItem({
+              product: product,
+              quantity:state.quantity,
+            })
+          );
+      
+          toastSuccess("Product added to cart");
+        } else {
+          toastError("Failed to add item to cart")
+        }
+      }
     );
 
-    toastSuccess("Product added to cart");
+   
   };
 
   const handleBuyNow = () => {
@@ -160,9 +201,15 @@ const Product = () => {
   const fetchProductDetails = (id) => {
     getProductDetail(id).then((data) => {
       setProduct(data);
-      setProductFeedBacks(data.product_feedbacks);
     });
   };
+
+  const fetchProductFeedbacks = (id) => {
+    getFeedbacks(id).then((data) => {
+      setProductFeedBacks(data);
+    });
+  };
+
 
   useEffect(() => {
     const imageList = productImageListRef.current;
@@ -197,15 +244,16 @@ const Product = () => {
     setIsLoading(true);
     fetchProducts();
     fetchProductDetails(params.id);
+    fetchProductFeedbacks(params.id);
     setTimeout(() => setIsLoading(false), 1000);
-  }, [params]);
+  }, []);
 
   return (
     <section className="size-full flex flex-col items-center gap-4 p-4 overflow-visible">
       <ul className="flex flex-row items-center justify-start gap-2 w-full">
         <h3 className="text-xl opacity-50 hover:opacity-100">
           <Link href={`/search?category=${product?.categories[0].category_id}`}>
-            {product?.categories[0].category_name}
+            {product?.categories[0]?.category_name}
           </Link>
         </h3>
         <span className="size-2 sm:size-3 bg-on-background rounded-full opacity-50"></span>
@@ -258,7 +306,7 @@ const Product = () => {
               ))}
             </ul>
           </div>
-          <div className="flex flex-col gap-4 md:p-8">
+          <div className="flex flex-col gap-4 md:p-8 sm:panel-1 ">
             <h3 className="font-bold text-xl md:text-3xl">
               {product?.product_name}
             </h3>
@@ -280,6 +328,36 @@ const Product = () => {
               </div>
             )}
             <div>{product?.stock_quantity} in-stocks</div>
+
+            <div className="bg-secondary/40 border-2 border-on-surface rounded-xl  w-fit text-on-surface grid grid-cols-3 mt-auto">
+              <button
+                className="size-7 text-base flex items-center justify-center hover:scale-105 active:scale-95"
+                onClick={() => dp({ type: "decremented_quantity" })}
+              >
+                <FontAwesomeIcon icon={faMinus} />
+              </button>
+              <input
+                type="number"
+                value={state.quantity}
+                style={{
+                  appearance: "textfield",
+                  MozAppearance: "textfield",
+                  WebkitAppearance: "none",
+                }}
+                min={1}
+                max={parseInt(product?.stock_quantity)}
+                onChange={handleChangeQuantity}
+                className="size-7 text-base flex items-center justify-center bg-transparent outline-none text-center"
+              ></input>
+              <button
+                className="size-7 text-xl flex items-center justify-center hover:scale-105 active:scale-95"
+                onClick={() =>
+                  dp({ type: "incremented_quantity", product: product })
+                }
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
 
             <div className="flex flex-row gap-4">
               <button className="button-variant-1" onClick={handleAddToCart}>
@@ -332,9 +410,7 @@ const Product = () => {
 
           <div className="flex flex-col gap-4 bg-surface p-4 overflow-hidden rounded-lg">
             <div className="w-full grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-2">
-              <span className="text-3xl">
-                <FontAwesomeIcon icon={faUserCircle} />
-              </span>
+              <ProfileImageHolder url={session?.user?.image} size={32}/>
               <div className="flex flex-col gap-2 items-start">
                 <ReviewStar
                   rating={feedback.rating}
@@ -436,8 +512,8 @@ const Product = () => {
           : products
               .filter(
                 (pd) =>
-                  pd.categories[0].category_id ===
-                  product?.categories[0].category_id
+                  pd.categories[0]?.category_id ===
+                  product?.categories[0]?.category_id
               )
               .map((pd) => <ProductCard key={pd.product_id} product={pd} />)}
       </ul>

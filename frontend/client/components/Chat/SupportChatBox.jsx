@@ -1,5 +1,5 @@
 "use client";
-import { faPaperPlane, faPhone, faX } from "@fortawesome/free-solid-svg-icons";
+import { faHeadset, faPaperPlane, faPhone, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import InputBox from "../Input/InputBox";
@@ -40,7 +40,7 @@ const SupportChatBox = () => {
 
   useEffect(() => {
     setUnreadMessage(
-      messageLog.reduce((acc, item) => acc + (item.is_seen ? 0 : 1), 0) > 0
+      messageLog.reduce((acc, item) => acc + (item.is_seen ? 0 : 1), 0)
     );
   }, [messageLog]);
 
@@ -120,12 +120,15 @@ const SupportChatBox = () => {
       {isOpen ? (
         <div className="fixed bottom-0 right-0 w-full sm:w-[400px] h-[500px] grid grid-rows-[auto_1fr_auto] shadow-xl z-50">
           <div className="size-full grid grid-cols-[1fr_auto] items-center bg-primary-variant text-on-primary p-2">
-            <h1 className="font-semibold text-xl">Support chatbox</h1>
+            <div className="flex flex-row items-center justify-start p-2 gap-2">
+              <FontAwesomeIcon icon={faHeadset} className="text-2xl"/>
+              <h2 className="font-bold text-xl ">Support chat</h2>
+            </div>
             <button className="p-2 text-xl" onClick={() => setIsOpen(false)}>
               <FontAwesomeIcon icon={faX} />
             </button>
           </div>
-          <ul className="bg-primary/70 backdrop-blur-sm flex flex-col-reverse justify-items-end gap-4 overflow-y-scroll no-scrollbar p-4">
+          <ul className="bg-primary/70 backdrop-blur-sm flex flex-col-reverse justify-items-end gap-4 overflow-y-scroll no-scrollbar py-4 px-2">
             {messageLog?.slice(0).reverse().map((item) => (
               <li
                 key={item.message_id}

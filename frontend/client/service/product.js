@@ -4,11 +4,10 @@ import { generateDummyProductData, generateDummyProductDetailData } from "@util/
 
 
 export const getAllProduct = async () => {
-  console.log(process.env.DEV_ENV)
-  if(process.env.DEV_ENV!=="production") return generateDummyProductData(36)
+  // if(process.env.DEV_ENV!=="production") return generateDummyProductData(36)
   try {
     const response = await fetch(
-      "https://se100-techstore.onrender.com/products"
+      `${process.env.APP_URL}/products`
     );
 
     if (response.ok) {
@@ -26,10 +25,10 @@ export const getAllProduct = async () => {
 
 export const getProducts = async (size) => {
   
-  if(process.env.DEV_ENV!=="production") return generateDummyProductData(size)
+  // if(process.env.DEV_ENV!=="production") return generateDummyProductData(size)
   try {
     const response = await fetch(
-      `https://se100-techstore.onrender.com/products?pageSize=${size}`
+      `${process.env.APP_URL}/products?pageSize=${size}`
     );
 
     if (response.ok) {
@@ -45,11 +44,11 @@ export const getProducts = async (size) => {
 };
 
 export const getProductDetail = async (id) => {
-  if(process.env.DEV_ENV!=="production") return generateDummyProductDetailData();
+  // if(process.env.DEV_ENV!=="production") return generateDummyProductDetailData();
 
   try {
     const response = await fetch(
-      `https://se100-techstore.onrender.com/products/${id}`
+      `${process.env.APP_URL}/products/${id}`
     );
 
     if (response.ok) {

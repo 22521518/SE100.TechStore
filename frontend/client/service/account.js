@@ -19,5 +19,24 @@ export const patchAccount = async (payload) => {
         console.log(error)
         return false   
     }
+}
 
+export const login = async(payload)=> {
+    try {
+        const response = await fetch(`${process.env.APP_URL}/auth/login/store`,{
+            method:'POST',
+            headers:{
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload)
+        })
+        if(response.ok) {
+            const data  = await response.json()
+            return data;
+        }
+        return null
+    } catch (error) {
+        console.log(error)
+        return null
+    }
 }

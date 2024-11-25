@@ -8,21 +8,25 @@ import ProfileImageHolder from "@components/UI/ProfileImageHolder";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getSession, useSession } from "@node_modules/next-auth/react";
-import { getCustomer } from "@service/customer";
+import { getCustomer, patchCustomer } from "@service/customer";
 import { formattedDate } from "@util/format";
 import { handleImage } from "@util/image";
-import { toastSuccess, toastWarning } from "@util/toaster";
+import { toastError, toastSuccess, toastWarning } from "@util/toaster";
 import { Input } from "postcss";
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "@node_modules/react-redux/dist/react-redux";
+import {
+  useDispatch,
+  useSelector,
+} from "@node_modules/react-redux/dist/react-redux";
+import { updateSession } from "@provider/redux/session/sessionSlice";
 
 const Account = () => {
+  const dispatch = useDispatch();
   const session = useSelector((state) => state.session);
-  const [email, setEmail] = useState("");
   const [customer, setCustomer] = useState();
-  const [image,setImage] = useState({name:'',url:''})
+  const [image, setImage] = useState({ name: "", url: "" });
   const [gender, setGender] = useState("Male");
-  const imagePicker = useRef(null)
+  const imagePicker = useRef(null);
   const handleRadioSelectionChange = (value) => {
     setGender(value);
   };
@@ -32,7 +36,7 @@ const Account = () => {
       !customer.full_name.trim() ||
       !customer.phone_number.trim() ||
       !customer.username.trim() ||
-      !customer.birth_date.trim() 
+      !customer.birth_date.trim()
     ) {
       toastWarning("Please fill out all field");
       return true;
@@ -41,19 +45,46 @@ const Account = () => {
   };
 
   const handleEditCustomer = async () => {
-    if(checkEmptyInput()) return 
-    const newSession = await getSession();
-    await update(newSession);
-    toastSuccess("Information updated");
+    console.log(image)
+    if (checkEmptyInput()) return;
+    const payload = {
+      user_id: session?.customer?.customer_id,
+      new_customer: {
+        username: customer.username,
+        full_name: customer.full_name,
+        phone_number: customer.phone_number,
+        birth_date: new Date(
+          customer.birth_date.split("-").reverse().join("-")
+        ).toISOString(),
+        male: gender === "Male",
+        image: {
+          name: image.name,
+          url: image.url,
+        },
+      },
+    };
+    patchCustomer(payload).then((data) => {
+      if (data) {
+        console.log(data);
+        dispatch(
+          updateSession({
+            customer: data,
+          })
+        );
+        toastSuccess("Information updated");
+      } else {
+        toastError("Failed to update information");
+      }
+    });
   };
 
   const fetchUser = () => {
-    getCustomer(session?.user?.id||'').then((data) => {
-      setImage({name:'user',url:data.image})
-      setEmail(data.account.email);
-      setCustomer(data);
-      setGender(data.male ? "Male" : "Female");
+    setImage({ name: "user", url: session.customer?.image });
+    setCustomer({
+      ...session.customer,
+      birth_date: formattedDate(session.customer?.birth_date),
     });
+    setGender(session.customer?.male ? "Male" : "Female");
   };
   useEffect(() => {
     fetchUser();
@@ -75,7 +106,8 @@ const Account = () => {
 
   const changeImage = ({ name, url }) => {
     setImage({
-      name,url
+      name,
+      url,
     });
   };
 
@@ -87,8 +119,8 @@ const Account = () => {
   };
 
   const handleOpenImage = () => {
-    imagePicker.current&&imagePicker.current.click()
-  }
+    imagePicker.current && imagePicker.current.click();
+  };
 
   return (
     <section className="w-full flex flex-col gap-2">
@@ -101,9 +133,17 @@ const Account = () => {
       <Divider />
       <div className="flex flex-col md:flex-row">
         <div className="flex flex-col gap-4 items-center p-4">
-          <ProfileImageHolder url={image.url}/>
-          <button className="button-variant-1" onClick={handleOpenImage}>Change photo</button>
-          <input type="file" accept="image/" className="hidden" ref={imagePicker} onChange={handleImageChange}/>
+          <ProfileImageHolder url={image.url} />
+          <button className="button-variant-1" onClick={handleOpenImage}>
+            Change photo
+          </button>
+          <input
+            type="file"
+            accept="image/"
+            className="hidden"
+            ref={imagePicker}
+            onChange={handleImageChange}
+          />
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-4 md:flex-row">
@@ -112,7 +152,7 @@ const Account = () => {
               <InputBox
                 value={
                   customer?.full_name
-                    .split(" ")
+                    ?.split(" ")
                     .filter((_, index) => index !== 0)
                     .join(" ") || ""
                 }
@@ -122,7 +162,7 @@ const Account = () => {
             <span className="grid grid-cols-1 md:grid-cols-[100px_1fr] whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-x-10 gap-y-4 ">
               <span>First name</span>
               <InputBox
-                value={customer?.full_name.split(" ")[0] || ""}
+                value={customer?.full_name?.split(" ")[0] || ""}
                 onChange={handleFirstNameChange}
               />
             </span>
@@ -133,8 +173,6 @@ const Account = () => {
               value={customer?.username || ""}
               onChange={(s) => setCustomer((c) => ({ ...c, username: s }))}
             />
-            <span>Email</span>
-            <InputBox value={email} onChange={() => {}} />
             <span>Phone</span>
             <PhoneInput
               value={customer?.phone_number || ""}
@@ -165,7 +203,7 @@ const Account = () => {
           <span className="grid grid-rows-[auto_1fr] md:grid-cols-[100px_1fr] md:grid-rows-1 whitespace-nowrap items-start md:items-center md:justify-items-end md:gap-10 ">
             <span>Birth date</span>
             <DatePicker
-              value={customer? formattedDate(customer.birth_date) : ""}
+              value={customer?.birth_date}
               onChange={(s) => setCustomer((c) => ({ ...c, birth_date: s }))}
             />
           </span>

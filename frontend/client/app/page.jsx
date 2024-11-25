@@ -109,7 +109,13 @@ export default function Home() {
       {/* product categories */}
       <div className="flex gap-2 justify-center items-center">
         <ul className="px-4 py-2 min-h-[48px] flex-wrap items-center bg-surface text-on-surface gap-6 flex rounded-xl text-base sm:text-lg shadow-md">
-          {categories.slice(0, 5).map((item) => (
+          {isLoading
+          ?Array.from({length:5}).map((_,index)=>(
+            <li key={index} className="animate-pulse h-6 w-[100px] rounded-lg bg-primary">
+
+            </li>
+          ))
+          :categories.slice(0, 5).map((item) => (
             <li
               key={item.category_id}
               className="hover:font-bold cursor-pointer"
@@ -156,7 +162,7 @@ export default function Home() {
                 <ul className="w-full overflow-x-scroll no-scrollbar flex flex-row gap-2 shadow-inner">
                   {products
                     .filter(
-                      (pd) => pd.categories[0].category_id === item.category_id
+                      (pd) => pd.categories[0]?.category_id === item.category_id
                     )
                     .map((pd) => (
                       <ProductCard key={pd.product_id} product={pd} />
