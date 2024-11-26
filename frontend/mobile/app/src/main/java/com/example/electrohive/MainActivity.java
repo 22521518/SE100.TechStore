@@ -3,7 +3,10 @@ package com.example.electrohive;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.example.electrohive.Activities.Cart_page;
 import com.google.android.material.navigation.NavigationView;
+
 
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.content.Intent;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -40,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
             // Handle navigation item clicks here
             int id = item.getItemId();
             // Handle your menu item actions
+            if(id==R.id.nav_product)
+            {
+                startActivity(new Intent(this, Cart_page.class));
+            }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });

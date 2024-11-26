@@ -5,9 +5,9 @@ import java.util.Map;
 
 public class Product {
     private String productId;
-    private ArrayList<String> imagelist;
-    private String productName;
-    private int productPrice;
+    private ArrayList<String> images;
+    private String product_name;
+    private int price;
     private Map<String,Integer> SizeMap;
 
     private int total;
@@ -29,9 +29,9 @@ public class Product {
 
     public Product(String productId, String type,String productName, String material,ArrayList<String> imagelist  ,Map<String,Integer> sizemap, String accessory,Double weight, int productPrice,   String description,   String publisher) {
         this.productId = productId;
-        this.productName = productName;
-        this.imagelist = imagelist;
-        this.productPrice = productPrice;
+        this.product_name = productName;
+        this.images = imagelist;
+        this.price = productPrice;
         this.SizeMap= sizemap;
         this.sold = 0;
         this.description = description;
@@ -55,11 +55,11 @@ public class Product {
     }
 
     public String getProductName() {
-        return productName;
+        return product_name;
     }
 
     public void setProductName(String productName) {
-        this.productName = productName;
+        this.product_name = productName;
     }
 
     public String getAccessory() {
@@ -95,11 +95,11 @@ public class Product {
     }
 
     public int getProductPrice() {
-        return productPrice;
+        return price;
     }
 
     public void setProductPrice(int productPrice) {
-        this.productPrice = productPrice;
+        this.price = productPrice;
     }
 
 
@@ -120,11 +120,11 @@ public class Product {
     }
 
     public ArrayList<String> getImagelist() {
-        return imagelist;
+        return images;
     }
 
     public void setImagelist(ArrayList<String> imagelist) {
-        this.imagelist = imagelist;
+        this.images = imagelist;
     }
 
     public Map<String, Integer> getSizeMap() {
@@ -180,9 +180,9 @@ public class Product {
     public String toString() {
         return "Product{" +
                 "productId='" + productId + '\'' +
-                ", imagelist=" + imagelist +
-                ", productName='" + productName + '\'' +
-                ", productPrice=" + productPrice +
+                ", imagelist=" + images +
+                ", productName='" + product_name + '\'' +
+                ", productPrice=" + price +
                 ", SizeMap=" + SizeMap +
                 ", total=" + total +
                 ", sold=" + sold +

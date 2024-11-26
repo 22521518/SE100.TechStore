@@ -20,6 +20,11 @@
             android:exported="false" />
         <activity
             android:name=".Activities.ProvincePage"
+            android:exported="false"/>
+        <activity android:name=".Activities.DistrictPage"/>
+        <activity android:name=".Activities.WardPage"/>
+        <activity android:name=".Activities.Cart_page"/>
+        <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,8 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.DistrictPage"/>
-        <activity android:name=".Activities.WardPage"/>
 
     </application>
 
