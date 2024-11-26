@@ -23,6 +23,9 @@ export const addFeedback = async (payload) => {
       `${process.env.APP_URL}/feedback/${payload.product_id}`,
       {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           customer_id: payload.customer_id,
           feedback: payload.feedback,
@@ -30,7 +33,15 @@ export const addFeedback = async (payload) => {
         }),
       }
     ); 
+
+    if(response.ok) {
+      const data = await response.json()
+      return data
+    } else {
+      return null
+    }
   } catch (error) {
     console.log(error)
+    return null
   }
 };

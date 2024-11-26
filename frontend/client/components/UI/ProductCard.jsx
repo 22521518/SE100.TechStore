@@ -45,6 +45,8 @@ const ProductCard = ({ product, loading = false }) => {
             width={300}
             height={300}
             quality={75}
+            blurDataURL="data:/images/PLACEHOLDER.jpg"
+            placeholder="blur"
             className="h-full object-contain w-full"
             priority
           />
@@ -61,7 +63,9 @@ const ProductCard = ({ product, loading = false }) => {
       </div>
       <div className="flex justify-between items-center">
         <div className="text-yellow-400 flex flex-row items-center gap-1">
-          <span className="font-semibold">{product.average_rating.toFixed(1)}</span>
+          <span className="font-semibold">
+            {product.average_rating.toFixed(1)}
+          </span>
           <FontAwesomeIcon icon={faStar} />
         </div>
         <h3 className="opacity-70 text-sm">

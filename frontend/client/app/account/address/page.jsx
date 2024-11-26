@@ -249,7 +249,7 @@ const Address = () => {
     addresses.map((address) => {
       if (address.is_primary) {
         const payload = {
-          user_id: session?.user?.id,
+          user_id: session.customer.customer_id,
           address_id: address.address_id,
           new_address: { "is_primary": false },
         };
@@ -257,7 +257,7 @@ const Address = () => {
       }
       if (address.address_id === id) {
         const payload = {
-          user_id: session?.user?.id,
+          user_id: session.customer.customer_id,
           address_id: address.address_id,
           new_address: { "is_primary": true },
         };

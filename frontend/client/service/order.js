@@ -6,7 +6,7 @@ import {
 } from "@util/generator/order";
 
 export const getOrder = async (id, order) => {
-  // if (process.env.DEV_ENV !== "production") return generateDummyOrderData();
+  if (process.env.DEV_ENV !== "production") return generateDummyOrderData();
   try {
     const response = await fetch(
       `${process.env.APP_URL}/orders/${id}/${order}`
@@ -24,7 +24,7 @@ export const getOrder = async (id, order) => {
 };
 
 export const getOrders = async (id) => {
-  // if (process.env.DEV_ENV !== "production") return generateDummyOrdersData(Math.round(Math.random()*4)+1);
+  if (process.env.DEV_ENV !== "production") return generateDummyOrdersData(Math.round(Math.random()*4)+1);
   try {
     const response = await fetch(`${process.env.APP_URL}/orders/${id}`);
     if (response.ok) {
@@ -60,3 +60,28 @@ export const cancelOrder = async (customer_id,id) => {
     return false;
   }
 };
+
+export const payWithMoMo = async (payload) => {
+  try {
+    const response = await fetch(`${process.env.APP_URL}/momo-payment/${payload.customer_id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(
+        	payload.order
+      ),
+    });
+
+    console.log(response)
+    if (response.ok) {
+      const data = await response.json()
+      return data.shortLink
+    } else {
+      return "";
+    }
+  } catch (error) {
+    console.log(error);
+    return "";
+  }
+}

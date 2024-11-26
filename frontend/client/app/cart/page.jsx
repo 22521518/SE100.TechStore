@@ -55,7 +55,7 @@ const Cart = () => {
   });
 
   const deleteItem = (id) => {
-    deleteCartItem(session.user.id, id);
+    deleteCartItem(session.customer.customer_id, id);
     reduxDispatch(
       removeItem({
         id: id,
@@ -83,7 +83,7 @@ const Cart = () => {
       event.preventDefault();
       // Call your API to update cart
       cartItems.forEach((item) => {
-        updateCartItem(session.user.id, item.product_id, item.quantity);
+        updateCartItem(session.customer.customer_id, item.product_id, item.quantity);
       });
     };
 
@@ -135,7 +135,7 @@ const Cart = () => {
 
   const handleRemoveAllItems = async () => {
     reduxDispatch(removeAllItem());
-    deleteAllCartItem(session.user.id);
+    deleteAllCartItem(session.customer.customer_id);
     setCartItems([]);
     toastSuccess("items deleted");
   };

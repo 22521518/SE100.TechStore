@@ -26,6 +26,7 @@ import {
   faWallet,
 } from "@node_modules/@fortawesome/free-solid-svg-icons";
 import Image from "@node_modules/next/image";
+import { payWithMoMo } from "@service/order";
 
 const Payment = () => {
   const router = useRouter();
@@ -83,9 +84,36 @@ const Payment = () => {
     reduxDispatch(clearOrder());
     setTimeout(() => router.push("/"), 1000);
   };
+
   const handleConfirm = async () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    setIsConfirmed(true);
+    console.log(order)
+    const payload = {
+      customer_id: session.customer.customer_id,
+      order: {
+        total_price: receipt.total,
+        order_items: order.order_items.map((item) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          unit_price: item.unit_price,
+          total_price: item.total_price,
+        })),
+        payment_method: order.order_payment_method,
+        shipping_address_id: order.order_address.address_id,
+        voucher: order.order_voucher?.voucher_code||null,
+      },
+    };
+    console.log(payload)
+    if (order.order_payment_method === "MOMO") {
+      await payWithMoMo(payload).then((data) => {
+        if (data) {
+          window.open(data, "_blank", "noopener,noreferrer");
+        } else {
+          return;
+        }
+      });
+    }
+    // setIsConfirmed(t rue);
   };
 
   if (order.order_state === 0)
@@ -116,17 +144,17 @@ const Payment = () => {
         <h3 className="font-bold md:text-xl">Shipping address</h3>
         <div className="flex flex-col items-start h-fit justify-around md:text-xl">
           <h4>
-            {order?.order_address.address.full_name} |{" "}
-            {order?.order_address.address.phone_number}
+            {order?.order_address.full_name} |{" "}
+            {order?.order_address.phone_number}
           </h4>
           <h3 className="opacity-50">
-            {order?.order_address.address.address +
+            {order?.order_address.address +
               ", " +
-              order?.order_address.address.ward +
+              order?.order_address.ward +
               ", " +
-              order?.order_address.address.district +
+              order?.order_address.district +
               ", " +
-              order?.order_address.address.province}
+              order?.order_address.city}
           </h3>
         </div>
         <Divider />
@@ -149,7 +177,7 @@ const Payment = () => {
         <Divider />
         <h3 className="font-bold md:text-xl">Voucher</h3>
 
-        {order.order_voucher&& (
+        {order.order_voucher && (
           <div className="relative h-[80px]  flex flex-row items-center cursor-pointer voucher">
             <div className="flex items-center justify-center h-full aspect-square bg-on-primary grow max-w-[80px] text-primary text-3xl font-bold">
               {order.order_voucher?.discount_amount}%

@@ -208,17 +208,17 @@ const Payment = () => {
           <h3 className="text-base md:text-xl">Shipping address</h3>
           <div className="flex flex-col items-start h-full justify-around text-sm">
             <h4>
-              {order?.order_address?.address.full_name} |{" "}
-              {order?.order_address?.address.phone_number}
+              {order?.order_address?.full_name} |{" "}
+              {order?.order_address?.phone_number}
             </h4>
             <h3 className="opacity-50">
-              {order?.order_address?.address.address}
+              {order?.order_address?.address}
             </h3>
             <h3 className="opacity-50">
               {[
-                order?.order_address?.address.ward,
-                order?.order_address?.address.district,
-                order?.order_address?.address.province,
+                order?.order_address?.ward,
+                order?.order_address?.district,
+                order?.order_address?.city,
               ].join(", ")}
             </h3>
           </div>

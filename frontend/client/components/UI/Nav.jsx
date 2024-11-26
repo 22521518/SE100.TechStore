@@ -169,7 +169,7 @@ const Nav = () => {
           </button>
           <button>
             <Link href="/account">
-              <ProfileImageHolder url={session?.user?.image} size={40} />
+              <ProfileImageHolder url={session?.customer?.image} size={40} />
             </Link>
           </button>
         </ul>
@@ -225,7 +225,7 @@ const Nav = () => {
           </button>
           <button>
             <Link href="/account">
-              <ProfileImageHolder url={session?.user?.image} size={40} />
+              <ProfileImageHolder url={session?.customer?.image} size={40} />
             </Link>
           </button>
         </ul>

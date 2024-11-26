@@ -11,7 +11,7 @@ const cartSlice = createSlice({
   },
   reducers: {
     setCart(state, action) {
-      state.customerId = action.payload.userId;
+      state.customerId = action.payload.customerId;
       state.items = action.payload.cart;
       state.quantity = action.payload.cart.length;
     },
@@ -24,7 +24,7 @@ const cartSlice = createSlice({
       if (!existingItem) {
         const {categories,product_feedbacks,attributes,...rest} = product;
         state.items.push({
-          customer_id:customerId,
+          customer_id:state.customerId,
           product_id:product.product_id,
           quantity:quantity,
           product:rest,

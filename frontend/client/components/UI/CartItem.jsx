@@ -61,6 +61,8 @@ const CartItem = ({ reCalculate, cartItem, removeItem }) => {
             alt="product image"
             width={300}
             height={300}
+            blurDataURL="data:/images/PLACEHOLDER.jpg"
+            placeholder="blur"
             className="size-full object-contain"
           />
         </div>

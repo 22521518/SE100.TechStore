@@ -62,7 +62,7 @@ const Product = () => {
   const router = useRouter();
   const params = useParams();
   const [isLoading, setIsLoading] = useState(true);
-  const [feedback, setFeedback] = useState({ rating: 0, content: "" });
+  const [feedback, setFeedback] = useState({ rating: 1, content: "" });
   const [feedbackFilter, setFeedbackFilter] = useState(-1);
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState(null);
@@ -89,53 +89,75 @@ const Product = () => {
       toastWarning("Please add your feedback before submit");
       return;
     }
+
     const newFeedback = {
-      feedback_id: Math.random() * 1000 + 5,
-      product_id: "cm2rnv4vf00039thyjfemcq9h",
+      product_id: params.id,
       customer_id: session.customer.customer_id,
       feedback: feedback.content,
       rating: feedback.rating,
-      created_at: new Date(),
     };
 
-    setProductFeedBacks((prev) => [...prev, newFeedback]);
-    setFeedback({ content: "", rating: 0 });
-    // addFeedback(newFeedback)
-    switch (feedback.rating) {
-      case 0:
-        toastSuccess(
-          "We are sorry to hear you had a bad experience. Thank you for your feedback."
-        );
-        break;
-      case 1:
-        toastSuccess(
-          "Thank you for your feedback. We strive to improve your experience."
-        );
-        break;
-      case 2:
-        toastSuccess(
-          "Thank you for your input. We are working on making things better."
-        );
-        break;
-      case 3:
-        toastSuccess(
-          "Thank you! We appreciate your feedback and will continue to improve."
-        );
-        break;
-      case 4:
-        toastSuccess(
-          "Great to hear you had a good experience! Thank you for your feedback."
-        );
-        break;
-      case 5:
-        toastSuccess(
-          "Awesome! Your feedback means a lot to us. Thank you for using our products!"
-        );
-        break;
-      default:
-        toastSuccess("Thank you for your feedback! We appreciate your input.");
-        break;
-    }
+    await addFeedback(newFeedback).then((data) => {
+      if (data) {
+        setProductFeedBacks((prev) => {
+          const existingFeedbackIndex = prev.findIndex(
+            (feedbackItem) => feedbackItem.feedback_id === data.feedback_id
+          );
+  
+          if (existingFeedbackIndex >= 0) {
+            // Feedback exists, replace it
+            const updatedFeedbacks = [...prev];
+            updatedFeedbacks[existingFeedbackIndex] = data;
+            return updatedFeedbacks;
+          } else {
+            // Feedback does not exist, add it
+            return [...prev, data];
+          }
+        });
+        setFeedback({ content: "", rating: 0 });
+        switch (data.rating) {
+          case 0:
+            toastSuccess(
+              "We are sorry to hear you had a bad experience. Thank you for your feedback."
+            );
+            break;
+          case 1:
+            toastSuccess(
+              "Thank you for your feedback. We strive to improve your experience."
+            );
+            break;
+          case 2:
+            toastSuccess(
+              "Thank you for your input. We are working on making things better."
+            );
+            break;
+          case 3:
+            toastSuccess(
+              "Thank you! We appreciate your feedback and will continue to improve."
+            );
+            break;
+          case 4:
+            toastSuccess(
+              "Great to hear you had a good experience! Thank you for your feedback."
+            );
+            break;
+          case 5:
+            toastSuccess(
+              "Awesome! Your feedback means a lot to us. Thank you for using our products!"
+            );
+            break;
+          default:
+            toastSuccess(
+              "Thank you for your feedback! We appreciate your input."
+            );
+            break;
+        }
+      } else {
+        toastError('Failed to add feedback')
+      }
+    });
+
+
   };
   const handleSetFeedbackFilter = (rate) => {
     setFeedbackFilter(rate === feedbackFilter ? -1 : rate);
@@ -156,28 +178,28 @@ const Product = () => {
       return;
     }
 
-    addCartItem(session.customer.customer_id, product.product_id, state.quantity).then(
-      (data) => {
-        if (data) {
-          dispatch(
-            addItem({
-              product: product,
-              quantity:state.quantity,
-            })
-          );
-      
-          toastSuccess("Product added to cart");
-        } else {
-          toastError("Failed to add item to cart")
-        }
-      }
-    );
+    addCartItem(
+      session.customer.customer_id,
+      product.product_id,
+      state.quantity
+    ).then((data) => {
+      if (data) {
+        dispatch(
+          addItem({
+            product: product,
+            quantity: state.quantity,
+          })
+        );
 
-   
+        toastSuccess("Product added to cart");
+      } else {
+        toastError("Failed to add item to cart");
+      }
+    });
   };
 
-  const handleBuyNow = () => {
-    handleAddToCart();
+  const handleBuyNow = async () => {
+    await handleAddToCart();
     router.push("/cart");
   };
 
@@ -209,7 +231,6 @@ const Product = () => {
       setProductFeedBacks(data);
     });
   };
-
 
   useEffect(() => {
     const imageList = productImageListRef.current;
@@ -277,6 +298,8 @@ const Product = () => {
                       alt="product image"
                       width={0}
                       height={0}
+                      blurDataURL="data:/images/PLACEHOLDER.jpg"
+                      placeholder="blur"
                       layout="responsive"
                       className="size-full object-contain snap-start"
                     />
@@ -300,6 +323,8 @@ const Product = () => {
                     alt="product image "
                     width={200}
                     height={200}
+                    blurDataURL="data:/images/PLACEHOLDER.jpg"
+                    placeholder="blur"
                     className="size-full object-cover outline-none"
                   />
                 </button>
@@ -345,7 +370,7 @@ const Product = () => {
                   WebkitAppearance: "none",
                 }}
                 min={1}
-                max={parseInt(product?.stock_quantity)}
+                max={product?.stock_quantity || 100}
                 onChange={handleChangeQuantity}
                 className="size-7 text-base flex items-center justify-center bg-transparent outline-none text-center"
               ></input>
@@ -410,7 +435,7 @@ const Product = () => {
 
           <div className="flex flex-col gap-4 bg-surface p-4 overflow-hidden rounded-lg">
             <div className="w-full grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-2">
-              <ProfileImageHolder url={session?.user?.image} size={32}/>
+              <ProfileImageHolder url={session?.customer?.image} size={32} />
               <div className="flex flex-col gap-2 items-start">
                 <ReviewStar
                   rating={feedback.rating}
@@ -449,7 +474,7 @@ const Product = () => {
               <ReviewStar rating={productRating} size={"text-2xl"} />
             </div>
             <ul className="flex flex-wrap gap-4">
-              {[5, 4, 3, 2, 1, 0].map((value) => (
+              {[5, 4, 3, 2, 1].map((value) => (
                 <button
                   key={value}
                   onClick={() => handleSetFeedbackFilter(value)}
@@ -502,7 +527,7 @@ const Product = () => {
         </div>
       </div>
       <p className="text-2xl font-semibold my-4 ">
-        Other products from {product?.categories[0].category_name}
+        Other products from {product?.categories[0]?.category_name}
       </p>
       <ul className="w-full overflow-scroll no-scrollbar flex flex-row gap-2">
         {isLoading

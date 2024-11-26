@@ -93,6 +93,8 @@ export default function Home() {
                 alt="product image"
                 width={0} // Set the width of the image
                 height={0}
+                blurDataURL="data:/images/PLACEHOLDER.jpg"
+                placeholder="blur"
                 layout="responsive" // Set the height of the image for proper aspect ratio
                 className="size-full object-contain snap-start" // Ensure the image covers the entire area
               />
@@ -110,21 +112,22 @@ export default function Home() {
       <div className="flex gap-2 justify-center items-center">
         <ul className="px-4 py-2 min-h-[48px] flex-wrap items-center bg-surface text-on-surface gap-6 flex rounded-xl text-base sm:text-lg shadow-md">
           {isLoading
-          ?Array.from({length:5}).map((_,index)=>(
-            <li key={index} className="animate-pulse h-6 w-[100px] rounded-lg bg-primary">
-
-            </li>
-          ))
-          :categories.slice(0, 5).map((item) => (
-            <li
-              key={item.category_id}
-              className="hover:font-bold cursor-pointer"
-            >
-              <Link href={`/search?category=${item.category_id}`}>
-                {item.category_name}
-              </Link>
-            </li>
-          ))}
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <li
+                  key={index}
+                  className="animate-pulse h-6 w-[100px] rounded-lg bg-primary"
+                ></li>
+              ))
+            : categories.slice(0, 5).map((item) => (
+                <li
+                  key={item.category_id}
+                  className="hover:font-bold cursor-pointer"
+                >
+                  <Link href={`/search?category=${item.category_id}`}>
+                    {item.category_name}
+                  </Link>
+                </li>
+              ))}
         </ul>
       </div>
 
@@ -190,6 +193,8 @@ export default function Home() {
                 alt="product image"
                 width={0} // Set the width of the image
                 height={0}
+                blurDataURL="data:/images/PLACEHOLDER.jpg"
+                placeholder="blur"
                 layout="responsive" // Set the height of the image for proper aspect ratio
                 className="size-full object-contain snap-start" // Ensure the image covers the entire area
               />

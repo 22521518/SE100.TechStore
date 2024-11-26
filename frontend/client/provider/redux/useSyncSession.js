@@ -20,10 +20,10 @@ export default function useSyncSession() {
       );
       dispatch(
         setCart({
-          customerId: session.user.customer?.customer_id,
+          customerId: session?.user.customer.customer_id,
           cart: [...session.user.cart||[]],
         })
       );
     }
-  }, [session, status]);
+  }, [session]);
 }

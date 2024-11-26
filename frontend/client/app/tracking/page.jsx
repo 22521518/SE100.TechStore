@@ -38,7 +38,7 @@ export default function Tracking() {
     }
     setIsLoading(true);
     try {
-      const data = await getOrder(session?.user?.id, id);
+      const data = await getOrder(session?.customer?.customer_id, id);
       setOrder(data);
     } catch (error) {
       console.error("Failed to fetch order:", error);
@@ -172,21 +172,21 @@ export default function Tracking() {
           <div className=" w-full border-t-2 border-on-secondary my-4"></div>
 
           <div className="flex flex-col gap-2 items-start">
-            <h3 className="text-lg font-bold">{order?.customer?.full_name}</h3>
+            <h3 className="text-lg font-bold">{order?.shipping_address?.full_name}</h3>
             <div className="grid grid-cols-[auto_1fr] gap-2 items-start">
               <FontAwesomeIcon icon={faHouse} />
               <p>
-                {order?.shipping_address?.address?.address &&
-                order?.shipping_address?.address?.ward &&
-                order?.shipping_address?.address?.district &&
-                order?.shipping_address?.address?.province
-                  ? `${order.shipping_address.address.address}, ${order.shipping_address.address.ward}, ${order.shipping_address.address.district}, ${order.shipping_address.address.province}`
+                {order?.shipping_address?.address &&
+                order?.shipping_address?.ward &&
+                order?.shipping_address?.district &&
+                order?.shipping_address?.city
+                  ? `${order.shipping_address.address}, ${order.shipping_address.ward}, ${order.shipping_address.district}, ${order.shipping_address.province}`
                   : null}
               </p>
             </div>
             <div className="grid grid-cols-[auto_1fr] gap-2 items-start">
               <FontAwesomeIcon icon={faPhone} />
-              <p>{order?.customer?.phone_number || ""}</p>
+              <p>{order?.shipping_address?.phone_number || ""}</p>
             </div>
           </div>
 

@@ -25,7 +25,7 @@ const ReviewStar = ({ rating, size, editable = false, onChange= (num)=>{} }) => 
   }
 
   const handleMouseClick = (index) => {
-    onChange(index===rating?0:index)
+    onChange(index===rating?1:index)
   }
 
   useEffect(()=>{setEditRating(rating)},[rating])

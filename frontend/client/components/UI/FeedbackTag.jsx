@@ -33,7 +33,7 @@ const FeedbackTag = ({ feedback, loading = false }) => {
     >
       <ProfileImageHolder url={feedback.customer?.image} size={32}/>
       <div className="flex flex-col gap-2 items-start">
-        <span className="font-semibold">{feedback.customer.username}</span>
+        <span className="font-semibold">{feedback.customer?.username}</span>
         <ReviewStar rating={feedback.rating} size={"text-xs"} />
         <span className="text-xs opacity-50">
           {new Date(feedback.created_at).toISOString().split("T")[0]}

@@ -80,10 +80,11 @@ const Checkout = () => {
   const [ward, setWard] = useState();
 
   const [address, setAddress] = useState({
+    address_id:"0",
     full_name: "",
     phone_number: "",
     address: "",
-    province: "",
+    city: "",
     district: "",
     ward: "",
   });
@@ -91,7 +92,7 @@ const Checkout = () => {
   const fetchAddress = () => {
     setIsLoading(true);
     // setIsLoading(true);
-    getCustomerAddresses(session?.user?.id).then((data) => {
+    getCustomerAddresses(session.customer.customer_id).then((data) => {
       setSelectedOption(data.findIndex((item) => item.is_primary) + 1);
       setUserAddresses(data.map((a, index) => ({ id: index, ...a })));
     });
@@ -104,7 +105,7 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    setAddress((a) => ({ ...a, province: province?.name }));
+    setAddress((a) => ({ ...a, city: province?.name }));
     setDistrict(null);
     getDistricts(province?.id || "");
   }, [province]);
@@ -174,19 +175,14 @@ const Checkout = () => {
     // Dispatch the shipping address to Redux
     reduxDispatch(
       setOrderAddress({
-        address: {
-          shipping_status: "",
-          delivery_date: new Date().toISOString(),
-          address: {
+        address: {  
+            address_id: checkoutAddress.address_id,
             full_name: checkoutAddress.full_name,
             phone_number: checkoutAddress.phone_number,
             address: checkoutAddress.address,
-            city: "",
-            state: "",
-            province: checkoutAddress.province,
+            city:  checkoutAddress.city,
             district: checkoutAddress.district,
             ward: checkoutAddress.ward,
-          },
         },
       })
     );
@@ -317,7 +313,7 @@ const Checkout = () => {
                       </h4>
                       <h3 className="opacity-50">{item.address}</h3>
                       <h3 className="opacity-50">
-                        {[item.ward, item.district, item.province].join(", ")}
+                        {[item.ward, item.district, item.city].join(", ")}
                       </h3>
                     </div>
                   </label>
