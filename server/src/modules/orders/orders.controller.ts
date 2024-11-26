@@ -39,6 +39,10 @@ export class OrdersController {
         shipping_address_id,
       );
 
+      if (!shipping_address) {
+        throw new BadRequestException('Shipping address not found');
+      }
+
       const shippingAddress: ShippingAddress = {
         city: shipping_address.city,
         district: shipping_address.district,
@@ -77,9 +81,8 @@ export class OrdersController {
 
       const order = await this.ordersService.create(orderDto, order_items);
       return order;
-    } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Creating order failed');
+    } catch (error: BadRequestException | any) {
+      throw new BadRequestException(error.message || 'Creating order failed');
     }
   }
 

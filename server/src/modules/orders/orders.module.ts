@@ -7,5 +7,6 @@ import { AddressesModule } from '../addresses/addresses.module';
   controllers: [OrdersController],
   providers: [OrdersService],
   imports: [AddressesModule],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

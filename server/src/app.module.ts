@@ -28,7 +28,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { PermissionsGuard } from './common/guards/permission.guard';
 import { ProfileModule } from './modules/profile/profile.module';
 import { EventMessageModule } from './event-message/event-message.module';
-import { SeedingModule } from './seeding/seeding.module';
+import { MomoPaymentModule } from './modules/momo-payment/momo-payment.module';
 
 @Module({
   imports: [
@@ -59,7 +59,7 @@ import { SeedingModule } from './seeding/seeding.module';
     AuthModule,
     ProfileModule,
     EventMessageModule,
-    SeedingModule,
+    MomoPaymentModule,
   ],
   controllers: [AppController],
   providers: [

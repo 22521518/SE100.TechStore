@@ -28,11 +28,19 @@ export class CartsService {
           },
           quantity: createCartDto.quantity ?? 1, // Default quantity
         },
+        include: {
+          product: {
+            include: {
+              categories: true,
+            },
+          },
+        },
       });
+
       return item;
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Error creating cart item');
+      const message = `Error creating cart item, \n Invalid information: ${error.meta}`;
+      throw new BadRequestException(message);
     }
   }
 
@@ -43,13 +51,17 @@ export class CartsService {
           customer_id: customerId,
         },
         include: {
-          product: true,
+          product: {
+            include: {
+              categories: true,
+            },
+          },
         },
       });
       return cart_items;
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Error fetching cart item');
+      const message = `Error fetching cart item, \n Invalid information: ${error.meta}`;
+      throw new BadRequestException(message);
     }
   }
 
@@ -67,11 +79,18 @@ export class CartsService {
           },
         },
         data: updateCartDto,
+        include: {
+          product: {
+            include: {
+              categories: true,
+            },
+          },
+        },
       });
       return item;
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Error updating cart item');
+      const message = `Error updating cart item, \n Invalid information: ${error.meta}`;
+      throw new BadRequestException(message);
     }
   }
 
@@ -89,8 +108,8 @@ export class CartsService {
       });
       return customer;
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Error deleting cart item');
+      const message = `Error deleting cart items, \n Invalid information: ${error.meta}`;
+      throw new BadRequestException(message);
     }
   }
 
@@ -106,8 +125,8 @@ export class CartsService {
       });
       return item;
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Error deleting cart item');
+      const message = `Error deleting cart item, \n Invalid information: ${error.meta}`;
+      throw new BadRequestException(message);
     }
   }
 }

@@ -19,6 +19,7 @@ model Orders {
     order_status ORDER_STATUS @default(PENDING)
     total_price Float
     voucher_code String?
+    paid Boolean @default(false)
     created_at DateTime @default(now())
 
     payment_method PAYMENT_METHOD?
