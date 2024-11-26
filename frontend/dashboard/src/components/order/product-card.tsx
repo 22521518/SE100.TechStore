@@ -1,5 +1,5 @@
 'use client';
-import { IOrderItem } from '@constant/interface.constant';
+import { IOrderItem, IImportationItem } from '@constant/interface.constant';
 import { Box, Stack } from '@mui/system';
 import Image from 'next/image';
 import React from 'react';
@@ -8,22 +8,28 @@ import { Typography } from '@mui/material';
 import { transformVNMoney } from '@utils/transform.util';
 
 type ProductCardProps = {
-  orderItem: IOrderItem;
+  orderItem: IOrderItem | IImportationItem;
 };
 
 const ProductCard = ({ orderItem }: ProductCardProps) => {
   const productInfo = orderItem.product;
   return (
     <Box className="flex flex-row justify-around items-center">
-      <Box className="flex flex-row  gap-1">
+      <Box className="flex flex-row justify-center gap-3">
         <Image
-          src={productInfo?.images ? productInfo?.images[0] : dummyProductImage}
+          src={
+            productInfo?.images
+              ? typeof productInfo.images[0] === 'string'
+                ? productInfo.images[0]
+                : dummyProductImage
+              : dummyProductImage
+          }
           alt={productInfo?.product_name || 'product'}
           width={64}
           height={64}
           className="w-16 h-16 object-contain"
         />
-        <Stack className="justify-between">
+        <Stack className="justify-center">
           <Typography className="text-lg font-medium">
             {productInfo?.product_name || 'product'}
           </Typography>

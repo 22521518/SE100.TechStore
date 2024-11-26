@@ -51,7 +51,7 @@ export const Menu = ({ className = '' }: { className: string }) => {
               >
                 {item.label}
               </Link>
-              {item.label === 'Customers' && (
+              {(item.label === 'Customers' || item.label === 'Suppliers') && (
                 <Divider className="w-full h-1 border-b-2 border-solid border-slate-300 py-2 mb-2 opacity-50" />
               )}
             </li>

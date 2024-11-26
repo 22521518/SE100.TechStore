@@ -49,6 +49,32 @@
     @apply border-r-0;
   }
 
+  ::-webkit-scrollbar {
+    @apply w-4;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .content::-webkit-scrollbar-thumb {
+    @apply hover:opacity-10 bg-accent rounded-sm border-solid border-l-accent;
+  }
+
+  input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset; /* Background fix */
+    -webkit-text-fill-color: black; /* Text color fix */
+    font-size: 16px; /* Adjust font size to match */
+    color: black;
+  }
+
+  /* For Firefox */
+  * {
+    @apply scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent scroll-smooth;
+  }
+}
+
+@layer components {
   .layout {
     @apply flex gap-4;
   }
@@ -70,28 +96,5 @@
 
   .breadcrumb a {
     @apply text-blue-700 no-underline;
-  }
-
-  ::-webkit-scrollbar {
-    @apply w-4;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-
-  content::-webkit-scrollbar-thumb {
-    @apply hover:opacity-10 bg-accent rounded-sm border-solid border-l-accent;
-  }
-  input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px white inset; /* Background fix */
-    -webkit-text-fill-color: black; /* Text color fix */
-    font-size: 16px; /* Adjust font size to match */
-    color: black;
-  }
-
-  /* For Firefox */
-  * {
-    @apply scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent  scroll-smooth;
   }
 }
