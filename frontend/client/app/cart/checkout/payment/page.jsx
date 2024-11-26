@@ -73,7 +73,7 @@ const Payment = () => {
   });
 
   const fetchVoucher = () => {
-    getVouchers(session?.user?.id).then((data) => {
+    getVouchers().then((data) => {
       const activeAndValidVouchers = data.filter(
         (voucher) =>
           voucher.is_active && new Date(voucher.valid_to) >= new Date()

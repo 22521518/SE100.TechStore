@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 import { Prisma } from '@prisma/client';
 
@@ -11,8 +10,18 @@ export class FeedbackService {
     try {
       const feedback = await this.feedbackPrismaDBService.$transaction(
         async (prisma) => {
-          return await prisma.product_Feedbacks.create({
-            data: createFeedbackDto,
+          return await prisma.product_Feedbacks.upsert({
+            where: {
+              product_id_customer_id: {
+                product_id: createFeedbackDto.product.connect.product_id,
+                customer_id: createFeedbackDto.customer.connect.customer_id,
+              },
+            },
+            create: createFeedbackDto,
+            update: createFeedbackDto,
+            include: {
+              customer: true,
+            },
           });
         },
       );
@@ -30,6 +39,9 @@ export class FeedbackService {
           where: {
             product_id: product_id,
           },
+          include: {
+            customer: true,
+          },
         });
       return feedbacks;
     } catch (error) {
@@ -45,6 +57,9 @@ export class FeedbackService {
             product_id: product_id,
             feedback_id: feedback_id,
           },
+          include: {
+            customer: true,
+          },
         });
       return feedback;
     } catch (error) {
@@ -52,9 +67,28 @@ export class FeedbackService {
     }
   }
 
-  async update(id: number, updateFeedbackDto: UpdateFeedbackDto) {
+  async update(
+    id: number,
+    updateFeedbackDto: Prisma.Product_FeedbacksUpdateInput,
+  ) {
     try {
-      return `This action updates a #${id} feedback: ${updateFeedbackDto}`;
+      const feedback = await this.feedbackPrismaDBService.$transaction(
+        async (prisma) => {
+          return await prisma.product_Feedbacks.update({
+            where: {
+              product_id_customer_id: {
+                product_id: updateFeedbackDto.product.connect.product_id,
+                customer_id: updateFeedbackDto.customer.connect.customer_id,
+              },
+            },
+            data: updateFeedbackDto,
+            include: {
+              customer: true,
+            },
+          });
+        },
+      );
+      return feedback;
     } catch (error) {
       console.log(error);
     }
@@ -72,6 +106,19 @@ export class FeedbackService {
               },
             },
           });
+        },
+      );
+      return feedback;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async removeAll() {
+    try {
+      const feedback = await this.feedbackPrismaDBService.$transaction(
+        async (prisma) => {
+          return await prisma.product_Feedbacks.deleteMany({});
         },
       );
       return feedback;

@@ -45,13 +45,13 @@ export interface ICategory {
 export interface IProductFeedback {
   feedback_id: string;
   customer_id?: string;
+  customer?: ICustomer;
   product_id?: string;
   rating: number;
   feedback: string;
   created_at: string | Date;
 }
 
-// 04/11/2024 -- unchecked
 export interface ICustomer {
   customer_id: string;
   account_id: string;
@@ -63,7 +63,7 @@ export interface ICustomer {
   product_feedbacks?: IProductFeedback[];
   orders?: IOrder[];
   addresses?: IAddress[];
-  // 04/11/2024 checked
+
   image?: string;
   male?: boolean;
   birth_date?: Date | string;
@@ -75,47 +75,56 @@ export interface IAccount {
 
 export interface IAddress {
   address_id?: string;
-  city: string;
-  address: string;
-
-  district?: string; // quận
-  ward?: string; // phường
-  full_name?: string;
-  phone_number?: string;
+  customer_id?: string;
   is_primary?: boolean;
 
-  // province?:string; // tỉnh
+  city: string;
+  address: string;
+  district?: string; // quận
+  ward?: string; // phường
+
+  full_name?: string;
+  phone_number?: string;
 }
 
-// 04/11/2024 -- unchecked
+//voucher: 17/11/2024
 export interface IOrder {
   order_id: string;
   customer_id?: string | null;
   customer?: ICustomer;
   order_status: ORDER_STATUS;
   total_price: number;
-  voucher_code?: string | null;
+  voucher?: IVoucher;
   created_at: Date | string;
   shipping_address?: IShippingAddress;
   order_items: IOrderItem[];
-
-  // 06/11/2024 -- checked
   payment_method?: PAYMENT_METHOD;
 }
 
+//total_price: 17/11/2024
 export interface IOrderItem {
   order_id: string;
   product_id: string;
   product?: IProduct;
   quantity: number;
   unit_price: number;
-  total_price: number;
 }
 
 export interface IShippingAddress {
+  shipping_id?: string;
+  address_id?: string;
+  order_id?: string;
+  created_at: Date | string;
   shipping_status: ORDER_STATUS;
   delivery_date?: Date | string;
-  address: IAddress;
+
+  city: string;
+  address: string;
+  district?: string; // quận
+  ward?: string; // phường
+
+  full_name?: string;
+  phone_number?: string;
 }
 
 export interface IPermission {
@@ -151,6 +160,7 @@ export interface IAccountWithPassword {
   password: string;
 }
 
+// staff: 17/11/2024
 export interface IStaffInfo {
   full_name: string;
   phone_number: string;
@@ -158,6 +168,9 @@ export interface IStaffInfo {
   hire_date: Date | string;
   account: IAccountWithPassword;
   role?: IRole;
+  images?: string;
+  male?: boolean;
+  birth_date?: Date | string;
 }
 
 export interface IVoucherWithoutCode {
@@ -198,4 +211,33 @@ export interface IInboxMessage {
   message: string;
   created_at: Date | string;
   is_seen: boolean;
+}
+
+export interface IImportation {
+  importation_id?: number;
+  supplier_id?: number;
+  import_date?: Date | string;
+  total_price: number;
+  remarks?: string;
+  import_items: IImportationItem[];
+  supplier?: ISupplier;
+}
+
+export interface IImportationItem {
+  import_item_id?: number;
+  import_id?: number;
+  product_id: string;
+  product?: IProduct;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+}
+
+export interface ISupplier {
+  supplier_id?: number;
+  supplier_name: string;
+  contact_number: string;
+  email: string;
+  description: string;
+  created_at?: Date | string;
 }

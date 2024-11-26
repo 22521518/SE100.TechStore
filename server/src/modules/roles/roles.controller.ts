@@ -12,12 +12,15 @@ import { RolesService } from './roles.service';
 import { Prisma } from '@prisma/client';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { StaffDefaultPermissionsList } from '../../permissions/permissions.config';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
+  @Permissions(['role-create'])
   async create(@Body() createRoleDto: CreateRoleDto) {
     try {
       const { role_permissions, ...rest } = createRoleDto;
@@ -25,9 +28,14 @@ export class RolesController {
         ...rest,
         ...(role_permissions && {
           role_permissions: {
-            connect: role_permissions.map((permission) => ({
-              permission_id: permission.permission_id,
-            })),
+            connect: [
+              ...role_permissions.map((permission) => ({
+                permission_id: permission.permission_id,
+              })),
+              ...StaffDefaultPermissionsList.map((permission) => ({
+                permission_name: permission.permission_name,
+              })),
+            ],
           },
         }),
       };
@@ -40,6 +48,7 @@ export class RolesController {
   }
 
   @Get()
+  @Permissions(['role-read'])
   async findAll() {
     try {
       const role = await this.rolesService.findAll();
@@ -51,6 +60,7 @@ export class RolesController {
   }
 
   @Get(':id')
+  @Permissions(['role-read'])
   async findOne(@Param('id') id: string) {
     try {
       const role = await this.rolesService.findOne(+id);
@@ -62,6 +72,7 @@ export class RolesController {
   }
 
   @Patch(':id')
+  @Permissions(['role-update'])
   async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     try {
       const { role_permissions, ...rest } = updateRoleDto;
@@ -85,6 +96,7 @@ export class RolesController {
   }
 
   @Delete(':id')
+  @Permissions(['role-delete'])
   async remove(@Param('id') id: string) {
     try {
       const role = await this.rolesService.remove(+id);

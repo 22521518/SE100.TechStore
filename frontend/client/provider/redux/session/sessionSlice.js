@@ -4,20 +4,23 @@ import { createSlice } from '@reduxjs/toolkit';
 const sessionSlice = createSlice({
   name: 'session',
   initialState: {
-    user: null,
+    customer: null,
     isAuthenticated: false,
   },
   reducers: {
     setSession: (state, action) => {
-      state.user = action.payload.user;
+      state.customer = action.payload.customer;
       state.isAuthenticated = action.payload.isAuthenticated;
     },
     clearSession: (state) => {
-      state.user = null;
+      state.customer = null;
       state.isAuthenticated = false;
     },
+    updateSession: (state,action) => {
+      state.customer = action.payload.customer;
+    }
   },
 });
 
-export const { setSession, clearSession } = sessionSlice.actions;
+export const { setSession, clearSession, updateSession } = sessionSlice.actions;
 export default sessionSlice.reducer;

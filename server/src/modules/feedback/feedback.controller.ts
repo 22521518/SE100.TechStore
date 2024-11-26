@@ -14,6 +14,7 @@ import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { Prisma } from '@prisma/client';
 import { DeleteFeedbackDto } from './dto/delete-feedback.dto';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('feedback')
 export class FeedbackController {
@@ -23,23 +24,12 @@ export class FeedbackController {
   ) {}
 
   @Post(':product_id')
+  @Permissions(['feedback-create'])
   async create(
     @Param('product_id') product_id: string,
     @Body() createFeedbackDto: CreateFeedbackDto,
   ) {
     try {
-      const existingFeedback =
-        await this.prismaDbService.product_Feedbacks.findFirst({
-          where: {
-            product_id: product_id,
-            customer_id: createFeedbackDto.customer_id,
-          },
-        });
-
-      if (existingFeedback) {
-        throw new BadRequestException('You have already given feedback');
-      }
-
       const feedbackDto: Prisma.Product_FeedbacksCreateInput = {
         feedback: createFeedbackDto.feedback,
         rating: createFeedbackDto.rating,
@@ -63,6 +53,7 @@ export class FeedbackController {
   }
 
   @Get(':product_id')
+  @Permissions(['feedback-read'])
   async findAll(@Param('product_id') product_id: string) {
     try {
       const feedbacks = await this.feedbackService.findAll(product_id);
@@ -74,6 +65,7 @@ export class FeedbackController {
   }
 
   @Get(':product_id/:id')
+  @Permissions(['feedback-read'])
   async findOne(
     @Param('product_id') product_id: string,
     @Param('id') feedback_id: string,
@@ -91,15 +83,29 @@ export class FeedbackController {
   }
 
   @Patch(':id')
+  @Permissions(['feedback-update'])
   async update(
     @Param('id') id: string,
     @Body() updateFeedbackDto: UpdateFeedbackDto,
   ) {
     try {
-      const feedback = await this.feedbackService.update(
-        +id,
-        updateFeedbackDto,
-      );
+      const { customer_id } = updateFeedbackDto;
+      const feedbackDto: Prisma.Product_FeedbacksUpdateInput = {
+        feedback: updateFeedbackDto.feedback,
+        rating: updateFeedbackDto.rating,
+        product: {
+          connect: {
+            product_id: id,
+          },
+        },
+        customer: {
+          connect: {
+            customer_id: customer_id,
+          },
+        },
+      };
+
+      const feedback = await this.feedbackService.update(+id, feedbackDto);
       return feedback;
     } catch (error) {
       console.log(error);
@@ -107,7 +113,20 @@ export class FeedbackController {
     }
   }
 
+  @Delete('/all')
+  @Permissions(['feedback-delete'])
+  async removeSeed() {
+    try {
+      const feedback = await this.feedbackService.removeAll();
+      return feedback;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Failed to remove feedback');
+    }
+  }
+
   @Delete(':product_id')
+  @Permissions(['feedback-delete'])
   async remove(
     @Param('product_id') product_id: string,
     @Body() customer: DeleteFeedbackDto,

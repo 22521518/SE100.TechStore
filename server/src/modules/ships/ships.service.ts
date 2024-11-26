@@ -9,7 +9,6 @@ export class ShipsService {
   async create(
     createShipDto: Prisma.Shipping_AddressCreateInput,
     including_order: boolean = true,
-    including_address: boolean = true,
   ) {
     try {
       // Create the shipping address and include related order/address data
@@ -17,7 +16,6 @@ export class ShipsService {
         data: createShipDto,
         include: {
           order: including_order && { include: { customer: true } }, // Conditionally include order and customer
-          address: including_address, // Conditionally include address
         },
       });
 
@@ -50,10 +48,7 @@ export class ShipsService {
     }
   }
 
-  async findAll(
-    including_order: boolean = true,
-    including_address: boolean = true,
-  ) {
+  async findAll(including_order: boolean = true) {
     try {
       const ship = await this.prismaDbService.shipping_Address.findMany({
         include: {
@@ -62,7 +57,6 @@ export class ShipsService {
               customer: including_order,
             },
           },
-          address: including_address,
         },
       });
       return ship;
@@ -72,11 +66,7 @@ export class ShipsService {
     }
   }
 
-  async findOne(
-    id: string,
-    including_order: boolean = true,
-    including_address: boolean = true,
-  ) {
+  async findOne(id: string, including_order: boolean = true) {
     try {
       const ship = await this.prismaDbService.shipping_Address.findUnique({
         where: {
@@ -88,7 +78,6 @@ export class ShipsService {
               customer: including_order,
             },
           },
-          address: including_address,
         },
       });
 
@@ -103,7 +92,6 @@ export class ShipsService {
     id: string,
     updateShipDto: Prisma.Shipping_AddressUpdateInput,
     including_order: boolean = true,
-    including_address: boolean = true,
   ) {
     try {
       const ship = await this.prismaDbService.shipping_Address.update({
@@ -117,7 +105,6 @@ export class ShipsService {
               customer: including_order,
             },
           },
-          address: including_address,
         },
       });
 
@@ -128,11 +115,7 @@ export class ShipsService {
     }
   }
 
-  async remove(
-    id: string,
-    including_order: boolean = true,
-    including_address: boolean = true,
-  ) {
+  async remove(id: string, including_order: boolean = true) {
     try {
       const ship = await this.prismaDbService.shipping_Address.delete({
         where: {
@@ -144,7 +127,6 @@ export class ShipsService {
               customer: including_order,
             },
           },
-          address: including_address,
         },
       });
 

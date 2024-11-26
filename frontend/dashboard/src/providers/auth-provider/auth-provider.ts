@@ -1,37 +1,37 @@
 'use client';
 
+import { API_DEV_URL, API_URL } from '@constant/api.constant';
 import type { AuthProvider } from '@refinedev/core';
 import Cookies from 'js-cookie';
 
-const mockUsers = [
-  {
-    staff_id: 1,
-    name: 'John Doe',
-    email: 'johndoe@mail.com',
-    roles: ['admin'],
-    avatar: 'https://i.pravatar.cc/150?img=1'
-  },
-  {
-    staff_id: 2,
-    name: 'Jane Doe',
-    email: 'janedoe@mail.com',
-    roles: ['editor'],
-    avatar: 'https://i.pravatar.cc/150?img=1'
-  }
-];
-
-export type TMockUser = (typeof mockUsers)[0];
-
 export const authProvider: AuthProvider = {
-  login: async ({ email, username, password, remember }) => {
-    // Suppose we actually send a request to the back end here.
-    const user = mockUsers[0];
+  login: async ({ email, password }) => {
+    const rep = await fetch(`${API_DEV_URL}/auth/login/dashboard`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text().then((text) => (text ? JSON.parse(text) : {}));
+      })
+      .then((data) => {
+        return data;
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
 
-    if (user) {
-      Cookies.set('auth', JSON.stringify(user), {
-        expires: 30, // 30 days
+    if (rep) {
+      Cookies.set('access_token', JSON.stringify(rep), {
+        expires: rep?.expires_in, // 10 days
         path: '/'
       });
+
       return {
         success: true,
         redirectTo: '/'
@@ -47,14 +47,14 @@ export const authProvider: AuthProvider = {
     };
   },
   logout: async () => {
-    Cookies.remove('auth', { path: '/' });
+    Cookies.remove('access_token', { path: '/' });
     return {
       success: true,
       redirectTo: '/login'
     };
   },
   check: async () => {
-    const auth = Cookies.get('auth');
+    const auth = Cookies.get('access_token');
     if (auth) {
       return {
         authenticated: true
@@ -68,18 +68,70 @@ export const authProvider: AuthProvider = {
     };
   },
   getPermissions: async () => {
-    const auth = Cookies.get('auth');
-    if (auth) {
-      const parsedUser = JSON.parse(auth);
-      return parsedUser.roles;
+    const token = Cookies.get('access_token');
+    const access_token = token ? JSON.parse(token).access_token : '';
+
+    if (!access_token) {
+      return [];
+    }
+
+    const rep = await fetch(`${API_DEV_URL}/profile/staff/permissions`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`
+      }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text().then((text) => (text ? JSON.parse(text) : {}));
+      })
+      .then((data) => {
+        return data;
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
+    if (rep) {
+      return rep;
     }
     return null;
   },
   getIdentity: async () => {
-    const auth = Cookies.get('auth');
-    if (auth) {
-      const parsedUser = JSON.parse(auth);
-      return parsedUser;
+    const token = Cookies.get('access_token');
+    const access_token = token ? JSON.parse(token).access_token : '';
+
+    if (!access_token) {
+      return [];
+    }
+
+    const rep = await fetch(`${API_DEV_URL}/profile/staff`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`
+      }
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response
+          .text()
+          .then((text) => (text ? JSON.parse(text) : {}));
+      })
+      .then((data) => {
+        return data;
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
+    if (rep) {
+      return rep;
     }
     return null;
   },
@@ -93,3 +145,38 @@ export const authProvider: AuthProvider = {
     return { error };
   }
 };
+
+// type AuthProvider = {
+//   login: (params: any) => Promise<AuthActionResponse>;
+//   logout: (params: any) => Promise<AuthActionResponse>;
+//   check: (params?: any) => Promise<CheckResponse>;
+//   onError: (error: any) => Promise<OnErrorResponse>;
+//   register?: (params: any) => Promise<AuthActionResponse>;
+//   forgotPassword?: (params: any) => Promise<AuthActionResponse>;
+//   updatePassword?: (params: any) => Promise<AuthActionResponse>;
+//   getPermissions?: (
+//     params?: Record<string, any>,
+//   ) => Promise<PermissionResponse>;
+//   getIdentity?: (params?: any) => Promise<IdentityResponse>;
+// };
+
+// type AuthActionResponse = {
+//   success: boolean;
+//   redirectTo?: string;
+//   error?: RefineError | Error;
+//   [key: string]: unknown;
+//   successNotification?: SuccessNotificationResponse;
+// };
+
+// type CheckResponse = {
+//   authenticated: boolean;
+//   redirectTo?: string;
+//   logout?: boolean;
+//   error?: RefineError | Error;
+// };
+
+// type OnErrorResponse = {
+//   redirectTo?: string;
+//   logout?: boolean;
+//   error?: RefineError | Error;
+// };

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
+import { ImportItems } from './dto/create-importation.dto';
 
 @Injectable()
 export class ImportationsService {
@@ -8,6 +9,7 @@ export class ImportationsService {
 
   async create(
     createImportationDto: Prisma.ImportationsCreateInput,
+    import_items: ImportItems[],
     including_item: boolean = true,
     including_supplier: boolean = true,
   ) {
@@ -17,6 +19,13 @@ export class ImportationsService {
         data: createImportationDto,
         include: { import_items: including_item, supplier: including_supplier },
       });
+
+      for (const item of import_items) {
+        await this.prismaDbService.products.update({
+          where: { product_id: item.product_id },
+          data: { stock_quantity: { increment: item.quantity } },
+        });
+      }
 
       return importation;
     } catch (error) {
@@ -31,7 +40,12 @@ export class ImportationsService {
   ) {
     try {
       const importations = await this.prismaDbService.importations.findMany({
-        include: { import_items: including_item, supplier: including_supplier },
+        include: {
+          import_items: {
+            include: { product: including_item },
+          },
+          supplier: including_supplier,
+        },
       });
       return importations;
     } catch (error) {
@@ -48,7 +62,12 @@ export class ImportationsService {
     try {
       const importation = await this.prismaDbService.importations.findUnique({
         where: { importation_id: id },
-        include: { import_items: including_item, supplier: including_supplier },
+        include: {
+          import_items: {
+            include: { product: including_item },
+          },
+          supplier: including_supplier,
+        },
       });
       return importation;
     } catch (error) {

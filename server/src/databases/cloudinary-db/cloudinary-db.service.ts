@@ -34,16 +34,29 @@ export class CloudinaryDbService implements OnModuleInit {
     });
   }
 
-  async delete(publicId: string) {
+  async delete(url: string) {
     try {
+      const publicId = this.transformCloudinaryUrl(url);
       const result = await cloudinary.uploader.destroy(publicId);
       console.log('Destroy result:', result);
       return result;
     } catch (error) {
+      console.error('Error deleting URL:', this.transformCloudinaryUrl(url));
       console.error('Error deleting resource:', error);
       throw new Error(
-        `Could not delete resource with public ID ${publicId}: ${error.message}`,
+        `Could not delete resource with url ${url}: ${error.message}`,
       );
     }
+  }
+
+  private transformCloudinaryUrl(url: string): string {
+    const basePattern =
+      /https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/[^/]+\//;
+    const cleanedUrl = url.replace(basePattern, ''); // Remove the base part
+
+    // Remove the file extension
+    const withoutExtension = cleanedUrl.replace(/\.[^/.]+$/, ''); // Remove everything after the last "."
+
+    return withoutExtension;
   }
 }

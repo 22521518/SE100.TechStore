@@ -6,7 +6,11 @@ import { faCheckSquare } from "@fortawesome/free-regular-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getSession, useSession } from "@node_modules/next-auth/react";
-import { deleteCartItem } from "@service/cart";
+import {
+  deleteAllCartItem,
+  deleteCartItem,
+  updateCartItem,
+} from "@service/cart";
 import { formattedPrice } from "@util/format";
 import { toastSuccess, toastWarning } from "@util/toaster";
 import { useRouter } from "next/navigation";
@@ -16,8 +20,16 @@ import {
   useDispatch,
   useSelector,
 } from "@node_modules/react-redux/dist/react-redux";
-import { removeItem } from "@provider/redux/cart/cartSlice";
-import { setOrderItems, setOrderState, setOrderStateAsync } from "@provider/redux/order/orderSlice";
+import {
+  removeItem,
+  remove,
+  removeAllItem,
+} from "@provider/redux/cart/cartSlice";
+import {
+  setOrderItems,
+  setOrderState,
+  setOrderStateAsync,
+} from "@provider/redux/order/orderSlice";
 
 function reducer(state, action) {
   if (action.type === "change_subtotal" && action.payload >= 0) {
@@ -54,7 +66,7 @@ const Cart = () => {
     session && setCartItems(cart.map((item) => ({ checked: false, ...item })));
   }, [session]);
 
-  useEffect(() => { 
+  useEffect(() => {
     const newSubtotal = cartItems.reduce((acc, item) => {
       return item.checked
         ? acc +
@@ -65,6 +77,21 @@ const Cart = () => {
     }, 0);
 
     dispatch({ type: "change_subtotal", payload: newSubtotal });
+
+    const handleBeforeUnload = (event) => {
+      // You can prevent the default behavior here if necessary
+      event.preventDefault();
+      // Call your API to update cart
+      cartItems.forEach((item) => {
+        updateCartItem(session.user.id, item.product_id, item.quantity);
+      });
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, [cartItems]);
 
   useEffect(() => {
@@ -84,11 +111,13 @@ const Cart = () => {
         product_id: item.product_id,
         product: item.product,
         quantity: item.quantity,
-        unit_price:  item.product.price -
-        (item.product.price / 100) * item.product.discount,
+        unit_price:
+          item.product.price -
+          (item.product.price / 100) * item.product.discount,
         total_price:
           (item.product.price -
-          (item.product.price / 100) * item.product.discount)*item.quantity ,
+            (item.product.price / 100) * item.product.discount) *
+          item.quantity,
       }));
 
     // Dispatching the order items to Redux
@@ -105,9 +134,8 @@ const Cart = () => {
   };
 
   const handleRemoveAllItems = async () => {
-    cartItems.forEach((item) => {
-      deleteItem(item.product_id);
-    });
+    reduxDispatch(removeAllItem());
+    deleteAllCartItem(session.user.id);
     setCartItems([]);
     toastSuccess("items deleted");
   };
@@ -139,7 +167,7 @@ const Cart = () => {
           <h3 className="font-bold text-4xl">Cart</h3>
           <button
             className="button-variant-1 text-xs md:text-base"
-            onClick={handleRemoveAllItems}
+            onClick={()=>handleRemoveAllItems()}
           >
             <FontAwesomeIcon icon={faTrash} />
             <span>Remove all</span>
@@ -153,7 +181,11 @@ const Cart = () => {
                 onChecked={() => setAllCheckState(true)}
                 onUnchecked={() => setAllCheckState(false)}
               />
-              <h3 className="text-left">Products ({cartItems.filter(item=>item.checked===true).length||0}/{cartItems.length||0})</h3>
+              <h3 className="text-left">
+                Products (
+                {cartItems.filter((item) => item.checked === true).length || 0}/
+                {cartItems.length || 0})
+              </h3>
               <h3 className="hidden sm:inline-block text-center ml-auto">
                 Quantity
               </h3>

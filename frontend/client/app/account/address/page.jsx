@@ -5,6 +5,7 @@ import {
   fetchProvinces,
   fetchWards,
   getCustomerAddresses,
+  patchCustomerAddress,
   postCustomerAddress,
 } from "@service/address";
 import DropDownButton from "@components/Input/DropDownButton";
@@ -15,7 +16,10 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "@node_modules/next-auth/react";
 import { toastError, toastSuccess, toastWarning } from "@util/toaster";
 import { FontAwesomeIcon } from "@node_modules/@fortawesome/react-fontawesome";
-import { faTrash } from "@node_modules/@fortawesome/free-solid-svg-icons";
+import {
+  faMinus,
+  faTrash,
+} from "@node_modules/@fortawesome/free-solid-svg-icons";
 import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 
 const Address = () => {
@@ -25,7 +29,7 @@ const Address = () => {
   const [addresses, setAddresses] = useState([]);
 
   const [newAddress, setNewAddress] = useState({
-    id: "",
+    address_id: "",
     city: "",
     state: "",
     full_name: "",
@@ -46,6 +50,9 @@ const Address = () => {
 
   const checkEmptyInput = () => {
     if (
+      !province||
+      !district||
+      !ward||
       !newAddress.address.trim() ||
       !newAddress.full_name.trim() ||
       !newAddress.phone_number.trim() ||
@@ -58,8 +65,8 @@ const Address = () => {
     }
     return false;
   };
-  const deleteAddress = () => {
-    deleteCustomerAddress({ user_id: session.user.id, ...newAddress }).then(
+  const deleteAddress = (address_id) => {
+    deleteCustomerAddress({ user_id: session.customer.customer_id, address_id }).then(
       (data) =>
         data
           ? toastSuccess("Address deleted")
@@ -67,17 +74,74 @@ const Address = () => {
     );
   };
   const addAddress = () => {
-    postCustomerAddress({ user_id: session.user.id, ...newAddress }).then(
-      (data) =>
-        data
-          ? toastSuccess("Address added")
-          : toastError("Failed to add address")
-    );
+    const payload = {
+      user_id: session.customer.customer_id,
+      new_address: {
+        address: newAddress.address,
+        city: province.name,
+        district: district.name,
+        ward: ward.name,
+        full_name: newAddress.full_name,
+        phone_number: newAddress.phone_number,
+      },
+    };
+    setIsUpdatingAddresses("");
+    postCustomerAddress(payload).then((data) => {
+      if (data) {
+        toastSuccess("Address added");
+        setAddresses((prev) => [
+          ...prev,
+          {
+            ...data,
+            province: data.city,
+            district: data.district,
+            ward: data.ward,
+          },
+        ]);
+      } else {
+        toastError("Failed to add address");
+      }
+    });
+  };
+
+  const updateAddress = (id) => {
+    const payload = {
+      user_id: session.customer.customer_id,
+      new_address: {
+        address: newAddress.address,
+        city: province.name,
+        district: district.name,
+        ward: ward.name,
+        full_name: newAddress.full_name,
+        phone_number: newAddress.phone_number,
+      },
+      address_id: id
+    };
+    setIsUpdatingAddresses("");
+    patchCustomerAddress(payload).then((data) => {
+      if (data) {
+        toastSuccess("Address updated");
+        setAddresses(
+          addresses.map((address) => {
+            return address.address_id === newAddress.address_id
+              ? {
+                  ...newAddress,
+                  province: province.name,
+                  district: district.name,
+                  ward: ward.name,
+                }
+              : address;
+          })
+        );
+      } else {
+        toastError("Failed to update address");
+      }
+    });
   };
   const fetchAddress = () => {
     setIsLoading(true);
-    getCustomerAddresses(session?.user?.id).then((data) => {
-      setAddresses(data.map((a, index) => ({ id: index, ...a })));
+    getCustomerAddresses(session.customer?.customer_id).then((data) => {
+      setAddresses(data.map(a => ({...a,province:a.city  })));
     });
 
     setTimeout(() => setIsLoading(false), 1000);
@@ -126,9 +190,10 @@ const Address = () => {
   };
 
   useEffect(() => {
+    if (!session.isAuthenticated) return;
     getProvinces();
     fetchAddress();
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     if (!isUpdatingAddresses) {
@@ -155,41 +220,18 @@ const Address = () => {
 
   const handleAddNewAddress = () => {
     if (checkEmptyInput()) return;
-    setAddresses((prev) => [
-      ...prev,
-      {
-        ...newAddress,
-        province: province.name,
-        district: district.name,
-        ward: ward.name,
-      },
-    ]);
-
     addAddress();
   };
 
   const handleDeleteAddress = (id) => {
-    setAddresses(
-      addresses.filter(address=>address.id!==id)
-    )
+    setAddresses(addresses.filter((address) => address.address_id !== id));
 
-    deleteAddress()
-  }
+    deleteAddress(id);
+  };
 
   const handleUpdateAddress = () => {
     if (checkEmptyInput()) return;
-    setAddresses(
-      addresses.map((address) => {
-        return address.id === newAddress.id
-          ? {
-              ...newAddress,
-              province: province.name,
-              district: district.name,
-              ward: ward.name,
-            }
-          : address;
-      })
-    );
+    updateAddress(newAddress.address_id)
     setIsUpdatingAddresses("");
   };
 
@@ -204,18 +246,47 @@ const Address = () => {
   };
 
   const handleSetDefaultAddress = (id) => {
-    setAddresses(
-      addresses.map((address) => {
-        return { ...address, is_primary: address.id === id ? true : false };
-      })
-    );
+    addresses.map((address) => {
+      if (address.is_primary) {
+        const payload = {
+          user_id: session?.user?.id,
+          address_id: address.address_id,
+          new_address: { "is_primary": false },
+        };
+        patchCustomerAddress(payload);
+      }
+      if (address.address_id === id) {
+        const payload = {
+          user_id: session?.user?.id,
+          address_id: address.address_id,
+          new_address: { "is_primary": true },
+        };
+        patchCustomerAddress(payload).then((data) => {
+          if (data) {
+            setAddresses(
+              addresses.map((address) => {
+                return {
+                  ...address,
+                  is_primary: address.address_id === id ? true : false,
+                };
+              })
+            );
+            toastSuccess("Default address updated");
+          } else {
+            toastError("Failed to update default address");
+          }
+        });
+      }
+    });
+
+
   };
 
   const handleInitUpdateAddress = async (id) => {
     setIsUpdatingAddresses("");
     setSkip_Flag(true);
 
-    const selectedAddress = addresses.find((item) => item.id === id);
+    const selectedAddress = addresses.find((item) => item.address_id === id);
     setNewAddress(selectedAddress);
 
     const { ward, district, province } = selectedAddress;
@@ -287,7 +358,7 @@ const Address = () => {
               value={newAddress.phone_number}
               name={"Phone number *"}
               onChange={handlePhoneChange}
-              maxLength={12}
+              maxLength={10}
             />
             <div className="flex gap-4 flex-wrap  items-center h-fit rounded-xl w-full z-50">
               <DropDownButton
@@ -369,15 +440,14 @@ const Address = () => {
             ))
           : addresses.map((item) => (
               <div
-                key={item.id}
-                className="grid grid-cols gap-3 items-start w-full bg-surface rounded-lg p-2 min-h-[70px]"
+                key={item.address_id}
+                className="flex flex-col gap-3 items-start w-full bg-surface rounded-lg p-2 min-h-[70px]"
               >
-                <div className="flex flex-col items-start gap-2 justify-around text-base">
-                  <h2>
+                <div className="flex flex-col w-full items-start gap-2 justify-around text-base">
+                  <h2 className="w-full flex flex-row items-start">
                     <span className="text-xl font-semibold">
-                      {item.full_name}
+                      {item.full_name} | {item.phone_number}
                     </span>{" "}
-                    | {item.phone_number}
                   </h2>
                   <h3 className="opacity-50">{item.address}</h3>
                   <h3 className="opacity-50">
@@ -391,19 +461,22 @@ const Address = () => {
                     </div>
                   )}
                   <div className="flex flex-wrap flex-row-reverse gap-2 ml-auto items-center ">
-                    <button className="button-variant-1" onClick={()=>handleDeleteAddress(item.id)}>
+                    <button
+                      className="button-variant-1"
+                      onClick={() => handleDeleteAddress(item.address_id)}
+                    >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                     <button
                       className="button-variant-2"
-                      onClick={() => handleInitUpdateAddress(item.id)}
+                      onClick={() => handleInitUpdateAddress(item.address_id)}
                     >
                       Update
                     </button>
                     {!item.is_primary && (
                       <button
                         className="button-variant-2"
-                        onClick={() => handleSetDefaultAddress(item.id)}
+                        onClick={() => handleSetDefaultAddress(item.address_id)}
                       >
                         Set default
                       </button>

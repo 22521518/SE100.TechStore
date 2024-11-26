@@ -1,14 +1,22 @@
 'use client';
 
 import { Divider, Typography } from '@mui/material';
-import { useLogout, useMenu } from '@refinedev/core';
+import { useLogout, useMenu, usePublish } from '@refinedev/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import logo from '@/public/images/logo.svg';
+import React from 'react';
+import { useSocket } from '@components/socket/socketClient';
 
 export const Menu = ({ className = '' }: { className: string }) => {
   const { mutate: logout } = useLogout();
   const { menuItems, selectedKey } = useMenu();
+
+  const handleLogout = () => {
+    return () => {
+      logout();
+    };
+  };
 
   return (
     <nav className={`menu ${className}`}>
@@ -43,7 +51,7 @@ export const Menu = ({ className = '' }: { className: string }) => {
               >
                 {item.label}
               </Link>
-              {item.label === 'Customers' && (
+              {(item.label === 'Customers' || item.label === 'Suppliers') && (
                 <Divider className="w-full h-1 border-b-2 border-solid border-slate-300 py-2 mb-2 opacity-50" />
               )}
             </li>

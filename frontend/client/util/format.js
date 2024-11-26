@@ -8,8 +8,9 @@ export const formattedPrice = (price=0) => {
 
 export const formattedDate = (dateString, daysToAdd = 0) => {
   if (!dateString) return '';
-  const date = new Date(dateString);
+  
 
+  const date = new Date(dateString);
   // Add days if needed
   date.setDate(date.getDate() + daysToAdd);
 

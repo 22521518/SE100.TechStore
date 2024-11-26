@@ -7,16 +7,12 @@ import {
   Param,
   Delete,
   BadRequestException,
-  UsePipes,
-  ValidationPipe,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { Prisma } from '@prisma/client';
 import { CreateAccountsDto } from './dto/create-accounts.dto';
 import { UpdateAccountsDto } from './dto/update-accounts.dto';
-import { AuthGuard } from 'src/common/guards/auth.guard';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('accounts')
@@ -24,7 +20,7 @@ export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Permissions(['account-create'])
   async create(@Body() createAccountDto: CreateAccountsDto) {
     try {
       const accountDto: Prisma.AccountsCreateInput = {
@@ -38,9 +34,8 @@ export class AccountsController {
     }
   }
 
-  @UseGuards(AuthGuard)
-  @Permissions(['accounts:read'])
   @Get()
+  @Permissions(['account-read'])
   async findAll(@Query('email') contain_email: string) {
     try {
       const acc = await this.accountsService.findAll(contain_email);
@@ -52,6 +47,7 @@ export class AccountsController {
   }
 
   @Get(':id')
+  @Permissions(['account-read'])
   async findOne(@Param('id') id: string) {
     try {
       const acc = await this.accountsService.findOne(id);
@@ -63,7 +59,7 @@ export class AccountsController {
   }
 
   @Patch(':id')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Permissions(['account-update'])
   async update(
     @Param('id') id: string,
     @Body()
@@ -82,6 +78,7 @@ export class AccountsController {
   }
 
   @Delete(':id')
+  @Permissions(['account-delete'])
   async remove(@Param('id') id: string) {
     try {
       const acc = await this.accountsService.remove(id);

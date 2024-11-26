@@ -3,26 +3,41 @@
 import CommonContainer from '@components/common-container';
 import { IAccountWithPassword } from '@constant/interface.constant';
 import { Button, FormControl, TextField, Typography } from '@mui/material';
+import { useGo, useIsAuthenticated, useLogin } from '@refinedev/core';
 import React from 'react';
 
 const LoginPage = () => {
+  const { isLoading, data } = useIsAuthenticated();
+  const go = useGo();
+
   const [autoComplete, setAutocomplete] = React.useState('on');
   const [account, setAccount] = React.useState<IAccountWithPassword>({
     email: '',
     password: ''
   });
 
-  const onSubmit = React.useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      console.log('account:', account);
-    },
-    [account]
-  );
+  const { mutate } = useLogin();
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate({ ...account });
+  };
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (data?.authenticated) {
+    go({ to: '/', type: 'replace' });
+    return null;
+  }
 
   return (
-    <div className="w-full h-dvh overflow-hidden flex items-center justify-center">
-      <CommonContainer className="w-1/3 flex flex-col gap-10 px-6 py-16 border-solid border-[1px] border-primary-100">
+    <div className="w-full h-dvh overflow-hidden flex items-center justify-center bg-secondary-100">
+      <CommonContainer
+        className="w-1/3 flex flex-col gap-10 px-6 py-16 border-solid border-[1px] border-primary-100"
+        isModal
+      >
         <Typography
           variant="h1"
           className="text-4xl px-6 font-bold text-accent"
@@ -81,7 +96,7 @@ const LoginPage = () => {
         </form>
 
         <Typography className="text-center">
-          Don't have an account?{' '}
+          {"Don't have an account? "}
           <a href="/register" className="text-accent underline font-semibold">
             Join us here
           </a>

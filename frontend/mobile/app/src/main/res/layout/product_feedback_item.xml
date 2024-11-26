@@ -2,26 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
     android:padding="8dp">
-        <TextView
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/feedback_profile_image"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_user_icon"
+            app:shapeAppearance="@style/RoundedImageShape" />
+        <LinearLayout
+            android:layout_marginStart="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Username"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/feedback_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="★★★★★"
-            android:textColor="#F9A503"
-            android:textSize="14sp" />
+                <RatingBar
+                    android:id="@+id/feedback_rating"
+                    style="@style/Product_feed_back_item_rating"
+                    android:theme="@style/Product_feed_back_item_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:stepSize="1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Comment content..."
-            android:textColor="#000000"
-            android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/feedback_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Comment content..."
+                    android:textColor="#000000"
+                    android:textSize="12sp" />
+        </LinearLayout>
+
+
 </LinearLayout>

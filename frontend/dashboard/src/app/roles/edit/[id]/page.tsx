@@ -2,7 +2,6 @@
 
 import CommonContainer from '@components/common-container';
 import { IPermission, IRole } from '@constant/interface.constant';
-import { CheckBox } from '@mui/icons-material';
 import {
   Box,
   Checkbox,
@@ -13,7 +12,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { useForm, useList, useNavigation } from '@refinedev/core';
+import { HttpError, useForm, useList, useNavigation } from '@refinedev/core';
 import React from 'react';
 import { PermissionCheckType } from '../../permission-check.type';
 import ButtonAction from '@components/button/button-action';
@@ -22,10 +21,7 @@ import CommonToolTip from '@components/tooltip';
 const RoleEdit = () => {
   const { list } = useNavigation();
 
-  const { query, formLoading } = useForm<IRole>({
-    resource: 'roles',
-    action: 'edit'
-  });
+  const { query, formLoading } = useForm<IRole, HttpError>();
 
   const record = query?.data?.data;
   const [roleValue, setRoleValue] = React.useState<IRole>({
@@ -100,16 +96,25 @@ const RoleEdit = () => {
     }));
   }, [roleCheck]);
 
+  React.useEffect(() => {
+    setRoleValue({
+      role_id: record?.role_id || -1,
+      role_name: record?.role_name || '',
+      description: record?.description || '',
+      role_permissions: record?.role_permissions || []
+    });
+  }, [record]);
+
   if (formLoading) return <div>Loading...</div>;
 
   return (
-    <div className="flex h-full w-full overflow-hidden justify-center">
+    <div className="flex place-content-center h-[100%] w-full overflow-hidden">
       <form
         onSubmit={onSubmit}
-        className="grid grid-cols-8 gap-1 h-[100%]justify-center w-11/12"
+        className="grid grid-cols-8 gap-1 h-[100%] justify-center w-11/12 items-center"
       >
         <CommonContainer
-          className="flex flex-col col-span-2 overflow-hidden h-[92%]"
+          className="flex flex-col col-span-2 overflow-hidden w-full h-[92%]"
           heightMin={false}
           heightMax={false}
         >
@@ -119,32 +124,31 @@ const RoleEdit = () => {
                 color: 'inherit'
               }
             }}
-            className="h-full relative"
+            className="h-[100%] w-full relative flex items-center justify-around"
           >
             <FormLabel className="mx-2">Permissions</FormLabel>
-            <FormGroup className="flex flex-col overflow-y-scroll h-[92%] left-4 relative">
+            <FormGroup className="flex flex-row overflow-y-scroll overflow-x-hidden -ms-4 h-[90%] left-4 relative">
               {permissions &&
-                permissions.map((permission) => {
+                permissions.map((permission, index) => {
                   return (
-                    <>
-                      <FormControlLabel
-                        key={permission.permission_id}
-                        control={
-                          <Checkbox
-                            checked={
-                              roleCheck.find(
-                                (p) =>
-                                  p.permission.permission_id ===
-                                  permission.permission_id
-                              )?.checked
-                            }
-                            onChange={handlePermissionCheck}
-                            name={permission.permission_id}
-                          />
-                        }
-                        label={permission.permission_name}
-                      />
-                    </>
+                    <FormControlLabel
+                      key={permission.permission_id}
+                      className="w-full"
+                      control={
+                        <Checkbox
+                          checked={
+                            roleCheck.find(
+                              (p) =>
+                                p.permission.permission_id ===
+                                permission.permission_id
+                            )?.checked || false
+                          }
+                          onChange={handlePermissionCheck}
+                          name={permission.permission_id}
+                        />
+                      }
+                      label={permission.permission_name}
+                    />
                   );
                 })}
             </FormGroup>
@@ -157,7 +161,7 @@ const RoleEdit = () => {
           heightMax={false}
         >
           <Typography variant="h4" className="text-center">
-            Create Role
+            Edit Role
           </Typography>
           <FormControl>
             <FormLabel className="mx-2">Role ID</FormLabel>
@@ -191,7 +195,7 @@ const RoleEdit = () => {
           </FormControl>
           <Box className="grid grid-cols-2 gap-4 items-center mt-auto">
             <ButtonAction type="submit" className="w-full">
-              Create
+              Save
             </ButtonAction>
             <ButtonAction
               type="button"
@@ -204,7 +208,7 @@ const RoleEdit = () => {
         </CommonContainer>
 
         <CommonContainer
-          className="col-span-2 overflow-hidden h-[92%] py-2"
+          className="flex flex-col col-span-2 overflow-hidden w-full h-[92%]"
           heightMin={false}
           heightMax={false}
         >
@@ -214,15 +218,15 @@ const RoleEdit = () => {
                 color: 'inherit'
               }
             }}
-            className="h-full"
+            className="flex flex-col h-[100%] w-full relative justify-around"
           >
-            <Typography className="mx-2">
+            <Typography className="mx-2 font-bold">
               Permissions{' '}
               {`(total: ${
                 roleCheck.filter((checkedPer) => checkedPer.checked).length
               })`}
             </Typography>
-            <ul className="h-[95%] flex flex-col gap-2 overflow-y-scroll">
+            <ul className="flex flex-col overflow-y-scroll overflow-x-hidden -ms-4 h-[90%] left-4 relative">
               {permissions &&
                 roleCheck
                   .filter((checkedPer) => checkedPer.checked)

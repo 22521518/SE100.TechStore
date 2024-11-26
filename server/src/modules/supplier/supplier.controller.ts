@@ -12,12 +12,14 @@ import { SupplierService } from './supplier.service';
 import { Prisma } from '@prisma/client';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 
 @Controller('supplier')
 export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}
 
   @Post()
+  @Permissions(['supplier-create'])
   async create(@Body() createSupplierDto: CreateSupplierDto) {
     try {
       const supplierDto: Prisma.SuppliersCreateInput = {
@@ -33,6 +35,7 @@ export class SupplierController {
   }
 
   @Get()
+  @Permissions(['supplier-read'])
   async findAll() {
     try {
       const suppliers = await this.supplierService.findAll();
@@ -44,6 +47,7 @@ export class SupplierController {
   }
 
   @Get(':id')
+  @Permissions(['supplier-read'])
   async findOne(@Param('id') id: string) {
     try {
       const supplier = await this.supplierService.findOne(+id);
@@ -55,6 +59,7 @@ export class SupplierController {
   }
 
   @Patch(':id')
+  @Permissions(['supplier-update'])
   async update(
     @Param('id') id: string,
     @Body() updateSupplierDto: UpdateSupplierDto,
@@ -73,6 +78,7 @@ export class SupplierController {
 
   //DEV mode
   @Delete('all')
+  @Permissions(['supplier-delete'])
   async removeAll() {
     try {
       const suppliers = await this.supplierService.removeAll();
@@ -84,6 +90,7 @@ export class SupplierController {
   }
 
   @Delete(':id')
+  @Permissions(['supplier-delete'])
   async remove(@Param('id') id: string) {
     try {
       const supplier = await this.supplierService.remove(+id);

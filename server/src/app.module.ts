@@ -22,10 +22,13 @@ import { CloudinaryDbModule } from './databases/cloudinary-db/cloudinary-db.modu
 import { InboxModule } from './modules/inbox/inbox.module';
 import { CustomerInboxModule } from './modules/customer-inbox/customer-inbox.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
-import { PermissionsModule } from './modules/permissions/permissions.module';
+import { PermissionsModule } from './permissions/permissions.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { PermissionsGuard } from './common/guards/permission.guard';
+import { ProfileModule } from './modules/profile/profile.module';
+import { EventMessageModule } from './event-message/event-message.module';
+import { SeedingModule } from './seeding/seeding.module';
 
 @Module({
   imports: [
@@ -54,6 +57,9 @@ import { PermissionsGuard } from './common/guards/permission.guard';
     FeedbackModule,
     PermissionsModule,
     AuthModule,
+    ProfileModule,
+    EventMessageModule,
+    SeedingModule,
   ],
   controllers: [AppController],
   providers: [

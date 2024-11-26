@@ -9,12 +9,18 @@ import { Permissions } from '../decorators/permissions.decorator';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from 'src/auth/constants';
+import {
+  // GlobalPermissionsList,
+  PermissionsList,
+} from 'src/permissions/permissions.config';
+import { PermissionsService } from 'src/permissions/permissions.service';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private jwtService: JwtService,
+    private permissionService: PermissionsService,
   ) {}
 
   private extractTokenFromHeader(request: Request) {
@@ -27,6 +33,14 @@ export class PermissionsGuard implements CanActivate {
     if (!permissions) {
       return true;
     }
+
+    for (const permission of permissions) {
+      // if (GlobalPermissionsList.some((p) => p.permission_name === permission)) {
+      if (PermissionsList.some((p) => p.permission_name === permission)) {
+        return true;
+      }
+    }
+
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     let user;
@@ -49,7 +63,11 @@ export class PermissionsGuard implements CanActivate {
       throw new UnauthorizedException('User not found! Please login again');
     }
 
-    if (!this.matchRoles(permissions, user?.permissions)) {
+    const userPermissions = await this.permissionService
+      .findByRole(user.role.role_id)
+      .then((permissions) => permissions.map((p) => p.permission_name));
+
+    if (!this.matchRoles(permissions, userPermissions)) {
       throw new UnauthorizedException(
         'You do not have permission to access this resource',
       );

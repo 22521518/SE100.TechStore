@@ -14,6 +14,8 @@ import { Prisma } from '@prisma/client';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { handleImageJpgBaseString } from 'src/utils/image.utils';
 
 @Controller('staff')
 export class StaffController {
@@ -23,12 +25,13 @@ export class StaffController {
   ) {}
 
   @Post()
+  @Permissions(['staff-create'])
   async create(
     @Body()
     createStaffDto: CreateStaffDto,
   ) {
     try {
-      const { account, ...rest } = createStaffDto;
+      const { account, image, ...rest } = createStaffDto;
 
       const existingAccount = await this.prismaDbService.accounts.findUnique({
         where: { email: account.email },
@@ -51,7 +54,20 @@ export class StaffController {
           },
         },
       };
-      const staff = await this.staffService.create(staffDto);
+
+      let imageAvatar = null;
+      if (image) {
+        if (image.type === 'dev') {
+          staffDto.image = image.url;
+        } else {
+          imageAvatar = await handleImageJpgBaseString(image);
+          if (imageAvatar) {
+            staffDto.image = imageAvatar;
+          }
+        }
+      }
+
+      const staff = await this.staffService.create(staffDto, imageAvatar);
       return staff;
     } catch (error) {
       console.error(error);
@@ -60,6 +76,7 @@ export class StaffController {
   }
 
   @Get()
+  @Permissions(['staff-read'])
   async findAll(
     @Query('full_name') full_name: string,
     @Query('staff_id') staff_id: string,
@@ -75,6 +92,7 @@ export class StaffController {
   }
 
   @Get(':id')
+  @Permissions(['staff-read'])
   async findOne(@Param('id') id: string) {
     try {
       const staff = await this.staffService.findOne(id);
@@ -86,13 +104,14 @@ export class StaffController {
   }
 
   @Patch(':id')
+  @Permissions(['staff-update'])
   async update(
     @Param('id') id: string,
     @Body()
     updateStaffDto: UpdateStaffDto,
   ) {
     try {
-      const { role, ...rest } = updateStaffDto;
+      const { role, image, ...rest } = updateStaffDto;
 
       const staffDto: Prisma.StaffUpdateInput = {
         ...rest,
@@ -105,7 +124,19 @@ export class StaffController {
         }),
       };
 
-      const staff = await this.staffService.update(id, staffDto);
+      let imageAvatar = null;
+      if (image) {
+        if (image.type === 'dev') {
+          staffDto.image = image.url;
+        } else {
+          imageAvatar = await handleImageJpgBaseString(image);
+          if (imageAvatar) {
+            staffDto.image = imageAvatar;
+          }
+        }
+      }
+
+      const staff = await this.staffService.update(id, staffDto, imageAvatar);
       return staff;
     } catch (error) {
       console.error(error);
@@ -114,6 +145,7 @@ export class StaffController {
   }
 
   @Delete(':id')
+  @Permissions(['staff-delete'])
   async remove(@Param('id') id: string) {
     try {
       const staff = await this.staffService.remove(id);

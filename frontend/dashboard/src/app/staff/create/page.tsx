@@ -2,7 +2,7 @@
 
 import CommonContainer from '@components/common-container';
 import { EMPLOY_STATUS } from '@constant/enum.constant';
-import { IStaffInfo } from '@constant/interface.constant';
+import { IRole, IStaffInfo } from '@constant/interface.constant';
 import {
   Box,
   FormControl,
@@ -17,16 +17,17 @@ import {
   InputLabel,
   Button
 } from '@mui/material';
-import { useForm, useNavigation } from '@refinedev/core';
+import { useForm, useList, useNavigation } from '@refinedev/core';
 import { generateRandomRoleList } from '@utils/random.util';
 import React from 'react';
 
 const StaffCreate = () => {
   const { list } = useNavigation();
   const { onFinish } = useForm<IStaffInfo>();
+  const { data } = useList<IRole>({ resource: 'roles' });
 
-  const roleList = generateRandomRoleList(5);
-  const [birthdate, setBirthdate] = React.useState<Date>(new Date(Date.now()));
+  const roleList = data?.data || [];
+
   const [staffValue, setStaffValue] = React.useState<IStaffInfo>({
     full_name: '',
     phone_number: '',
@@ -36,7 +37,9 @@ const StaffCreate = () => {
       email: '',
       password: ''
     },
-    employee_status: EMPLOY_STATUS.INACTIVE
+    employee_status: EMPLOY_STATUS.INACTIVE,
+    birth_date: new Date(Date.now()),
+    male: false
   });
   const [confirmPassword, setConfirmPassword] = React.useState('');
 
@@ -51,7 +54,7 @@ const StaffCreate = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      // await onFinish(staffValue);
+      await onFinish(staffValue);
       console.log(staffValue);
     } catch (error) {
       console.log(error);
@@ -85,6 +88,12 @@ const StaffCreate = () => {
                   defaultValue="female"
                   name="radio-buttons-group"
                   className="flex flex-row gap-4 items-center"
+                  onChange={(e) =>
+                    setStaffValue((prev) => ({
+                      ...prev,
+                      male: e.target.value === 'male'
+                    }))
+                  }
                 >
                   <FormControlLabel
                     value="female"
@@ -164,8 +173,17 @@ const StaffCreate = () => {
                   id="birth_date"
                   label="Birthdate"
                   name="birth_date"
-                  value={new Date(birthdate).toISOString().split('T')[0]}
-                  onChange={(e) => setBirthdate(new Date(e.target.value))}
+                  value={
+                    new Date(staffValue.birth_date || '')
+                      .toISOString()
+                      .split('T')[0]
+                  }
+                  onChange={(e) => {
+                    setStaffValue({
+                      ...staffValue,
+                      birth_date: new Date(e.target.value)
+                    });
+                  }}
                 />
               </FormControl>
             </Box>

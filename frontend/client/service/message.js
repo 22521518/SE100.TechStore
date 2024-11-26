@@ -3,7 +3,7 @@
 import { generateMockInboxRoom } from "@util/generator/message";
 
 export const getMessageLog = async (id) => {
-  if (process.env.DEV_ENV !== "production")
+  // if (process.env.DEV_ENV !== "production")
     return generateMockInboxRoom()
   try {
     const response = await fetch('')

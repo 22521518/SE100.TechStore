@@ -10,16 +10,14 @@ type InboxShowProps = {
 };
 
 const InboxShow = ({ showRoom }: InboxShowProps) => {
-  const identity = '--admin';
-  const { data, isLoading, isError } = useOne<IInboxRoom, HttpError>({
+  const { data, isLoading } = useOne<IInboxRoom, HttpError>({
     resource: 'inbox',
     id: showRoom.customer.customer_id
   });
-  const roomMessage = data?.data;
 
   if (isLoading || !data) return <div>Loading...</div>;
 
-  return <>{roomMessage && <InboxRoomShow showRoom={roomMessage} />}</>;
+  return <>{<InboxRoomShow showRoom={data?.data} />}</>;
 };
 
 export default InboxShow;

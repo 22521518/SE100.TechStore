@@ -16,6 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "@node_modules/next-auth/react";
 import { useSearchParams } from "@node_modules/next/navigation";
+import { useSelector } from "@node_modules/react-redux/dist/react-redux";
 import { getOrder } from "@service/order";
 import { formattedPrice, formattedDate } from "@util/format";
 import { toastError, toastWarning } from "@util/toaster";
@@ -23,6 +24,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 export default function Tracking() {
+  const session = useSelector((state)=> state.session)
   const [isLoading, setIsLoading] = useState(false);
   const [orderIdInput, setOrderIdInput] = useState("");
   const [order, setOrder] = useState();
@@ -36,7 +38,7 @@ export default function Tracking() {
     }
     setIsLoading(true);
     try {
-      const data = await getOrder("userId", id);
+      const data = await getOrder(session?.user?.id, id);
       setOrder(data);
     } catch (error) {
       console.error("Failed to fetch order:", error);
@@ -45,12 +47,17 @@ export default function Tracking() {
       setIsLoading(false);
     }
   };
+
+  useEffect(()=>{
+    setOrderIdInput(orderId)
+  },[orderId])
+
   useEffect(() => {
-    if (orderId) {
-      setOrderIdInput(orderId);
-      fetchOrder(orderId);
+    if (orderIdInput) {
+      setOrderIdInput(orderIdInput);
+      fetchOrder(orderIdInput);
     }
-  }, [orderId]);
+  }, [orderIdInput,session]);
 
   const renderPaymentMethod = (method) => {
     switch (method) {
@@ -165,7 +172,7 @@ export default function Tracking() {
           <div className=" w-full border-t-2 border-on-secondary my-4"></div>
 
           <div className="flex flex-col gap-2 items-start">
-            <h3 className="text-lg font-bold">{order?.customer.full_name}</h3>
+            <h3 className="text-lg font-bold">{order?.customer?.full_name}</h3>
             <div className="grid grid-cols-[auto_1fr] gap-2 items-start">
               <FontAwesomeIcon icon={faHouse} />
               <p>
@@ -179,7 +186,7 @@ export default function Tracking() {
             </div>
             <div className="grid grid-cols-[auto_1fr] gap-2 items-start">
               <FontAwesomeIcon icon={faPhone} />
-              <p>{order?.customer.phone_number || ""}</p>
+              <p>{order?.customer?.phone_number || ""}</p>
             </div>
           </div>
 
@@ -203,7 +210,7 @@ export default function Tracking() {
               <span className="font-bold">
                 {formattedPrice(order?.total_price)}{" "}
               </span>{" "}
-              ({order?.order_items.length} items)
+              ({order?.order_items?.length} items)
             </div>
           </div>
 
@@ -214,7 +221,7 @@ export default function Tracking() {
               ? Array.from({ length: 2 }).map((_, index) => (
                   <OrderItem key={index} loading={true} />
                 ))
-              : order?.order_items.map((item) => (
+              : order?.order_items?.map((item) => (
                   <OrderItem
                     key={item.order_id + item.product_id}
                     orderItem={item}

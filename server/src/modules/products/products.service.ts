@@ -49,7 +49,7 @@ export class ProductsService {
               async (img) =>
                 await this.cloudinaryDbService.upload(
                   img,
-                  'products' + product.product_id,
+                  'products/' + product.product_id,
                 ),
             ),
           );
@@ -148,6 +148,10 @@ export class ProductsService {
         },
       });
 
+      if (!product) {
+        throw new BadRequestException('Product not found');
+      }
+
       const attributes = await this.productAttributeModel.find(
         {
           product_id: id,
@@ -183,6 +187,7 @@ export class ProductsService {
 
         await Promise.all(
           currentProduct.images.map(async (img) => {
+            console.log('Deleting image:', img);
             // Delete the existing images from Cloudinary
             await this.cloudinaryDbService.delete(img);
           }),
@@ -191,7 +196,7 @@ export class ProductsService {
         const updatedImage = await Promise.all(
           images.map(
             async (img) =>
-              await this.cloudinaryDbService.upload(img, 'products' + id),
+              await this.cloudinaryDbService.upload(img, 'products/' + id),
           ),
         );
 

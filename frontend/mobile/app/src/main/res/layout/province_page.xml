@@ -5,6 +5,8 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
+
+
     <LinearLayout
 
         android:layout_width="match_parent"
@@ -30,7 +32,14 @@
 
     </LinearLayout>
 
-
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="32dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminate="true" />
 
 
 

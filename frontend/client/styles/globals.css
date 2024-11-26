@@ -2,50 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 
-  /* Firefox */
-  input[type="number"] {
-    -moz-appearance: textfield;
-  }
+.light {
+  --primary: 255, 255, 255;
+  --primary-variant: 200, 200, 200; /* Example value */
+  --secondary: 34, 34, 34; /* Example value */
+  --secondary-variant: 70, 70, 70; /* Example value */
+  --background: 255, 255, 255;
+  --surface: 240, 240, 240; /* Example value */
+  --error: 255, 0, 0; /* Example value */
+  --on-primary: 0, 0, 0; /* Example value */
+  --on-secondary: 255, 255, 255; /* Example value */
+  --on-background: 0, 0, 0; /* Example value */
+  --on-surface: 0, 0, 0; /* Example value */
+  --on-error: 255, 255, 255; /* Example value */
+}
 
-  .light {
-    --primary: 255, 255, 255;
-    --primary-variant: 200, 200, 200; /* Example value */
-    --secondary: 34, 34, 34; /* Example value */
-    --secondary-variant: 70, 70, 70; /* Example value */
-    --background: 255, 255, 255;
-    --surface: 240, 240, 240; /* Example value */
-    --error: 255, 0, 0; /* Example value */
-    --on-primary: 0, 0, 0; /* Example value */
-    --on-secondary: 255, 255, 255; /* Example value */
-    --on-background: 0, 0, 0; /* Example value */
-    --on-surface: 0, 0, 0; /* Example value */
-    --on-error: 255, 255, 255; /* Example value */
-  }
-
-  .dark {
-    --primary: 34, 34, 34; /* Dark grey */
-    --primary-variant: 50, 50, 50; /* Darker grey */
-    --secondary: 10, 10, 10; /* White */
-    --secondary-variant: 200, 200, 200; /* Light grey */
-    --background: 0, 0, 0; /* Black */
-    --surface: 18, 18, 18; /* Very dark grey */
-    --error: 255, 0, 0; /* Red */
-    --on-primary: 255, 255, 255; /* White */
-    --on-secondary: 255, 255, 255; /* Black */
-    --on-background: 255, 255, 255; /* White */
-    --on-surface: 255, 255, 255; /* White */
-    --on-error: 255, 255, 255; /* White */
-  }
-
-
+.dark {
+  --primary: 34, 34, 34; /* Dark grey */
+  --primary-variant: 50, 50, 50; /* Darker grey */
+  --secondary: 10, 10, 10; /* White */
+  --secondary-variant: 200, 200, 200; /* Light grey */
+  --background: 0, 0, 0; /* Black */
+  --surface: 18, 18, 18; /* Very dark grey */
+  --error: 255, 0, 0; /* Red */
+  --on-primary: 255, 255, 255; /* White */
+  --on-secondary: 255, 255, 255; /* Black */
+  --on-background: 255, 255, 255; /* White */
+  --on-surface: 255, 255, 255; /* White */
+  --on-error: 255, 255, 255; /* White */
+}
 
 .background {
   background: linear-gradient(
@@ -62,12 +59,13 @@
     ),
     radial-gradient(rgba(var(--on-primary), 0.15) 3.5px, transparent 0px);
 
-  background-size: 100%,60px 60px, 100%, 120px 120px;
+  background-size: 100%, 60px 60px, 100%, 120px 120px;
   background-blend-mode: overlay;
   color: rgb(var(--on-background));
 }
 
-html,body {
+html,
+body {
   background: black;
 }
 
@@ -95,7 +93,7 @@ html,body {
   }
 
   .button-variant-2 {
-    @apply shadow-md text-on-primary bg-primary px-2 py-1 hover:font-semibold rounded-lg gap-2 flex items-center justify-center h-fit;
+    @apply shadow-md text-on-primary bg-primary active:bg-primary/80 active:scale-95 transition-all duration-100 px-2 py-1 hover:font-semibold rounded-lg gap-2 flex items-center justify-center h-fit;
   }
 
   .order-state {
@@ -164,16 +162,16 @@ html,body {
     ); /* Fewer jagged points on the sides, straight top and bottom */
     z-index: -1; /* Position the border behind the content */
   }
-
-  .my-message {
-    @apply message-base ml-auto
+  .message-base {
+    @apply whitespace-normal break-all text-base rounded-3xl  size-fit p-2 px-3 max-w-[80%] font-semibold shadow-md;
   }
 
-  .message-base {
-    @apply whitespace-normal break-all text-base rounded-3xl bg-on-primary text-primary size-fit p-2 px-3 max-w-[80%] 
+  
+  .my-message {
+    @apply message-base ml-auto bg-on-primary text-primary;
   }
 
   .other-message {
-    @apply message-base mr-auto
+    @apply message-base mr-auto bg-primary text-on-primary;
   }
 }

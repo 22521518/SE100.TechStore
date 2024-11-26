@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Solid background color with 70% opacity gray -->
+    <solid android:color="#40F0F0F0" /> <!-- Gray with 70% opacity -->
+
+    <corners android:radius="4dp" />
+
+    <padding android:bottom="0dp"
+            android:top="0dp"
+            android:left="8dp"
+        android:right="8dp"/>
+    <!-- Rounded corners (bottom only) -->
+</shape>

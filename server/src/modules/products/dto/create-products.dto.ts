@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ProductAttribute } from '../entities/product-attribute.entity';
-import { ImageDto } from '../../common-dto/ImageDto';
+import { ImageDto } from '../../../dto/ImageDto';
 
 export class CreateProductDto {
   @IsOptional()

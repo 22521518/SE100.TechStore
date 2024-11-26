@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"><!-- Transparent background -->
     <stroke
         android:width="2dp"
-        android:color="?android:colorPrimary" /> <!-- Border color -->
-    <corners android:radius="12sp" />
+        android:tint="?android:colorAccent"/> <!-- Border color -->
+    <corners android:radius="8sp" />
     <!-- Optional padding inside the border -->
 </shape>

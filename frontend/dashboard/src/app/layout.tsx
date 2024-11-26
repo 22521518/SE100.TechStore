@@ -8,6 +8,7 @@ import React, { Suspense } from 'react';
 import { authProvider } from '@providers/auth-provider';
 import { dataProvider } from '@providers/data-provider';
 import '@styles/global.css';
+import 'tailwindcss/tailwind.css';
 
 export const metadata: Metadata = {
   title: 'Hive Electro',
@@ -63,6 +64,14 @@ export default function RootLayout({
                     show: '/inbox/show/:id'
                   },
                   {
+                    name: 'importations',
+                    list: '/importations'
+                  },
+                  {
+                    name: 'supplier',
+                    list: '/supplier'
+                  },
+                  {
                     name: 'staff',
                     list: '/staff',
                     create: '/staff/create',
@@ -85,7 +94,8 @@ export default function RootLayout({
                   syncWithLocation: true,
                   warnWhenUnsavedChanges: true,
                   useNewQueryKeys: true,
-                  projectId: '6jWiTj-5IAvHN-bzVnmf'
+                  projectId: '6jWiTj-5IAvHN-bzVnmf',
+                  liveMode: 'auto'
                 }}
               >
                 {children}

@@ -4,9 +4,17 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { PermissionsList } from 'src/permissions/permissions.config';
 import { AccountsService } from 'src/modules/accounts/accounts.service';
 import { CustomersService } from 'src/modules/customers/customers.service';
 import { StaffService } from 'src/modules/staff/staff.service';
+import ms from 'ms';
+
+const CUSTOMER_ROLE = {
+  role_id: 0,
+  role_name: 'customer',
+  description: 'Customer',
+};
 
 @Injectable()
 export class AuthService {
@@ -16,6 +24,8 @@ export class AuthService {
     private readonly staffService: StaffService,
     private readonly jwtService: JwtService,
   ) {}
+
+  private readonly permissionsList = PermissionsList;
 
   private async authenticate(email: string, password: string) {
     const account = await this.accountsService.findOneByEmail(email);
@@ -47,17 +57,17 @@ export class AuthService {
       }
 
       const payload = {
-        sub: staff.staff_id,
+        id: staff.staff_id,
         role: staff.role,
-        permissions: staff.role.role_permissions ?? [],
+        // permissions: staff.role.role_permissions ?? [],
         iat: Math.floor(Date.now() / 1000),
       };
 
       return {
         access_token: await this.jwtService.signAsync(payload),
+        expires_in: ms('10h'),
       };
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw new UnauthorizedException();
     }
   }
@@ -74,18 +84,18 @@ export class AuthService {
       }
 
       const payload = {
-        sub: customer.customer_id,
-        role: 'customer',
-        permissions: ['accounts:read'],
+        id: customer.customer_id,
+        role: CUSTOMER_ROLE,
+        // permissions: ['accounts:read'],
         iat: Math.floor(Date.now() / 1000),
       };
 
       return {
         access_token: await this.jwtService.signAsync(payload),
+        expires_in: ms('10h'),
       };
-    } catch (error) {
-      console.log(error);
-      throw new UnauthorizedException();
+    } catch {
+      throw new UnauthorizedException('Invalid credentials');
     }
   }
 }

@@ -1,53 +1,55 @@
 package com.example.electrohive.Models;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 public class Product {
     private String productId;
-    private ArrayList<String> images;
-    private String product_name;
-    private int price;
-    private Map<String,Integer> SizeMap;
-
-    private int total;
-    private String type;
-    private String accessory;
-    private Double weight;
-    private String material;
-    private int sold;
+    private String productName;
+    private List<ProductImage> images; // Assuming ProductImage class is defined
     private String description;
-    private Double ratingStar;
-    private int ratingAmount;
-    private String publisher;
-    private String state;
-    // demo
+    private float price;
+    private float discount; // Can be null
+    private Integer stockQuantity; // Can be null
+    private List<Category> categories; // Assuming Category class is defined
 
+    private List<ProductFeedback> productFeedbacks;
+    private float averageRating;
+    private List<ProductAttribute> attributes; // Assuming ProductAttribute class is defined
 
-    public Product() {
-    }
-
-    public Product(String productId, String type,String productName, String material,ArrayList<String> imagelist  ,Map<String,Integer> sizemap, String accessory,Double weight, int productPrice,   String description,   String publisher) {
+    // Constructor
+    public Product(String productId, String productName, List<ProductImage> images, String description, float price,
+                   float discount, Integer stockQuantity, List<Category> categories, List<ProductAttribute> attributes) {
         this.productId = productId;
-        this.product_name = productName;
-        this.images = imagelist;
-        this.price = productPrice;
-        this.SizeMap= sizemap;
-        this.sold = 0;
+        this.productName = productName;
+        this.images = images;
         this.description = description;
-        this.type = type;
-        this.accessory= accessory;
-        this.material= material;
-        this.weight = weight;
-        this.ratingAmount = 0;
-        this.publisher = publisher;
-        this.state = "Còn hàng";
+        this.price = price;
+        this.discount = discount;
+        this.stockQuantity = stockQuantity;
+        this.categories = categories;
+        this.attributes = attributes;
     }
 
 
+    public void setProductFeedbacks(List<ProductFeedback> productFeedbackList) {
+        this.productFeedbacks = productFeedbackList;
+    }
 
+    public List<ProductFeedback> getProductFeedbacks(){
+        return this.productFeedbacks;
+    }
+
+    // Getters and Setters
     public String getProductId() {
         return productId;
+    }
+
+    public void setAverageRating(float rating) {
+        this.averageRating = rating;
+    }
+
+    public float getAverageRating() {
+        return averageRating;
     }
 
     public void setProductId(String productId) {
@@ -55,60 +57,19 @@ public class Product {
     }
 
     public String getProductName() {
-        return product_name;
+        return productName;
     }
 
     public void setProductName(String productName) {
-        this.product_name = productName;
+        this.productName = productName;
     }
 
-    public String getAccessory() {
-        return accessory;
+    public List<ProductImage> getImages() {
+        return images;
     }
 
-    public void setAccessory(String accessory) {
-        this.accessory = accessory;
-    }
-
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
-
-    public String getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(String material) {
-        this.material = material;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getProductPrice() {
-        return price;
-    }
-
-    public void setProductPrice(int productPrice) {
-        this.price = productPrice;
-    }
-
-
-    public int getSold() {
-        return sold;
-    }
-
-    public void setSold(int sold) {
-        this.sold = sold;
+    public void setImages(List<ProductImage> images) {
+        this.images = images;
     }
 
     public String getDescription() {
@@ -119,81 +80,68 @@ public class Product {
         this.description = description;
     }
 
-    public ArrayList<String> getImagelist() {
-        return images;
+    public double getPrice() {
+        return price;
     }
 
-    public void setImagelist(ArrayList<String> imagelist) {
-        this.images = imagelist;
-    }
-
-    public Map<String, Integer> getSizeMap() {
-        return SizeMap;
-    }
-
-    public void setSizeMap(Map<String, Integer> sizeMap) {
-        SizeMap = sizeMap;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public String getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    public Double getRatingStar() {
-        return ratingStar;
-    }
-
-    public void setRatingStar(Double ratingStar) {
-        this.ratingStar = ratingStar;
-    }
-
-    public int getRatingAmount() {
-        return ratingAmount;
-    }
-
-    public void setRatingAmount(int ratingAmount) {
-        this.ratingAmount = ratingAmount;
+    public double getRetailPrice() {
+        return price*(1-discount/100);
     }
 
 
-    public String getState() {
-        return state;
+    public void setPrice(float price) {
+        this.price = price;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public float getDiscount() {
+        return discount;
     }
 
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
+
+    public Integer getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public List<ProductAttribute> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<ProductAttribute> attributes) {
+        this.attributes = attributes;
+    }
+
+    // Optionally, toString method for better printing
     @Override
     public String toString() {
         return "Product{" +
                 "productId='" + productId + '\'' +
-                ", imagelist=" + images +
-                ", productName='" + product_name + '\'' +
-                ", productPrice=" + price +
-                ", SizeMap=" + SizeMap +
-                ", total=" + total +
-                ", sold=" + sold +
+                ", productName='" + productName + '\'' +
+                ", images=" + images +
                 ", description='" + description + '\'' +
-                ", ratingStar=" + ratingStar +
-                ", ratingAmount=" + ratingAmount +
-                ", publisher='" + publisher + '\'' +
-                ", state='" + state + '\'' +
+                ", price=" + price +
+                ", discount=" + discount +
+                ", stockQuantity=" + stockQuantity +
+                ", categories=" + categories +
+                ", attributes=" + attributes +
                 '}';
     }
 }
+
 
 
 

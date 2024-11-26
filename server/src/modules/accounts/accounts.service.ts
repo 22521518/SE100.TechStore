@@ -12,8 +12,7 @@ export class AccountsService {
         data: createAccountDto,
       });
       return acc;
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw new BadRequestException('Error creating account');
     }
   }
@@ -21,8 +20,7 @@ export class AccountsService {
   async comparePassword(password: string, hash: string) {
     try {
       return password === hash;
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw new BadRequestException('Error comparing password');
     }
   }
@@ -33,8 +31,7 @@ export class AccountsService {
         where: { email: email },
       });
       return acc;
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw new BadRequestException('Error fetching account');
     }
   }
@@ -47,8 +44,7 @@ export class AccountsService {
         },
       });
       return acc;
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw new BadRequestException('Error fetching accounts');
     }
   }
@@ -59,8 +55,7 @@ export class AccountsService {
         where: { account_id: id },
       });
       return acc;
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw new BadRequestException('Error fetching account');
     }
   }
@@ -72,8 +67,7 @@ export class AccountsService {
         data: updateAccountDto,
       });
       return acc;
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw new BadRequestException('Error updating account');
     }
   }
@@ -84,8 +78,7 @@ export class AccountsService {
         where: { account_id: id },
       });
       return acc;
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw new BadRequestException('Error deleting account');
     }
   }

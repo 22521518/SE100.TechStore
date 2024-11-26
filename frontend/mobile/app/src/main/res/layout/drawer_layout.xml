@@ -9,12 +9,22 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <!-- Fragment container to switch content -->
-        <FrameLayout
-            android:id="@+id/fragment_container"
+        <include
+            layout="@layout/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
+
+        <!-- Scrollable main content -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_marginTop="56dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

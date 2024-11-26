@@ -8,5 +8,30 @@
     <style name="RoundedImageShape">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item> <!-- Adjust as needed -->
+
     </style>
+    <style name="SpinnerDropdownStyle" parent="Widget.AppCompat.Spinner.Underlined">
+        <item name="android:dropDownWidth">match_parent</item>
+        <item name="android:dropDownHeight">200dp</item> <!-- Set the desired dropdown height -->
+    </style>
+
+    <style name="Product_rating_input_bar" parent="Widget.AppCompat.RatingBar.Indicator">
+        <item name="colorControlNormal">@android:color/darker_gray</item>
+        <item name="colorControlActivated">#F9A503</item>
+    </style>
+    <style name="Product_feed_back_item_rating" parent="Widget.AppCompat.RatingBar.Small">
+        <item name="colorControlNormal">@android:color/darker_gray</item>
+        <item name="colorControlActivated">#F9A503</item>
+    </style>
+    <style name="Product_rating_bar" parent="Widget.AppCompat.RatingBar.Indicator">
+        <item name="android:scaleX">0.8</item>
+        <item name="android:scaleY">0.8</item>
+        <item name="android:transformPivotX">0dp</item>
+        <item name="android:transformPivotY">0dp</item>
+        <item name="colorControlNormal">@android:color/darker_gray</item>
+        <item name="colorControlActivated">#F9A503</item>
+    </style>
+
+
+
 </resources>

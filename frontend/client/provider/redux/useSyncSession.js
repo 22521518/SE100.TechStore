@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { setSession, clearSession } from "./session/sessionSlice";
-import { setCart } from "./cart/cartSlice"; 
+import { setCart } from "./cart/cartSlice";
 
 export default function useSyncSession() {
   const { data: session, status } = useSession();
@@ -14,15 +14,16 @@ export default function useSyncSession() {
     if (status === "authenticated") {
       dispatch(
         setSession({
-          user: session?.user,
-          isAuthenticated:true,
+          customer: session?.user.customer,
+          isAuthenticated: true,
         })
       );
       dispatch(
         setCart({
-            cart:[...session.user.cart]
+          customerId: session.user.customer?.customer_id,
+          cart: [...session.user.cart||[]],
         })
-      )
-    } 
-  }, [session, status, dispatch]);
+      );
+    }
+  }, [session, status]);
 }

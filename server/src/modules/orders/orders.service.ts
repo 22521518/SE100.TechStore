@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
+import { OrderItems } from './dto/create-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -8,11 +9,25 @@ export class OrdersService {
 
   async create(
     createOrderDto: Prisma.OrdersCreateInput,
+    order_items: OrderItems[],
     including_items: boolean = true,
     including_customer: boolean = true,
     including_voucher: boolean = true,
   ) {
     try {
+      order_items.forEach(async (orderItem) => {
+        await this.prismaDbService.products.update({
+          where: {
+            product_id: orderItem.product_id,
+          },
+          data: {
+            stock_quantity: {
+              decrement: orderItem.quantity,
+            },
+          },
+        });
+      });
+
       const order = await this.prismaDbService.orders.create({
         data: createOrderDto,
         include: {
@@ -78,13 +93,9 @@ export class OrdersService {
           },
           customer: including_customer,
           voucher: including_voucher,
-          shipping_address: {
-            include: {
-              address: true,
-            },
-          },
         },
       });
+
       return orders;
     } catch (error) {
       console.error(error);
@@ -106,7 +117,11 @@ export class OrdersService {
           customer_id: customerId,
         },
         include: {
-          order_items: including_items,
+          order_items: {
+            include: {
+              product: including_items,
+            },
+          },
           customer: including_customer,
           voucher: including_voucher,
         },

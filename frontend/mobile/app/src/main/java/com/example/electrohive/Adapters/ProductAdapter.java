@@ -1,6 +1,7 @@
 package com.example.electrohive.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,76 +12,125 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.electrohive.R;
+import com.bumptech.glide.Glide;
 import com.example.electrohive.Models.Product;
+import com.example.electrohive.Models.Voucher;
+import com.example.electrohive.R;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-public class ProductAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
-    private IClickListener mIClicklistener;
-    public interface IClickListener{
-        void OnClickItem(String productType, String productID);
-    }
-    Context context;
-    ArrayList<Product> productList;
+    private Context context;
+    private List<Product> productList;
+    private OnItemClickListener onItemClickListener;
 
-    int type =0;
-    public ProductAdapter(Context context, ArrayList<Product> productList, IClickListener listener){
-        this.mIClicklistener = listener;
-        this.context=context;
-        this.productList=productList;
-    }
-    public ProductAdapter(Context context, ArrayList<Product> productList,int type,IClickListener listener){
-        this.mIClicklistener = listener;
-        this.context=context;
-        this.productList=productList;
-        this.type=1;
+    // Constructor
+    public ProductAdapter(Context context, List<Product> productList, OnItemClickListener onItemClickListener) {
+        this.context = context;
+        this.productList = productList;
+        this.onItemClickListener = onItemClickListener;
     }
 
+    // Define the interface for item click handling
+    public interface OnItemClickListener {
+        void onItemClick(Product product);
+    }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.product_card, parent, false);
+        return new ProductViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
+        // Check if productList is null or empty before proceeding
+        if (productList == null || productList.isEmpty()) {
+            holder.itemView.setVisibility(View.GONE);
+            return;
+        }
+            Product product = productList.get(position);
+
+            // Set product name
+            holder.productName.setText(product.getProductName());
+
+            NumberFormat currencyFormat = NumberFormat.getInstance(Locale.US);
+
+            holder.productPrice.setText(String.format("%s VNĐ", currencyFormat.format(product.getRetailPrice())));
+            holder.productOriginalPrice.setText(String.format("%s VNĐ", currencyFormat.format(product.getPrice())));
+
+            // Set discount if available
+            if (product.getDiscount() > 0) {
+                holder.productDiscount.setVisibility(View.VISIBLE);
+                holder.productDiscount.setText(String.format("-%.0f%%", product.getDiscount()));
+            } else {
+                holder.productDiscount.setVisibility(View.GONE);
+            }
+
+            // Set rating
+            holder.productRating.setText(String.format("%.1f", product.getAverageRating()));
+
+            //Ser category
+            if (product.getCategories() != null && !product.getCategories().isEmpty()) {
+                holder.productCategory.setText(product.getCategories().get(0).getCategoryName());
+            }
+
+            // Load product image using Glide
+            if (product.getImages() != null && !product.getImages().isEmpty()) {
+                Glide.with(context)
+                        .load(product.getImages().get(0).getUrl()) // URL to the image
+                        .placeholder(R.drawable.placeholder ) // Optional placeholder
+                        .error(R.drawable.ic_image_error_icon   ) // Optional error image
+                        .into(holder.productImage); // Your ImageView
+            } else {
+                holder.productImage.setImageResource(R.drawable.placeholder); // Fallback image
+            }
+
+            // Set click listener for the card
+            holder.cardView.setOnClickListener(v -> onItemClickListener.onItemClick(product));
 
     }
 
     @Override
     public int getItemCount() {
-        return productList.size();
+        return productList != null ? productList.size() : 0;
     }
 
-    public class ProductViewHolder extends RecyclerView.ViewHolder{
+    // ViewHolder class
+    public static class ProductViewHolder extends RecyclerView.ViewHolder {
+        CardView cardView;
+        ImageView productImage;
+        TextView productName, productPrice,productOriginalPrice, productDiscount, productRating,productCategory;
 
-
-        ImageView img_product;
-        TextView name_product,original_price,retail_price;
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
-            img_product=itemView.findViewById(R.id.img_product);
-            name_product=itemView.findViewById(R.id.name_product);
-            original_price=itemView.findViewById(R.id.original_price);
-            retail_price=itemView.findViewById(R.id.retail_price);
+            cardView = itemView.findViewById(R.id.layout_product);
+            productImage = itemView.findViewById(R.id.product_image);
+            productName = itemView.findViewById(R.id.product_name);
+            productPrice = itemView.findViewById(R.id.product_price);
+            productOriginalPrice = itemView.findViewById(R.id.product_original_price);
+            productDiscount = itemView.findViewById(R.id.product_discount);
+            productRating = itemView.findViewById(R.id.product_rating);
+            productCategory = itemView.findViewById(R.id.product_category);
         }
     }
-    public static String formatNumber(int number) {
-        String strNumber = String.valueOf(number); // Chuyển đổi số thành chuỗi
-        int length = strNumber.length(); // Độ dài của chuỗi số
 
-        // Xây dựng chuỗi kết quả từ phải sang trái, thêm dấu chấm sau mỗi 3 ký tự
-        StringBuilder result = new StringBuilder();
-        for (int i = length - 1; i >= 0; i--) {
-            result.insert(0, strNumber.charAt(i));
-            if ((length - i) % 3 == 0 && i != 0) {
-                result.insert(0, ".");
-            }
+    public void updateProducts(List<Product> products) {
+        if (products != null) {
+            this.productList.clear();
+            this.productList.addAll(products);
+            notifyDataSetChanged();
+        } else {
+            // Handle the case where products are null or empty
+            this.productList.clear();
+            notifyDataSetChanged();
         }
-
-        return result.toString(); // Trả về chuỗi kết quả
     }
+
+
 }

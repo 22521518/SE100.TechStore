@@ -59,6 +59,15 @@
                 android:textSize="20sp"/>
         </LinearLayout>
     </HorizontalScrollView>
+
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="32dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminate="true" />
     <ListView
         android:id="@+id/ward_listview"
         android:layout_width="match_parent"

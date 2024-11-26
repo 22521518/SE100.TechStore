@@ -1,9 +1,8 @@
 'use client';
 
-import { CustomerFormValues } from '@app/customers/customer.interface';
 import AvatarImage from '@components/avatar';
 import CommonContainer from '@components/common-container';
-import { IAccount, IAddress, ICustomer } from '@constant/interface.constant';
+import { ICustomer } from '@constant/interface.constant';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -22,7 +21,10 @@ import { transformVNMoney } from '@utils/transform.util';
 import { dummyAvatar } from '@constant/value.constant';
 
 const CustomerShow = () => {
-  const { query, formLoading, onFinish } = useForm<ICustomer, HttpError>();
+  const { query, formLoading } = useForm<ICustomer, HttpError>({
+    resource: 'customers',
+    action: 'clone'
+  });
   const record = query?.data?.data;
 
   const [customerValue, setCustomerValue] = React.useState<ICustomer>({
@@ -35,7 +37,10 @@ const CustomerShow = () => {
     account: record?.account || { email: '' },
     product_feedbacks: record?.product_feedbacks || [],
     orders: record?.orders || [],
-    addresses: record?.addresses || []
+    addresses: record?.addresses || [],
+    image: record?.image || '',
+    male: record?.male,
+    birth_date: record?.birth_date
   });
 
   const totalSpending = customerValue.orders?.reduce((acc, order) => {
@@ -43,8 +48,7 @@ const CustomerShow = () => {
     return acc;
   }, 0);
 
-  const male = true;
-  const dummyBirthday = '1-1-2003';
+  const dummyBirthday = '1-1-1900';
 
   React.useEffect(() => {
     setCustomerValue({
@@ -55,11 +59,16 @@ const CustomerShow = () => {
       phone_number: record?.phone_number || '',
       date_joined: record?.date_joined || '',
       account: record?.account || { email: '' },
-      addresses: record?.addresses || []
+      product_feedbacks: record?.product_feedbacks || [],
+      orders: record?.orders || [],
+      addresses: record?.addresses || [],
+      image: record?.image || '',
+      male: record?.male,
+      birth_date: record?.birth_date
     });
   }, [record]);
 
-  if (formLoading || !record) {
+  if (formLoading) {
     return (
       <div>
         Loading... {formLoading},{' '}
@@ -76,7 +85,10 @@ const CustomerShow = () => {
             {/* Intro */}
             <Box className="flex flex-row justify-between border-b-2 border-slate-200 border-solid pb-6">
               <Box className="flex flex-row gap-3">
-                <AvatarImage src={dummyAvatar} alt="avatar" />
+                <AvatarImage
+                  src={customerValue.image || dummyAvatar}
+                  alt="avatar"
+                />
                 <Stack>
                   <Typography variant="h3" className="text-2xl font-bold">
                     {customerValue.username}
@@ -125,14 +137,18 @@ const CustomerShow = () => {
                 {/* GENDER & things */}
                 <Stack className="p-4 gap-6">
                   <Box className="flex flex-row gap-4 items-center">
-                    <GenderIcon male={male} />
+                    <GenderIcon male={customerValue.male ? true : false} />
                     <Typography variant="body1">
-                      {male ? 'Male' : 'Female'}
+                      {customerValue ? 'Male' : 'Female'}
                     </Typography>
                   </Box>
                   <Box className="flex flex-row gap-4 items-center">
                     <CakeOutlinedIcon />
-                    <Typography variant="body1">{dummyBirthday}</Typography>
+                    <Typography variant="body1">
+                      {new Date(
+                        customerValue.birth_date || dummyBirthday
+                      ).toLocaleDateString()}
+                    </Typography>
                   </Box>
                 </Stack>
               </Box>
@@ -142,7 +158,7 @@ const CustomerShow = () => {
                   <Box key={index} className="flex flex-row gap-3 items-center">
                     <HouseOutlinedIcon />
                     <Typography variant="caption" className="text-slate-500">
-                      {address.address}, {address.state}, {address.city}
+                      {address.address}, {address.district}, {address.city}
                     </Typography>
                   </Box>
                 ))}
