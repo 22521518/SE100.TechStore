@@ -47,7 +47,13 @@ public class AccountAddressPage extends AppCompatActivity {
                     if (data != null) {
                         Address updatedAddress = (Address) data.getSerializableExtra("UPDATED_ADDRESS");
                         // You can update the address list or refresh the UI
-                        addressViewModel.updateAddress(updatedAddress);  // Assuming you have a method in your ViewModel to update the address
+                        addressViewModel.updateAddress(updatedAddress).observe(this,address -> {
+                            if(address) {
+                                Toast.makeText(this,"Address updated",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this,"Failed to update address",Toast.LENGTH_SHORT).show();
+                            }
+                        });  // Assuming you have a method in your ViewModel to update the address
                     }
                 }
             }
@@ -62,7 +68,13 @@ public class AccountAddressPage extends AppCompatActivity {
                     if (data != null) {
                         Address updatedAddress = (Address) data.getSerializableExtra("NEW_ADDRESS");
                         // You can update the address list or refresh the UI
-                        addressViewModel.addAddress(updatedAddress);  // Assuming you have a method in your ViewModel to update the address
+                        addressViewModel.addAddress(updatedAddress).observe(this,address -> {
+                            if(address) {
+                                Toast.makeText(this,"Address added",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this,"Failed to add address",Toast.LENGTH_SHORT).show();
+                            }
+                        });  // Assuming you have a method in your ViewModel to update the address
                     }
                 }
             }

@@ -104,7 +104,7 @@ public class TrackPage extends AppCompatActivity {
 
                     order_id_input.setText(orderId);
                     if(order.getShippingAddress() != null) {
-                        order_date.setText(Format.getFormattedDate((Date) order.getShippingAddress().getDeliveryDate()));
+                        order_date.setText(Format.getFormattedDateFromString((String) order.getShippingAddress().getDeliveryDate()));
                         order_fullname.setText(order.getShippingAddress().getAddress().getFullName());
                         order_phonenumber.setText(order.getShippingAddress().getAddress().getPhoneNumber());
                         order_address.setText(

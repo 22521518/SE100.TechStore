@@ -70,7 +70,6 @@ public class MockOrder {
         // Create the ShippingAddress object
         ShippingAddress dummyShippingAddress = new ShippingAddress(
                 "1123",
-                "123",
                 SHIPPING_STATUS.SHIPPED,       // Example: SHIPPED
                 new Date(),                  // Parsed shipping date
                 address                        // Address object

@@ -73,7 +73,7 @@
                     android:id="@+id/product_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="600.000 VNĐ"
+                    android:text="0 VNĐ"
                     android:textColor="@android:color/holo_green_dark"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -90,7 +90,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:alpha="0.8"
-                        android:text="900.000 VNĐ"
+                        android:text="0 VNĐ"
                         android:textSize="18sp" />
 
                     <!-- Discount Percentage -->
@@ -99,7 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="-33%"
+                        android:text="-0%"
                         android:textColor="#FF0000"
                         android:textSize="18sp" />
                 </LinearLayout>

@@ -136,13 +136,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
     public void cancelOrder(String orderId,int position) {
+
+
         // Create an AlertDialog to confirm cancel
         new AlertDialog.Builder(context)
                 .setTitle("Cancel Order")
                 .setMessage("Are you sure you want to cancel this order?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     // Handle cancellation here, update order status
-                    OrderViewModel.cancelOrder(orderId); // Method to cancel the order
+                    new OrderViewModel().cancelOrder(orderId); // Method to cancel the order
 
                     // Optionally, rerender the RecyclerView by updating the order list
                     notifyItemChanged(position);

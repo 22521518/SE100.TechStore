@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electrohive.Activities.AccountEditAddressPage;
@@ -18,6 +20,7 @@ import com.example.electrohive.Activities.ProvincePage;
 import com.example.electrohive.Models.Address;
 import com.example.electrohive.Models.Province;
 import com.example.electrohive.R;
+import com.example.electrohive.ViewModel.AddressViewModel;
 
 import java.util.List;
 
@@ -28,6 +31,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     private Context context;
     private List<Address> addressList;
 
+    private AddressViewModel addressViewModel;
+
 
     // Define ActivityResultLauncher
     private ActivityResultLauncher resultLauncher;
@@ -37,6 +42,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         this.context = context;
         this.addressList = addressList;
         this.resultLauncher = resultLauncher;
+        this.addressViewModel = new AddressViewModel();
     }
 
     @NonNull
@@ -67,7 +73,13 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
         // Optionally, handle set default button clicks
         holder.setDefaultButton.setOnClickListener(v -> {
-            setDefaultAddress(position);  // Set the selected address as default
+            addressViewModel.setDefaultAddress(address.getAddressId()).observe((LifecycleOwner) context, result -> {
+                if(result) {
+                    Toast.makeText(context, "Default address updated", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Failed to update default address", Toast.LENGTH_SHORT).show();
+                }
+            });  // Set the selected address as default
             notifyDataSetChanged();  // Notify the adapter to refresh the views
         });
 
@@ -77,6 +89,17 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             intent.putExtra("ADDRESS",address );
             resultLauncher.launch(intent);
 
+        });
+
+        holder.deleteAddressButton.setOnClickListener(v-> {
+            addressViewModel.deleteAddress(address.getAddressId()).observe((LifecycleOwner) context, result -> {
+                if(result) {
+                    Toast.makeText(context, "Address deleted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Failed to delete address", Toast.LENGTH_SHORT).show();
+                }
+            });
+            notifyDataSetChanged();
         });
     }
 
@@ -94,6 +117,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     public static class AddressViewHolder extends RecyclerView.ViewHolder {
 
         TextView fullName, phoneNumber, specificAddress, addressDetails, primaryText;
+
+        ImageButton deleteAddressButton;
         TextView setDefaultButton, updateButton;
 
         public AddressViewHolder(View itemView) {
@@ -105,19 +130,10 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             primaryText = itemView.findViewById(R.id.primaryText);
             setDefaultButton = itemView.findViewById(R.id.setDefaultButton);
             updateButton = itemView.findViewById(R.id.updateButton);
+            deleteAddressButton = itemView.findViewById(R.id.deleteAddressButton);
         }
     }
 
     // Method to set the selected address as default
-    private void setDefaultAddress(int position) {
-        // Loop through the list and set the isPrimary flag
-        for (int i = 0; i < addressList.size(); i++) {
-            Address address = addressList.get(i);
-            if (i == position) {
-                address.setIsPrimary(true);  // Set this address as primary
-            } else {
-                address.setIsPrimary(false);  // Set other addresses as non-primary
-            }
-        }
-    }
+
 }

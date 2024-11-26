@@ -13,6 +13,7 @@ import com.example.electrohive.utils.Model.AddressUtils;
 import com.example.electrohive.utils.RetrofitClient;
 import com.example.electrohive.utils.generator.MockAddress;
 import com.example.electrohive.utils.generator.MockOrder;
+import com.google.common.reflect.MutableTypeToInstanceMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -66,11 +67,94 @@ public class AddressRepository {
 
     }
 
-    public void addAddress(Address updatedAddress) {
+    public LiveData<Address> addAddress(String userId,JsonObject addressPayload) {
+        MutableLiveData<Address> addressData = new MutableLiveData<>();
 
+
+        addressService.postCustomerAddress(userId,"application/json",addressPayload).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+
+                        Address address = AddressUtils.parseAddress(response.body().getAsJsonObject());
+
+                        addressData.postValue(address);
+                    } catch (Exception e) {
+                        Log.e("Repository Error", "Error parsing response: " + e.getMessage());
+                        addressData.postValue(null);
+                    }
+                } else {
+                    Log.e("Repository Error", "Failed to load addresses: " + response.code());
+                    addressData.postValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                addressData.postValue(null);
+            }
+        });
+        return addressData;
     }
-    public void updateAddress(Address updatedAddress) {
+    public LiveData<Address> updateAddress(String userId,String addressId,JsonObject addressPayload) {
+        MutableLiveData<Address> addressData = new MutableLiveData<>();
 
+
+        addressService.patchCustomerAddress(userId,addressId,"application/json",addressPayload).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+
+                        Address address = AddressUtils.parseAddress(response.body().getAsJsonObject());
+
+                        addressData.postValue(address);
+                    } catch (Exception e) {
+                        Log.e("Repository Error", "Error parsing response: " + e.getMessage());
+                        addressData.postValue(null);
+                    }
+                } else {
+                    Log.e("Repository Error", "Failed to load addresses: " + response.code());
+                    addressData.postValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                addressData.postValue(null);
+            }
+        });
+        return addressData;
+    }
+
+    public LiveData<Boolean> deleteAddress(String userId, String addressId) {
+        MutableLiveData<Boolean> deleteState = new MutableLiveData<>();
+
+
+        addressService.deleteCustomerAddress(userId,addressId).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+
+                     deleteState.setValue(true);
+                    } catch (Exception e) {
+                        Log.e("Repository Error", "Error parsing response: " + e.getMessage());
+                        deleteState.setValue(false);
+                    }
+                } else {
+                    Log.e("Repository Error", "Failed to load addresses: " + response.code());
+                    deleteState.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                deleteState.setValue(false);
+            }
+        });
+        return deleteState;
     }
 
 }

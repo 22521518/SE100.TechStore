@@ -1,5 +1,5 @@
 package com.example.electrohive.Models.Enum;
 
 public enum SHIPPING_STATUS {
-    SHIPPED, DELIVERED;
+    PENDING, SHIPPED, DELIVERED, CANCELLED,CONFIRMED;
 }

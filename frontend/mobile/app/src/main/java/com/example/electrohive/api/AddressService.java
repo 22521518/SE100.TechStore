@@ -4,6 +4,8 @@ import com.example.electrohive.Models.Address;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.openqa.selenium.json.Json;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -18,22 +20,23 @@ public interface AddressService {
     Call<JsonArray> getUserAddresses(@Path("id") String userId);
 
     @POST("addresses/{userId}")
-    Call<Boolean> postCustomerAddress(
+    Call<JsonObject> postCustomerAddress(
             @Path("userId") String userId,
-            @Header("access_token") String accessToken,
+            @Header("Content-Type") String header,
             @Body JsonObject payload
     );
 
-    @PATCH("addresses/{id}")
-    Call<Boolean> patchCustomerAddress(
-            @Path("id") String addressId,
-            @Header("access_token") String accessToken,
+    @PATCH("addresses/{id}/{address_id}")
+    Call<JsonObject> patchCustomerAddress(
+            @Path("id") String userId,
+            @Path("address_id") String addressId,
+            @Header("Content-Type") String header,
             @Body JsonObject payload
     );
 
-    @DELETE("addresses/{id}")
-    Call<Boolean> deleteCustomerAddress(
-            @Path("id") String addressId,
-            @Header("access_token") String accessToken
+    @DELETE("addresses/{id}/{address_id}")
+    Call<JsonObject> deleteCustomerAddress(
+            @Path("id") String userId,
+            @Path("address_id") String addressId
     );
 }

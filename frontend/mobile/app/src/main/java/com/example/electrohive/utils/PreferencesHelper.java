@@ -36,11 +36,12 @@ public class PreferencesHelper {
         editor.putString("image", customer.getImage());
         editor.putString("birth_date", customer.getBirthDate().toString());
         editor.putString("date_joined", customer.getDateJoined().toString());
+        editor.putBoolean("male", customer.getMale());
         editor.apply();
     }
 
     public static Customer getCustomerData() {
-        return new Customer(
+        Customer customer = new Customer(
                 sharedPreferences.getString("user_id", null),
                 sharedPreferences.getString("account_id", null),
                 sharedPreferences.getString("username", null),
@@ -50,5 +51,7 @@ public class PreferencesHelper {
                 sharedPreferences.getString("birth_date", null),
                 sharedPreferences.getString("date_joined", null)
         );
+        customer.setMale(sharedPreferences.getBoolean("male",true));
+        return customer;
     }
 }

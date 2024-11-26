@@ -17,10 +17,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.bumptech.glide.Glide;
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.R;
+import com.example.electrohive.ViewModel.CustomerViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.google.android.material.navigation.NavigationView;
 
-public class DrawerBasePage  extends AppCompatActivity {
+public class DrawerBasePage extends AppCompatActivity {
 
 
     private DrawerLayout drawerLayout;
@@ -35,14 +36,16 @@ public class DrawerBasePage  extends AppCompatActivity {
     private ImageView searchButton;
     private ImageButton signOutButton;
 
-    private Customer sessionCustomer;
+    private Customer sessionCustomer = new Customer();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
 
-        sessionCustomer = PreferencesHelper.getCustomerData();
+
+
 
         // Find the DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -59,11 +62,10 @@ public class DrawerBasePage  extends AppCompatActivity {
         });
 
 
-
         searchInput = findViewById(R.id.search_input);
         searchButton = findViewById(R.id.search_button);
 
-        searchButton.setOnClickListener(v->searchProduct());
+        searchButton.setOnClickListener(v -> searchProduct());
         menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +83,7 @@ public class DrawerBasePage  extends AppCompatActivity {
 
             if (id == R.id.nav_logout) {
                 // Account selected (Logout or Account screen)
-                Intent intent = new Intent(getApplicationContext(),AccountPage.class);
+                Intent intent = new Intent(getApplicationContext(), AccountPage.class);
                 startActivity(intent);
             } else if (id == R.id.nav_home) {
                 // Check if already on HomePage
@@ -91,19 +93,19 @@ public class DrawerBasePage  extends AppCompatActivity {
 
                 }
                 // Home selected
-            }   else if (id == R.id.nav_product) {
+            } else if (id == R.id.nav_product) {
                 if (!(this instanceof SearchPage)) {
-                    Intent intent = new Intent(getApplicationContext(),SearchPage.class);
+                    Intent intent = new Intent(getApplicationContext(), SearchPage.class);
                     startActivity(intent);
                 }
                 // Home selected
-            }  else if (id == R.id.nav_cart) {
+            } else if (id == R.id.nav_cart) {
                 // Cart selected this, "Cart Selected", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(),SearchPage.class);
+                Intent intent = new Intent(getApplicationContext(), SearchPage.class);
                 startActivity(intent);
             } else if (id == R.id.nav_track) {
                 // Tracking selected
-                Intent intent = new Intent(getApplicationContext(),TrackPage.class);
+                Intent intent = new Intent(getApplicationContext(), TrackPage.class);
                 startActivity(intent);
             } else if (id == R.id.nav_support) {
                 // Support selected
@@ -116,23 +118,40 @@ public class DrawerBasePage  extends AppCompatActivity {
 
         View headerView = navigationView.getHeaderView(0);
         profileImage = headerView.findViewById(R.id.profile_image);
+        username = headerView.findViewById(R.id.user_name);
+
+
+        setUpUI();
+        signOutButton = headerView.findViewById(R.id.sign_out_button);
+        signOutButton.setOnClickListener(v -> signOut());
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        setUpUI();
+    }
+
+    private void setUpUI() {
+        sessionCustomer = PreferencesHelper.getCustomerData();
+        username.setText(sessionCustomer.getUsername());
         Glide.with(DrawerBasePage.this)
                 .load(sessionCustomer.getImage()) // URL to the image
                 .placeholder(R.drawable.ic_user_icon) // Optional placeholder
                 .error(R.drawable.ic_user_icon) // Optional error image
                 .into(profileImage); // Your ImageView
-        username = headerView.findViewById(R.id.user_name);
-        username.setText(sessionCustomer.getUsername());
-        signOutButton = headerView.findViewById(R.id.sign_out_button);
-        signOutButton.setOnClickListener(v->signOut());
+
     }
 
     public void searchProduct() {
         String searchText = searchInput.getText().toString().trim();
 
-        Intent intent = new Intent(DrawerBasePage.this,SearchPage.class);
+        Intent intent = new Intent(DrawerBasePage.this, SearchPage.class);
 
-        intent.putExtra("SEARCH_TEXT",searchText);
+        intent.putExtra("SEARCH_TEXT", searchText);
 
         startActivity(intent);
     }

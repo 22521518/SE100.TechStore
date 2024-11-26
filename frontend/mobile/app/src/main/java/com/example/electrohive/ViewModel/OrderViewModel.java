@@ -12,37 +12,32 @@ import com.example.electrohive.utils.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class OrderViewModel extends ViewModel {
-    private static OrderRepository repository;
 
-    private static MutableLiveData<List<Order>> orders; // MutableLiveData to hold the orders
-    private static List<Order> allOrders = new ArrayList<>();  // List to store all fetched orders
+    private final OrderRepository repository;
+    private final MutableLiveData<List<Order>> orders;
+    private List<Order> allOrders;
+    private ExecutorService executor;
 
     public OrderViewModel() {
         repository = new OrderRepository();
+        orders = new MutableLiveData<>();
+        allOrders = new ArrayList<>();
+        executor = Executors.newSingleThreadExecutor(); // Create a single-threaded executor for background tasks
     }
 
     // Fetch single order using its ID
     public LiveData<Order> getOrder(String orderId) {
-        MutableLiveData<Order> orderLiveData = new MutableLiveData<>();
-
-        // Fetch order from repository asynchronously
-        repository.getOrder(PreferencesHelper.getCustomerData().getCustomerId(),orderId).observeForever(new Observer<Order>() {
-            @Override
-            public void onChanged(Order fetchedOrder) {
-                orderLiveData.setValue(fetchedOrder);  // Set fetched order
-            }
-        });
-
-        return orderLiveData;  // Return LiveData for the order
+        return repository.getOrder(PreferencesHelper.getCustomerData().getCustomerId(), orderId);
     }
 
     // This method will fetch the orders and apply filtering if needed
     public LiveData<List<Order>> getOrders(ORDER_STATUS filter) {
-        // If orders are not fetched yet or no observers are present, fetch the data
-        if (orders == null || !orders.hasObservers()) {
-            orders = new MutableLiveData<>();
+        // Fetch orders if not already fetched
+        if (orders.getValue() == null || allOrders.isEmpty()) {
             fetchOrders();
         }
 
@@ -63,23 +58,21 @@ public class OrderViewModel extends ViewModel {
     }
 
     // Method to fetch orders from repository and store them
+    // Method to fetch orders from repository and store them
     private void fetchOrders() {
-        repository.getOrders(PreferencesHelper.getCustomerData().getCustomerId()).observeForever(new Observer<List<Order>>() {
-            @Override
-            public void onChanged(List<Order> fetchedOrders) {
-                if (fetchedOrders != null) {
-                    allOrders.clear();
-                    allOrders.addAll(fetchedOrders);  // Store fetched orders
-                    // Update LiveData with all orders after fetching
-                    orders.setValue(allOrders);
-                }
+        // Fetch orders asynchronously
+        LiveData<List<Order>> fetchedOrders = repository.getOrders(PreferencesHelper.getCustomerData().getCustomerId());
+        fetchedOrders.observeForever(orderList -> {
+            if (orderList != null) {
+                allOrders.clear();
+                allOrders.addAll(orderList);  // Store fetched orders
+                orders.postValue(allOrders);  // Update LiveData on the main thread
             }
         });
     }
 
-
-    public static   void cancelOrder(String orderId) {
-        // Find the order by its ID and change the status to CANCELLED
+    // Cancel an order
+    public void cancelOrder(String orderId) {
         for (Order order : allOrders) {
             if (order.getOrderId().equals(orderId)) {
                 order.setOrderStatus(ORDER_STATUS.CANCELLED);  // Update the status to CANCELLED
@@ -91,6 +84,6 @@ public class OrderViewModel extends ViewModel {
         repository.updateOrderStatus(orderId, ORDER_STATUS.CANCELLED);
 
         // Update LiveData with the new order list
-        orders.setValue(allOrders);  // Update LiveData with the modified orders list
+        orders.postValue(allOrders);  // Update LiveData with the modified orders list
     }
 }

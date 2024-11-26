@@ -18,5 +18,10 @@ public interface CustomerService {
     Call<JsonObject> getCustomer(@Path("id") String userId);
 
     @POST("/customers")
-    Call<JsonObject> signUp(JsonObject customer);
+    Call<JsonObject> postCustomer(@Header("Content-Type") String header,
+                                  @Body JsonObject customer);
+
+    @PATCH("/customers/{id}")
+    Call<JsonObject> patchCustomer(@Path("id") String userId, @Header("Content-Type") String header,
+                                   @Body JsonObject customer);
 }

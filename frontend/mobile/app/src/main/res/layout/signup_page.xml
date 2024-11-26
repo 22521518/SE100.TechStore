@@ -130,6 +130,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:hint="Phone number">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phoneNumberInput"
+                android:layout_width="match_parent"
+                android:maxLines="30"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:inputType="phone" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:hint="Email">
 
             <com.google.android.material.textfield.TextInputEditText

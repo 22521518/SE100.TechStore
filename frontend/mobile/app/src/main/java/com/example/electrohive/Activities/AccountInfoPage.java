@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.R;
+import com.example.electrohive.ViewModel.CustomerViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.example.electrohive.utils.format.Format;
 
@@ -30,9 +32,12 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
+import retrofit2.http.Body;
+
 public class AccountInfoPage extends AppCompatActivity {
     private ImageView userInfoImage;
     private TextView userInfoChangePhotoButton;
+    private TextView updateCustomerButton;
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private EditText birthDateInput;
@@ -46,12 +51,18 @@ public class AccountInfoPage extends AppCompatActivity {
     private RadioButton radioFemale;
     private Customer sessionCustomer;
 
+    private CustomerViewModel customerViewModel;
+
+    private String imageUrl="";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.account_info_page);
+
+        customerViewModel = new CustomerViewModel();
 
         sessionCustomer = PreferencesHelper.getCustomerData();
 
@@ -72,6 +83,7 @@ public class AccountInfoPage extends AppCompatActivity {
         radioMale = findViewById(R.id.radioMale);
         userInfoImage = findViewById(R.id.userInfoImage);
         userInfoChangePhotoButton = findViewById(R.id.userInfoChangePhotoButton);
+        updateCustomerButton = findViewById(R.id.updateCustomerButton);
 
         Glide.with(AccountInfoPage.this)
                 .load(sessionCustomer.getImage()) // URL to the image
@@ -120,7 +132,7 @@ public class AccountInfoPage extends AppCompatActivity {
             radioFemale.setChecked(true);
         }
 
-        // Initialize the image picker launcher
+        // Updated imagePickerLauncher
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -129,10 +141,19 @@ public class AccountInfoPage extends AppCompatActivity {
                         if (data != null && data.getData() != null) {
                             Uri imageUri = data.getData();
                             try {
+                                // Get the Bitmap from the URI
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                                userInfoImage.setImageBitmap(bitmap);
+                                userInfoImage.setImageBitmap(bitmap); // Display the image in the ImageView
+
+                                // Convert Bitmap to Base64
+                                imageUrl = Format.encodeImageToBase64(bitmap);
+
+                                // Example: You can now use base64Image as needed, like sending it to the server
+                                Toast.makeText(this, "Image converted to Base64!", Toast.LENGTH_SHORT).show();
+
                             } catch (IOException e) {
                                 e.printStackTrace();
+                                Toast.makeText(this, "Failed to load image!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -140,7 +161,7 @@ public class AccountInfoPage extends AppCompatActivity {
         );
 
         userInfoChangePhotoButton.setOnClickListener(v -> openImagePicker());
-
+        updateCustomerButton.setOnClickListener(v->updateCustomer());
         // Set an OnClickListener to open the date picker when the birth date field is tapped
         birthDateInput.setOnClickListener(v -> showDatePickerDialog());
     }
@@ -172,4 +193,52 @@ public class AccountInfoPage extends AppCompatActivity {
 
         datePickerDialog.show();
     }
+
+    private void updateCustomer() {
+        if(updateCustomerButton.getText().toString().equals("Updating...")) return ;
+
+        // Get inputs
+        String firstName = firstnameInput.getText().toString().trim();
+        String lastName = lastnameInput.getText().toString().trim();
+        String fullName = firstName+" "+lastName;
+        String username = usernameInput.getText().toString().trim();
+        String phoneNumber = phonenumberInput.getText().toString().trim();
+        String birthDate = Format.formatToISO8601(birthDateInput.getText().toString().trim());
+        Boolean male = radioMale.isChecked();
+
+        // Check for empty fields
+        if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty() || phoneNumber.isEmpty() || birthDate.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Check for empty fields
+        if (phoneNumber.length()!=10) {
+            Toast.makeText(this, "Phone number must be exact 10 digits", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        updateCustomerButton.setText("Updating...");
+
+
+
+
+        sessionCustomer.setUsername(username);
+        sessionCustomer.setFullName(fullName);
+        sessionCustomer.setPhoneNumber(phoneNumber);
+        sessionCustomer.setImage(imageUrl);
+        sessionCustomer.setBirthDate(birthDate);
+        sessionCustomer.setMale(male);
+
+
+        customerViewModel.updateCustomer(sessionCustomer).observe(this, success -> {
+            if (success) {
+                Toast.makeText(this, "Account information updated successfully!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to update account information. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+            updateCustomerButton.setText("Save changes");
+        });
+    }
+
 }

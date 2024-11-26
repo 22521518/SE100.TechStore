@@ -18,44 +18,44 @@ import com.example.electrohive.utils.PreferencesHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountViewModel extends ViewModel {
-    private final AccountRepository accountRepository;
-    private final CustomerRepository customerRepository;
+    public class AccountViewModel extends ViewModel {
+        private final AccountRepository accountRepository;
+        private final CustomerRepository customerRepository;
 
 
-    public AccountViewModel() {
-        accountRepository = new AccountRepository();
-        customerRepository = new CustomerRepository();
-    }
+        public AccountViewModel() {
+            accountRepository = new AccountRepository();
+            customerRepository = new CustomerRepository();
+        }
 
-    public LiveData<Boolean> login(String email, String password) {
-        MutableLiveData<Boolean> successLiveData = new MutableLiveData<>();
+        public LiveData<Boolean> login(String email, String password) {
+            MutableLiveData<Boolean> successLiveData = new MutableLiveData<>();
 
-        accountRepository.login(email, password).observeForever(accessToken -> {
-            if (accessToken != null) {
-                String userId = extractUserIdFromJWT(accessToken);
+            accountRepository.login(email, password).observeForever(accessToken -> {
+                if (accessToken != null) {
+                    String userId = extractUserIdFromJWT(accessToken);
 
-                if (userId != null) {
-                    PreferencesHelper.saveAccessToken(accessToken);
+                    if (userId != null) {
+                        PreferencesHelper.saveAccessToken(accessToken);
 
-                    customerRepository.getCustomer(userId).observeForever(customer -> {
-                        if (customer != null) {
-                            PreferencesHelper.saveCustomerData(customer);
-                            successLiveData.postValue(true);
-                        } else {
-                            successLiveData.postValue(false);
-                        }
-                    });
+                        customerRepository.getCustomer(userId).observeForever(customer -> {
+                            if (customer != null) {
+                                PreferencesHelper.saveCustomerData(customer);
+                                successLiveData.postValue(true);
+                            } else {
+                                successLiveData.postValue(false);
+                            }
+                        });
+                    } else {
+                        successLiveData.postValue(false);
+                    }
                 } else {
                     successLiveData.postValue(false);
                 }
-            } else {
-                successLiveData.postValue(false);
-            }
-        });
+            });
 
-        return successLiveData;
-    }
+            return successLiveData;
+        }
 
 
     private String extractUserIdFromJWT(String token) {
