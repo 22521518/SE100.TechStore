@@ -15,6 +15,7 @@ import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { handleImageJpgBaseString } from 'src/utils/image.utils';
 
 @Controller('customers')
 export class CustomersController {
@@ -28,7 +29,6 @@ export class CustomersController {
   async create(@Body() createCustomerDto: CreateCustomerDto) {
     try {
       const { account, image, ...customerInfo } = createCustomerDto;
-      console.log('customer image', image);
 
       const existingAccount = await this.prismaDbService.accounts.findUnique({
         where: { email: account.email },
@@ -51,7 +51,19 @@ export class CustomersController {
         },
       };
 
-      const customer = await this.customersService.create(customerDto);
+      let imageAvatar = null;
+      if (image) {
+        if (image.type === 'dev') {
+          customerDto.image = image.url;
+        } else {
+          imageAvatar = await handleImageJpgBaseString(image);
+        }
+      }
+
+      const customer = await this.customersService.create(
+        customerDto,
+        imageAvatar,
+      );
       return customer;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -96,12 +108,24 @@ export class CustomersController {
   ) {
     try {
       const { image, ...customerInfo } = updateCustomerDto;
-      console.log('customer update image', image);
 
       const customerDto: Prisma.CustomersUpdateInput = {
         ...customerInfo,
       };
-      const customer = await this.customersService.update(id, customerDto);
+
+      let imageAvatar = null;
+      if (image) {
+        if (image.type === 'dev') {
+          customerDto.image = image.url;
+        } else {
+          imageAvatar = await handleImageJpgBaseString(image);
+        }
+      }
+      const customer = await this.customersService.update(
+        id,
+        customerDto,
+        imageAvatar,
+      );
       return customer;
     } catch (error) {
       console.error(error);

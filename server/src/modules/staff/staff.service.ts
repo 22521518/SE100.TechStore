@@ -1,12 +1,25 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { CloudinaryDbService } from 'src/databases/cloudinary-db/cloudinary-db.service';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 
 @Injectable()
 export class StaffService {
-  constructor(private readonly prismaDbService: PrismaDbService) {}
-  async create(createStaffDto: Prisma.StaffCreateInput) {
+  constructor(
+    private readonly prismaDbService: PrismaDbService,
+    private readonly cloudinaryDbService: CloudinaryDbService,
+  ) {}
+  async create(
+    createStaffDto: Prisma.StaffCreateInput,
+    image: Express.Multer.File | null,
+  ) {
     try {
+      let imageAvatarUrl = null;
+      if (image) {
+        imageAvatarUrl = await this.cloudinaryDbService.upload(image, 'staff');
+        createStaffDto.image = imageAvatarUrl;
+      }
+
       const staff = await this.prismaDbService.staff.create({
         data: createStaffDto,
         include: {
@@ -120,8 +133,18 @@ export class StaffService {
     }
   }
 
-  async update(id: string, updateStaffDto: Prisma.StaffUpdateInput) {
+  async update(
+    id: string,
+    updateStaffDto: Prisma.StaffUpdateInput,
+    image: Express.Multer.File | null,
+  ) {
     try {
+      let imageAvatarUrl = null;
+      if (image) {
+        imageAvatarUrl = await this.cloudinaryDbService.upload(image, 'staff');
+        updateStaffDto.image = imageAvatarUrl;
+      }
+
       const staff = await this.prismaDbService.staff.update({
         where: { staff_id: id },
         data: updateStaffDto,

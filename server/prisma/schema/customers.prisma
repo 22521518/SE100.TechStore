@@ -24,13 +24,12 @@ model Customer_Address {
     district      String?  @db.VarChar(50)
     ward          String?   @db.VarChar(50)
     address       String   @db.Text
-    is_primary    Boolean  @default(true)
+    is_primary    Boolean  @default(false)
 
     full_name      String?   @db.VarChar(100)
     phone_number   String?   @db.Char(10)
 
     customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
-    shipping_addresses    Shipping_Address[]
 }
 
 model Cart_Item { 

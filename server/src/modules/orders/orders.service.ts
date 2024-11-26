@@ -15,19 +15,40 @@ export class OrdersService {
     including_voucher: boolean = true,
   ) {
     try {
-      console.log('createOrderDto', createOrderDto);
-      order_items.forEach(async (orderItem) => {
-        await this.prismaDbService.products.update({
-          where: {
-            product_id: orderItem.product_id,
-          },
-          data: {
-            stock_quantity: {
-              decrement: orderItem.quantity,
+      await Promise.all(
+        order_items.map(async (orderItem) => {
+          const product = await this.prismaDbService.products.findUnique({
+            where: {
+              product_id: orderItem.product_id,
             },
-          },
-        });
-      });
+          });
+
+          if (!product) {
+            throw new BadRequestException('Product not found');
+          }
+        }),
+      );
+
+      await Promise.all(
+        order_items.map(async (orderItem) => {
+          try {
+            await this.prismaDbService.products.update({
+              where: {
+                product_id: orderItem.product_id,
+              },
+              data: {
+                stock_quantity: {
+                  decrement: orderItem.quantity,
+                },
+              },
+            });
+          } catch (error) {
+            throw new BadRequestException(
+              `Error updating stock quantity for product ${orderItem.product_id}, ${error.message}`,
+            );
+          }
+        }),
+      );
 
       const order = await this.prismaDbService.orders.create({
         data: createOrderDto,
@@ -35,13 +56,13 @@ export class OrdersService {
           order_items: including_items,
           customer: including_customer,
           voucher: including_voucher,
+          shipping_address: true,
         },
       });
 
       return order;
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Error creating order');
+      throw new BadRequestException(error.message || 'Error creating order');
     }
   }
 
@@ -94,11 +115,6 @@ export class OrdersService {
           },
           customer: including_customer,
           voucher: including_voucher,
-          shipping_address: {
-            include: {
-              address: true,
-            },
-          },
         },
       });
 
@@ -130,11 +146,7 @@ export class OrdersService {
           },
           customer: including_customer,
           voucher: including_voucher,
-          shipping_address: {
-            include: {
-              address: true,
-            },
-          },
+          shipping_address: true,
         },
       });
 
@@ -160,6 +172,7 @@ export class OrdersService {
           order_items: including_items,
           customer: including_customer,
           voucher: including_voucher,
+          shipping_address: true,
         },
       });
 
@@ -167,6 +180,29 @@ export class OrdersService {
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Error updating order');
+    }
+  }
+
+  async removeById(
+    orderId: string,
+    including_items: boolean = true,
+    including_customer: boolean = true,
+    including_voucher: boolean = true,
+  ) {
+    try {
+      const order = await this.prismaDbService.orders.delete({
+        where: { order_id: orderId },
+        include: {
+          order_items: including_items,
+          customer: including_customer,
+          voucher: including_voucher,
+        },
+      });
+
+      return order;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error deleting order');
     }
   }
 

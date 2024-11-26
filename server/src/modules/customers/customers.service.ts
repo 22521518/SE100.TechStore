@@ -1,13 +1,29 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { CloudinaryDbService } from 'src/databases/cloudinary-db/cloudinary-db.service';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 
 @Injectable()
 export class CustomersService {
-  constructor(private readonly prismaDbService: PrismaDbService) {}
+  constructor(
+    private readonly prismaDbService: PrismaDbService,
+    private readonly cloudinaryDbService: CloudinaryDbService,
+  ) {}
 
-  async create(createCustomerDto: Prisma.CustomersCreateInput) {
+  async create(
+    createCustomerDto: Prisma.CustomersCreateInput,
+    image: Express.Multer.File | null,
+  ) {
     try {
+      let imageAvatarUrl = null;
+      if (image) {
+        imageAvatarUrl = await this.cloudinaryDbService.upload(
+          image,
+          'customers',
+        );
+        createCustomerDto.image = imageAvatarUrl;
+      }
+
       const customer = await this.prismaDbService.customers.create({
         data: createCustomerDto,
       });
@@ -26,7 +42,7 @@ export class CustomersService {
           errorDetails.push('invalid birth date');
         }
       }
-      console.log('error', error);
+      console.error('error', error);
 
       const message = `Error creating customer, \n Invalid information: ${errorDetails}`;
       throw new BadRequestException(message);
@@ -156,8 +172,28 @@ export class CustomersService {
     }
   }
 
-  async update(id: string, updateCustomerDto: Prisma.CustomersUpdateInput) {
+  async update(
+    id: string,
+    updateCustomerDto: Prisma.CustomersUpdateInput,
+    image: Express.Multer.File | null,
+  ) {
     try {
+      const exCustomer = await this.findOne(id);
+
+      let imageAvatarUrl = null;
+      if (image) {
+        imageAvatarUrl = await this.cloudinaryDbService.upload(
+          image,
+          'customers',
+        );
+
+        if (exCustomer.image) {
+          await this.cloudinaryDbService.delete(exCustomer.image);
+        }
+
+        updateCustomerDto.image = imageAvatarUrl;
+      }
+
       const customer = await this.prismaDbService.customers.update({
         where: { customer_id: id },
         data: updateCustomerDto,

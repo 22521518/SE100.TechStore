@@ -14,10 +14,15 @@ import { Prisma } from '@prisma/client';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { AddressesService } from '../addresses/addresses.service';
+import { ShippingAddress } from './entities/order.entity';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+    private readonly addressesService: AddressesService,
+  ) {}
 
   @Post(':id')
   @Permissions(['order-create'])
@@ -27,10 +32,34 @@ export class OrdersController {
     createOrderDto: CreateOrderDto,
   ) {
     try {
-      console.log('createOrderDto', createOrderDto);
-      const { order_items, voucher_code, ...ord } = createOrderDto;
+      const { order_items, voucher_code, shipping_address_id, ...ord } =
+        createOrderDto;
+      const shipping_address = await this.addressesService.findOne(
+        customerId,
+        shipping_address_id,
+      );
+
+      if (!shipping_address) {
+        throw new BadRequestException('Shipping address not found');
+      }
+
+      const shippingAddress: ShippingAddress = {
+        city: shipping_address.city,
+        district: shipping_address.district,
+        ward: shipping_address.ward,
+        address: shipping_address.address,
+
+        full_name: shipping_address.full_name,
+        phone_number: shipping_address.phone_number,
+      };
+
       const orderDto: Prisma.OrdersCreateInput = {
         ...ord,
+        shipping_address: {
+          create: {
+            ...shippingAddress,
+          },
+        },
         ...(voucher_code && {
           voucher: {
             connect: {
@@ -52,9 +81,8 @@ export class OrdersController {
 
       const order = await this.ordersService.create(orderDto, order_items);
       return order;
-    } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Creating order failed');
+    } catch (error: BadRequestException | any) {
+      throw new BadRequestException(error.message || 'Creating order failed');
     }
   }
 

@@ -2,7 +2,7 @@
 CREATE TYPE "ORDER_STATUS" AS ENUM ('PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 
 -- CreateEnum
-CREATE TYPE "PAYMENT_METHOD" AS ENUM ('COD', 'CREDIT_CARD', 'ELECTRO_WALLET');
+CREATE TYPE "PAYMENT_METHOD" AS ENUM ('COD', 'CREDIT_CARD', 'ELECTRO_WALLET', 'MOMO');
 
 -- CreateEnum
 CREATE TYPE "EMPLOY_STATUS" AS ENUM ('ACTIVE', 'INACTIVE', 'SUSPENDED', 'RESIGNED');
@@ -99,6 +99,7 @@ CREATE TABLE "Orders" (
     "order_status" "ORDER_STATUS" NOT NULL DEFAULT 'PENDING',
     "total_price" DOUBLE PRECISION NOT NULL,
     "voucher_code" TEXT,
+    "paid" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "payment_method" "PAYMENT_METHOD",
 
@@ -129,11 +130,16 @@ CREATE TABLE "Invoices" (
 -- CreateTable
 CREATE TABLE "Shipping_Address" (
     "shipping_id" VARCHAR(50) NOT NULL,
-    "address_id" INTEGER,
     "order_id" VARCHAR(25) NOT NULL,
     "shipping_status" "ORDER_STATUS" NOT NULL DEFAULT 'PENDING',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "delivery_date" TIMESTAMP(3),
+    "city" VARCHAR(50) NOT NULL,
+    "district" VARCHAR(50),
+    "ward" VARCHAR(50),
+    "address" TEXT NOT NULL,
+    "full_name" VARCHAR(100),
+    "phone_number" CHAR(10),
 
     CONSTRAINT "Shipping_Address_pkey" PRIMARY KEY ("shipping_id")
 );
@@ -317,9 +323,6 @@ ALTER TABLE "Invoices" ADD CONSTRAINT "Invoices_order_id_fkey" FOREIGN KEY ("ord
 
 -- AddForeignKey
 ALTER TABLE "Shipping_Address" ADD CONSTRAINT "Shipping_Address_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "Orders"("order_id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Shipping_Address" ADD CONSTRAINT "Shipping_Address_address_id_fkey" FOREIGN KEY ("address_id") REFERENCES "Customer_Address"("address_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Product_Feedbacks" ADD CONSTRAINT "Product_Feedbacks_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Products"("product_id") ON DELETE CASCADE ON UPDATE CASCADE;

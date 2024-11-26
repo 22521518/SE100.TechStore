@@ -6,3 +6,13 @@ export enum ORDER_STATUS {
   DELIVERED = 'DELIVERED',
   CANCELLED = 'CANCELLED',
 }
+
+export type ShippingAddress = {
+  city: string;
+  district: string;
+  ward: string;
+  address: string;
+
+  full_name: string;
+  phone_number: string;
+};

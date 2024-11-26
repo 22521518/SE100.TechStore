@@ -36,7 +36,9 @@ async function upload(
   });
 }
 
-async function getFileNamesFromDirectory(rootPath: string): Promise<string[]> {
+export async function getFileNamesFromDirectory(
+  rootPath: string,
+): Promise<string[]> {
   try {
     const filesAndDirs = fs.readdirSync(rootPath);
 
@@ -58,7 +60,7 @@ async function getFileNamesFromDirectory(rootPath: string): Promise<string[]> {
         const updatedImage = await Promise.all(
           images.map(
             async (img) =>
-              await upload(img, 'products' + currentProduct.product_id),
+              await upload(img, 'products/' + currentProduct.product_id),
           ),
         );
 

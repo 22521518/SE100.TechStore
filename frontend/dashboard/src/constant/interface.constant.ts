@@ -76,14 +76,15 @@ export interface IAccount {
 export interface IAddress {
   address_id?: string;
   customer_id?: string;
+  is_primary?: boolean;
+
   city: string;
   address: string;
-
   district?: string; // quận
   ward?: string; // phường
+
   full_name?: string;
   phone_number?: string;
-  is_primary?: boolean;
 }
 
 //voucher: 17/11/2024
@@ -95,7 +96,7 @@ export interface IOrder {
   total_price: number;
   voucher?: IVoucher;
   created_at: Date | string;
-  shipping_address: IShippingAddress;
+  shipping_address?: IShippingAddress;
   order_items: IOrderItem[];
   payment_method?: PAYMENT_METHOD;
 }
@@ -116,7 +117,14 @@ export interface IShippingAddress {
   created_at: Date | string;
   shipping_status: ORDER_STATUS;
   delivery_date?: Date | string;
-  address: IAddress;
+
+  city: string;
+  address: string;
+  district?: string; // quận
+  ward?: string; // phường
+
+  full_name?: string;
+  phone_number?: string;
 }
 
 export interface IPermission {
@@ -204,8 +212,32 @@ export interface IInboxMessage {
   created_at: Date | string;
   is_seen: boolean;
 }
-export interface IStaffUser {
-  user_id: string;
-  socket_id: string;
-  role: 'staff';
+
+export interface IImportation {
+  importation_id?: number;
+  supplier_id?: number;
+  import_date?: Date | string;
+  total_price: number;
+  remarks?: string;
+  import_items: IImportationItem[];
+  supplier?: ISupplier;
+}
+
+export interface IImportationItem {
+  import_item_id?: number;
+  import_id?: number;
+  product_id: string;
+  product?: IProduct;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+}
+
+export interface ISupplier {
+  supplier_id?: number;
+  supplier_name: string;
+  contact_number: string;
+  email: string;
+  description: string;
+  created_at?: Date | string;
 }

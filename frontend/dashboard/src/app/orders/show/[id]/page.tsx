@@ -90,7 +90,7 @@ const OrderShow = ({ orderId, customerId }: OrderShowProps) => {
                 variant="caption"
                 className="text-base text-secondary-border-secondary-300"
               >
-                {order.shipping_address.shipping_status ===
+                {order.shipping_address?.shipping_status ===
                   ORDER_STATUS.DELIVERED &&
                 order.shipping_address?.delivery_date
                   ? transformDateWithMonthText(
@@ -102,16 +102,22 @@ const OrderShow = ({ orderId, customerId }: OrderShowProps) => {
 
             <Box className="flex flex-col gap-2 border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               <Box className="flex flex-row gap-3 items-center">
-                <HouseOutlinedIcon />
+                <Typography className="item-center">
+                  <HouseOutlinedIcon /> Address:
+                </Typography>
                 <Typography
                   variant="caption"
                   className="text-base text-secondary-border-secondary-300"
                 >
-                  {address?.address}, {address?.district}, {address?.city}
+                  {address
+                    ? `${address?.address}, ${address?.district}, ${address?.city}`
+                    : 'No address'}
                 </Typography>
               </Box>
               <Box className="flex flex-row gap-4 items-center">
-                <CallOutlinedIcon />
+                <Typography className="item-center">
+                  <CallOutlinedIcon /> Phone:
+                </Typography>
                 <Typography
                   variant="caption"
                   className="text-base text-secondary-border-secondary-300"

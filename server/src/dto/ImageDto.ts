@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class ImageDto {
   @IsString()
@@ -6,4 +6,8 @@ export class ImageDto {
 
   @IsString()
   url: string;
+
+  @IsOptional()
+  @IsString()
+  type?: string;
 }

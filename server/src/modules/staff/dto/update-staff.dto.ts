@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { ImageDto } from 'src/dto/ImageDto';
 
 export class UpdateStaffRoleDto {
   @IsNumber()
@@ -38,4 +39,8 @@ export class UpdateStaffDto {
   @IsBoolean()
   @IsOptional()
   male: boolean;
+
+  @IsOptional()
+  @Type(() => ImageDto)
+  image?: ImageDto;
 }
