@@ -26,6 +26,9 @@ export class CreateImportationDto {
 }
 
 export class ImportItems {
+  @IsString()
+  product_id: string;
+
   @IsNumber()
   quantity: number;
 

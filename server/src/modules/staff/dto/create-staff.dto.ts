@@ -9,6 +9,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
+import { ImageDto } from 'src/dto/ImageDto';
 import { CreateAccountsDto } from 'src/modules/accounts/dto/create-accounts.dto';
 
 export class CreateStaffDto {
@@ -35,4 +36,8 @@ export class CreateStaffDto {
 
   @IsBoolean()
   male: boolean;
+
+  @IsOptional()
+  @Type(() => ImageDto)
+  image?: ImageDto;
 }

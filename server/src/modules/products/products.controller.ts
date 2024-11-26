@@ -8,7 +8,6 @@ import {
   Delete,
   BadRequestException,
   UseInterceptors,
-  InternalServerErrorException,
   Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
@@ -16,8 +15,8 @@ import { Prisma } from '@prisma/client';
 import { CreateProductDto } from './dto/create-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import sharp from 'sharp';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { handleImageJpgBaseString } from 'src/utils/image.utils';
 
 @Controller('products')
 export class ProductsController {
@@ -34,31 +33,7 @@ export class ProductsController {
         createProductDto;
 
       const imageFiles = await Promise.all(
-        images.map(async ({ name, url }) => {
-          const base64Data = url.replace(/^data:image\/\w+;base64,/, '');
-          const imageBuffer = Buffer.from(base64Data, 'base64');
-
-          const compressedBuffer = await sharp(imageBuffer)
-            .resize(500) // Resize if needed
-            .jpeg({ quality: 80 }) // Adjust format and quality
-            .toBuffer()
-            .then((data) => data)
-            .catch((err) => {
-              throw new InternalServerErrorException(
-                'Failed to compress image: ' + err,
-              );
-            });
-
-          // Create a mock Express.Multer.File object
-          return {
-            fieldname: 'image',
-            originalname: name,
-            encoding: 'base64',
-            mimetype: 'image/jpeg', // or whatever type you expect
-            buffer: compressedBuffer,
-            size: compressedBuffer.length,
-          };
-        }),
+        images.map(handleImageJpgBaseString),
       );
 
       const productDto: Prisma.ProductsCreateInput = {
@@ -130,31 +105,7 @@ export class ProductsController {
         updateProductDto;
 
       const imageFiles = await Promise.all(
-        images.map(async ({ name, url }) => {
-          const base64Data = url.replace(/^data:image\/\w+;base64,/, '');
-          const imageBuffer = Buffer.from(base64Data, 'base64');
-
-          const compressedBuffer = await sharp(imageBuffer)
-            .resize(500) // Resize if needed
-            .jpeg({ quality: 80 }) // Adjust format and quality
-            .toBuffer()
-            .then((data) => data)
-            .catch((err) => {
-              throw new InternalServerErrorException(
-                'Failed to compress image: ' + err,
-              );
-            });
-
-          // Create a mock Express.Multer.File object
-          return {
-            fieldname: 'image',
-            originalname: name,
-            encoding: 'base64',
-            mimetype: 'image/jpeg', // or whatever type you expect
-            buffer: compressedBuffer,
-            size: compressedBuffer.length,
-          };
-        }),
+        images.map(handleImageJpgBaseString),
       );
 
       const productDto: Prisma.ProductsUpdateInput = {
@@ -176,7 +127,6 @@ export class ProductsController {
       // return updateProductDto;
     } catch (error) {
       console.error(error);
-      console.error(updateProductDto);
       throw new BadRequestException('Updating product failed');
     }
   }

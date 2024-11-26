@@ -43,6 +43,21 @@ export class AddressesService {
     }
   }
 
+  async findAddressById(addressId: number) {
+    try {
+      const address = await this.prismaDbService.customer_Address.findUnique({
+        where: {
+          address_id: addressId,
+        },
+      });
+
+      return address;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error fetching address');
+    }
+  }
+
   async findOne(customerId: string, addressId: number) {
     try {
       const address = await this.prismaDbService.customer_Address.findUnique({

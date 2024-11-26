@@ -14,5 +14,6 @@ import { CloudinaryDbModule } from 'src/databases/cloudinary-db/cloudinary-db.mo
   ],
   controllers: [ProductsController],
   providers: [ProductsService],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

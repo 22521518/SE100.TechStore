@@ -24,6 +24,9 @@ export class CreateOrderDto {
 
   @IsEnum($Enums.PAYMENT_METHOD, { message: 'Invalid order method' })
   payment_method: $Enums.PAYMENT_METHOD;
+
+  @IsNumber()
+  shipping_address_id: number;
 }
 export class OrderItems {
   @IsString()

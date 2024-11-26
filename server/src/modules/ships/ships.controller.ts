@@ -13,10 +13,15 @@ import { Prisma } from '@prisma/client';
 import { CreateShipDto } from './dto/create-ship.dto';
 import { UpdateShipDto } from './dto/update-ship.dto';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { AddressesService } from '../addresses/addresses.service';
+import { ShippingAddress } from '../orders/entities/order.entity';
 
 @Controller('ships')
 export class ShipsController {
-  constructor(private readonly shipsService: ShipsService) {}
+  constructor(
+    private readonly shipsService: ShipsService,
+    private readonly addressesService: AddressesService,
+  ) {}
 
   @Post()
   @Permissions(['ship-create'])
@@ -26,15 +31,25 @@ export class ShipsController {
   ) {
     try {
       const { order_id, address_id } = createShipDto;
+
+      const shipping_address =
+        await this.addressesService.findAddressById(address_id);
+
+      const shippingAddress: ShippingAddress = {
+        city: shipping_address.city,
+        district: shipping_address.district,
+        ward: shipping_address.ward,
+        address: shipping_address.address,
+
+        full_name: shipping_address.full_name,
+        phone_number: shipping_address.phone_number,
+      };
+
       const shipDto: Prisma.Shipping_AddressCreateInput = {
+        ...shippingAddress,
         order: {
           connect: {
             order_id: order_id,
-          },
-        },
-        address: {
-          connect: {
-            address_id: +address_id,
           },
         },
       };

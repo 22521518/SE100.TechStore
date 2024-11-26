@@ -15,6 +15,7 @@ import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { handleImageJpgBaseString } from 'src/utils/image.utils';
 
 @Controller('staff')
 export class StaffController {
@@ -30,7 +31,7 @@ export class StaffController {
     createStaffDto: CreateStaffDto,
   ) {
     try {
-      const { account, ...rest } = createStaffDto;
+      const { account, image, ...rest } = createStaffDto;
 
       const existingAccount = await this.prismaDbService.accounts.findUnique({
         where: { email: account.email },
@@ -53,7 +54,20 @@ export class StaffController {
           },
         },
       };
-      const staff = await this.staffService.create(staffDto);
+
+      let imageAvatar = null;
+      if (image) {
+        if (image.type === 'dev') {
+          staffDto.image = image.url;
+        } else {
+          imageAvatar = await handleImageJpgBaseString(image);
+          if (imageAvatar) {
+            staffDto.image = imageAvatar;
+          }
+        }
+      }
+
+      const staff = await this.staffService.create(staffDto, imageAvatar);
       return staff;
     } catch (error) {
       console.error(error);
@@ -97,7 +111,7 @@ export class StaffController {
     updateStaffDto: UpdateStaffDto,
   ) {
     try {
-      const { role, ...rest } = updateStaffDto;
+      const { role, image, ...rest } = updateStaffDto;
 
       const staffDto: Prisma.StaffUpdateInput = {
         ...rest,
@@ -110,7 +124,19 @@ export class StaffController {
         }),
       };
 
-      const staff = await this.staffService.update(id, staffDto);
+      let imageAvatar = null;
+      if (image) {
+        if (image.type === 'dev') {
+          staffDto.image = image.url;
+        } else {
+          imageAvatar = await handleImageJpgBaseString(image);
+          if (imageAvatar) {
+            staffDto.image = imageAvatar;
+          }
+        }
+      }
+
+      const staff = await this.staffService.update(id, staffDto, imageAvatar);
       return staff;
     } catch (error) {
       console.error(error);

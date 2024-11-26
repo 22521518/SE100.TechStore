@@ -15,7 +15,6 @@ export class OrdersService {
     including_voucher: boolean = true,
   ) {
     try {
-      console.log('createOrderDto', createOrderDto);
       order_items.forEach(async (orderItem) => {
         await this.prismaDbService.products.update({
           where: {
@@ -94,11 +93,6 @@ export class OrdersService {
           },
           customer: including_customer,
           voucher: including_voucher,
-          shipping_address: {
-            include: {
-              address: true,
-            },
-          },
         },
       });
 
@@ -130,11 +124,6 @@ export class OrdersService {
           },
           customer: including_customer,
           voucher: including_voucher,
-          shipping_address: {
-            include: {
-              address: true,
-            },
-          },
         },
       });
 

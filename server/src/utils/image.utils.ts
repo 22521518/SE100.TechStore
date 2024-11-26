@@ -1,6 +1,12 @@
+import { InternalServerErrorException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
+
+type TImage = {
+  name: string;
+  url: string;
+};
 
 export async function convertImagesInDirectory(
   directoryPath: string,
@@ -46,4 +52,30 @@ export async function convertImagesInDirectory(
   }
 
   return imageFiles;
+}
+
+export async function handleImageJpgBaseString({ name, url }: TImage) {
+  const base64Data = url.replace(/^data:image\/\w+;base64,/, '');
+  const imageBuffer = Buffer.from(base64Data, 'base64');
+
+  const compressedBuffer = await sharp(imageBuffer)
+    .resize(500) // Resize if needed
+    .jpeg({ quality: 80 }) // Adjust format and quality
+    .toBuffer()
+    .then((data) => data)
+    .catch((err) => {
+      throw new InternalServerErrorException(
+        'Failed to compress image: ' + err,
+      );
+    });
+
+  // Create a mock Express.Multer.File object
+  return {
+    fieldname: 'image',
+    originalname: name,
+    encoding: 'base64',
+    mimetype: 'image/jpeg', // or whatever type you expect
+    buffer: compressedBuffer,
+    size: compressedBuffer.length,
+  };
 }
