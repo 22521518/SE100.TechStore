@@ -1,43 +1,39 @@
 model Customers {
-    customer_id     String   @id  @db.VarChar(50) @default(cuid())
-    account_id      String   @db.VarChar(50)@unique
-    username        String   @unique @db.VarChar(50)
-    full_name       String   @db.VarChar(100)
-    phone_number    String   @db.VarChar(10)
-    date_joined     DateTime @default(now())
-    
-    image          String?  @db.Text
-    male            Boolean?  @default(true) 
-    birth_date      DateTime? 
-
-    cart        Cart_Item[]
-    addresses    Customer_Address[]
-    account     Accounts   @relation(fields: [account_id], references: [account_id])
-    product_feedbacks    Product_Feedbacks[]
-    orders   Orders[]
+  customer_id       String              @id @default(cuid()) @db.VarChar(50)
+  account_id        String              @unique @db.VarChar(50)
+  username          String              @unique @db.VarChar(50)
+  full_name         String              @db.VarChar(100)
+  phone_number      String              @db.VarChar(10)
+  date_joined       DateTime            @default(now())
+  image             String?
+  male              Boolean?            @default(true)
+  birth_date        DateTime?
+  cart              Cart_Item[]
+  addresses         Customer_Address[]
+  account           Accounts            @relation(fields: [account_id], references: [account_id])
+  orders            Orders[]
+  product_feedbacks Product_Feedbacks[]
 }
 
 model Customer_Address {
-    address_id    Int   @id @default(autoincrement())
-    customer_id   String   @db.VarChar(50)
-    city          String   @db.VarChar(50)
-    district      String?  @db.VarChar(50)
-    ward          String?   @db.VarChar(50)
-    address       String   @db.Text
-    is_primary    Boolean  @default(false)
-
-    full_name      String?   @db.VarChar(100)
-    phone_number   String?   @db.Char(10)
-
-    customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  address_id   Int       @id @default(autoincrement())
+  customer_id  String    @db.VarChar(50)
+  city         String    @db.VarChar(50)
+  district     String?   @db.VarChar(50)
+  ward         String?   @db.VarChar(50)
+  address      String
+  is_primary   Boolean   @default(true)
+  full_name    String?   @db.VarChar(100)
+  phone_number String?   @db.Char(10)
+  customer     Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
 }
 
-model Cart_Item { 
-    customer_id    String   @db.VarChar(50)
-    product_id     String   @db.VarChar(50)
-    quantity       Int     @default(1)
+model Cart_Item {
+  customer_id String    @db.VarChar(50)
+  product_id  String    @db.VarChar(50)
+  quantity    Int       @default(1)
+  customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  product     Products  @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
 
-    @@id([customer_id, product_id])
-    customer    Customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
-    product     Products  @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
+  @@id([customer_id, product_id])
 }

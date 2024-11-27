@@ -8,7 +8,7 @@ export class CallbackMomoDto {
   orderId: string;
 
   @IsString()
-  requerequestIdstId: string;
+  requestId: string;
 
   @IsString()
   amount: string;

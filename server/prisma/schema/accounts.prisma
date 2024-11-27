@@ -1,12 +1,9 @@
 model Accounts {
-  account_id    String   @id @db.VarChar(50) @default(cuid())
-  email         String   @unique @db.VarChar(50)
-  password      String   @db.VarChar(255)
-  is_active     Boolean  @default(true)
-  created_at    DateTime @default(now())
-  // updated_at    DateTime @updatedAt
-
-  customer     Customers?
-  staff         Staff?
+  account_id String     @id @default(cuid()) @db.VarChar(50)
+  email      String     @unique @db.VarChar(50)
+  password   String     @db.VarChar(255)
+  is_active  Boolean    @default(true)
+  created_at DateTime   @default(now())
+  customer   Customers?
+  staff      Staff?
 }
-

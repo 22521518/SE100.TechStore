@@ -39,7 +39,7 @@ const OrderShow = ({ orderId, customerId }: OrderShowProps) => {
       0
     ) || 0;
   const customer = order?.customer;
-  const address = order?.shipping_address?.address;
+  const address = order?.shipping_address;
 
   return (
     <Stack className="gap-4">

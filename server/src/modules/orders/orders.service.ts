@@ -53,7 +53,11 @@ export class OrdersService {
       const order = await this.prismaDbService.orders.create({
         data: createOrderDto,
         include: {
-          order_items: including_items,
+          order_items: {
+            include: {
+              product: including_items,
+            },
+          },
           customer: including_customer,
           voucher: including_voucher,
           shipping_address: true,
@@ -92,7 +96,7 @@ export class OrdersService {
       return orders;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Error fetching orders');
+      throw new BadRequestException(error.message || 'Error fetching orders');
     }
   }
 
@@ -125,6 +129,31 @@ export class OrdersService {
     }
   }
 
+  async findByOrderId(
+    orderId: string,
+    including_items: boolean = true,
+    including_customer: boolean = true,
+    including_voucher: boolean = true,
+  ) {
+    try {
+      const order = await this.prismaDbService.orders.findUnique({
+        where: {
+          order_id: orderId,
+        },
+        include: {
+          order_items: including_items,
+          customer: including_customer,
+          voucher: including_voucher,
+        },
+      });
+
+      return order;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(error.meta || 'Error fetching orders');
+    }
+  }
+
   async findOne(
     customerId: string,
     orderId: string,
@@ -153,7 +182,7 @@ export class OrdersService {
       return order;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Error fetching orders');
+      throw new BadRequestException(error.meta || 'Error fetching orders');
     }
   }
 
@@ -179,7 +208,7 @@ export class OrdersService {
       return order;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Error updating order');
+      throw new BadRequestException(error.meta || 'Error updating order');
     }
   }
 
@@ -202,7 +231,7 @@ export class OrdersService {
       return order;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Error deleting order');
+      throw new BadRequestException(error.meta || 'Error deleting order');
     }
   }
 
@@ -226,7 +255,16 @@ export class OrdersService {
       return order;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Error deleting order');
+      throw new BadRequestException(error.meta || 'Error deleting order');
+    }
+  }
+
+  async removeAll() {
+    try {
+      return await this.prismaDbService.orders.deleteMany({});
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(error.meta || 'Error deleting all orders');
     }
   }
 }

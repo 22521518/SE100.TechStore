@@ -325,10 +325,10 @@ ALTER TABLE "Invoices" ADD CONSTRAINT "Invoices_order_id_fkey" FOREIGN KEY ("ord
 ALTER TABLE "Shipping_Address" ADD CONSTRAINT "Shipping_Address_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "Orders"("order_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Product_Feedbacks" ADD CONSTRAINT "Product_Feedbacks_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Products"("product_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Product_Feedbacks" ADD CONSTRAINT "Product_Feedbacks_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "Customers"("customer_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Product_Feedbacks" ADD CONSTRAINT "Product_Feedbacks_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "Customers"("customer_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Product_Feedbacks" ADD CONSTRAINT "Product_Feedbacks_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Products"("product_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Staff" ADD CONSTRAINT "Staff_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "Accounts"("account_id") ON DELETE CASCADE ON UPDATE CASCADE;
