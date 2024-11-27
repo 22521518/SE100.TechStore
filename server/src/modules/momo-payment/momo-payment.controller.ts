@@ -11,6 +11,7 @@ import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { CreateMomoPaymentDto } from './dto/create-momo-payment.dto';
 import { MomoItem } from './entities/momo-item.entity';
 import { MomoPaymentStore } from './entities/payment_store.entity';
+import { PAYMENT_STATUS } from '@prisma/client';
 
 @Controller('momo-payment')
 export class MomoPaymentController {
@@ -35,6 +36,20 @@ export class MomoPaymentController {
   async callback(@Body() body: any) {
     console.log('Momo calback\n', body);
     return this.momoPaymentService.handleCMomoCallback(body);
+  }
+
+  @Get('check/:id')
+  async checkTransaction(@Param('id') orderId: string) {
+    try {
+      const paymentStatus =
+        await this.momoPaymentService.checkPaymentStatus(orderId);
+      return {
+        status: paymentStatus,
+        success: paymentStatus === PAYMENT_STATUS.PAID,
+      };
+    } catch (error: BadRequestException | any) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Post(':id')
@@ -139,9 +154,4 @@ export class MomoPaymentController {
 
   @Get()
   findAll() {}
-
-  @Get(':id')
-  checkTransaction(@Param('id') orderId: string) {
-    return orderId;
-  }
 }

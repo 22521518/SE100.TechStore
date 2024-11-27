@@ -173,10 +173,23 @@ export class MomoPaymentService {
     }
   }
 
-  async checkTransaction(orderId: string) {
+  async checkPaymentStatus(orderId: string) {
     try {
       const order = await this.ordersService.findByOrderId(orderId);
-      return order?.payment_status === PAYMENT_STATUS.PAID;
+      if (!order) {
+        return null;
+      }
+      const { payment_status } = order;
+      return payment_status;
+    } catch (error: BadRequestException | any) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async checkTransaction(orderId: string): Promise<boolean> {
+    try {
+      const status = await this.checkPaymentStatus(orderId);
+      return status === PAYMENT_STATUS.PAID;
     } catch (error: BadRequestException | any) {
       throw new BadRequestException(error.message);
     }
