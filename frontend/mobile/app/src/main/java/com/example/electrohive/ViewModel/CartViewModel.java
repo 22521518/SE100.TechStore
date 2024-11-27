@@ -23,7 +23,7 @@ public class CartViewModel extends ViewModel {
 
     public LiveData<List<CartItem>> getCart() {
         if (cartItems == null || !cartItems.hasObservers()) {
-            cartItems = repository.getCart(PreferencesHelper.getCustomerData().getAccountId());
+            cartItems = repository.getCart(PreferencesHelper.getCustomerData().getCustomerId());
         }
         return cartItems;
     }
@@ -33,7 +33,7 @@ public class CartViewModel extends ViewModel {
     }
 
     public LiveData<Boolean> deleteCartItem(String productId) {
-        return repository.deleteItemFromCart(PreferencesHelper.getCustomerData().getAccountId(), productId);
+        return repository.deleteItemFromCart(PreferencesHelper.getCustomerData().getCustomerId(), productId);
     }
 
     public LiveData<Boolean> deleteAllCartItem() {

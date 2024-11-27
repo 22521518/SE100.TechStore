@@ -46,7 +46,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rc_trend"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                />
 
 
             <!-- Repeat the above item layout for more items as needed -->
@@ -154,6 +155,7 @@
 
         <!-- Checkout Button -->
         <TextView
+            android:id="@+id/checkout"
             android:focusable="true"
             android:clickable="true"
             android:textAlignment="center"

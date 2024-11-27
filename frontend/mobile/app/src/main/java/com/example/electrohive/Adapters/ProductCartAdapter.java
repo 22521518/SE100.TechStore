@@ -5,22 +5,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.Product;
 import com.example.electrohive.R;
-import com.example.electrohive.api.ApiService;
+import com.example.electrohive.Repository.CartRepository;
+import com.example.electrohive.ViewModel.CartViewModel;
+import com.example.electrohive.api.CartService;
 import com.google.gson.JsonArray;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,17 +40,22 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     private List<CartItem> cartItems;
     private Context context;
 
+    private CartViewModel cartViewModel;
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private final CartItemCheckboxListener listener;
+
+    public interface CartItemCheckboxListener {
+        void onItemCheckedChanged();
+    }
+
     // Constructor
-    public ProductCartAdapter(Context context, List<CartItem> cartItems) {
+    public ProductCartAdapter(Context context, List<CartItem> cartItems, CartViewModel cartViewModel, CartItemCheckboxListener listener) {
         this.context = context;
         this.cartItems = cartItems;
+        this.cartViewModel = cartViewModel;
+        this.listener=listener;
     }
-    Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://se100-techstore.onrender.com/") // Base URL
-            .addConverterFactory(GsonConverterFactory.create()) // Use Gson for JSON parsing
-            .build();
-
-    ApiService apiService = retrofit.create(ApiService.class);
 
 
 
@@ -58,57 +71,53 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     // Bind data to the view holder
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
+        if (cartItems == null || cartItems.isEmpty()) {
+            holder.itemView.setVisibility(View.GONE);
+            return;
+        }
+
         CartItem cartitem = cartItems.get(position);
 
         // Set data to views
         holder.name.setText(cartitem.getProduct().getProductName());
-        holder.category.setText("null");
-        holder.price.setText(String.valueOf(cartitem.getProduct().getProductPrice()));
+        if (cartitem.getProduct().getCategories() != null && !cartitem.getProduct().getCategories().isEmpty()) {
+            holder.category.setText(cartitem.getProduct().getCategories().get(0).getCategoryName());
+        }
+        holder.price.setText(String.valueOf(cartitem.getProduct().getPrice()));
 //
 //        // Load image using Glide
-        Glide.with(context)
-                .load(cartitem.getProduct().getImagelist().get(0))  // Assuming getImagelist() returns a list of image URLs
-                .into(holder.imageView);
+        if (cartitem.getProduct().getImages() != null && !cartitem.getProduct().getImages().isEmpty()) {
+            Glide.with(context)
+                    .load(cartitem.getProduct().getImages().get(0).getUrl()) // URL to the image
+                    .placeholder(R.drawable.placeholder ) // Optional placeholder
+                    .error(R.drawable.ic_image_error_icon   ) // Optional error image
+                    .into(holder.imageView); // Your ImageView
+        } else {
+            holder.imageView.setImageResource(R.drawable.placeholder); // Fallback image
+        }
 
-        holder.checkBox.setOnCheckedChangeListener(null); // Xóa listener cũ trước khi gán trạng thái
-        holder.checkBox.setChecked(cartitem.isChecked()); // Gán trạng thái từ CartItem
+        holder.checkBox.setChecked(cartitem.getChecked());
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cartitem.setChecked(isChecked); // Cập nhật trạng thái CartItem
+            cartitem.setChecked(isChecked);
+            listener.onItemCheckedChanged();
         });
 
         holder.deleteItem.setOnClickListener(v->{
-            Call<Void> call = apiService.deleteCart(cartitem.getCustomer_id(),cartitem.getProduct_id());
-            System.out.println(call.request().url());
-            System.out.println("productId:"+cartitem.getProduct_id());
-            System.out.println("customerId:"+cartitem.getCustomer_id());
-            call.enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        // Thành công
-                        int removedPosition = holder.getAdapterPosition();
-                        cartItems.remove(removedPosition); // Xóa item khỏi danh sách
-                        notifyItemRemoved(removedPosition); // Cập nhật RecyclerView
-                        System.out.println("Item deleted successfully!");
-                    } else {
-                        // Lỗi từ server
-                        System.out.println("Failed to delete item: " + response.code());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    // Lỗi kết nối
-                    t.printStackTrace();
-                    System.out.println("Error: " + t.getMessage());
-                }
+            executorService.execute(() -> {
+                // Thực hiện công việc xóa item trong background
+                cartViewModel.deleteCartItem(cartitem.getProductId());
             });
+            cartItems.remove(position);
+            notifyItemRemoved(position);
         });
     }
 
     // Return the total number of items
     @Override
     public int getItemCount() {
+        if (cartItems==null) {
+            return 0; // Trả về 0 nếu danh sách null
+        }
         return cartItems.size();
     }
 

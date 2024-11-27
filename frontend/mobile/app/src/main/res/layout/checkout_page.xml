@@ -55,7 +55,6 @@
                 android:id="@+id/fullname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="false"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,7 +70,6 @@
                 android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="false"
                 android:inputType="phone"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,7 +101,6 @@
                 android:id="@+id/address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="false"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
