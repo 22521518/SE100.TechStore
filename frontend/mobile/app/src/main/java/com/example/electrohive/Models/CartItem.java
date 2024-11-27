@@ -1,8 +1,8 @@
 package com.example.electrohive.Models;
 
-import java.io.Serializable;
 
-public class CartItem implements Serializable {
+
+public class CartItem {
     private String customerId;
     private String productId;
     private int quantity;

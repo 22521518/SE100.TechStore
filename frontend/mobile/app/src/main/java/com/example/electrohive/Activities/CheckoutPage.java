@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.electrohive.Adapters.AddressAdapter;
 import com.example.electrohive.Adapters.AddressCheckOutAdapter;
 import com.example.electrohive.Models.Address;
+import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.CheckoutAddress;
 import com.example.electrohive.Models.District;
 import com.example.electrohive.Models.Province;
@@ -24,6 +25,8 @@ import com.example.electrohive.Models.Ward;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.AddressViewModel;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +83,11 @@ public class CheckoutPage extends AppCompatActivity {
                 Address tmp1=addressAdapter.getAddress();
                 tmp=new CheckoutAddress(tmp1.getAddress(),tmp1.getCity(),tmp1.getDistrict(),tmp1.getWard(),tmp1.getFullName(),tmp1.getPhoneNumber());
             }
-            System.out.println(tmp);
+            String json = getIntent().getStringExtra("checkedItems");
+            Intent intent=new Intent(getApplicationContext(),PaymentPage.class);
+            intent.putExtra("checkedItems",json);
+            intent.putExtra("address", tmp);
+            startActivity(intent);
         });
         ImageButton back=findViewById(R.id.backbutton);
         back.setOnClickListener(v->{

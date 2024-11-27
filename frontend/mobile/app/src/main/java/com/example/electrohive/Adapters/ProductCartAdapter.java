@@ -1,11 +1,15 @@
 package com.example.electrohive.Adapters;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -79,6 +83,30 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         CartItem cartitem = cartItems.get(position);
 
         // Set data to views
+        holder.quantity.setText(String.valueOf(cartitem.getQuantity()));
+        holder.quantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                holder.quantity.post(() -> {
+                    holder.quantity.setSelection(holder.quantity.getText().length());
+                });
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!s.toString().isEmpty())
+                {
+                    int newQuantity = Integer.parseInt(s.toString());
+                    cartitem.setQuantity(newQuantity);
+                }
+            }
+        });
+
         holder.name.setText(cartitem.getProduct().getProductName());
         if (cartitem.getProduct().getCategories() != null && !cartitem.getProduct().getCategories().isEmpty()) {
             holder.category.setText(cartitem.getProduct().getCategories().get(0).getCategoryName());
@@ -110,6 +138,8 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             cartItems.remove(position);
             notifyItemRemoved(position);
         });
+
+
     }
 
     // Return the total number of items
@@ -127,6 +157,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         ImageView imageView;
         CheckBox checkBox;
         ImageButton deleteItem;
+        EditText quantity;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
@@ -136,6 +167,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             imageView = itemView.findViewById(R.id.image);
             checkBox=itemView.findViewById(R.id.checkbox);
             deleteItem=itemView.findViewById(R.id.delete_item);
+            quantity=itemView.findViewById(R.id.quantity);
         }
     }
 }

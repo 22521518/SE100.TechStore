@@ -78,7 +78,7 @@ public class CheckoutAddress implements Serializable {
     @Override
     public String toString() {
         return "Address{" +
-                ", city='" + city + '\'' +
+                "city='" + city + '\'' +
                 ", address='" + address + '\'' +
                 ", district='" + district + '\'' +
                 ", ward='" + ward + '\'' +

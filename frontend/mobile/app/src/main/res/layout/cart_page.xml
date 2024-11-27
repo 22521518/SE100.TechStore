@@ -98,9 +98,10 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/subtotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3,996,000 VNĐ"
+                    android:text="0 VNĐ"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -118,6 +119,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 VNĐ"
@@ -145,9 +147,10 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/grandtotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3,996,000 VNĐ"
+                    android:text="0 VNĐ"
                     android:textStyle="bold"
                     android:textSize="16sp" />
             </LinearLayout>

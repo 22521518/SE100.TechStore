@@ -17,6 +17,7 @@ import com.example.electrohive.Adapters.ProductCartAdapter;
 import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.CartViewModel;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -26,11 +27,17 @@ public class CartPage extends AppCompatActivity {
     private ArrayList<CartItem> cartItems;
     private CheckBox checkAll;
 
+    private TextView Subtotal,Discount,Grandtotal;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.cart_page);
+        Subtotal=findViewById(R.id.subtotal);
+        Discount=findViewById(R.id.discount);
+        Grandtotal=findViewById(R.id.grandtotal);
         ImageButton backbutton=findViewById(R.id.backbutton);
         backbutton.setOnClickListener(v->{
             finish();
@@ -40,8 +47,10 @@ public class CartPage extends AppCompatActivity {
         TextView checkout=findViewById(R.id.checkout);
         checkout.setOnClickListener(v->{
             ArrayList<CartItem> checkedItems=getCheckedItem();
+            Gson gson = new Gson();
+            String json = gson.toJson(checkedItems);
             Intent intent=new Intent(getApplicationContext(),CheckoutPage.class);
-            intent.putExtra("checkedItems",checkedItems);
+            intent.putExtra("checkedItems",json);
             startActivity(intent);
 
         });
@@ -70,7 +79,8 @@ public class CartPage extends AppCompatActivity {
             for (CartItem item : cartItems) {
                 item.setChecked(isChecked);
             }
-            adapter.notifyDataSetChanged();  // Cập nhật RecyclerView
+            adapter.notifyDataSetChanged();
+            updateTotal();
         });
     }
 
@@ -84,8 +94,26 @@ public class CartPage extends AppCompatActivity {
             }
         }
 
-        // Cập nhật checkbox "Check All" dựa trên kết quả kiểm tra
         checkAll.setChecked(allChecked);
+        updateTotal();
+    }
+
+    private void updateTotal(){
+        double grandtotal=0;
+        double subtotal=0;
+        double discount=0;
+        for(CartItem item : cartItems)
+        {
+            if(item.getChecked())
+            {
+                subtotal+=item.getProduct().getPrice()*item.getQuantity();
+                discount+=(item.getProduct().getDiscount()*item.getProduct().getPrice()*item.getQuantity())/100;
+            }
+        }
+        grandtotal=subtotal-discount;
+        Grandtotal.setText(String.valueOf(grandtotal));
+        Subtotal.setText(String.valueOf(subtotal));
+        Discount.setText(String.valueOf(discount));
     }
 
     // Lấy danh sách các item đã được chọn
