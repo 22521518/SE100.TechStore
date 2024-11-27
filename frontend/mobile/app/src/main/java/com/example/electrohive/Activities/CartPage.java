@@ -39,7 +39,9 @@ public class CartPage extends AppCompatActivity {
         checkAll = findViewById(R.id.checkAll);
         TextView checkout=findViewById(R.id.checkout);
         checkout.setOnClickListener(v->{
+            ArrayList<CartItem> checkedItems=getCheckedItem();
             Intent intent=new Intent(getApplicationContext(),CheckoutPage.class);
+            intent.putExtra("checkedItems",checkedItems);
             startActivity(intent);
 
         });

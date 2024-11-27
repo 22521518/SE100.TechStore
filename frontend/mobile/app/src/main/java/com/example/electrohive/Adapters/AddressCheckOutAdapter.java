@@ -79,6 +79,12 @@ public class AddressCheckOutAdapter extends RecyclerView.Adapter<AddressCheckOut
         radioButtonPosition=position;
     }
 
+    public Address getAddress(){
+        if(!addressList.isEmpty())
+            return addressList.get(radioButtonPosition);
+        return null;
+    }
+
     // ViewHolder class to hold the item views
     public static class AddressViewHolder extends RecyclerView.ViewHolder {
 

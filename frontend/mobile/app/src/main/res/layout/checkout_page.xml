@@ -83,6 +83,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/addressInput"
+                android:clickable="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_angle_right_icon"
@@ -145,6 +146,7 @@
 
     <!-- Continue to Payment Button -->
     <TextView
+        android:id="@+id/continue_button"
         android:clickable="true"
         android:focusable="true"
         android:textAlignment="center"
