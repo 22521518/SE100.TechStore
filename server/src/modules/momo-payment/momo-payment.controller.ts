@@ -52,11 +52,6 @@ export class MomoPaymentController {
       throw new BadRequestException(error.message);
     }
 
-    console.log(
-      '\n\ncustomerPaymentList',
-      JSON.stringify(this.momoPaymentStore.getPayments()),
-    );
-
     try {
       const { redirectUrl, ...orderDto } = createOrderDto;
       const order = await this.momoPaymentService.createOrder(
@@ -110,13 +105,9 @@ export class MomoPaymentController {
   private async trackPaymentStatus(orderId: string, totalSeconds: number) {
     let elapsedSeconds = 0;
     const intervalId = setInterval(async () => {
-      console.log(
-        `Tracking order ${JSON.stringify(this.momoPaymentStore.getPayments())} payment status... ${elapsedSeconds} seconds`,
-      );
       elapsedSeconds++;
       const currentOrder = this.momoPaymentStore.getPaymentByOrder(orderId);
       if (!currentOrder) {
-        console.log(`Order ${orderId} not found in tracking list`);
         clearInterval(intervalId);
         return;
       }
