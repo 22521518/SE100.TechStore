@@ -76,8 +76,8 @@ export class MomoPaymentController {
         );
       });
 
-      let redirect = redirectUrl;
-      if (redirectUrl) {
+      let redirect = null;
+      if (redirectUrl != null && redirectUrl != undefined) {
         redirect = process.env.CLIENT + redirectUrl;
       }
 

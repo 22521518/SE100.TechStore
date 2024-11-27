@@ -15,7 +15,7 @@ import { ProductsService } from '../products/products.service';
 @Injectable()
 export class MomoPaymentService {
   readonly timeOut = 100;
-  private redirectUrl = 'https://shopee.vn/';
+  private redirectUrl = 'https://shopee.vn';
   private orderInfo = 'Thanh toán đơn hàng ';
   private ipnUrl = `${process.env.HOST}/momo-payment/callback`;
 
@@ -31,7 +31,7 @@ export class MomoPaymentService {
     customerId: string,
     requestId: string,
     amount: number,
-    redirectUrl?: string | undefined,
+    redirectUrl: string,
   ): string {
     const orderInfo = this.orderInfo + orderId + customerId;
 
@@ -51,7 +51,7 @@ export class MomoPaymentService {
       '&partnerCode=' +
       partnerCode +
       '&redirectUrl=' +
-      (redirectUrl ?? this.redirectUrl) +
+      redirectUrl +
       '&requestId=' +
       requestId +
       '&requestType=' +
@@ -64,7 +64,7 @@ export class MomoPaymentService {
     customerId: string,
     requestId: string,
     amount: number,
-    redirectUrl?: string | undefined,
+    redirectUrl: string,
   ) {
     return createHmac('sha256', secretKey)
       .update(
@@ -97,16 +97,21 @@ export class MomoPaymentService {
       amount: amount,
       orderId: orderId,
       orderInfo: orderInfo,
-      redirectUrl: redirectUrl ?? this.redirectUrl,
+      redirectUrl: redirectUrl,
       ipnUrl: this.ipnUrl,
       lang: lang,
       requestType: requestType,
-      orderExpireTime: this.timeOut,
       autoCapture: autoCapture,
       extraData: extraData,
       orderGroupId: orderGroupId,
       items: items,
-      signature: this.produceSignature(orderId, customerId, requestId, amount),
+      signature: this.produceSignature(
+        orderId,
+        customerId,
+        requestId,
+        amount,
+        redirectUrl,
+      ),
     });
   }
 
@@ -117,13 +122,17 @@ export class MomoPaymentService {
     items: MomoItem[],
     redirectUrl?: string | undefined,
   ) {
+    let redirect = this.redirectUrl;
+    if (redirectUrl != null && redirectUrl != undefined) {
+      redirect = redirectUrl;
+    }
     const requestBody = this.produceRequestData(
       orderId,
       customerId,
       orderId,
       amount,
       items,
-      redirectUrl ?? this.redirectUrl,
+      redirect,
     );
 
     const options = {
@@ -183,7 +192,7 @@ export class MomoPaymentService {
       );
 
       if (!shipping_address) {
-        throw new BadRequestException('Shipping address not found');
+        throw new BadRequestException('Shipping address  not found');
       }
 
       const shippingAddress: ShippingAddress = {
