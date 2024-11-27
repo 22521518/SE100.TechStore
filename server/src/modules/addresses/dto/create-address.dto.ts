@@ -22,5 +22,5 @@ export class CreateAddressDto {
 
   @IsOptional()
   @IsBoolean()
-  is_primary: boolean;
+  is_primary?: boolean;
 }

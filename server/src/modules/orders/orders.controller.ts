@@ -16,10 +16,12 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { AddressesService } from '../addresses/addresses.service';
 import { ShippingAddress } from './entities/order.entity';
+import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 
 @Controller('orders')
 export class OrdersController {
   constructor(
+    private readonly prismaDbService: PrismaDbService,
     private readonly ordersService: OrdersService,
     private readonly addressesService: AddressesService,
   ) {}
@@ -32,15 +34,35 @@ export class OrdersController {
     createOrderDto: CreateOrderDto,
   ) {
     try {
-      const { order_items, voucher_code, shipping_address_id, ...ord } =
+      const { order_items, voucher_code, shipping_address, ...ord } =
         createOrderDto;
-      const shipping_address = await this.addressesService.findOne(
-        customerId,
-        shipping_address_id,
-      );
 
       if (!shipping_address) {
         throw new BadRequestException('Shipping address not found');
+      }
+
+      const addressDto: Prisma.Customer_AddressCreateInput = {
+        customer: {
+          connect: {
+            customer_id: customerId,
+          },
+        },
+        ...shipping_address,
+        is_primary: true,
+      };
+      const existingAddress =
+        await this.prismaDbService.customer_Address.findFirst({
+          where: {
+            customer_id: customerId,
+            city: shipping_address.city,
+            district: shipping_address.district,
+            ward: shipping_address.ward,
+            address: shipping_address.address,
+          },
+        });
+
+      if (!existingAddress) {
+        await this.addressesService.create(addressDto);
       }
 
       const shippingAddress: ShippingAddress = {

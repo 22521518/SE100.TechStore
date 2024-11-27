@@ -8,6 +8,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
+import { CreateAddressDto } from '../../addresses/dto/create-address.dto';
 
 export class CreateOrderDto {
   @IsNumber()
@@ -25,8 +26,9 @@ export class CreateOrderDto {
   @IsEnum($Enums.PAYMENT_METHOD, { message: 'Invalid order method' })
   payment_method: $Enums.PAYMENT_METHOD;
 
-  @IsNumber()
-  shipping_address_id: number;
+  @ValidateNested()
+  @Type(() => CreateAddressDto)
+  shipping_address: CreateAddressDto;
 }
 export class OrderItems {
   @IsString()

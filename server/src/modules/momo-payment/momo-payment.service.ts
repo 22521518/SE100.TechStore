@@ -184,16 +184,23 @@ export class MomoPaymentService {
 
   async createOrder(createOrderDto: CreateOrderDto, customerId: string) {
     try {
-      const { order_items, voucher_code, shipping_address_id, ...ord } =
+      const { order_items, voucher_code, shipping_address, ...ord } =
         createOrderDto;
-      const shipping_address = await this.addressesService.findOne(
-        customerId,
-        shipping_address_id,
-      );
 
       if (!shipping_address) {
-        throw new BadRequestException('Shipping address  not found');
+        throw new BadRequestException('Shipping address not found');
       }
+
+      const addressDto: Prisma.Customer_AddressCreateInput = {
+        customer: {
+          connect: {
+            customer_id: customerId,
+          },
+        },
+        ...shipping_address,
+        is_primary: true,
+      };
+      await this.addressesService.create(addressDto);
 
       const shippingAddress: ShippingAddress = {
         city: shipping_address.city,
