@@ -51,7 +51,6 @@ public class ProductDetailPage extends DrawerBasePage {
     private RatingBar product_average_rating;
     private TextView product_name;
     private TextView product_feedback_count_1;
-    private TextView product_feedback_count_2;
     private TextView product_price;
     private TextView product_original_price;
     private TextView product_discount;
@@ -88,6 +87,7 @@ public class ProductDetailPage extends DrawerBasePage {
 
     private ProductAdapter productAdapter;
 
+    private Product curProduct = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +165,7 @@ public class ProductDetailPage extends DrawerBasePage {
             @Override
             public void onChanged(Product product) {
                 if (product != null) {
+                    curProduct = product;
                     productImages = product.getImages();
                     imagesAdapter.updateImages(productImages);
                     indicator.setViewPager(imageSlider);
@@ -196,10 +197,13 @@ public class ProductDetailPage extends DrawerBasePage {
     }
 
 
-    private void addItemToCart(String productId, int quantity) {
+    private boolean addItemToCart(String productId, int quantity) {
         if (quantity <= 0) {
             Toast.makeText(this, "Please enter a valid quantity", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
+        } else if (curProduct!=null && quantity > curProduct.getStockQuantity()) {
+            Toast.makeText(this, "Insufficient quantity! please try again", Toast.LENGTH_SHORT).show();
+            return false;
         }
         cartViewModel.addItemToCart(productId, quantity).observe(this, new Observer<Boolean>() {
             @Override
@@ -212,6 +216,18 @@ public class ProductDetailPage extends DrawerBasePage {
             }
         });
 
+        return true;
+
+    }
+
+    private void buyProduct(String productId, int quantity) {
+        boolean isAddedToCart = addItemToCart(productId, quantity);
+
+        // Proceed to Cart page if the item was added to cart
+        if (isAddedToCart) {
+            Intent intent = new Intent(ProductDetailPage.this, CartPage.class);
+            startActivity(intent);
+        }
     }
 
 
@@ -251,13 +267,7 @@ public class ProductDetailPage extends DrawerBasePage {
     }
 
 
-    private void buyProduct(String productId, int quantity) {
-        addItemToCart(productId, quantity);
 
-        Intent intent = new Intent(ProductDetailPage.this, CartPage.class);
-        startActivity(intent);
-
-    }
 
     private void seeFeedback(String productId) {
         Intent intent = new Intent(ProductDetailPage.this, ProductFeedbackPage.class);

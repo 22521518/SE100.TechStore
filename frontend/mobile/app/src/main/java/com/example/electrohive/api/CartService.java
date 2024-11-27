@@ -9,6 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -20,10 +21,12 @@ public interface CartService {
 
     @POST("/carts/{id}")
     Call<JsonObject> addCartItem(@Path("id") String userid,
+                                 @Header("Content-Type") String header,
                                  @Body JsonObject payload);
 
     @PATCH("/carts/{id}")
-    Call<JsonObject> updateCartItem(@Path("id") String userId,
+    Call<JsonObject> patchCartItem(@Path("id") String userId,
+                                    @Header("Content-Type") String header,
                                     @Body JsonObject payload);
 
     @DELETE("/carts/{id}")

@@ -93,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:isIndicator="false"
                 android:numStars="5"
+                android:rating="1"
                 android:stepSize="1" />
         </LinearLayout>
 
@@ -110,6 +111,7 @@
             android:scrollbars="vertical" />
 
         <TextView
+            android:id="@+id/send_feedback_button"
             android:clickable="true"
             android:focusable="true"
             android:textAlignment="center"

@@ -55,34 +55,28 @@ public class FeedbackRepository {
         return feedbackData;
     }
 
-    public LiveData<Boolean> addFeedback(String userId,String productId,String feedback,int rating) {
-        MutableLiveData<Boolean> isAdded = new MutableLiveData<>();
+    public LiveData<ProductFeedback> addFeedback(String productId, JsonObject payload) {
+        MutableLiveData<ProductFeedback> feedbackData = new MutableLiveData<>();
 
-        JsonObject payload = new JsonObject();
-
-        payload.addProperty("customer_id",userId);
-        payload.addProperty("feedback",feedback);
-        payload.addProperty("rating",rating);
-
-        isAdded.setValue(false);
-
-        feedbackService.addFeedback(productId,payload).enqueue(new Callback<JsonObject>() {
+        feedbackService.addFeedback("application/json",productId,payload).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if(response.isSuccessful()) {
-                    isAdded.postValue(true);
+                if(response.isSuccessful() && response.body()!=null) {
+                    JsonObject feedbackJson = response.body().getAsJsonObject();
+                    ProductFeedback feedback = FeedbackUtils.parseProductFeedback(feedbackJson);
+                    feedbackData.postValue(feedback);
                 } else {
-                    isAdded.postValue(false);
+                    feedbackData.postValue(null);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                isAdded.postValue(false);
+                feedbackData.postValue(null);
             }
         });
 
-        return isAdded;
+        return feedbackData;
     }
 
 }

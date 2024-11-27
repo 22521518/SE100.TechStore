@@ -2,6 +2,7 @@ package com.example.electrohive.Models;
 
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Enum.PAYMENT_METHOD;
+import com.example.electrohive.Models.Enum.PAYMENT_STATUS;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Order {
     private ShippingAddress shippingAddress;  // Assuming ShippingAddress class is defined
     private List<OrderItem> orderItems;  // Assuming OrderItem class is defined
     private PAYMENT_METHOD paymentMethod;  // Assuming PAYMENT_METHOD enum is defined
+    private PAYMENT_STATUS paymentStatus  = PAYMENT_STATUS.PENDING;  // Assuming PAYMENT_METHOD enum is defined
 
     // Constructor
     public Order(String orderId, String customerId, Customer customer, ORDER_STATUS orderStatus,
@@ -111,6 +113,15 @@ public class Order {
 
     public PAYMENT_METHOD getPaymentMethod() {
         return paymentMethod;
+    }
+
+
+    public void setPaymentStatus(PAYMENT_STATUS paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public PAYMENT_STATUS getPaymentStatus() {
+        return paymentStatus;
     }
 
     public void setPaymentMethod(PAYMENT_METHOD paymentMethod) {

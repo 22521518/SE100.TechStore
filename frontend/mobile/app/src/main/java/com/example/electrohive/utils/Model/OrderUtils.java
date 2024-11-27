@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Enum.PAYMENT_METHOD;
+import com.example.electrohive.Models.Enum.PAYMENT_STATUS;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.Models.OrderItem;
 import com.example.electrohive.Models.Product;
@@ -33,6 +34,7 @@ public class OrderUtils {
     }
 
     public static Order parseOrder(JsonObject orderJson) {
+        Order order = null;
         // Extract basic order details
         String orderId = orderJson.get("order_id").getAsString();
         String customerId = orderJson.get("customer_id").getAsString();
@@ -43,6 +45,9 @@ public class OrderUtils {
                 : "";
         String paymentMethodStr = orderJson.get("payment_method").getAsString();
         PAYMENT_METHOD paymentMethod = PAYMENT_METHOD.valueOf(paymentMethodStr);
+
+        String paymentStatusStr = orderJson.get("payment_status").getAsString();
+        PAYMENT_STATUS paymentStatus = PAYMENT_STATUS.valueOf(paymentMethodStr);
 
         // Parse created_at as a Date or String (depends on implementation)
         Object createdAt = orderJson.get("created_at").getAsString();
@@ -60,8 +65,11 @@ public class OrderUtils {
         List<OrderItem> orderItems = parseOrderItems(orderJson.getAsJsonArray("order_items"));
 
         // Construct and return the Order object
-        return new Order(orderId, customerId, customer, orderStatus, totalPrice, voucherCode, createdAt,
+
+        order = new Order(orderId, customerId, customer, orderStatus, totalPrice, voucherCode, createdAt,
                 shippingAddress, orderItems, paymentMethod);
+        order.setPaymentStatus(paymentStatus);
+        return order;
     }
 
 

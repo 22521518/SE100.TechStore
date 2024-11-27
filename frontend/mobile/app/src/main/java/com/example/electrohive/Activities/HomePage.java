@@ -49,7 +49,7 @@ public class HomePage extends DrawerBasePage {
 
 
         loadingSpinner = findViewById(R.id.loading_spinner);
-        loadingSpinner.setVisibility(View.VISIBLE);
+
 
         productViewModel = new ProductViewModel();
         productAdapter = new ProductAdapter(
@@ -62,6 +62,18 @@ public class HomePage extends DrawerBasePage {
         products_listview.setAdapter(productAdapter);
 
         // Observe the LiveData
+        fetchProducts();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchProducts();
+    }
+
+    private void fetchProducts() {
+        loadingSpinner.setVisibility(View.VISIBLE);
         productViewModel.getProducts(16).observe(this, new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
@@ -72,7 +84,6 @@ public class HomePage extends DrawerBasePage {
                 loadingSpinner.setVisibility(View.GONE);
             }
         });
-
     }
 
     private void showProductDetail(String productId) {

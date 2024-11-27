@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Repository.CartRepository;
 import com.example.electrohive.utils.PreferencesHelper;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -29,7 +30,19 @@ public class CartViewModel extends ViewModel {
     }
 
     public LiveData<Boolean> addItemToCart(String productId, int quantity) {
-        return repository.addItemToCart(PreferencesHelper.getCustomerData().getAccountId(), productId, quantity);
+        JsonObject payload = new JsonObject();
+        payload.addProperty("product_id", productId);
+        payload.addProperty("quantity", quantity);
+
+        return repository.addItemToCart(PreferencesHelper.getCustomerData().getAccountId(), payload);
+    }
+
+    public LiveData<Boolean> updateItemToCart(String productId, int quantity) {
+        JsonObject payload = new JsonObject();
+        payload.addProperty("product_id", productId);
+        payload.addProperty("quantity", quantity);
+
+        return repository.updateCartItem(PreferencesHelper.getCustomerData().getAccountId(), payload);
     }
 
     public LiveData<Boolean> deleteCartItem(String productId) {

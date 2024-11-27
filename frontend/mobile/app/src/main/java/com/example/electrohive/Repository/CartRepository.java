@@ -74,26 +74,43 @@ public class CartRepository {
         }
         return result; // Return false if an error occurs
     }
-    public LiveData<Boolean> addItemToCart(String userId, String productId, int quantity) {
+    public LiveData<Boolean> addItemToCart(String userId,JsonObject payload) {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
-        result.postValue(false);
 
-        JsonObject payload = new JsonObject();
-        payload.addProperty("product_id", productId);
-        payload.addProperty("quantity", quantity);
-
-
-        cartService.addCartItem(userId, payload).enqueue(new Callback<JsonObject>() {
+        cartService.addCartItem(userId,"application/json", payload).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     result.postValue(true);
                 } else {
+                    result.postValue(false);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                result.postValue(false);
+            }
+        });
+        return  result;
+    }
+
+    public LiveData<Boolean> updateCartItem(String userId, JsonObject payload) {
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+
+        cartService.patchCartItem(userId,"application/json", payload).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    result.postValue(true);
+                } else {
+                    result.postValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                result.postValue(false);
             }
         });
         return  result;
