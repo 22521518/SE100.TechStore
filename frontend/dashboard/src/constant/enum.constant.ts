@@ -18,3 +18,9 @@ export enum PAYMENT_METHOD {
   CREDIT_CARD = 'CREDIT_CARD',
   MOMO = 'MOMO'
 }
+
+export enum PAYMENT_STATUS {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  REFUNDED = 'REFUNDED'
+}

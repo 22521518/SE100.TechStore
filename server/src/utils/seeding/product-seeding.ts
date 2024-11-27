@@ -4,7 +4,6 @@ import * as path from 'path';
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 import sharp from 'sharp';
 import { convertImagesInDirectory } from '../image.utils';
-import seed from './seed.util';
 
 const prisma = new PrismaClient();
 
@@ -80,6 +79,5 @@ export async function getFileNamesFromDirectory(
 }
 
 export async function seedProducts() {
-  seed('data/seed-2-product.sql');
   getFileNamesFromDirectory(process.env.IMAGE_DIRECTORY);
 }

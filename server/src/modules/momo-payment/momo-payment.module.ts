@@ -4,9 +4,12 @@ import { MomoPaymentController } from './momo-payment.controller';
 import { OrdersModule } from '../orders/orders.module';
 import { HttpModule } from '@nestjs/axios';
 import { AddressesModule } from '../addresses/addresses.module';
+import { ProductsModule } from '../products/products.module';
+import { MomoPaymentStore } from './entities/payment_store.entity';
 
 @Module({
   imports: [
+    ProductsModule,
     OrdersModule,
     AddressesModule,
     HttpModule.register({
@@ -15,6 +18,6 @@ import { AddressesModule } from '../addresses/addresses.module';
     }),
   ],
   controllers: [MomoPaymentController],
-  providers: [MomoPaymentService],
+  providers: [MomoPaymentService, MomoPaymentStore],
 })
 export class MomoPaymentModule {}

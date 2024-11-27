@@ -256,6 +256,40 @@ export class ProductsService {
     }
   }
 
+  async increaseStock(product_id: string, quantity: number) {
+    try {
+      return await this.prismaDbService.products.update({
+        where: { product_id },
+        data: {
+          stock_quantity: {
+            increment: quantity,
+          },
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException(
+        error.message || 'Failed to increase stock quantity',
+      );
+    }
+  }
+
+  async decreaseStock(product_id: string, quantity: number) {
+    try {
+      return await this.prismaDbService.products.update({
+        where: { product_id },
+        data: {
+          stock_quantity: {
+            decrement: quantity,
+          },
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException(
+        error.message || 'Failed to decrease stock quantity',
+      );
+    }
+  }
+
   async removeAll() {
     try {
       // Start a transaction to ensure atomicity

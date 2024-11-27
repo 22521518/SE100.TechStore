@@ -1,4 +1,11 @@
 export class Order {}
+
+export enum PAYMENT_STATUS {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  REFUNDED = 'REFUNDED',
+}
+
 export enum ORDER_STATUS {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',

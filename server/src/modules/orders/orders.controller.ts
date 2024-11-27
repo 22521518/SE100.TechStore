@@ -94,7 +94,7 @@ export class OrdersController {
       return orders;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Fetching orders failed');
+      throw new BadRequestException(error.message || 'Fetching orders failed');
     }
   }
 
@@ -106,7 +106,7 @@ export class OrdersController {
       return order;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Fetching orders failed');
+      throw new BadRequestException(error.message || 'Fetching orders failed');
     }
   }
 
@@ -121,7 +121,7 @@ export class OrdersController {
       return order;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Fetching order');
+      throw new BadRequestException(error.message || 'Fetching order');
     }
   }
 
@@ -140,7 +140,19 @@ export class OrdersController {
       return { ...order };
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Updating order failed');
+      throw new BadRequestException(error.message || 'Updating order failed');
+    }
+  }
+
+  @Delete('-1')
+  @Permissions(['order-delete'])
+  async removeAll() {
+    try {
+      const order = await this.ordersService.removeAll();
+      return order;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(error.message || 'Deleting order failed');
     }
   }
 
@@ -155,7 +167,7 @@ export class OrdersController {
       return order;
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Deleting order failed');
+      throw new BadRequestException(error.message || 'Deleting order failed');
     }
   }
 }
