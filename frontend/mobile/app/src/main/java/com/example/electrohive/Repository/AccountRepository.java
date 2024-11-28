@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.electrohive.Models.Account;
 import com.example.electrohive.api.AccountService;
 import com.example.electrohive.api.CustomerService;
+import com.example.electrohive.utils.Model.AccountUtils;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.example.electrohive.utils.RetrofitClient;
 import com.google.gson.JsonObject;
@@ -71,6 +72,68 @@ public class AccountRepository {
         });
 
         return accessToken;
+
+    }
+
+    public MutableLiveData<Account> getAccount(String id) {
+        MutableLiveData<Account> accountData = new MutableLiveData<>();
+
+        accountService.getAccount(id).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    JsonObject accountJson = response.body().getAsJsonObject();
+                    Account account = AccountUtils.parseAccount(accountJson);
+                    accountData.postValue(account);
+                } else {
+                    // Handle other response issues (e.g., network errors)
+                    Log.e("Login", "Login failed with response code: " + response.code());
+                    accountData.postValue(null);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                // Handle failure (e.g., no internet, server down)
+                Log.e("Login", "Network error: " + t.getMessage());
+                accountData.postValue(null);
+
+            }
+        });
+
+        return accountData;
+
+    }
+
+    public MutableLiveData<Account> patchAccount(String id,JsonObject payload) {
+        MutableLiveData<Account> accountData = new MutableLiveData<>();
+
+        accountService.patchAccount(id,"application/json",payload).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    JsonObject accountJson = response.body().getAsJsonObject();
+                    Account account = AccountUtils.parseAccount(accountJson);
+                    accountData.postValue(account);
+                } else {
+                    // Handle other response issues (e.g., network errors)
+                    Log.e("Login", "Login failed with response code: " + response.code());
+                    accountData.postValue(null);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                // Handle failure (e.g., no internet, server down)
+                Log.e("Login", "Network error: " + t.getMessage());
+                accountData.postValue(null);
+
+            }
+        });
+
+        return accountData;
 
     }
 

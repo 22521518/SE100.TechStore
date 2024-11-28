@@ -2,8 +2,11 @@ package com.example.electrohive.Models;
 
 public class Account {
 
+    private String account_id;
     private String email;
     private String password;
+
+    private Boolean is_active;
 
     // Constructor
     public Account(String email, String password) {
@@ -15,6 +18,23 @@ public class Account {
     public String getEmail() {
         return email;
     }
+
+    public void setAccount_id(String account_id) {
+        this.account_id = account_id;
+    }
+
+    public String getAccount_id () {
+        return account_id;
+    }
+
+    public void setIs_active(Boolean is_active) {
+        this.is_active = is_active;
+    }
+
+    public Boolean getIs_active () {
+        return is_active;
+    }
+
 
     public void setEmail(String email) {
         this.email = email;

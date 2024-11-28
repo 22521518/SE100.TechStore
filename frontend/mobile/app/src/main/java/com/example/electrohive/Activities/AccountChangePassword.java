@@ -1,15 +1,29 @@
 package com.example.electrohive.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.electrohive.R;
+import com.example.electrohive.ViewModel.AccountViewModel;
+import com.example.electrohive.utils.PreferencesHelper;
 
 public class AccountChangePassword extends AppCompatActivity {
+
+    private AccountViewModel accountViewModel;
+
+    private EditText currentPassword;
+    private EditText newPassword;
+    private EditText confirmPassword;
+    private TextView changePasswordButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,5 +37,57 @@ public class AccountChangePassword extends AppCompatActivity {
                 finish();
             }
         });
+
+        accountViewModel = new AccountViewModel();
+
+        currentPassword = findViewById(R.id.current_password);
+        newPassword = findViewById(R.id.new_password);
+        confirmPassword = findViewById(R.id.confirm_password);
+        changePasswordButton = findViewById(R.id.change_password);
+
+        changePasswordButton.setOnClickListener(v -> changePassword());
+    }
+
+    private void changePassword() {
+        String currentPwd = currentPassword.getText().toString().trim();
+        String newPwd = newPassword.getText().toString().trim();
+        String confirmPwd = confirmPassword.getText().toString().trim();
+
+        if (TextUtils.isEmpty(currentPwd)||TextUtils.isEmpty(newPwd)||TextUtils.isEmpty(confirmPwd)) {
+            Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (newPwd.length() < 8) {
+            Toast.makeText(this, "New password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!newPwd.equals(confirmPwd)) {
+            Toast.makeText(this, "New password and confirm password do not match", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Proceed with changing the password using ViewModel or backend API
+        accountViewModel.changePassword(currentPwd, newPwd).observe(this, success -> {
+            if (success) {
+                // Password change successful
+                Toast.makeText(this, "Password changed successfully please log in again", Toast.LENGTH_LONG).show();
+                signOut();
+            } else {
+                // Password change failed
+                Toast.makeText(this, "Failed to change password", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+    private void signOut() {
+
+        PreferencesHelper.clear();
+
+        Intent intent = new Intent(AccountChangePassword.this, LoginPage.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish(); // Ends the current activity
     }
 }

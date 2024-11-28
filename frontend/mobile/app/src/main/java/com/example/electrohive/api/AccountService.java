@@ -8,6 +8,7 @@ import org.openqa.selenium.json.Json;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -20,10 +21,15 @@ public interface AccountService {
             @Header("Content-Type") String header,
             @Body JsonObject account
     );
-    @PATCH("/addresses/{id}")
+
+    @GET("/account/{id}")
+    Call<JsonObject> getAccount(
+            @Path("id") String addressId
+    );
+    @PATCH("/accounts/{id}")
     Call<JsonObject> patchAccount(
             @Path("id") String addressId,
-            @Header("access_token") String accessToken,
+            @Header("Content-Type") String header,
             @Body JsonObject payload
     );
 }

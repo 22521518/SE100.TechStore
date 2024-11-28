@@ -14,6 +14,7 @@ import com.example.electrohive.Repository.AccountRepository;
 import com.example.electrohive.Repository.AddressRepository;
 import com.example.electrohive.Repository.CustomerRepository;
 import com.example.electrohive.utils.PreferencesHelper;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,43 @@ import java.util.List;
             return null;
         }
     }
+
+        // Change password method
+        public LiveData<Boolean> changePassword(String currentPassword, String newPassword) {
+            MutableLiveData<Boolean> changePasswordSuccess = new MutableLiveData<>();
+
+            // Get the current account data (including the current password)
+            String accountId = PreferencesHelper.getCustomerData().getAccountId();
+            accountRepository.getAccount(accountId).observeForever(account -> {
+                if (account != null) {
+                    // Compare current password with the server's stored password
+                    if (account.getPassword().equals(currentPassword)) {
+                        // Passwords match, proceed to update the password
+                        JsonObject payload = new JsonObject();
+                        payload.addProperty("password", newPassword);
+
+                        // Patch account with new password
+                        accountRepository.patchAccount(accountId, payload).observeForever(updatedAccount -> {
+                            if (updatedAccount != null) {
+                                // Password successfully updated
+                                changePasswordSuccess.postValue(true);
+                            } else {
+                                // Error updating password
+                                changePasswordSuccess.postValue(false);
+                            }
+                        });
+                    } else {
+                        // Current password does not match
+                        changePasswordSuccess.postValue(false);
+                    }
+                } else {
+                    // Error fetching account data
+                    changePasswordSuccess.postValue(false);
+                }
+            });
+
+            return changePasswordSuccess;
+        }
 
     public String getAccessToken(Context context) {
         return PreferencesHelper.getAccessToken();
