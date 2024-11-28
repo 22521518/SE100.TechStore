@@ -29,7 +29,7 @@ const OrderItem = ({ orderItem, loading }) => {
   return (
     <Link
       href={`/product/${orderItem?.product_id}`}
-      className="grid grid-cols-[auto_1fr_auto] gap-2 bg-surface text-on-surface p-2 rounded-xl overflow-x-scroll no-scrollbar"
+      className="grid grid-cols-[auto_1fr_auto] gap-2 bg-surface text-on-surface p-2 rounded-xl overflow-x-scroll no-scrollbar shadow-md"
     >
       <div className="size-[50px] scale-[0.8] md:scale-100 transition-transform duration-200 aspect-square flex items-center h-full">
         <Image
@@ -41,6 +41,8 @@ const OrderItem = ({ orderItem, loading }) => {
           alt="product image"
           width={300}
           height={300}
+             blurDataURL="data:/images/PLACEHOLDER.jpg"
+                      placeholder="blur"
           className="size-full object-scale-down"
         />
       </div>

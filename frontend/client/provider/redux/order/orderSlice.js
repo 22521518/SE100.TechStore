@@ -16,8 +16,8 @@ const orderSlice = createSlice({
   name: "order",
   initialState: {
     order_items: [],
-    order_address: {},
-    order_voucher: {},  
+    order_address: null,
+    order_voucher: null,  
     order_payment_method: "",
     order_state:0,
   },

@@ -89,7 +89,7 @@ body {
   }
 
   .button-variant-1 {
-    @apply bg-on-surface font-bold text-surface p-2 rounded-lg hover:scale-105 active:scale-90 transition-transform duration-200 ease-out gap-2 flex items-center justify-center h-fit;
+    @apply bg-on-surface font-bold text-surface p-2 rounded-lg hover:scale-105 active:scale-95 transition-transform duration-200 ease-out gap-2 flex items-center justify-center h-fit;
   }
 
   .button-variant-2 {

@@ -91,8 +91,8 @@ const Checkout = () => {
 
   const fetchAddress = () => {
     setIsLoading(true);
-    // setIsLoading(true);
-    getCustomerAddresses(session.customer.customer_id).then((data) => {
+
+    getCustomerAddresses(session.customer?.customer_id).then((data) => {
       setSelectedOption(data.findIndex((item) => item.is_primary) + 1);
       setUserAddresses(data.map((a, index) => ({ id: index, ...a })));
     });
@@ -105,19 +105,19 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    setAddress((a) => ({ ...a, city: province?.name }));
+    setAddress((a) => ({ ...a, city: province?.name ||"" }));
     setDistrict(null);
     getDistricts(province?.id || "");
   }, [province]);
 
   useEffect(() => {
-    setAddress((a) => ({ ...a, district: district?.name }));
+    setAddress((a) => ({ ...a, district: district?.name ||"" }));
     setWard(null);
     getWards(district?.id || "");
   }, [district]);
 
   useEffect(() => {
-    setAddress((a) => ({ ...a, ward: ward?.name }));
+    setAddress((a) => ({ ...a, ward: ward?.name ||"" }));
   }, [ward]);
 
   const getProvinces = async () => {
@@ -151,9 +151,12 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    fetchAddress();
     getProvinces();
   }, []);
+
+  useEffect(()=> {
+    fetchAddress();
+  },[session])
 
   useEffect(() => {
     const total = receipt.subtotal - receipt.discount;

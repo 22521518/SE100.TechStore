@@ -128,7 +128,7 @@ const Payment = () => {
       })
     );
     await reduxDispatch(setOrderStateAsync(3));
-    router.push("/cart/checkout/payment/receipt");
+    router.push("/cart/checkout/payment/confirm");
   };
 
   return (

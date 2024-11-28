@@ -30,7 +30,7 @@ const ProfileImageHolder = ({ url, size=100 }) => {
         <Image
           src={url}
           alt="Profile image"
-          className="size-full"
+          className="size-full object-cover"
           width={size}
           height={size}
         />

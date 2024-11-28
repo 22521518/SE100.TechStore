@@ -13,10 +13,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
 import ProfileImageHolder from "./ProfileImageHolder";
-import { useSelector } from "@node_modules/react-redux/dist/react-redux";
+import { useDispatch, useSelector } from "@node_modules/react-redux/dist/react-redux";
+import { clearOrder, setOrderStateAsync } from "@provider/redux/order/orderSlice";
 
 const AccountPageNav = () => {
   const session = useSelector((state)=>state.session)
+  const dispatch = useDispatch()
   const pathName = usePathname();
   const MenuItems = [
     { name: "My account", path: "/account", icon: faUser },
@@ -25,6 +27,12 @@ const AccountPageNav = () => {
     { name: "Orders", path: "/account/orders", icon: faBox },
     { name: "Vouchers", path: "/account/vouchers", icon: faTicket },
   ];
+
+  const handleSignOut = async () => {
+        dispatch(clearOrder());
+        await dispatch(setOrderStateAsync(0)); // Reset Redux state
+        signOut()
+  }
   
   return (
     <div className="grid grid-rows-[auto_1fr] gap-2 w-full">
@@ -34,7 +42,7 @@ const AccountPageNav = () => {
         </button>
         <div className="flex flex-col h-full justify-between">
           <span className="text-xl">{session?.customer?.username}</span>
-          <span onClick={signOut} className="text-sm opacity-50 hover:opacity-100 cursor-pointer w-fit text-red-500 font-bold underline">Log out</span>
+          <span onClick={handleSignOut} className="text-sm opacity-50 hover:opacity-100 cursor-pointer w-fit text-red-500 font-bold underline">Log out</span>
         </div>
       </div>
       <div className="  panel-1 ">

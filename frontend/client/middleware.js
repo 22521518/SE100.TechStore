@@ -14,6 +14,8 @@ export default withAuth(
     const isPaymentPage = pathname.startsWith("/cart/checkout/payment");
     const isReceiptPage = pathname.startsWith("/cart/checkout/payment/receipt");
 
+
+    
     // If the user is trying to access the Checkout page without state >= 1
     if (isCheckoutPage && orderingState < 1) {
       return NextResponse.redirect(new URL("/cart", req.url)); // Redirect to cart if not completed

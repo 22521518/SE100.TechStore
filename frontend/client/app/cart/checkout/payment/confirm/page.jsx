@@ -8,7 +8,7 @@ import {
   faCreditCardAlt,
 } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useReducer, useState, useEffect } from "react";
 import {
   useDispatch,
@@ -23,24 +23,40 @@ import {
 } from "@provider/redux/order/orderSlice";
 import {
   faMoneyBill,
+  faSpinner,
   faWallet,
 } from "@node_modules/@fortawesome/free-solid-svg-icons";
 import Image from "@node_modules/next/image";
-import { payWithMoMo } from "@service/order";
+import { getOrder, payWithMoMo, postOrder } from "@service/order";
+import { toastError, toastRequest, toastSuccess } from "@util/toaster";
 
 const Payment = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false);
+  const params = useSearchParams();
   const router = useRouter();
   const session = useSelector((state) => state.session);
   const order = useSelector((state) => state.order);
   const reduxDispatch = useDispatch();
-  const [isConfirmed, setIsConfirmed] = useState(false);
   const [receipt, setReceipt] = useState({
     subtotal: 0,
     discount: 0,
     total: 0,
   });
 
+  const checkPaymentStatus = () => {
+    const orderId = params.get("orderId");
+    if (!orderId || !session.customer?.customer_id) return;
+
+    getOrder(session.customer?.customer_id, orderId).then((data) =>
+      setIsConfirmed(
+        data.payment_method === "MOMO" && data.payment_status === "PAID"
+      )
+    );
+  };
+
   useEffect(() => {
+    checkPaymentStatus();
     const subtotal =
       order?.order_items?.reduce((acc, item) => acc + item.total_price, 0) || 0;
     const discount = order?.order_voucher?.discount_amount || 0;
@@ -50,7 +66,7 @@ const Payment = () => {
       discount,
       total,
     });
-  }, []);
+  }, [session]);
 
   const renderPaymentMethod = (method) => {
     switch (method) {
@@ -79,47 +95,67 @@ const Payment = () => {
     }
   };
 
-  const handleContinueShopping = async () => {
+  const handleCancel = async () => {
+    setIsCanceling(true)
     await reduxDispatch(setOrderStateAsync(0));
     reduxDispatch(clearOrder());
-    setTimeout(() => router.push("/"), 1000);
+    setTimeout(()=>{router.push("/")},1000);
   };
 
   const handleConfirm = async () => {
+    setIsLoading(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    console.log(order)
     const payload = {
       customer_id: session.customer.customer_id,
       order: {
-        total_price: receipt.total,
+        total_price: 10000,
         order_items: order.order_items.map((item) => ({
           product_id: item.product_id,
           quantity: item.quantity,
           unit_price: item.unit_price,
           total_price: item.total_price,
         })),
+        redirectUrl: "/receipt",
         payment_method: order.order_payment_method,
-        shipping_address_id: order.order_address.address_id,
-        voucher: order.order_voucher?.voucher_code||null,
+        shipping_address: {
+          address: order.order_address.address,
+          city: order.order_address.city,
+          district: order.order_address.district,
+          ward: order.order_address.ward,
+          full_name: order.order_address.full_name,
+          phone_number: order.order_address.phone_number,
+        },
+        voucher: order.order_voucher?.voucher_code || null,
       },
     };
-    console.log(payload)
     if (order.order_payment_method === "MOMO") {
       await payWithMoMo(payload).then((data) => {
         if (data) {
-          window.open(data, "_blank", "noopener,noreferrer");
+          toastSuccess("Redirecting please wait...");
+          router.push(data, "_blank", "noopener,noreferrer");
         } else {
+          toastError("Failed to initiate payment");
           return;
         }
+        setIsLoading(false);
+      });
+    } else if (order.order_payment_method === "COD") {
+      postOrder(payload).then((data) => {
+        if (data) {
+          toastSuccess("Order created! Thank you for using our services");
+          router.push(`/receipt?orderId=${data.order_id}`);
+        } else {
+          toastError("Failed to create order");
+        }
+        setIsLoading(false);
       });
     }
-    // setIsConfirmed(t rue);
   };
 
-  if (order.order_state === 0)
+  if (isCanceling)
     return (
-      <div className="flex items-center justify-center text-2xl font-bold h-fulls">
-        Redirecting...
+      <div className="flex items-center justify-center text-2xl font-bold h-full size-full panel-1">
+        Cancelling order...
       </div>
     );
 
@@ -127,17 +163,6 @@ const Payment = () => {
     <section className="size-full flex flex-col items-center gap-10 p-4">
       {/* Total review */}
       <div className="panel-1 flex flex-col gap-4 text-base w-full ">
-        {isConfirmed && (
-          <>
-            <FontAwesomeIcon
-              icon={faCircleCheck}
-              className="text-6xl  transition-transform duration-200 scale-90 sm:scale-100 md:scale-110 my-4 text-green-500"
-            />
-            <h3 className="text-lg sm:text-xl md:text-3xl text-center">
-              Thanks for your order!
-            </h3>
-          </>
-        )}
         <h3 className="font-bold md:text-xl">Transaction date</h3>
         <h4 className="opacity-70">{formattedFullDate(new Date())}</h4>
         <Divider />
@@ -177,7 +202,7 @@ const Payment = () => {
         <Divider />
         <h3 className="font-bold md:text-xl">Voucher</h3>
 
-        {order.order_voucher && (
+        {order.order_voucher != null && (
           <div className="relative h-[80px]  flex flex-row items-center cursor-pointer voucher">
             <div className="flex items-center justify-center h-full aspect-square bg-on-primary grow max-w-[80px] text-primary text-3xl font-bold">
               {order.order_voucher?.discount_amount}%
@@ -231,12 +256,18 @@ const Payment = () => {
           </span>
         </div>
 
-        <button
-          className="button-variant-1 w-full"
-          onClick={isConfirmed ? handleContinueShopping : handleConfirm}
-        >
-          {isConfirmed ? "Continue shopping" : "Confirm"}
-        </button>
+        <div className="flex flex-wrap gap-2 items-center">
+          <button className="button-variant-2 w-full" onClick={handleCancel}>
+            Cancel
+          </button>
+          <button className="button-variant-1 w-full" onClick={handleConfirm}>
+            {isLoading ? (
+              <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
+            ) : (
+              "Confirm"
+            )}
+          </button>
+        </div>
       </div>
     </section>
   );

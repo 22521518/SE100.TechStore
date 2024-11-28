@@ -1,25 +1,49 @@
 'use server'
+export const changePassword = async (payload) => {
+    const { currentPassword, newPassword, account_id } = payload;
+    console.log(payload)
 
-export const patchAccount = async (payload) => {
-    if(process.env.DEV_ENV !=='production') return true
     try {
-        const response = await fetch(``,{
-            method:'PATCH',
-            headers:{
-                access_token:''
+        // Fetch the account details by ID
+        const accountResponse = await fetch(`${process.env.APP_URL}/accounts/${account_id}`);
+
+        if (!accountResponse.ok) {
+            return { status: false, message: "Failed to fetch account details." };
+        }
+
+        const account = await accountResponse.json();
+
+        // Compare the current password with the fetched account password
+        if (account.password !== currentPassword) {
+            return { status: false, message: "Current password is incorrect." };
+        }
+
+        // Prepare the PATCH request payload
+        const patchBody = {
+            password: newPassword
+        };
+
+        // Send the PATCH request to update the password
+        const patchResponse = await fetch(`${process.env.APP_URL}/accounts/${account_id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(payload)
-        }) 
-        if(response.ok) {
-            return true
+            body: JSON.stringify(patchBody)
+        });
+
+        if (patchResponse.ok) {
+            return { status: true, message: "Password changed successfully. Please login again" };
         } else {
-            return false
+            return { status: false, message: "Failed to update password." };
         }
     } catch (error) {
-        console.log(error)
-        return false   
+        console.log("An error occurred:", error);
+        return { status: false, message: "An unexpected error occurred. Please try again later." };
     }
-}
+};
+
+
 
 export const login = async(payload)=> {
     try {

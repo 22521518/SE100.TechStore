@@ -110,13 +110,15 @@ export const patchCustomerAddress = async (payload) => {
 
 export const deleteCustomerAddress = async (payload) => {
   if (process.env.DEV_ENV !== "production") return true;
+  console.log(payload)
   try {
     const response = await fetch(
-      `${process.env.APP_URL}/${payload.user_id}/${payload.address_id}`,
+      `${process.env.APP_URL}/addresses/${payload.user_id}/${payload.address_id}`,
       {
         method: "DELETE",
       }
     );
+
 
     if (response.ok) {
       return true;
