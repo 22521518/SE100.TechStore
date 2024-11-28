@@ -60,7 +60,6 @@ export class OrdersController {
             address: shipping_address.address,
           },
         });
-
       if (!existingAddress) {
         await this.addressesService.create(addressDto);
       }

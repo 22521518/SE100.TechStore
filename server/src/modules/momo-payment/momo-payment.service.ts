@@ -11,6 +11,7 @@ import { PAYMENT_STATUS, Prisma } from '@prisma/client';
 import { CallbackMomoDto } from './dto/callback-momo.dto';
 import { MomoItem } from './entities/momo-item.entity';
 import { ProductsService } from '../products/products.service';
+import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 
 @Injectable()
 export class MomoPaymentService {
@@ -22,6 +23,7 @@ export class MomoPaymentService {
   constructor(
     private readonly httpService: HttpService,
     private readonly productsService: ProductsService,
+    private readonly prismaDbService: PrismaDbService,
     private readonly ordersService: OrdersService,
     private readonly addressesService: AddressesService,
   ) {}
@@ -213,7 +215,19 @@ export class MomoPaymentService {
         ...shipping_address,
         is_primary: true,
       };
-      await this.addressesService.create(addressDto);
+      const existingAddress =
+        await this.prismaDbService.customer_Address.findFirst({
+          where: {
+            customer_id: customerId,
+            city: shipping_address.city,
+            district: shipping_address.district,
+            ward: shipping_address.ward,
+            address: shipping_address.address,
+          },
+        });
+      if (!existingAddress) {
+        await this.addressesService.create(addressDto);
+      }
 
       const shippingAddress: ShippingAddress = {
         city: shipping_address.city,
