@@ -11,6 +11,7 @@ import { PAYMENT_STATUS, Prisma } from '@prisma/client';
 import { CallbackMomoDto } from './dto/callback-momo.dto';
 import { MomoItem } from './entities/momo-item.entity';
 import { ProductsService } from '../products/products.service';
+import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 
 @Injectable()
 export class MomoPaymentService {
@@ -22,6 +23,7 @@ export class MomoPaymentService {
   constructor(
     private readonly httpService: HttpService,
     private readonly productsService: ProductsService,
+    private readonly prismaDbService: PrismaDbService,
     private readonly ordersService: OrdersService,
     private readonly addressesService: AddressesService,
   ) {}
@@ -173,10 +175,23 @@ export class MomoPaymentService {
     }
   }
 
-  async checkTransaction(orderId: string) {
+  async checkPaymentStatus(orderId: string) {
     try {
       const order = await this.ordersService.findByOrderId(orderId);
-      return order?.payment_status === PAYMENT_STATUS.PAID;
+      if (!order) {
+        return null;
+      }
+      const { payment_status } = order;
+      return payment_status;
+    } catch (error: BadRequestException | any) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async checkTransaction(orderId: string): Promise<boolean> {
+    try {
+      const status = await this.checkPaymentStatus(orderId);
+      return status === PAYMENT_STATUS.PAID;
     } catch (error: BadRequestException | any) {
       throw new BadRequestException(error.message);
     }
@@ -184,15 +199,34 @@ export class MomoPaymentService {
 
   async createOrder(createOrderDto: CreateOrderDto, customerId: string) {
     try {
-      const { order_items, voucher_code, shipping_address_id, ...ord } =
+      const { order_items, voucher_code, shipping_address, ...ord } =
         createOrderDto;
-      const shipping_address = await this.addressesService.findOne(
-        customerId,
-        shipping_address_id,
-      );
 
       if (!shipping_address) {
-        throw new BadRequestException('Shipping address  not found');
+        throw new BadRequestException('Shipping address not found');
+      }
+
+      const addressDto: Prisma.Customer_AddressCreateInput = {
+        customer: {
+          connect: {
+            customer_id: customerId,
+          },
+        },
+        ...shipping_address,
+        is_primary: true,
+      };
+      const existingAddress =
+        await this.prismaDbService.customer_Address.findFirst({
+          where: {
+            customer_id: customerId,
+            city: shipping_address.city,
+            district: shipping_address.district,
+            ward: shipping_address.ward,
+            address: shipping_address.address,
+          },
+        });
+      if (!existingAddress) {
+        await this.addressesService.create(addressDto);
       }
 
       const shippingAddress: ShippingAddress = {

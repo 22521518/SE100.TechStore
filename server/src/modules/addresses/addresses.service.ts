@@ -8,6 +8,21 @@ export class AddressesService {
 
   async create(createAddressDto: Prisma.Customer_AddressCreateInput) {
     try {
+      const existingAddress =
+        await this.prismaDbService.customer_Address.findFirst({
+          where: {
+            customer_id: createAddressDto.customer.connect.customer_id,
+            city: createAddressDto.city,
+            district: createAddressDto.district,
+            ward: createAddressDto.ward,
+            address: createAddressDto.address,
+          },
+        });
+
+      if (existingAddress) {
+        throw new BadRequestException('Address already exists');
+      }
+
       await this.prismaDbService.customer_Address.updateMany({
         where: {
           customer_id: createAddressDto.customer.connect.customer_id,
@@ -22,9 +37,8 @@ export class AddressesService {
       });
 
       return address;
-    } catch (error) {
-      console.log(error);
-      throw new BadRequestException('Error creating address');
+    } catch (error: BadRequestException | any) {
+      throw new BadRequestException(error.message || 'Error creating address');
     }
   }
 

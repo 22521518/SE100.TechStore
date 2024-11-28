@@ -36,9 +36,8 @@ export class AddressesController {
       };
       const address = await this.addressesService.create(addressDto);
       return address;
-    } catch (error) {
-      console.log(error);
-      throw new BadRequestException('Creating address failed');
+    } catch (error: BadRequestException | any) {
+      throw new BadRequestException(error.message || 'Creating address failed');
     }
   }
 
