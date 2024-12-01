@@ -80,7 +80,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentStart="true"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:checked="true"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -180,7 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="00000vnd" />
+                android:text="00000 VNĐ" />
         </LinearLayout>
 
         <LinearLayout
@@ -199,7 +200,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="00000vnd" />
+                android:text="00000 VNĐ" />
         </LinearLayout>
 
         <LinearLayout
@@ -217,7 +218,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="00000vnd" />
+                android:text="30000 VNĐ" />
 
         </LinearLayout>
 
@@ -244,7 +245,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="00000vnd"
+                android:text="00000 VNĐ"
                 android:textSize="20dp"
                 android:textStyle="bold" />
 

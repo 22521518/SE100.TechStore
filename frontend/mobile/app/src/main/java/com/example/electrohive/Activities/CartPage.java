@@ -7,6 +7,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.CartViewModel;
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class CartPage extends AppCompatActivity {
@@ -46,6 +48,11 @@ public class CartPage extends AppCompatActivity {
         checkAll = findViewById(R.id.checkAll);
         TextView checkout=findViewById(R.id.checkout);
         checkout.setOnClickListener(v->{
+            if(Grandtotal.getText().toString().equals("0 VNĐ"))
+            {
+                Toast.makeText(this, "Please Choose Item", Toast.LENGTH_SHORT).show();
+                return;
+            }
             ArrayList<CartItem> checkedItems=getCheckedItem();
             Gson gson = new Gson();
             String json = gson.toJson(checkedItems);
@@ -111,9 +118,10 @@ public class CartPage extends AppCompatActivity {
             }
         }
         grandtotal=subtotal-discount;
-        Grandtotal.setText(String.valueOf(grandtotal));
-        Subtotal.setText(String.valueOf(subtotal));
-        Discount.setText(String.valueOf(discount));
+        DecimalFormat df = new DecimalFormat("0.#");
+        Grandtotal.setText(df.format(grandtotal)+" VNĐ");
+        Subtotal.setText(df.format(subtotal)+" VNĐ");
+        Discount.setText(df.format(discount)+" VNĐ");
     }
 
     // Lấy danh sách các item đã được chọn
