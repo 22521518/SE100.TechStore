@@ -82,8 +82,8 @@ public class CheckoutAddress implements Serializable {
                 ", address='" + address + '\'' +
                 ", district='" + district + '\'' +
                 ", ward='" + ward + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
+                ", full_name='" + fullName + '\'' +
+                ", phone_number='" + phoneNumber + '\'' +
                 '}';
     }
 }

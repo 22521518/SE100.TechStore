@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.example.electrohive.Models.CheckoutAddress;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
+import com.example.electrohive.Models.OrderItemRequest;
 import com.example.electrohive.Repository.OrderRepository;
 import com.example.electrohive.utils.PreferencesHelper;
 
@@ -78,7 +80,7 @@ public class OrderViewModel extends ViewModel {
     }
 
 
-    public static   void cancelOrder(String orderId) {
+    public static void cancelOrder(String orderId) {
         // Find the order by its ID and change the status to CANCELLED
         for (Order order : allOrders) {
             if (order.getOrderId().equals(orderId)) {
@@ -92,5 +94,12 @@ public class OrderViewModel extends ViewModel {
 
         // Update LiveData with the new order list
         orders.setValue(allOrders);  // Update LiveData with the modified orders list
+    }
+
+    public LiveData<Boolean> postUserOrder(double totalPrice, ArrayList<OrderItemRequest> list, String paymentMethod, CheckoutAddress address) {
+        return repository.postOrder(PreferencesHelper.getCustomerData().getCustomerId(),totalPrice,list,paymentMethod,address);
+    }
+    public LiveData<String> postMOMO(double totalPrice, ArrayList<OrderItemRequest> list, String paymentMethod, CheckoutAddress address) {
+        return repository.postMOMO(PreferencesHelper.getCustomerData().getCustomerId(),totalPrice,list,paymentMethod,address);
     }
 }

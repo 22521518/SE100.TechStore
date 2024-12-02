@@ -78,7 +78,7 @@ public class PaymentPage  extends AppCompatActivity {
             bundle.putString("subtotal",Subtotal.getText().toString());
             bundle.putString("discount",Discount.getText().toString());
             bundle.putString("shipCost",Shipcost.getText().toString());
-            bundle.putString("GrandTotal",Grandtotal.getText().toString());
+            bundle.putString("grandTotal",Grandtotal.getText().toString());
             intent.putExtras(bundle);
             startActivity(intent);
         });
