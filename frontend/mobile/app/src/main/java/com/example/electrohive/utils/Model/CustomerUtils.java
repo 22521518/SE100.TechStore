@@ -1,5 +1,7 @@
 package com.example.electrohive.utils.Model;
 
+import android.util.Log;
+
 import com.example.electrohive.Models.Customer;
 import com.google.gson.JsonObject;
 

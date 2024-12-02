@@ -1,21 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:background="@drawable/button_default"
-    android:backgroundTint="@color/black"
-    android:layout_margin="4dp"
-    android:id="@+id/chatBackground"
-    android:layout_height="wrap_content">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chatItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
     <TextView
         android:id="@+id/chatText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="300dp"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:padding="2dp"
         android:lineHeight="24sp"
+        android:maxWidth="300dp"
+        android:padding="8dp"
+        android:elevation="4dp"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="?attr/colorOnBackground"
         android:text="Propmpt text here add something you would like to share"
-        android:textColor="@color/white"/>
-
+        android:textColor="?attr/colorBackgroundFloating"
+        android:textSize="18sp" />
 </LinearLayout>

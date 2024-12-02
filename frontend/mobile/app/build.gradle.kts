@@ -43,6 +43,9 @@ dependencies {
     //java-jwt
     implementation ("com.auth0:java-jwt:4.4.0")
 
+    //socket io
+    implementation ("io.socket:socket.io-client:2.1.0") // Adjust version as needed
+
 
     implementation ("me.relex:circleindicator:2.1.6")
 

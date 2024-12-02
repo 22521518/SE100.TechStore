@@ -209,6 +209,7 @@ public class ProductDetailPage extends DrawerBasePage {
             @Override
             public void onChanged(Boolean isAdded) {
                 if (isAdded) {
+                    setUpUI();
                     Toast.makeText(getApplicationContext(), "Product added to cart", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed to add product to cart", Toast.LENGTH_SHORT).show();

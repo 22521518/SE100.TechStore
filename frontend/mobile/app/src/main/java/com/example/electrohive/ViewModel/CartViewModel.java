@@ -15,7 +15,6 @@ import java.util.List;
 public class CartViewModel extends ViewModel {
     private final CartRepository repository;
 
-    private LiveData<List<CartItem>> cartItems;
 
     public CartViewModel() {
         repository = new CartRepository();
@@ -23,10 +22,8 @@ public class CartViewModel extends ViewModel {
 
 
     public LiveData<List<CartItem>> getCart() {
-        if (cartItems == null || !cartItems.hasObservers()) {
-            cartItems = repository.getCart(PreferencesHelper.getCustomerData().getAccountId());
-        }
-        return cartItems;
+        return repository.getCart(PreferencesHelper.getCustomerData().getCustomerId());
+
     }
 
     public LiveData<Boolean> addItemToCart(String productId, int quantity) {
@@ -34,7 +31,7 @@ public class CartViewModel extends ViewModel {
         payload.addProperty("product_id", productId);
         payload.addProperty("quantity", quantity);
 
-        return repository.addItemToCart(PreferencesHelper.getCustomerData().getAccountId(), payload);
+        return repository.addItemToCart(PreferencesHelper.getCustomerData().getCustomerId(), payload);
     }
 
     public LiveData<Boolean> updateItemToCart(String productId, int quantity) {
@@ -42,14 +39,14 @@ public class CartViewModel extends ViewModel {
         payload.addProperty("product_id", productId);
         payload.addProperty("quantity", quantity);
 
-        return repository.updateCartItem(PreferencesHelper.getCustomerData().getAccountId(), payload);
+        return repository.updateCartItem(PreferencesHelper.getCustomerData().getCustomerId(), payload);
     }
 
     public LiveData<Boolean> deleteCartItem(String productId) {
-        return repository.deleteItemFromCart(PreferencesHelper.getCustomerData().getAccountId(), productId);
+        return repository.deleteItemFromCart(PreferencesHelper.getCustomerData().getCustomerId(), productId);
     }
 
     public LiveData<Boolean> deleteAllCartItem() {
-        return repository.deleteAllItemsFromCart(PreferencesHelper.getCustomerData().getAccountId());
+        return repository.deleteAllItemsFromCart(PreferencesHelper.getCustomerData().getCustomerId());
     }
 }

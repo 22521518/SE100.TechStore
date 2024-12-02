@@ -37,6 +37,7 @@
                 android:layout_height="52dp"
                 android:textSize="16sp"
                 android:maxLines="1"
+                android:singleLine="true"
                 android:hint="Search product..."
                 android:background="@android:color/transparent"
                 android:layout_weight="1"/>

@@ -28,8 +28,8 @@ public class PreferencesHelper {
 
     public static void saveCustomerData(Customer customer) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("user_id", customer.getCustomerId());
-        editor.putString("account_id", customer.getCustomerId());
+        editor.putString("customer_id", customer.getCustomerId());
+        editor.putString("account_id", customer.getAccountId());
         editor.putString("username", customer.getUsername());
         editor.putString("full_name", customer.getFullName());
         editor.putString("phone_number", customer.getPhoneNumber());
@@ -42,7 +42,7 @@ public class PreferencesHelper {
 
     public static Customer getCustomerData() {
         Customer customer = new Customer(
-                sharedPreferences.getString("user_id", null),
+                sharedPreferences.getString("customer_id", null),
                 sharedPreferences.getString("account_id", null),
                 sharedPreferences.getString("username", null),
                 sharedPreferences.getString("full_name", null),

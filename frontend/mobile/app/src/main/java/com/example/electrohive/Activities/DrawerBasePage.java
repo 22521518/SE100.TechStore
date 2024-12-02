@@ -2,6 +2,8 @@ package com.example.electrohive.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -16,14 +18,19 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.electrohive.Models.Customer;
+import com.example.electrohive.Models.Message;
 import com.example.electrohive.R;
+import com.example.electrohive.ViewModel.CartViewModel;
 import com.example.electrohive.ViewModel.CustomerViewModel;
+import com.example.electrohive.ViewModel.SupportChatViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.google.android.material.navigation.NavigationView;
 
 public class DrawerBasePage extends AppCompatActivity {
 
 
+    CartViewModel cartViewModel = new CartViewModel();
+    SupportChatViewModel supportChatViewModel = new SupportChatViewModel();
     private DrawerLayout drawerLayout;
     private ImageView profileImage;
 
@@ -36,6 +43,9 @@ public class DrawerBasePage extends AppCompatActivity {
     private ImageView searchButton;
     private ImageButton signOutButton;
 
+    private NavigationView navigationView;
+
+    private  Menu menu;
     private Customer sessionCustomer = new Customer();
 
 
@@ -47,9 +57,10 @@ public class DrawerBasePage extends AppCompatActivity {
 
 
 
+
         // Find the DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setOnApplyWindowInsetsListener((v, insets) -> {
             // Adjust padding for system bars
             v.setPadding(
@@ -77,6 +88,27 @@ public class DrawerBasePage extends AppCompatActivity {
                 }
             }
         });
+
+        menu = navigationView.getMenu();
+        MenuItem supportChatMenu = menu.findItem(R.id.nav_support);
+
+
+        supportChatViewModel.fetchMessages().observe(this,messages -> {
+            if(messages!=null) {
+                boolean hasUnseen = false;
+                for (Message msg : messages) {
+                    if (!msg.isSeen()) {
+                        hasUnseen = true;
+                        break;
+                    }
+                }
+                // Update menu title based on unseen status
+                supportChatMenu.setTitle(hasUnseen ? "Support (New)" : "Support");
+            }
+        });
+
+
+
         // You can set up the navigation item listener here if needed
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -108,7 +140,8 @@ public class DrawerBasePage extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), TrackPage.class);
                 startActivity(intent);
             } else if (id == R.id.nav_support) {
-                // Support selected
+                Intent intent = new Intent(getApplicationContext(), SupportChatPage.class);
+                startActivity(intent);
             }
 
             // Close the drawer after a menu item is clicked
@@ -131,11 +164,21 @@ public class DrawerBasePage extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         setUpUI();
     }
 
-    private void setUpUI() {
+    protected void setUpUI() {
+
+        MenuItem cartMenu = menu.findItem(R.id.nav_cart);
+
+
+        cartViewModel.getCart().observe(this, cartItems -> {
+            if (cartItems != null) {
+                int itemCount = cartItems.size(); // Assuming `getCart()` returns a list of cart items
+                cartMenu.setTitle("Cart (" + itemCount + ")"); // Update the cart menu title with the item count
+            }
+        });
+
         sessionCustomer = PreferencesHelper.getCustomerData();
         username.setText(sessionCustomer.getUsername());
         Glide.with(DrawerBasePage.this)

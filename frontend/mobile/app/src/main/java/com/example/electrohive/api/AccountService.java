@@ -22,7 +22,7 @@ public interface AccountService {
             @Body JsonObject account
     );
 
-    @GET("/account/{id}")
+    @GET("/accounts/{id}")
     Call<JsonObject> getAccount(
             @Path("id") String addressId
     );

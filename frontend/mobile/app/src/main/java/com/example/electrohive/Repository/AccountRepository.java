@@ -118,7 +118,7 @@ public class AccountRepository {
                     accountData.postValue(account);
                 } else {
                     // Handle other response issues (e.g., network errors)
-                    Log.e("Login", "Login failed with response code: " + response.code());
+                    Log.e("Patch", "patch failed with response code: " + response.code());
                     accountData.postValue(null);
 
                 }
@@ -127,7 +127,7 @@ public class AccountRepository {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 // Handle failure (e.g., no internet, server down)
-                Log.e("Login", "Network error: " + t.getMessage());
+                Log.e("Patch", "Network error: " + t.getMessage());
                 accountData.postValue(null);
 
             }
