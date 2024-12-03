@@ -1,35 +1,171 @@
 "use client";
-import { faHeadset, faPaperPlane, faPhone, faX } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDown,
+  faHeadset,
+  faPaperPlane,
+  faPhone,
+  faX,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import InputBox from "../Input/InputBox";
 import { useSelector } from "@node_modules/react-redux/dist/react-redux";
-import { getMessageLog } from "@service/message";
+import { getMessageLog, getMessages, sendMessage } from "@service/message";
+import SupportButton from "./SupportButton";
+import { toastError } from "@util/toaster";
+import useSocket from "@components/socket/useSocket";
+
+export const SOCKET_JOIN_CHANNEL = {
+  STAFF_JOIN: "STAFF_JOIN",
+  STAFF_LEAVE: "STAFF_LEAVE",
+
+  CUSTOMER_JOIN: "CUSTOMER_JOIN",
+  CUSTOMER_LEAVE: "CUSTOMER_LEAVE",
+};
+
+export const SOCKET_INBOX_CHANNEL = {
+  JOIN_ROOM: "JOIN_ROOM",
+  LEAVE_ROOM: "LEAVE_ROOM",
+
+  GET_MORE_MESSAGES: "GET_MORE_MESSAGES",
+  ADD_MESSAGE: "ADD_MESSAGE",
+  GET_MESSAGES: "GET_MESSAGES",
+  DELETE_MESSAGE: "DELETE_MESSAGE",
+
+  GET_CONVERSATIONS: "GET_CONVERSATIONS",
+  DELETE_CONVERSATION: "DELETE_CONVERSATION",
+};
 
 const SupportChatBox = () => {
   const session = useSelector((state) => state.session);
-  const [position, setPosition] = useState({ bottom: 20, left: 20 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  const socket = useSocket(session?.customer?.customer_id);
+
+  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
   const [unreadMessage, setUnreadMessage] = useState(0);
-  const [messageLog, setMessageLog] = useState([
-    //   {
-    //   sender: sender,
-    //   message_id: getRandomString(12),
-    //   message: getRandomString(50),
-    //   created_at: getRandomDate().toISOString(),
-    //   is_seen: Math.random() < 0.5, // Randomly setting as seen or not
-    // }
-  ]);
+  const [messageLog, setMessageLog] = useState([]);
 
   const [message, setMessage] = useState("");
+  const [isMore, setIsMore] = useState(true);
+  const [skip, setSkip] = useState(0);
 
-  const fetchMessageLog = () => {
-    getMessageLog(session.user?.id).then((data) =>
-      setMessageLog(data.messages)
-    );
+  const [isScrolledUp, setIsScrolledUp] = useState(false);
+
+  const messageLogRef = useRef(null);
+
+  const fetchMessageLog = async () => {
+    if (isLoading||!isMore) return;
+    setIsLoading(true);
+    try {
+      const payload = {
+        room_id: session.customer.customer_id,
+        skip: skip,
+      };
+      socket.emit(SOCKET_INBOX_CHANNEL.GET_MORE_MESSAGES, payload);
+    } catch (error) {
+      console.error("Failed to fetch older messages:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!socket) return;
+
+    fetchMessageLog();
+    socket.on(SOCKET_INBOX_CHANNEL.GET_MESSAGES, (data) => {
+      setMessageLog((prev) => [
+        {
+          ...data,
+          is_customer: data.sender.sender_id === session.customer?.customer_id,
+        },
+        ...prev,
+      ]);
+    });
+
+    socket.on(SOCKET_INBOX_CHANNEL.GET_MORE_MESSAGES, (data) => {
+      if (data?.messages?.length > 0) {
+        setMessageLog((prev) => [
+          ...prev,
+          ...data.messages.map((msg) => ({
+            ...msg,
+            is_customer: msg.sender.sender_id === session.customer?.customer_id,
+          })),
+        ]);
+        setIsMore(data.messages.length >= 20);
+        setSkip((prev) => prev + (data.messages.length > 0 ? 1 : 0));
+      }
+      setIsLoading(false);
+    });
+
+    return () => {
+      socket.off(SOCKET_INBOX_CHANNEL.GET_MESSAGES);
+      socket.off(SOCKET_INBOX_CHANNEL.GET_MORE_MESSAGES);
+    };
+  }, [socket]);
+
+  const handleSend = async () => {
+    if (socket && message.trim() && session.customer) {
+      const payload = {
+        customer_id: session.customer?.customer_id,
+        content: {
+          sender: {
+            sender_id: session.customer?.customer_id,
+            sender_name: session.customer?.username,
+          },
+          message: message,
+        },
+      };
+      await sendMessage(payload).then((data) => {
+        if (data) {
+          const msgData = {
+            room_id: session.customer?.customer_id,
+            sender: {
+              sender_id: session.customer?.customer_id,
+              sender_name: session.customer?.username,
+            },
+            message: message,
+            created_at: new Date().toISOString(),
+            is_seen: false,
+          };
+
+          socket.emit(SOCKET_INBOX_CHANNEL.ADD_MESSAGE, msgData);
+          setMessageLog((prevMessages) => [
+            { ...msgData,message_id:data.message_id, is_customer: true },
+            ...prevMessages,
+          ]);
+          setMessage("");
+        } else {
+          toastError("Failed to send message");
+        }
+      });
+    }
+  };
+
+  const handleScroll = () => {
+    if (!messageLogRef.current || isLoading) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = messageLogRef.current;
+
+    // Check if the user has scrolled up
+    if (Math.abs(scrollTop) > 200) {
+      setIsScrolledUp(true); // User has scrolled up
+    } else {
+      setIsScrolledUp(false); // User is at the bottom
+    }
+
+    // If we are at the top of the container, fetch more messages
+    if (Math.abs(scrollTop) + clientHeight >= scrollHeight) {
+      fetchMessageLog();
+    }
+  };
+
+  const handleScrollToBottom = () => {
+    if (isOpen && messageLogRef.current) {
+      messageLogRef.current.scrollTo({
+        top: messageLogRef.current.scrollHeight,
+        behavior: "smooth", // Optional: smooth scroll effect
+      });
+    }
   };
 
   useEffect(() => {
@@ -42,78 +178,7 @@ const SupportChatBox = () => {
     setUnreadMessage(
       messageLog.reduce((acc, item) => acc + (item.is_seen ? 0 : 1), 0)
     );
-  }, [messageLog]);
-
-  useEffect(() => {
-    fetchMessageLog();
-  }, []);
-  const handleDragStart = (e) => {
-    setIsDragging(true);
-
-    const clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
-    const clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
-
-    setOffset({
-      x: clientX - position.left,
-      y: window.innerHeight - clientY - position.bottom,
-    });
-
-    setInitialPosition({ x: clientX, y: clientY });
-  };
-
-  const handleDragMove = (e) => {
-    if (isDragging) {
-      const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-      const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-
-      // Calculate new position
-      const newBottom = window.innerHeight - clientY - offset.y;
-      const newLeft = clientX - offset.x;
-
-      // Ensure the button stays within the viewport
-      const clampedBottom = Math.max(
-        0,
-        Math.min(newBottom, window.innerHeight - 50)
-      ); // Keep it above the bottom edge
-      const clampedLeft = Math.max(
-        0,
-        Math.min(newLeft, window.innerWidth - 50)
-      ); // Keep it within the left edge
-
-      setPosition({
-        bottom: clampedBottom,
-        left: clampedLeft,
-      });
-    }
-  };
-
-  const handleDragEnd = (e) => {
-    const clientX =
-      e.type === "touchend" ? e.changedTouches[0].clientX : e.clientX;
-    const clientY =
-      e.type === "touchend" ? e.changedTouches[0].clientY : e.clientY;
-
-    setIsOpen(clientX === initialPosition.x && clientY === initialPosition.y);
-
-    setIsDragging(false);
-    setInitialPosition({ x: 0, y: 0 });
-  };
-
-  const handleSend = async () => {
-    if (message.trim()) {  // Check for non-empty message
-      setMessage('');  // Clear the input
-      setMessageLog((prevMessageLog) => [
-        ...prevMessageLog,
-        {
-          sender: { sender_id: "123", sender_name: "me" },
-          message_id: (Math.random() * 1000).toString(),
-          message: message,
-          created_at: new Date().toISOString(),
-          is_seen: true,
-        },
-      ]);
-    }
-  };
+  }, [messageLog, isOpen]);
 
   return (
     <>
@@ -121,27 +186,47 @@ const SupportChatBox = () => {
         <div className="fixed bottom-0 right-0 w-full sm:w-[400px] h-[500px] grid grid-rows-[auto_1fr_auto] shadow-xl z-50">
           <div className="size-full grid grid-cols-[1fr_auto] items-center bg-primary-variant text-on-primary p-2">
             <div className="flex flex-row items-center justify-start p-2 gap-2">
-              <FontAwesomeIcon icon={faHeadset} className="text-2xl"/>
+              <FontAwesomeIcon icon={faHeadset} className="text-2xl" />
               <h2 className="font-bold text-xl ">Support chat</h2>
             </div>
             <button className="p-2 text-xl" onClick={() => setIsOpen(false)}>
               <FontAwesomeIcon icon={faX} />
             </button>
           </div>
-          <ul className="bg-primary/70 backdrop-blur-sm flex flex-col-reverse justify-items-end gap-4 overflow-y-scroll no-scrollbar py-4 px-2">
-            {messageLog?.slice(0).reverse().map((item) => (
+
+          <ul
+            ref={messageLogRef}
+            onScroll={handleScroll}
+            className="bg-primary/70 backdrop-blur-sm flex flex-col-reverse w-full h-[380px]  justify-items-end gap-4 overflow-y-scroll no-scrollbar py-4 px-2"
+          >
+            {messageLog?.slice(0).map((item) => (
               <li
-                key={item.message_id}
+                key={item.message_id || item._id}
                 className={`${
-                  item.sender.sender_id === "123"
-                    ? "my-message"
-                    : "other-message"
+                  item.is_customer ? "my-message" : "other-message"
                 }`}
               >
                 {item.message}
               </li>
             ))}
+            {isLoading && (
+              <div className="animate-pulse text-lg text-on-primary font-bold w-full text-center">
+                Loading...
+              </div>
+            )}
           </ul>
+
+          {isScrolledUp && (
+            <div className="fixed bottom-[70px] flex items-center justify-center w-[400px]">
+              <button
+                className=" bg-on-primary text-primary size-9 shadow-lg rounded-full z-50"
+                onClick={handleScrollToBottom}
+              >
+                <FontAwesomeIcon icon={faAngleDown} />
+              </button>
+            </div>
+          )}
+
           <div className="bg-primary-variant text-on-primary flex p-2">
             <InputBox value={message} onChange={setMessage} />
             <button className="p-2 text-xl" onClick={handleSend}>
@@ -150,32 +235,10 @@ const SupportChatBox = () => {
           </div>
         </div>
       ) : (
-        <button
-          id="chatButton"
-          className={` shadow-xl fixed size-9 m-4 rounded-full bg-on-primary text-primary sm:scale-110 transition-transform duration-150 hover:scale-150 z-50 ${
-            unreadMessage > 0 ? `animate-bounce` : ""
-          }`}
-          onMouseDown={handleDragStart}
-          onMouseMove={handleDragMove}
-          onMouseUp={handleDragEnd}
-          onMouseLeave={handleDragEnd}
-          onTouchStart={handleDragStart}
-          onTouchMove={handleDragMove}
-          onTouchEnd={handleDragEnd}
-          style={{
-            bottom: `${position.bottom}px`,
-            left: `${position.left}px`,
-            position: "fixed",
-            cursor: "pointer",
-          }}
-        >
-          {unreadMessage > 0 && (
-            <div className="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4 size-4 text-xs sm:text-sm rounded-full bg-primary text-on-primary font-semibold flex items-center justify-center">
-              {unreadMessage}
-            </div>
-          )}
-          <FontAwesomeIcon icon={faPhone} size="lg" />
-        </button>
+        <SupportButton
+          onClick={() => setIsOpen(true)}
+          unreadMsg={unreadMessage}
+        />
       )}
     </>
   );

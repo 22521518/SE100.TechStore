@@ -239,19 +239,19 @@ const Payment = () => {
             </button>
           </div>
           {isSelectingVoucher && (
-            <div className="flex flex-col gap-2 overflow-y-scroll no-scrollbar p-2  max-h-[250px]">
+            <div className="flex flex-col gap-4 overflow-y-scroll no-scrollbar p-2  max-h-[250px]">
               {vouchers.map((vc) => (
                 <div
                   key={vc.voucher_code}
                   className="relative h-[80px] w-full flex flex-row  items-center cursor-pointer voucher "
                   onClick={() => setVoucher(v=>v?.voucher_code===vc.voucher_code?null:vc)}
                 >
-                  <div className="flex items-center justify-center h-full aspect-square bg-on-primary grow max-w-[80px] text-primary text-3xl font-bold">
-                    {vc.discount_amount}%
+                  <div className=" relative flex items-center justify-center h-full aspect-square bg-on-primary grow max-w-[80px] text-primary text-3xl font-bold">
+                    {vc.discount_amount}% {voucher?.voucher_code===vc.voucher_code&&<FontAwesomeIcon icon={faCheckCircle} className="text-lg absolute top-1 left-1"/>}
                   </div>
                   <div className="p-2 flex flex-col gap-[1px] ">
-                    <h3 className="text-base font-bold ">
-                    {voucher?.voucher_code===vc.voucher_code&&<FontAwesomeIcon icon={faCheckCircle} className="text-lg"/>} {vc.voucher_code}
+                    <h3 className="text-base font-bold">
+                     {vc.voucher_code}
                     </h3>
                     <h4 className="opacity-60 text-xs ">
                       {vc.description}

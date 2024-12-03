@@ -27,6 +27,7 @@ export default function Tracking() {
   const session = useSelector((state)=> state.session)
   const [isLoading, setIsLoading] = useState(false);
   const [orderIdInput, setOrderIdInput] = useState("");
+  const [orderIdPending,setOrderIdPending] = useState("");
   const [order, setOrder] = useState();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
@@ -48,8 +49,13 @@ export default function Tracking() {
     }
   };
 
+  const trackOrder = () => {
+    setOrderIdInput(orderIdPending);
+  }
+
   useEffect(()=>{
     setOrderIdInput(orderId)
+    setOrderIdPending(orderId)
   },[orderId])
 
   useEffect(() => {
@@ -59,26 +65,70 @@ export default function Tracking() {
     }
   }, [orderIdInput,session]);
 
-  const renderPaymentMethod = (method) => {
-    switch (method) {
+  const renderPaymentMethod = (order) => {
+    switch (order?.payment_method) {
+      case "MOMO":
+        switch (order.payment_status) {
+          case "PENDING":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-gray-500/50  px-2 py-1 text-white">
+                PENDING{" "}
+                <Image
+                  src={"/images/MoMo_Logo.png"}
+                  alt="MOMO"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            );
+          case "PAID":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-green-500/50  px-2 py-1 text-white">
+                PAID{" "}
+                <Image
+                  src={"/images/MoMo_Logo.png"}
+                  alt="MOMO"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            );
+          case "REFUNDED":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-black/50  px-2 py-1 text-white">
+                REFUNDED{" "}
+                <Image
+                  src={"/images/MoMo_Logo.png"}
+                  alt="MOMO"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            );
+        }
       case "COD":
-        return (
-          <div className="flex flex-row gap-2 items-center font-bold">
-            COD <FontAwesomeIcon icon={faMoneyBill} />
-          </div>
-        );
-      case "CREDIT_CARD":
-        return (
-          <div className="flex flex-row gap-2 items-center font-bold">
-            Credit Card <FontAwesomeIcon icon={faCreditCard} />
-          </div>
-        );
-      case "ELECTRO_WALLET":
-        return (
-          <div className="flex flex-row gap-2 items-center font-bold">
-            Electro Wallet <FontAwesomeIcon icon={faWallet} />
-          </div>
-        );
+        switch (order.payment_status) {
+          case "PENDING":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-gray-500/50  px-2 py-1 text-white">
+                PENDING <FontAwesomeIcon icon={faMoneyBill} />
+              </div>
+            );
+          case "PAID":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-green-500/50  px-2 py-1 text-white">
+                PAID <FontAwesomeIcon icon={faMoneyBill} />
+              </div>
+            );
+          case "REFUNDED":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-black/50 px-2 py-1  text-white">
+                REFUNDED <FontAwesomeIcon icon={faMoneyBill} />
+              </div>
+            );
+        }
+      default:
+        return null;
     }
   };
 
@@ -145,11 +195,11 @@ export default function Tracking() {
             <div className="flex flex-row gap-2 grow items-center">
               <h3 className="font-bold text-lg">Order id:</h3>
               <div>
-                <InputBox value={orderIdInput} onChange={setOrderIdInput} />
+                <InputBox value={orderIdPending} onChange={setOrderIdPending} />
               </div>
               <button
                 className="button-variant-1 size-12 text-2xl"
-                onClick={() => fetchOrder(orderIdInput.trim())}
+                onClick={trackOrder}
               >
                 {isLoading ? (
                   <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
@@ -195,7 +245,7 @@ export default function Tracking() {
           <div className="flex flex-row gap-2 items-center justify-between">
             <h3 className="text-lg">Payment method</h3>
             <h3 className="text-lg">
-              {renderPaymentMethod(order?.payment_method)}
+              {renderPaymentMethod(order)}
             </h3>
           </div>
         </div>

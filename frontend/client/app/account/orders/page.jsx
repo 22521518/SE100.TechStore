@@ -7,11 +7,17 @@ import Link from "@node_modules/next/link";
 import { cancelOrder, getOrders } from "@service/order";
 import { formattedDate, formattedPrice } from "@util/format";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "@node_modules/react-redux/dist/react-redux";
+import {
+  useDispatch,
+  useSelector,
+} from "@node_modules/react-redux/dist/react-redux";
 import { toastError, toastRequest, toastSuccess } from "@util/toaster";
 import { useRouter } from "@node_modules/next/navigation";
 import { addCartItem } from "@service/cart";
 import { addItem } from "@provider/redux/cart/cartSlice";
+import { FontAwesomeIcon } from "@node_modules/@fortawesome/react-fontawesome";
+import { faMoneyBill } from "@node_modules/@fortawesome/free-solid-svg-icons";
+import Image from "@node_modules/next/image";
 
 const Orders = () => {
   const router = useRouter();
@@ -32,14 +38,18 @@ const Orders = () => {
 
   const fetchOrders = () => {
     setIsLoading(true);
-    getOrders(session.customer?.customer_id).then((data) => setOrders(data));
-    setTimeout(() => setIsLoading(false), 1000);
+    getOrders(session.customer?.customer_id).then((data) => {
+      const sortedOrders = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    setOrders(sortedOrders);  // Update orders
+      setTimeout(() => setIsLoading(false), 1000);
+    });
   };
 
   const handleCancelOrder = async (id) => {
     const result = await toastRequest("Do you want to cancel this order?");
     if (result) {
-      cancelOrder(session?.user?.id,id);
+      cancelOrder(session.customer?.customer_id, id);
       toastSuccess("Order cancelled successfully");
 
       setOrders(
@@ -51,17 +61,21 @@ const Orders = () => {
         })
       );
     }
-  }
+  };
 
   const handleReorder = async (order) => {
     const result = await toastRequest("Do you want to reorder?");
     if (!result) return;
-  
+
     try {
       // Add items to the cart in parallel
       await Promise.all(
         order.order_items.map(async (item) => {
-          const data = await addCartItem(session.customer?.customer_id, item.product_id, item.quantity);
+          const data = await addCartItem(
+            session.customer?.customer_id,
+            item.product_id,
+            item.quantity
+          );
           if (data) {
             dispatch(
               addItem({
@@ -75,17 +89,17 @@ const Orders = () => {
           }
         })
       );
-  
+
       // Navigate to cart after all items are processed
-      router.push('/cart');
+      router.push("/cart");
     } catch (error) {
       console.error("Error reordering items:", error);
       toastError("An error occurred while reordering. Please try again.");
     }
   };
-  
+
   useEffect(() => {
-    if(!session.isAuthenticated)return 
+    if (!session.isAuthenticated) return;
     fetchOrders();
   }, [session]);
 
@@ -107,15 +121,96 @@ const Orders = () => {
           </Link>
         );
       case "DELIVERED":
-        return <button className="button-variant-2" onClick={()=>handleReorder(order)}>Reorder</button>;
+        return (
+          <button
+            className="button-variant-2"
+            onClick={() => handleReorder(order)}
+          >
+            Reorder
+          </button>
+        );
       case "CANCELLED":
-        return <button className="button-variant-2"  onClick={()=>handleReorder(order)}>Reorder</button>;
+        return (
+          <button
+            className="button-variant-2"
+            onClick={() => handleReorder(order)}
+          >
+            Reorder
+          </button>
+        );
       case "CONFIRMED":
         return (
           <Link href={`/tracking?orderId=${order.order_id}`}>
             <button className="button-variant-2">Track</button>
           </Link>
         );
+      default:
+        return null;
+    }
+  };
+
+  const renderPaymentMethod = (order) => {
+    switch (order.payment_method) {
+      case "MOMO":
+        switch (order.payment_status) {
+          case "PENDING":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-gray-500/50  px-2 py-1 text-white">
+                PENDING{" "}
+                <Image
+                  src={"/images/MoMo_Logo.png"}
+                  alt="MOMO"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            );
+          case "PAID":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-green-500/50  px-2 py-1 text-white">
+                PAID{" "}
+                <Image
+                  src={"/images/MoMo_Logo.png"}
+                  alt="MOMO"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            );
+          case "REFUNDED":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-black/50  px-2 py-1 text-white">
+                REFUNDED{" "}
+                <Image
+                  src={"/images/MoMo_Logo.png"}
+                  alt="MOMO"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            );
+        }
+      case "COD":
+        switch (order.payment_status) {
+          case "PENDING":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-gray-500/50  px-2 py-1 text-white">
+                PENDING <FontAwesomeIcon icon={faMoneyBill} />
+              </div>
+            );
+          case "PAID":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-green-500/50  px-2 py-1 text-white">
+                PAID <FontAwesomeIcon icon={faMoneyBill} />
+              </div>
+            );
+          case "REFUNDED":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-black/50 px-2 py-1  text-white">
+                REFUNDED <FontAwesomeIcon icon={faMoneyBill} />
+              </div>
+            );
+        }
       default:
         return null;
     }
@@ -198,7 +293,7 @@ const Orders = () => {
               .map((item) => (
                 <div
                   key={item.order_id}
-                  className=" flex flex-col bg-on-surface/20 rounded-lg p-2 gap-2"
+                  className=" flex flex-col bg-on-surface/20 shadow-md rounded-lg p-2 gap-2"
                 >
                   <div className="flex flex-wrap justify-between gap-4">
                     <h3>OrderID: {item.order_id}</h3>
@@ -207,9 +302,13 @@ const Orders = () => {
                     </h3>
                   </div>
                   <Divider />
-                  <h2 className="text-xl font-bold">
-                    {formattedPrice(item.total_price)}
-                  </h2>
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-bold">
+                      {formattedPrice(item.total_price)}
+                    </h2>
+
+                    {renderPaymentMethod(item)}
+                  </div>
                   <CollapsibleContainer
                     content={
                       <ul className="flex flex-col gap-4 py-4">

@@ -52,14 +52,14 @@ const ProductCard = ({ product, loading = false }) => {
           />
         </div>
       </div>
-      <div className="text-lg">
+      <div className="text-lg font-semibold text-green-600">
         {formattedPrice(
           product.price - (product.price / 100) * product.discount
         )}
       </div>
-      <div className="text-sm opacity-50 font-semibold">
-        {formattedPrice(product.price)}{" "}
-        <span className="text-red-500">-{product.discount}%</span>{" "}
+      <div className="text-sm font-semibold">
+        <span className="opacity-50 ">{formattedPrice(product.price)}</span>{" "}
+        <span className="text-red-500 font-semibold">-{product.discount}%</span>{" "}
       </div>
       <div className="flex justify-between items-center">
         <div className="text-yellow-400 flex flex-row items-center gap-1">

@@ -26,7 +26,7 @@ const Footer = () => {
         <div className="flex flex-col gap-2">
           <span className="font-bold">Products</span>
           <ul className="flex sm:flex-col gap-1 text-sm text-on-secondary/50 ">
-            {categories.map(item=>
+            {categories?.slice(0,5).map(item=>
                <li key={item.category_id} className="hover:text-on-secondary cursor-pointer"><Link href={`/search?category=${item.category_id}`}>{item.category_name}</Link></li>
             )}
           </ul>

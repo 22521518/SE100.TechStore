@@ -339,7 +339,7 @@ const Product = () => {
               <ReviewStar rating={productRating} />
               {productFeedbacks.length} reviews
             </div>
-            <div className="text-xl sm:text-2xl md:text-3xl">
+            <div className="text-xl sm:text-2xl md:text-3xl font-semibold text-green-600">
               {formattedPrice(
                 product?.price - (product?.price / 100) * product?.discount
               )}
@@ -349,7 +349,7 @@ const Product = () => {
                 <span className="opacity-70">
                   {formattedPrice(product?.price)}
                 </span>
-                <span className="text-red-500">-{product?.discount}%</span>
+                <span className="text-red-500 font-semibold">-{product?.discount}%</span>
               </div>
             )}
             <div>{product?.stock_quantity} in-stocks</div>
