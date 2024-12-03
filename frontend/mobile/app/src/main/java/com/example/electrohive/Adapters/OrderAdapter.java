@@ -32,10 +32,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private List<Order> orderList;
     private Context context;
 
+    private OrderViewModel orderViewModel;
+
     // Constructor
-    public OrderAdapter(Context context, List<Order> orderList) {
+    public OrderAdapter(Context context, List<Order> orderList, OrderViewModel orderViewModel) {
         this.context = context;
         this.orderList = orderList;
+        this.orderViewModel = orderViewModel;
     }
 
 
@@ -83,18 +86,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 holder.orderStatus.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#008000"))); // Green tint for delivered
                 holder.actionButton.setText("Reorder");
                 holder.actionButton.setVisibility(View.VISIBLE);
-                holder.actionButton.setOnClickListener(v -> {
-                    // Handle reorder
-                });
+                holder.actionButton.setOnClickListener(v -> reorder(order.getOrderId()));
                 break;
 
             case CANCELLED:
                 holder.orderStatus.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF0000"))); // Red tint for cancelled
                 holder.actionButton.setText("Reorder");
                 holder.actionButton.setVisibility(View.VISIBLE);
-                holder.actionButton.setOnClickListener(v -> {
-                    // Handle reorder
-                });
+                holder.actionButton.setOnClickListener(v -> reorder(order.getOrderId()));
                 break;
 
             default:
@@ -136,18 +135,30 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
     public void cancelOrder(String orderId,int position) {
-
-
         // Create an AlertDialog to confirm cancel
         new AlertDialog.Builder(context)
                 .setTitle("Cancel Order")
                 .setMessage("Are you sure you want to cancel this order?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     // Handle cancellation here, update order status
-                    new OrderViewModel().cancelOrder(orderId); // Method to cancel the order
+                    orderViewModel.cancelOrder(orderId); // Method to cancel the order
 
                     // Optionally, rerender the RecyclerView by updating the order list
                     notifyItemChanged(position);
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    public void reorder(String orderId) {
+        // Create an AlertDialog to confirm cancel
+        new AlertDialog.Builder(context)
+                .setTitle("Reorder")
+                .setMessage("Are you sure you want to reorder?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Handle reorder here, update order status
+                    orderViewModel.reorder(orderId); // Method to reorder the order
+
                 })
                 .setNegativeButton("No", null)
                 .show();

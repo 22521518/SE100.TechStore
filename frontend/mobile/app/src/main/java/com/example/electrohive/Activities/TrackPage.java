@@ -77,7 +77,7 @@ public class TrackPage extends AppCompatActivity {
         Intent intent = getIntent();
         String orderId = intent.getStringExtra("ORDER_ID");
 
-        orderViewModel = new OrderViewModel();
+        orderViewModel = new OrderViewModel(TrackPage.this);
 
         if (orderId != null) {
            fetchOrder(orderId);

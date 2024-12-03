@@ -51,7 +51,7 @@ public class AccountInfoPage extends AppCompatActivity {
     private RadioButton radioFemale;
     private Customer sessionCustomer;
 
-    private CustomerViewModel customerViewModel;
+    private CustomerViewModel customerViewModel = CustomerViewModel.getInstance();
 
     private String imageUrl="";
 
@@ -62,7 +62,6 @@ public class AccountInfoPage extends AppCompatActivity {
 
         setContentView(R.layout.account_info_page);
 
-        customerViewModel = new CustomerViewModel();
 
         sessionCustomer = PreferencesHelper.getCustomerData();
 

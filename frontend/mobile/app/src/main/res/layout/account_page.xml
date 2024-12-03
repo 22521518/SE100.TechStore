@@ -85,9 +85,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginTop="8dp"
-            android:background="@drawable/border"
+            android:background="@drawable/footer_border"
             android:orientation="vertical">
 
 
@@ -104,7 +105,7 @@
                 android:gravity="center_vertical"
                 android:paddingHorizontal="8dp"
                 android:text="Info"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
 
@@ -121,7 +122,7 @@
                 android:gravity="center_vertical"
                 android:paddingHorizontal="8dp"
                 android:text="Address"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
 
@@ -138,7 +139,7 @@
                 android:gravity="center_vertical"
                 android:paddingHorizontal="8dp"
                 android:text="Change password"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
 
@@ -155,7 +156,7 @@
                 android:gravity="center_vertical"
                 android:paddingHorizontal="8dp"
                 android:text="Orders"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
 
@@ -172,7 +173,7 @@
                 android:gravity="center_vertical"
                 android:paddingHorizontal="8dp"
                 android:text="Vouchers"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>
 

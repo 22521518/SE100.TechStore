@@ -47,7 +47,7 @@ public class OrderUtils {
         PAYMENT_METHOD paymentMethod = PAYMENT_METHOD.valueOf(paymentMethodStr);
 
         String paymentStatusStr = orderJson.get("payment_status").getAsString();
-        PAYMENT_STATUS paymentStatus = PAYMENT_STATUS.valueOf(paymentMethodStr);
+        PAYMENT_STATUS paymentStatus = PAYMENT_STATUS.valueOf(paymentStatusStr);
 
         // Parse created_at as a Date or String (depends on implementation)
         Object createdAt = orderJson.get("created_at").getAsString();

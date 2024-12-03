@@ -16,6 +16,8 @@ import java.util.List;
 
 public class SupportChatViewModel extends ViewModel {
     private final SupportChatRepository repository;
+
+    private static SupportChatViewModel instance;
     private final String customerId; // Cached customer ID for reuse
 
     public SupportChatViewModel() {
@@ -24,6 +26,14 @@ public class SupportChatViewModel extends ViewModel {
                 ? PreferencesHelper.getCustomerData().getCustomerId()
                 : ""; // Fallback to empty string if customer data is unavailable
     }
+
+    public static synchronized SupportChatViewModel getInstance() {
+        if(instance == null) {
+            instance =  new SupportChatViewModel();
+        }
+        return instance;
+    }
+
 
     public LiveData<List<Message>> fetchMessages() {
         if (customerId.isEmpty()) {

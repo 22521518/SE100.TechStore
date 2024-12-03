@@ -127,7 +127,7 @@ public class ProductDetailPage extends DrawerBasePage {
         Intent intent = getIntent();
         String productId = intent.getStringExtra("PRODUCT_ID");
         productViewModel = new ProductViewModel();
-        cartViewModel = new CartViewModel();
+        cartViewModel = CartViewModel.getInstance();
 
         productAdapter = new ProductAdapter(
                 ProductDetailPage.this,
@@ -209,7 +209,6 @@ public class ProductDetailPage extends DrawerBasePage {
             @Override
             public void onChanged(Boolean isAdded) {
                 if (isAdded) {
-                    setUpUI();
                     Toast.makeText(getApplicationContext(), "Product added to cart", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed to add product to cart", Toast.LENGTH_SHORT).show();

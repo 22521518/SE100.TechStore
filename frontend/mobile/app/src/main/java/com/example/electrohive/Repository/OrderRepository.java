@@ -98,8 +98,41 @@ public class OrderRepository {
 
     }
 
-    public void updateOrderStatus(String orderId, ORDER_STATUS status) {
+    public LiveData<ORDER_STATUS> updateOrderStatus(String order_id, String customer_id, ORDER_STATUS status) {
+        MutableLiveData<ORDER_STATUS> orderStatusData = new MutableLiveData<>();
 
+        // Create payload for the request
+        JsonObject payload = new JsonObject();
+        payload.addProperty("order_status", status.toString());
+
+        // Make asynchronous request to update the order status
+        orderService.patchOrder(customer_id, order_id, "application/json", payload).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Assuming the response contains the updated status
+                    try {
+                        String updatedStatus = response.body().get("order_status").getAsString();
+                        ORDER_STATUS newStatus = ORDER_STATUS.valueOf(updatedStatus);
+                        orderStatusData.postValue(newStatus);
+                    } catch (Exception e) {
+                        // Handle any parsing errors
+                        orderStatusData.postValue(null);
+                    }
+                } else {
+                    // Handle unsuccessful response
+                    orderStatusData.postValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                // Handle network failure or other errors
+                orderStatusData.postValue(null);
+            }
+        });
+
+        return orderStatusData;
     }
 
 }

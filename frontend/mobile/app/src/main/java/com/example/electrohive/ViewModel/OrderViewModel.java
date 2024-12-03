@@ -1,89 +1,140 @@
 package com.example.electrohive.ViewModel;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
+import com.example.electrohive.Models.OrderItem;
 import com.example.electrohive.Repository.OrderRepository;
 import com.example.electrohive.utils.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class OrderViewModel extends ViewModel {
 
     private final OrderRepository repository;
-    private final MutableLiveData<List<Order>> orders;
-    private List<Order> allOrders;
-    private ExecutorService executor;
+    private final MutableLiveData<List<Order>> allOrders = new MutableLiveData<>();
+    private final MutableLiveData<ORDER_STATUS> filterStatus = new MutableLiveData<>();
+    private final MutableLiveData<List<Order>> filteredOrders = new MutableLiveData<>();
+    private final Context context;
 
-    public OrderViewModel() {
+    public OrderViewModel(Context context) {
+        this.context = context;
         repository = new OrderRepository();
-        orders = new MutableLiveData<>();
-        allOrders = new ArrayList<>();
-        executor = Executors.newSingleThreadExecutor(); // Create a single-threaded executor for background tasks
+        initialize();
     }
 
-    // Fetch single order using its ID
+    private void initialize() {
+        fetchOrders();
+        observeFilters();
+    }
+
+    // Observing filters to automatically update the filtered orders
+    private void observeFilters() {
+        filterStatus.observeForever(status -> applyFilter());
+        allOrders.observeForever(orders -> applyFilter());
+    }
+
+    // Fetch orders from repository and store them in LiveData
+    private void fetchOrders() {
+        repository.getOrders(PreferencesHelper.getCustomerData().getCustomerId())
+                .observeForever(orders -> {
+                    allOrders.setValue(orders);
+                    applyFilter();
+                });
+    }
+
+    // Apply filter logic based on the current filter status
+    private void applyFilter() {
+        List<Order> currentOrders = allOrders.getValue();
+        ORDER_STATUS currentFilter = filterStatus.getValue();
+
+        if (currentOrders == null) return;
+
+        List<Order> filteredList = new ArrayList<>();
+        if (currentFilter != null) {
+            for (Order order : currentOrders) {
+                if (order.getOrderStatus() == currentFilter) {
+                    filteredList.add(order);
+                }
+            }
+        } else {
+            filteredList = new ArrayList<>(currentOrders);
+        }
+        filteredOrders.setValue(filteredList);
+    }
+
+    // Change the filter status
+    public void changeFilterStatus(ORDER_STATUS status) {
+        filterStatus.setValue(status);
+    }
+
+    // Fetch single order details
     public LiveData<Order> getOrder(String orderId) {
         return repository.getOrder(PreferencesHelper.getCustomerData().getCustomerId(), orderId);
     }
 
-    // This method will fetch the orders and apply filtering if needed
-    public LiveData<List<Order>> getOrders(ORDER_STATUS filter) {
-        // Fetch orders if not already fetched
-        if (orders.getValue() == null || allOrders.isEmpty()) {
-            fetchOrders();
-        }
-
-        // Apply filter on existing list if filter is provided
-        if (filter != null) {
-            List<Order> filteredOrders = new ArrayList<>();
-            for (Order order : allOrders) {
-                if (order.getOrderStatus() == filter) {
-                    filteredOrders.add(order);
-                }
-            }
-            orders.setValue(filteredOrders);  // Set filtered orders to LiveData
-        } else {
-            orders.setValue(allOrders);  // No filter, set all orders
-        }
-
-        return orders;
+    // Return filtered orders for observing in the UI
+    public LiveData<List<Order>> getFilteredOrders() {
+        return filteredOrders;
     }
 
-    // Method to fetch orders from repository and store them
-    // Method to fetch orders from repository and store them
-    private void fetchOrders() {
-        // Fetch orders asynchronously
-        LiveData<List<Order>> fetchedOrders = repository.getOrders(PreferencesHelper.getCustomerData().getCustomerId());
-        fetchedOrders.observeForever(orderList -> {
-            if (orderList != null) {
-                allOrders.clear();
-                allOrders.addAll(orderList);  // Store fetched orders
-                orders.postValue(allOrders);  // Update LiveData on the main thread
-            }
-        });
-    }
+    // Reorder items from a given order
+    public void reorder(String orderId) {
+        Log.d("Order to reorder",orderId);
+        List<Order> currentOrders = allOrders.getValue();
+        Log.d("Orders",allOrders.getValue().toString());
+        if (currentOrders == null) return;
 
-    // Cancel an order
-    public void cancelOrder(String orderId) {
-        for (Order order : allOrders) {
+        for (Order order : currentOrders) {
             if (order.getOrderId().equals(orderId)) {
-                order.setOrderStatus(ORDER_STATUS.CANCELLED);  // Update the status to CANCELLED
+                Log.d("Order found",orderId);
+                for (OrderItem orderItem : order.getOrderItems()) {
+                    CartViewModel.getInstance()
+                            .addItemToCart(orderItem.getProductId(), orderItem.getQuantity())
+                            .observeForever(success -> {
+                                String message = success
+                                        ? "Added " + orderItem.getProduct().getProductName() + " to cart"
+                                        : "Failed to add " + orderItem.getProduct().getProductName() + " to cart";
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                            });
+                }
                 break;
             }
         }
+    }
 
-        // Notify the repository to persist the changes (if required by your repository logic)
-        repository.updateOrderStatus(orderId, ORDER_STATUS.CANCELLED);
+    // Cancel an order by updating its status
+    public void cancelOrder(String orderId) {
+        repository.updateOrderStatus(orderId, PreferencesHelper.getCustomerData().getCustomerId(), ORDER_STATUS.CANCELLED)
+                .observeForever(orderStatus -> {
+                    if (orderStatus == ORDER_STATUS.CANCELLED) {
+                        updateOrderStatusLocally(orderId, ORDER_STATUS.CANCELLED);
+                        Toast.makeText(context, "Order successfully cancelled.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "Failed to cancel order. Please try again later.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
-        // Update LiveData with the new order list
-        orders.postValue(allOrders);  // Update LiveData with the modified orders list
+    // Update order status locally and notify observers
+    private void updateOrderStatusLocally(String orderId, ORDER_STATUS newStatus) {
+        List<Order> currentOrders = allOrders.getValue();
+        if (currentOrders == null) return;
+
+        for (Order order : currentOrders) {
+            if (order.getOrderId().equals(orderId)) {
+                order.setOrderStatus(newStatus);
+                break;
+            }
+        }
+        allOrders.postValue(currentOrders);
     }
 }

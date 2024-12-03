@@ -26,7 +26,7 @@ public class SignUpPage extends AppCompatActivity {
     protected RadioGroup genderRadioGroup;
     protected RadioButton maleRadioButton, femaleRadioButton;
 
-    protected CustomerViewModel customerViewModel;
+    protected CustomerViewModel customerViewModel = CustomerViewModel.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +56,6 @@ public class SignUpPage extends AppCompatActivity {
 
         // Set DatePicker for birth date input
         birthDateInput.setOnClickListener(v -> showDatePickerDialog());
-
-        customerViewModel = new CustomerViewModel();
     }
 
     private void signUp() {

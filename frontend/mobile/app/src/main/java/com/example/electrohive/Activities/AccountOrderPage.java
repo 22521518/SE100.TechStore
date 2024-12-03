@@ -25,9 +25,6 @@ import java.util.List;
 public class AccountOrderPage extends AppCompatActivity {
 
     private ProgressBar loadingSpinner;
-
-    private ORDER_STATUS filter = null;
-
     private OrderAdapter orderAdapter;
     private OrderViewModel orderViewModel;
     @Override
@@ -40,18 +37,29 @@ public class AccountOrderPage extends AppCompatActivity {
         loadingSpinner = findViewById(R.id.loading_spinner);
         loadingSpinner.setVisibility(View.VISIBLE);
         // Initialize ViewModel
-        orderViewModel = new OrderViewModel();
+
 
         // Set up RecyclerView
         RecyclerView ordersRecyclerView = findViewById(R.id.orders_listview);  // Ensure this ID exists in your layout XML
         ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Set up adapter
-        orderAdapter = new OrderAdapter(AccountOrderPage.this,new ArrayList<>());
+        orderViewModel = new OrderViewModel(AccountOrderPage.this);
+        orderAdapter = new OrderAdapter(AccountOrderPage.this,new ArrayList<>(),orderViewModel);
         ordersRecyclerView.setAdapter(orderAdapter);
 
-        applyFilter(null,findViewById(R.id.AllOrders));
 
+        orderViewModel.getFilteredOrders().observe(this, new Observer<List<Order>>() {
+            @Override
+            public void onChanged(List<Order> orders) {
+                if (orders != null) {
+                    orderAdapter.updateOrders(orders);
+                }
+                loadingSpinner.setVisibility(View.GONE);
+            }
+        });
+
+        applyFilter(null,findViewById(R.id.AllOrders));
 
         setupFilterButtons();
 
@@ -76,8 +84,7 @@ public class AccountOrderPage extends AppCompatActivity {
         applyFilter(null,findViewById(R.id.AllOrders));
     }
     private void applyFilter(ORDER_STATUS newFilter,View clickedButton) {
-        filter = newFilter;
-        fetchOrders(filter);
+        orderViewModel.changeFilterStatus(newFilter);
 
         resetButtonBackgrounds();
         clickedButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#80D3D3D3")));
@@ -93,17 +100,5 @@ public class AccountOrderPage extends AppCompatActivity {
         findViewById(R.id.CancelledOrders).setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
     }
 
-    private void fetchOrders(ORDER_STATUS filter) {
-        // Observe orders LiveData
-        orderViewModel.getOrders(filter).observe(this, new Observer<List<Order>>() {
-            @Override
-            public void onChanged(List<Order> orders) {
-                if (orders != null) {
-                    orderAdapter.updateOrders(orders);
-                }
-                loadingSpinner.setVisibility(View.GONE);
-            }
-        });
-    }
 
 }

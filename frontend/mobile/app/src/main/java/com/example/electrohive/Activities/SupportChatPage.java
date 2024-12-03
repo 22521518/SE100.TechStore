@@ -24,7 +24,7 @@ import java.util.List;
 
 public class SupportChatPage extends AppCompatActivity {
 
-    private SupportChatViewModel supportChatViewModel;
+    private SupportChatViewModel supportChatViewModel = SupportChatViewModel.getInstance();
     private RecyclerView recyclerView;
 
     private EditText messsageInput;
@@ -44,8 +44,13 @@ public class SupportChatPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.support_chat_page);
 
-        // Initialize ViewModel
-        supportChatViewModel = new SupportChatViewModel();
+        ImageButton backButton = findViewById(R.id.backbutton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         scrollBottomButton = findViewById(R.id.scrollBottomButton);
         // Setup RecyclerView

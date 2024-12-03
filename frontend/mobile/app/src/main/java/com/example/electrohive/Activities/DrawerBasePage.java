@@ -29,8 +29,10 @@ import com.google.android.material.navigation.NavigationView;
 public class DrawerBasePage extends AppCompatActivity {
 
 
-    CartViewModel cartViewModel = new CartViewModel();
-    SupportChatViewModel supportChatViewModel = new SupportChatViewModel();
+    private CartViewModel cartViewModel = CartViewModel.getInstance();
+
+    private CustomerViewModel customerViewModel = CustomerViewModel.getInstance();
+    private SupportChatViewModel supportChatViewModel = SupportChatViewModel.getInstance();
     private DrawerLayout drawerLayout;
     private ImageView profileImage;
 
@@ -53,8 +55,6 @@ public class DrawerBasePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
-
-
 
 
 
@@ -89,9 +89,28 @@ public class DrawerBasePage extends AppCompatActivity {
             }
         });
 
+        customerViewModel.getSessionCustomer().observe(this,sessionCustomer -> {
+            if(sessionCustomer!=null) {
+                username.setText(sessionCustomer.getUsername());
+                Glide.with(DrawerBasePage.this)
+                        .load(sessionCustomer.getImage()) // URL to the image
+                        .placeholder(R.drawable.ic_user_icon) // Optional placeholder
+                        .error(R.drawable.ic_user_icon) // Optional error image
+                        .into(profileImage); // Your ImageView
+            }
+        });
+
         menu = navigationView.getMenu();
         MenuItem supportChatMenu = menu.findItem(R.id.nav_support);
+        MenuItem cartMenu = menu.findItem(R.id.nav_cart);
 
+
+        cartViewModel.getCart().observe(this, cartItems -> {
+            if (cartItems != null) {
+                int itemCount = cartItems.size(); // Assuming `getCart()` returns a list of cart items
+                cartMenu.setTitle("Cart (" + itemCount + ")"); // Update the cart menu title with the item count
+            }
+        });
 
         supportChatViewModel.fetchMessages().observe(this,messages -> {
             if(messages!=null) {
@@ -154,38 +173,9 @@ public class DrawerBasePage extends AppCompatActivity {
         username = headerView.findViewById(R.id.user_name);
 
 
-        setUpUI();
         signOutButton = headerView.findViewById(R.id.sign_out_button);
         signOutButton.setOnClickListener(v -> signOut());
 
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpUI();
-    }
-
-    protected void setUpUI() {
-
-        MenuItem cartMenu = menu.findItem(R.id.nav_cart);
-
-
-        cartViewModel.getCart().observe(this, cartItems -> {
-            if (cartItems != null) {
-                int itemCount = cartItems.size(); // Assuming `getCart()` returns a list of cart items
-                cartMenu.setTitle("Cart (" + itemCount + ")"); // Update the cart menu title with the item count
-            }
-        });
-
-        sessionCustomer = PreferencesHelper.getCustomerData();
-        username.setText(sessionCustomer.getUsername());
-        Glide.with(DrawerBasePage.this)
-                .load(sessionCustomer.getImage()) // URL to the image
-                .placeholder(R.drawable.ic_user_icon) // Optional placeholder
-                .error(R.drawable.ic_user_icon) // Optional error image
-                .into(profileImage); // Your ImageView
 
     }
 

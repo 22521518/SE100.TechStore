@@ -27,7 +27,7 @@ public class LoginPage extends AppCompatActivity {
 
     private AccountViewModel accountViewModel;
 
-    private CustomerViewModel customerViewModel;
+    private CustomerViewModel customerViewModel = CustomerViewModel.getInstance();
 
     protected TextView log_in_button;
 
@@ -39,7 +39,6 @@ public class LoginPage extends AppCompatActivity {
         setContentView(R.layout.login_page);
 
         accountViewModel = new AccountViewModel();
-        customerViewModel = new CustomerViewModel();
 
 
 

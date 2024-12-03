@@ -32,8 +32,6 @@ public class AccountPage extends AppCompatActivity {
     private TextView userNameTextView;
     private TextView signOutButton;
 
-    private Customer sessionCustomer = new Customer();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +52,18 @@ public class AccountPage extends AppCompatActivity {
             }
         });
 
-        setUpUI();
+        CustomerViewModel.getInstance().getSessionCustomer().observe(this,sessionCustomer->{
+            if(sessionCustomer!=null) {
+                sessionCustomer = PreferencesHelper.getCustomerData();
+                // Update UI after receiving the customer data
+                userNameTextView.setText(sessionCustomer.getUsername());
+                Glide.with(AccountPage.this)
+                        .load(sessionCustomer.getImage()) // URL to the image
+                        .placeholder(R.drawable.ic_user_icon) // Optional placeholder
+                        .error(R.drawable.ic_user_icon) // Optional error image
+                        .into(userImageView); // Your ImageView
+            }
+        });
 
         menuItemUserInfo = findViewById(R.id.menuItemUserInfo);
         menuItemUserAddress = findViewById(R.id.menuItemUserAddress);
@@ -108,22 +117,6 @@ public class AccountPage extends AppCompatActivity {
         signOutButton.setOnClickListener(v -> signOut());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpUI();
-    }
-
-    private void setUpUI() {
-        sessionCustomer = PreferencesHelper.getCustomerData();
-        // Update UI after receiving the customer data
-        userNameTextView.setText(sessionCustomer.getUsername());
-        Glide.with(AccountPage.this)
-                .load(sessionCustomer.getImage()) // URL to the image
-                .placeholder(R.drawable.ic_user_icon) // Optional placeholder
-                .error(R.drawable.ic_user_icon) // Optional error image
-                .into(userImageView); // Your ImageView
-    }
 
     private void signOut() {
 
