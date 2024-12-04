@@ -230,14 +230,23 @@ public class AccountInfoPage extends AppCompatActivity {
         sessionCustomer.setMale(male);
 
 
-        customerViewModel.updateCustomer(sessionCustomer).observe(this, success -> {
-            if (success) {
-                Toast.makeText(this, "Account information updated successfully!", Toast.LENGTH_SHORT).show();
+        customerViewModel.updateCustomer(sessionCustomer).observe(this, apiResponse -> {
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                // If the response is successful
+                boolean success = apiResponse.getData() !=null; // Get the success flag
+                if (success) {
+                    Toast.makeText(this, "Account information updated successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Failed to update account information. Please try again.", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(this, "Failed to update account information. Please try again.", Toast.LENGTH_SHORT).show();
+                // Handle failure or error response
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "An error occurred while updating the account.";
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
             }
-            updateCustomerButton.setText("Save changes");
+            updateCustomerButton.setText("Save changes"); // Reset the button text
         });
+
     }
 
 }

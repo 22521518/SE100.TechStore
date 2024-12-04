@@ -74,15 +74,22 @@ public class HomePage extends DrawerBasePage {
 
     private void fetchProducts() {
         loadingSpinner.setVisibility(View.VISIBLE);
-        productViewModel.getProducts(16).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(List<Product> products) {
-                // Update the adapter with new data
+        productViewModel.getProducts(16).observe(this, apiResponse -> {
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                // Check if the response is successful
+                List<Product> products = apiResponse.getData();
                 if (products != null) {
+                    // Update the adapter with new data
                     productAdapter.updateProducts(products);  // Method to update the adapter data
                 }
-                loadingSpinner.setVisibility(View.GONE);
+            } else {
+                // Handle failure or error response
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "An error occurred while fetching products.";
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
+
+            // Hide loading spinner after data is loaded or error occurs
+            loadingSpinner.setVisibility(View.GONE);
         });
     }
 

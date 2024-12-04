@@ -102,30 +102,41 @@ public class DistrictPage extends AppCompatActivity {
         loadingSpinner.setVisibility(View.VISIBLE); // Hide spinner once data loads
 
 
-        viewModel.getDistricts(province.getProvinceId()).observe(this, new Observer<List<District>>() {
-            @Override
-            public void onChanged(List<District> updatedDistricts) {
-                districts = updatedDistricts;
+        viewModel.getDistricts(province.getProvinceId()).observe(this, apiResponse -> {
+            // Check if apiResponse is not null and if the request was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                districts = apiResponse.getData();  // Get the actual data (list of districts)
 
-                // Update UI
-                List<String> districtNames = new ArrayList<>();
-                for (District district : districts) {
-                    districtNames.add(district.getDistrictName());
-                }
+                if (districts != null && !districts.isEmpty()) {
+                    // Prepare the list of district names
+                    List<String> districtNames = new ArrayList<>();
+                    for (District district : districts) {
+                        districtNames.add(district.getDistrictName());
+                    }
 
-                // Create adapter if null, otherwise update data
-                if (adapter == null) {
-                    adapter = new ArrayAdapter<>(DistrictPage.this, android.R.layout.simple_list_item_1, districtNames);
-                    districtListView.setAdapter(adapter);
+                    // Create or update the adapter
+                    if (adapter == null) {
+                        adapter = new ArrayAdapter<>(DistrictPage.this, android.R.layout.simple_list_item_1, districtNames);
+                        districtListView.setAdapter(adapter);
+                    } else {
+                        adapter.clear();
+                        adapter.addAll(districtNames);
+                        adapter.notifyDataSetChanged();
+                    }
                 } else {
-                    adapter.clear();
-                    adapter.addAll(districtNames);
-                    adapter.notifyDataSetChanged();
+                    // Handle empty or null data scenario
+                    Toast.makeText(DistrictPage.this, "No districts found.", Toast.LENGTH_SHORT).show();
                 }
-                loadingSpinner.setVisibility(View.GONE); // Hide spinner once data loads
-
+            } else {
+                // Handle failure scenario (success = false)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to load districts.";
+                Toast.makeText(DistrictPage.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
+
+            // Hide loading spinner after data has been processed
+            loadingSpinner.setVisibility(View.GONE);
         });
+
 
         districtListView.setOnItemClickListener((parent, view, position, id) -> {
             District clickedDistrict = districts.get(position);

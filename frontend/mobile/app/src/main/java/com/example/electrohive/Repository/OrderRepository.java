@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.Models.Province;
@@ -38,26 +39,33 @@ public class OrderRepository {
         orderService =  RetrofitClient.getClient().create(OrderService.class);
     }
 
-    public LiveData<Order> getOrder(String customerId ,String orderId) {
-        MutableLiveData<Order> orderData = new MutableLiveData<>();
+    public LiveData<ApiResponse<Order>> getOrder(String customerId, String orderId) {
+        MutableLiveData<ApiResponse<Order>> orderData = new MutableLiveData<>();
 
-        orderService.getOrder(customerId,orderId).enqueue(new Callback<JsonObject>() {
+        orderService.getOrder(customerId, orderId).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     JsonObject orderObject = response.body().getAsJsonObject();
                     Order order = OrderUtils.parseOrder(orderObject);
-                    orderData.setValue(order);
+                    ApiResponse<Order> apiResponse = new ApiResponse<>(
+                            true, order, "Order fetched successfully", response.code()
+                    );
+                    orderData.setValue(apiResponse);
                 } else {
-                    Log.e("OrderRepository", "Error fetching order: " + response.code());
-                    orderData.setValue(null);
+                    ApiResponse<Order> apiResponse = new ApiResponse<>(
+                            false, null, "Error fetching order: " + response.code(), response.code()
+                    );
+                    orderData.setValue(apiResponse);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.e("OrderRepository", "Error fetching order: " + t.getMessage());
-                orderData.setValue(null);
+                ApiResponse<Order> apiResponse = new ApiResponse<>(
+                        false, null, "Error fetching order: " + t.getMessage(), -1
+                );
+                orderData.setValue(apiResponse);
             }
         });
 
@@ -65,9 +73,8 @@ public class OrderRepository {
     }
 
 
-    public LiveData<List<Order>> getOrders(String userId) {
-        MutableLiveData<List<Order>> orderData = new MutableLiveData<>();
-
+    public LiveData<ApiResponse<List<Order>>> getOrders(String userId) {
+        MutableLiveData<ApiResponse<List<Order>>> orderData = new MutableLiveData<>();
 
         orderService.getUserOrders(userId).enqueue(new Callback<JsonArray>() {
             @Override
@@ -76,30 +83,38 @@ public class OrderRepository {
                     try {
                         JsonArray resultsArray = response.body().getAsJsonArray();
                         List<Order> orders = OrderUtils.parseOrders(resultsArray);
-                        orderData.postValue(orders);
+                        ApiResponse<List<Order>> apiResponse = new ApiResponse<>(
+                                true, orders, "Orders fetched successfully", response.code()
+                        );
+                        orderData.setValue(apiResponse);
                     } catch (Exception e) {
-                        Log.e("Repository Error", "Error parsing response: " + e.getMessage());
-                        orderData.postValue(new ArrayList<>());
+                        ApiResponse<List<Order>> apiResponse = new ApiResponse<>(
+                                false, new ArrayList<>(), "Error parsing orders: " + e.getMessage(), response.code()
+                        );
+                        orderData.setValue(apiResponse);
                     }
                 } else {
-                    Log.e("Repository Error", "Failed to load vouchers: " + response.code());
-                    orderData.postValue(new ArrayList<>());
+                    ApiResponse<List<Order>> apiResponse = new ApiResponse<>(
+                            false, new ArrayList<>(), "Failed to load orders: " + response.code(), response.code()
+                    );
+                    orderData.setValue(apiResponse);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
-                Log.e("Repository Error", "Error making request: " + t.getMessage());
-                orderData.postValue(new ArrayList<>());
+                ApiResponse<List<Order>> apiResponse = new ApiResponse<>(
+                        false, new ArrayList<>(), "Error making request: " + t.getMessage(), -1
+                );
+                orderData.setValue(apiResponse);
             }
         });
 
         return orderData;
-
     }
 
-    public LiveData<ORDER_STATUS> updateOrderStatus(String order_id, String customer_id, ORDER_STATUS status) {
-        MutableLiveData<ORDER_STATUS> orderStatusData = new MutableLiveData<>();
+    public LiveData<ApiResponse<ORDER_STATUS>> updateOrderStatus(String order_id, String customer_id, ORDER_STATUS status) {
+        MutableLiveData<ApiResponse<ORDER_STATUS>> orderStatusData = new MutableLiveData<>();
 
         // Create payload for the request
         JsonObject payload = new JsonObject();
@@ -110,25 +125,33 @@ public class OrderRepository {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Assuming the response contains the updated status
                     try {
                         String updatedStatus = response.body().get("order_status").getAsString();
                         ORDER_STATUS newStatus = ORDER_STATUS.valueOf(updatedStatus);
-                        orderStatusData.postValue(newStatus);
+                        ApiResponse<ORDER_STATUS> apiResponse = new ApiResponse<>(
+                                true, newStatus, "Order status updated successfully", response.code()
+                        );
+                        orderStatusData.setValue(apiResponse);
                     } catch (Exception e) {
-                        // Handle any parsing errors
-                        orderStatusData.postValue(null);
+                        ApiResponse<ORDER_STATUS> apiResponse = new ApiResponse<>(
+                                false, null, "Error updating order status: " + e.getMessage(), response.code()
+                        );
+                        orderStatusData.setValue(apiResponse);
                     }
                 } else {
-                    // Handle unsuccessful response
-                    orderStatusData.postValue(null);
+                    ApiResponse<ORDER_STATUS> apiResponse = new ApiResponse<>(
+                            false, null, "Failed to update order status: " + response.code(), response.code()
+                    );
+                    orderStatusData.setValue(apiResponse);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                // Handle network failure or other errors
-                orderStatusData.postValue(null);
+                ApiResponse<ORDER_STATUS> apiResponse = new ApiResponse<>(
+                        false, null, "Error updating order status: " + t.getMessage(), -1
+                );
+                orderStatusData.setValue(apiResponse);
             }
         });
 

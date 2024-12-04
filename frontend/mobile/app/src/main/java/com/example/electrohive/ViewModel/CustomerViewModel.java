@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.electrohive.Models.Account;
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Repository.CustomerRepository;
 import com.example.electrohive.utils.PreferencesHelper;
@@ -35,48 +36,52 @@ public class CustomerViewModel {
     }
 
     // Fetch customer details by customerId
-    public LiveData<Customer> getCustomer(String customerId) {
-        MutableLiveData<Customer> customerData = new MutableLiveData<>();
-        repository.getCustomer(customerId).observeForever(customer-> {
-            if(customer!=null) {
-              sessionCustomer.postValue(customer);
-              customerData.postValue(customer);
-            } else {
-                customerData.postValue(null);
+    public LiveData<ApiResponse<Customer>> getCustomer(String customerId) {
+        MutableLiveData<ApiResponse<Customer>> customerData = new MutableLiveData<>();
+        customerData.setValue(new ApiResponse<>(false, null, "Loading...", 200));
+
+        repository.getCustomer(customerId).observeForever(response -> {
+            if (response != null) {
+                if (response.isSuccess()) {
+                    // Update session customer if the API call is successful
+                    sessionCustomer.postValue(response.getData());
+                }
+                customerData.postValue(response);
             }
         });
         return customerData;
     }
 
     // Update customer data and save it locally
-    public LiveData<Boolean> updateCustomer(Customer newCustomer) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
+    public LiveData<ApiResponse<Customer>> updateCustomer(Customer newCustomer) {
+        MutableLiveData<ApiResponse<Customer>> result = new MutableLiveData<>();
+        result.setValue(new ApiResponse<>(false, null, "Updating...", 200));
+
         JsonObject updatePayload = buildCustomerUpdatePayload(newCustomer);
 
         repository.updateCustomer(PreferencesHelper.getCustomerData().getCustomerId(), updatePayload)
-                .observeForever(customer -> {
-                    if (customer != null) {
-                        result.postValue(true);
-                        sessionCustomer.postValue(customer);
-                        PreferencesHelper.saveCustomerData(customer); // Save the updated customer
-                    } else {
-                        result.postValue(false);
+                .observeForever(response -> {
+                    if (response != null) {
+                        if (response.isSuccess()) {
+                            // Update session customer and preferences on success
+                            sessionCustomer.postValue(response.getData());
+                            PreferencesHelper.saveCustomerData(response.getData());
+                        }
+                        result.postValue(response);
                     }
                 });
         return result;
     }
 
     // Sign up new customer with account details
-    public LiveData<Boolean> signUp(Account newAccount, Customer newCustomer) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
+    public LiveData<ApiResponse<Customer>> signUp(Account newAccount, Customer newCustomer) {
+        MutableLiveData<ApiResponse<Customer>> result = new MutableLiveData<>();
 
         JsonObject signUpPayload = buildSignUpPayload(newAccount, newCustomer);
 
-        repository.signUp(signUpPayload).observeForever(customer -> {
-            if (customer != null) {
-                result.postValue(true);
-            } else {
-                result.postValue(false);
+        repository.signUp(signUpPayload).observeForever(response -> {
+            if (response != null) {
+                result.postValue(response);
             }
         });
 

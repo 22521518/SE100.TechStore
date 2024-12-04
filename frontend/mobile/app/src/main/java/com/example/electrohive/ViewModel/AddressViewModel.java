@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.electrohive.Models.Address;
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Repository.AddressRepository;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.google.gson.JsonObject;
@@ -15,25 +16,28 @@ import java.util.List;
 public class AddressViewModel extends ViewModel {
     private static AddressRepository repository;
 
-    private static MutableLiveData<List<Address>> addresses;
+    private final MutableLiveData<ApiResponse<List<Address>>> addresses = new MutableLiveData<>();
 
     public AddressViewModel() {
         repository = new AddressRepository();
-        addresses = new MutableLiveData<>();  // Initialize the MutableLiveData
     }
 
     // Fetch addresses from repository
-    public LiveData<List<Address>> getAddress() {
-        if (addresses.getValue() == null) { // Check if addresses are already fetched
-            addresses = repository.getAddress(PreferencesHelper.getCustomerData().getCustomerId()); // Get addresses from repository
+    public LiveData<ApiResponse<List<Address>>> getAddress() {
+        if (addresses.getValue() == null || addresses.getValue().getData() == null) {
+            // Check if addresses are already fetched or the data is null
+            repository.getAddress(PreferencesHelper.getCustomerData().getCustomerId()).observeForever( res -> {
+                if (res != null && res.isSuccess()) {
+                    addresses.postValue(res); // Update the LiveData with the fetched data
+                }
+            });
         }
         return addresses;
     }
-
     // Add a new address
-    public LiveData<Boolean> addAddress(Address newAddress) {
-        MutableLiveData<Boolean> resultAddress = new MutableLiveData<>();
-        List<Address> currentAddresses = addresses.getValue();
+    public LiveData<ApiResponse<Boolean>> addAddress(Address newAddress) {
+        MutableLiveData<ApiResponse<Boolean>> resultAddress = new MutableLiveData<>();
+        List<Address> currentAddresses = addresses.getValue().getData();
 
         if (currentAddresses == null) {
             currentAddresses = new ArrayList<>(); // Initialize the list if it's null
@@ -50,14 +54,14 @@ public class AddressViewModel extends ViewModel {
         // Call the repository to add the address
         List<Address> finalCurrentAddresses = currentAddresses;
         repository.addAddress(PreferencesHelper.getCustomerData().getCustomerId(), addressPayload)
-                .observeForever(addedAddress -> {
-                    if (addedAddress != null) {
+                .observeForever(addedAddressResponse -> {
+                    if (addedAddressResponse != null && addedAddressResponse.isSuccess()) {
                         // Add the successfully added address to the current list
-                        finalCurrentAddresses.add(addedAddress);
-                        addresses.postValue(finalCurrentAddresses); // Notify LiveData observers
-                        resultAddress.postValue(true); // Notify the caller of success
+                        finalCurrentAddresses.add(addedAddressResponse.getData());
+                        addresses.postValue(new ApiResponse<>(true, finalCurrentAddresses, "Address added successfully", 200)); // Notify LiveData observers
+                        resultAddress.postValue(new ApiResponse<>(true, true, "Address added successfully", 200)); // Notify the caller of success
                     } else {
-                        resultAddress.postValue(false); // Notify the caller of failure
+                        resultAddress.postValue(new ApiResponse<>(false, false, "Failed to add address", 500)); // Notify the caller of failure
                     }
                 });
 
@@ -67,9 +71,9 @@ public class AddressViewModel extends ViewModel {
 
 
     // Update a specific address
-    public LiveData<Boolean> updateAddress(Address updatedAddress) {
-        MutableLiveData<Boolean> updateRes = new MutableLiveData<>();
-        List<Address> currentAddresses = addresses.getValue();  // Get current addresses from LiveData
+    public LiveData<ApiResponse<Boolean>> updateAddress(Address updatedAddress) {
+        MutableLiveData<ApiResponse<Boolean>> updateRes = new MutableLiveData<>();
+        List<Address> currentAddresses = addresses.getValue().getData();  // Get current addresses from LiveData
 
         if (currentAddresses != null) {
             // Find the address that matches the updated address ID
@@ -93,13 +97,13 @@ public class AddressViewModel extends ViewModel {
                             updatedAddress.getAddressId(),
                             addressPayload
                     ).observeForever(result -> {
-                        if (result != null) {
+                        if (result != null && result.isSuccess()) {
                             // Update the local address list
                             currentAddresses.set(index, updatedAddress);
-                            addresses.postValue(currentAddresses);  // Notify LiveData observers
-                            updateRes.postValue(true);  // Notify success
+                            addresses.postValue(new ApiResponse<>(true, currentAddresses, "Address updated successfully", 200));  // Notify LiveData observers
+                            updateRes.postValue(new ApiResponse<>(true, true, "Address updated successfully", 200));  // Notify success
                         } else {
-                            updateRes.postValue(false);  // Notify failure
+                            updateRes.postValue(new ApiResponse<>(false, false, "Failed to update address", 500));  // Notify failure
                         }
                     });
 
@@ -109,16 +113,16 @@ public class AddressViewModel extends ViewModel {
         }
 
         // If the address list is null or the address ID is not found, notify failure
-        updateRes.setValue(false);
+        updateRes.setValue(new ApiResponse<>(false, false, "Address not found", 404));
         return updateRes;
     }
 
-    public static LiveData<Boolean> deleteAddress(String addressId) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
-        List<Address> currentAddresses = addresses.getValue(); // Get the current list of addresses
+    public  LiveData<ApiResponse<Boolean>> deleteAddress(String addressId) {
+        MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
+        List<Address> currentAddresses = addresses.getValue().getData(); // Get the current list of addresses
 
         if (currentAddresses == null || currentAddresses.isEmpty()) {
-            result.setValue(false); // Fail if no addresses exist
+            result.setValue(new ApiResponse<>(false, false, "No addresses found", 404)); // Fail if no addresses exist
             return result;
         }
 
@@ -129,21 +133,21 @@ public class AddressViewModel extends ViewModel {
                 .orElse(null);
 
         if (addressToDelete == null) {
-            result.setValue(false); // Fail if the addressId does not exist
+            result.setValue(new ApiResponse<>(false, false, "Address not found", 404)); // Fail if the addressId does not exist
             return result;
         }
 
         // Call the repository to delete the address
         repository.deleteAddress(PreferencesHelper.getCustomerData().getCustomerId(), addressId)
                 .observeForever(deleteResult -> {
-                    if (deleteResult != null && deleteResult) {
+                    if (deleteResult != null && deleteResult.isSuccess() && deleteResult.getData()) {
                         // Remove the deleted address from the local list
                         List<Address> updatedAddresses = new ArrayList<>(currentAddresses);
                         updatedAddresses.remove(addressToDelete);
-                        addresses.postValue(updatedAddresses); // Notify observers
-                        result.postValue(true); // Success
+                        addresses.postValue(new ApiResponse<>(true, updatedAddresses, "Address deleted successfully", 200)); // Notify observers
+                        result.postValue(new ApiResponse<>(true, true, "Address deleted successfully", 200)); // Success
                     } else {
-                        result.postValue(false); // Fail on deletion
+                        result.postValue(new ApiResponse<>(false, false, "Failed to delete address", 500)); // Fail on deletion
                     }
                 });
 
@@ -153,12 +157,12 @@ public class AddressViewModel extends ViewModel {
 
 
 
-    public static LiveData<Boolean> setDefaultAddress(String addressId) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
-        List<Address> currentAddresses = addresses.getValue(); // Get the current list of addresses
+    public LiveData<ApiResponse<Boolean>> setDefaultAddress(String addressId) {
+        MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
+        List<Address> currentAddresses = addresses.getValue().getData(); // Get the current list of addresses
 
         if (currentAddresses == null || currentAddresses.isEmpty()) {
-            result.setValue(false); // Fail if no addresses exist
+            result.setValue(new ApiResponse<>(false, null, "No addresses found", 404)); // Return error response if no addresses exist
             return result;
         }
 
@@ -176,7 +180,7 @@ public class AddressViewModel extends ViewModel {
         }
 
         if (newDefaultAddress == null) {
-            result.setValue(false); // Fail if the addressId does not exist
+            result.setValue(new ApiResponse<>(false, null, "Address not found", 404)); // Return error if the addressId does not exist
             return result;
         }
 
@@ -188,8 +192,8 @@ public class AddressViewModel extends ViewModel {
         oldDefaultPayload.addProperty("is_primary", false);
 
         // Perform updates independently
-        MutableLiveData<Boolean> oldDefaultResult = new MutableLiveData<>(true); // Default to true if no old default
-        MutableLiveData<Boolean> newDefaultResult = new MutableLiveData<>();
+        MutableLiveData<ApiResponse<Boolean>> oldDefaultResult = new MutableLiveData<>(); // Default to success if no old default
+        MutableLiveData<ApiResponse<Boolean>> newDefaultResult = new MutableLiveData<>();
 
         if (oldDefaultAddress != null) {
             Address finalOldDefaultAddress = oldDefaultAddress;
@@ -198,10 +202,12 @@ public class AddressViewModel extends ViewModel {
                     oldDefaultAddress.getAddressId(),
                     oldDefaultPayload
             ).observeForever(resultOld -> {
-                if (resultOld != null) {
+                if (resultOld != null && resultOld.isSuccess()) {
                     finalOldDefaultAddress.setIsPrimary(false); // Update the old address locally
+                    oldDefaultResult.setValue(new ApiResponse<>(true, null, "Old default address updated", 200)); // Successful update
+                } else {
+                    oldDefaultResult.setValue(new ApiResponse<>(false, null, "Failed to update old default address", 500));
                 }
-                oldDefaultResult.postValue(resultOld!=null); // Notify result for old address update
             });
         }
 
@@ -211,27 +217,34 @@ public class AddressViewModel extends ViewModel {
                 newDefaultAddress.getAddressId(),
                 newDefaultPayload
         ).observeForever(resultNew -> {
-            if (resultNew != null) {
+            if (resultNew != null && resultNew.isSuccess()) {
                 finalNewDefaultAddress.setIsPrimary(true); // Update the new address locally
-                addresses.postValue(currentAddresses); // Notify observers of the updated list
+                addresses.setValue(new ApiResponse<>(true,currentAddresses,"Updated Addresses",200)); // Notify observers of the updated list
+                newDefaultResult.setValue(new ApiResponse<>(true, null, "New default address updated", 200)); // Successful update
+            } else {
+                newDefaultResult.setValue(new ApiResponse<>(false, null, "Failed to update new default address", 500));
             }
-            newDefaultResult.postValue(resultNew!=null); // Notify result for new address update
         });
 
         // Combine results for success or failure
         oldDefaultResult.observeForever(oldSuccess -> {
-            if (oldSuccess == null || !oldSuccess) {
-                result.postValue(false); // Fail if old address update failed
+            if (!oldSuccess.isSuccess()) {
+                result.setValue(new ApiResponse<>(false, null, oldSuccess.getMessage(), oldSuccess.getStatusCode())); // Return error if old address update failed
                 return;
             }
 
             newDefaultResult.observeForever(newSuccess -> {
-                result.postValue(newSuccess != null && newSuccess); // Final result depends on new address update
+                if (newSuccess != null && newSuccess.isSuccess()) {
+                    result.setValue(new ApiResponse<>(true, null, "Address successfully updated", 200)); // Both updates succeeded
+                } else {
+                    result.setValue(new ApiResponse<>(false, null, newSuccess != null ? newSuccess.getMessage() : "Unknown error", 500)); // Handle failure in the new address update
+                }
             });
         });
 
         return result;
     }
+
 
 
 

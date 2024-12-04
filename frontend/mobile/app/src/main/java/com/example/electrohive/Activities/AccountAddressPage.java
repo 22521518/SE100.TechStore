@@ -47,13 +47,23 @@ public class AccountAddressPage extends AppCompatActivity {
                     if (data != null) {
                         Address updatedAddress = (Address) data.getSerializableExtra("UPDATED_ADDRESS");
                         // You can update the address list or refresh the UI
-                        addressViewModel.updateAddress(updatedAddress).observe(this,address -> {
-                            if(address) {
-                                Toast.makeText(this,"Address updated",Toast.LENGTH_SHORT).show();
+                        addressViewModel.updateAddress(updatedAddress).observe(this, apiResponse -> {
+                            if (apiResponse != null && apiResponse.isSuccess()) {
+                                // Address update successful
+                                boolean success = apiResponse.getData(); // Get the success flag
+                                if (success) {
+                                    Toast.makeText(this, "Address updated", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    // If the API returned a failure flag
+                                    Toast.makeText(this, "Failed to update address", Toast.LENGTH_SHORT).show();
+                                }
                             } else {
-                                Toast.makeText(this,"Failed to update address",Toast.LENGTH_SHORT).show();
+                                // Handle failure or error response
+                                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "An error occurred while updating the address.";
+                                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
                             }
-                        });  // Assuming you have a method in your ViewModel to update the address
+                        });
+
                     }
                 }
             }
@@ -68,13 +78,23 @@ public class AccountAddressPage extends AppCompatActivity {
                     if (data != null) {
                         Address updatedAddress = (Address) data.getSerializableExtra("NEW_ADDRESS");
                         // You can update the address list or refresh the UI
-                        addressViewModel.addAddress(updatedAddress).observe(this,address -> {
-                            if(address) {
-                                Toast.makeText(this,"Address added",Toast.LENGTH_SHORT).show();
+                        addressViewModel.addAddress(updatedAddress).observe(this, apiResponse -> {
+                            if (apiResponse != null && apiResponse.isSuccess()) {
+                                // Address added successfully
+                                boolean success = apiResponse.getData(); // Get the success flag
+                                if (success) {
+                                    Toast.makeText(this, "Address added", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    // If the API returned a failure flag
+                                    Toast.makeText(this, "Failed to add address", Toast.LENGTH_SHORT).show();
+                                }
                             } else {
-                                Toast.makeText(this,"Failed to add address",Toast.LENGTH_SHORT).show();
+                                // Handle failure or error response
+                                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "An error occurred while adding the address.";
+                                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
                             }
-                        });  // Assuming you have a method in your ViewModel to update the address
+                        });
+
                     }
                 }
             }
@@ -94,21 +114,29 @@ public class AccountAddressPage extends AppCompatActivity {
 
         loadingSpinner.setVisibility(View.VISIBLE);
         // Set up adapter
-        addressAdapter = new AddressAdapter(AccountAddressPage.this,new ArrayList<>(),updateAddressLauncher);
+        addressAdapter = new AddressAdapter(AccountAddressPage.this, new ArrayList<>(), updateAddressLauncher , addressViewModel);
         addressRecyclerView.setAdapter(addressAdapter);
 
 
-        // Observe orders LiveData
-        addressViewModel.getAddress().observe(this, new Observer<List<Address>>() {
-            @Override
-            public void onChanged(List<Address> addresses) {
+        // Observe address LiveData
+        addressViewModel.getAddress().observe(this, apiResponse -> {
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                // Check if the API call was successful
+                List<Address> addresses = apiResponse.getData();
                 if (addresses != null) {
-                    addressAdapter.updateAddress(addresses);
+                    addressAdapter.updateAddress(addresses);  // Update the adapter with the new address list
                 }
-                loadingSpinner.setVisibility(View.GONE);
 
+            } else {
+                // Handle failure case (e.g., API call failed)
+
+                Toast.makeText(getApplicationContext(), "Failed to fetch addresses", Toast.LENGTH_SHORT).show();
             }
+
+            // Hide the loading spinner once the response is processed
+            loadingSpinner.setVisibility(View.GONE);
         });
+
 
         ImageButton backButton = findViewById(R.id.backbutton);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +150,7 @@ public class AccountAddressPage extends AppCompatActivity {
         userAddressAddAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AccountAddressPage.this,AccountAddAddressPage.class);
+                Intent intent = new Intent(AccountAddressPage.this, AccountAddAddressPage.class);
                 addAddressLauncher.launch(intent);
             }
         });

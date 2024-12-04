@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.Models.OrderItem;
@@ -45,8 +46,12 @@ public class OrderViewModel extends ViewModel {
     // Fetch orders from repository and store them in LiveData
     private void fetchOrders() {
         repository.getOrders(PreferencesHelper.getCustomerData().getCustomerId())
-                .observeForever(orders -> {
-                    allOrders.setValue(orders);
+                .observeForever(apiResponse -> {
+                    if (apiResponse.isSuccess()) {
+                        allOrders.setValue(apiResponse.getData());
+                    } else {
+                        Toast.makeText(context, apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                     applyFilter();
                 });
     }
@@ -77,7 +82,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     // Fetch single order details
-    public LiveData<Order> getOrder(String orderId) {
+    public LiveData<ApiResponse<Order>> getOrder(String orderId) {
         return repository.getOrder(PreferencesHelper.getCustomerData().getCustomerId(), orderId);
     }
 
@@ -99,8 +104,8 @@ public class OrderViewModel extends ViewModel {
                 for (OrderItem orderItem : order.getOrderItems()) {
                     CartViewModel.getInstance()
                             .addItemToCart(orderItem.getProductId(), orderItem.getQuantity())
-                            .observeForever(success -> {
-                                String message = success
+                            .observeForever(res -> {
+                                String message = res.isSuccess()
                                         ? "Added " + orderItem.getProduct().getProductName() + " to cart"
                                         : "Failed to add " + orderItem.getProduct().getProductName() + " to cart";
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
@@ -114,8 +119,8 @@ public class OrderViewModel extends ViewModel {
     // Cancel an order by updating its status
     public void cancelOrder(String orderId) {
         repository.updateOrderStatus(orderId, PreferencesHelper.getCustomerData().getCustomerId(), ORDER_STATUS.CANCELLED)
-                .observeForever(orderStatus -> {
-                    if (orderStatus == ORDER_STATUS.CANCELLED) {
+                .observeForever(res -> {
+                    if (res.isSuccess() && res.getData() == ORDER_STATUS.CANCELLED) {
                         updateOrderStatusLocally(orderId, ORDER_STATUS.CANCELLED);
                         Toast.makeText(context, "Order successfully cancelled.", Toast.LENGTH_SHORT).show();
                     } else {

@@ -87,31 +87,41 @@ public class WardPage extends AppCompatActivity {
         loadingSpinner.setVisibility(View.VISIBLE); // Hide spinner once data loads
 
 
-        // Set up Retrofit
-        viewModel.getWards(district.getDistrictId()).observe(this, new Observer<List<Ward>>() {
-            @Override
-            public void onChanged(List<Ward> updatedWards) {
-                wards = updatedWards;
+        viewModel.getWards(district.getDistrictId()).observe(this, apiResponse -> {
+            // Check if apiResponse is not null and if the request was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                wards = apiResponse.getData();  // Get the actual data (list of wards)
 
-                // Update UI
-                List<String> wardNames = new ArrayList<>();
-                for (Ward ward : wards) {
-                    wardNames.add(ward.getWardName());
-                }
+                if (wards != null && !wards.isEmpty()) {
+                    // Prepare the list of ward names
+                    List<String> wardNames = new ArrayList<>();
+                    for (Ward ward : wards) {
+                        wardNames.add(ward.getWardName());
+                    }
 
-                // Create adapter if null, otherwise update data
-                if (adapter == null) {
-                    adapter = new ArrayAdapter<>(WardPage.this, android.R.layout.simple_list_item_1, wardNames);
-                    wardListView.setAdapter(adapter);
+                    // Create or update the adapter
+                    if (adapter == null) {
+                        adapter = new ArrayAdapter<>(WardPage.this, android.R.layout.simple_list_item_1, wardNames);
+                        wardListView.setAdapter(adapter);
+                    } else {
+                        adapter.clear();
+                        adapter.addAll(wardNames);
+                        adapter.notifyDataSetChanged();
+                    }
                 } else {
-                    adapter.clear();
-                    adapter.addAll(wardNames);
-                    adapter.notifyDataSetChanged();
+                    // Handle empty or null data scenario
+                    Toast.makeText(WardPage.this, "No wards found.", Toast.LENGTH_SHORT).show();
                 }
-                loadingSpinner.setVisibility(View.GONE); // Hide spinner once data loads
-
+            } else {
+                // Handle failure scenario (success = false)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to load wards.";
+                Toast.makeText(WardPage.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
+
+            // Hide loading spinner after data has been processed
+            loadingSpinner.setVisibility(View.GONE);
         });
+
 
 // Handle ListView clicks
         wardListView.setOnItemClickListener((parent, view, position, id) -> {

@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.ProductFeedback;
 import com.example.electrohive.Repository.FeedbackRepository;
 import com.example.electrohive.utils.PreferencesHelper;
@@ -16,61 +17,59 @@ import java.util.List;
 public class FeedbackViewModel extends ViewModel {
 
     private final FeedbackRepository repository;
-    private MediatorLiveData<List<ProductFeedback>> feedbacks; // Use MediatorLiveData to allow updates
+    private MediatorLiveData<ApiResponse<List<ProductFeedback>>> feedbacks; // Use ApiResponse here
 
-    private MediatorLiveData<List<ProductFeedback>> filteredList;
 
     public FeedbackViewModel() {
         repository = new FeedbackRepository();
         feedbacks = new MediatorLiveData<>();
-        filteredList = new MediatorLiveData<>();
     }
 
-    public LiveData<List<ProductFeedback>> getProductFeedback(String productId, String ratingFilter) {
-        // Fetch from the repository only if feedbacks is null
-        if (feedbacks.getValue() == null) {
-            repository.getProductFeedback(productId).observeForever(fb -> {
-                feedbacks.setValue(fb);
-            });
-        }
+    public LiveData<ApiResponse<List<ProductFeedback>>> getProductFeedback(String productId, String ratingFilter) {
+        // Fetch feedbacks from repository and observe
+        LiveData<ApiResponse<List<ProductFeedback>>> repositoryFeedbacks = repository.getProductFeedback(productId);
 
-        // Update filtered list whenever feedbacks change
-        feedbacks.observeForever(feedbackList -> {
-            if (feedbackList != null) {
-                filteredList.setValue(filterFeedbacks(feedbackList, ratingFilter));
+        // When feedbacks are updated, apply filtering based on rating
+        feedbacks.addSource(repositoryFeedbacks, apiResponse -> {
+            if (apiResponse != null) {
+                List<ProductFeedback> filteredList = filterFeedbacks(apiResponse.getData(), ratingFilter);
+                feedbacks.setValue(new ApiResponse<>(apiResponse.isSuccess(), filteredList, apiResponse.getMessage(), apiResponse.getStatusCode()));
             }
         });
 
-        return filteredList; // Return filteredList to the UI
+        return feedbacks; // Return the ApiResponse LiveData for the UI to observe
     }
 
-    public LiveData<ProductFeedback> addProductFeedback(String productId, String content, int rating) {
+    public LiveData<ApiResponse<ProductFeedback>> addProductFeedback(String productId, String content, int rating) {
         JsonObject payload = new JsonObject();
         payload.addProperty("customer_id", PreferencesHelper.getCustomerData().getCustomerId());
         payload.addProperty("feedback", content);
         payload.addProperty("rating", rating);
 
-        LiveData<ProductFeedback> newFeedback = repository.addFeedback(productId, payload);
+        // Add feedback to repository
+        LiveData<ApiResponse<ProductFeedback>> newFeedback = repository.addFeedback(productId, payload);
 
-        feedbacks.addSource(newFeedback, feedback -> {
-            if (feedback != null) {
-                // Update the list by replacing or adding the feedback
-                List<ProductFeedback> currentFeedbacks = feedbacks.getValue() != null ? feedbacks.getValue() : new ArrayList<>();
+        // When a new feedback is added, update the feedback list in the ViewModel
+        feedbacks.addSource(newFeedback, apiResponse -> {
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                List<ProductFeedback> currentFeedbacks = feedbacks.getValue() != null ? feedbacks.getValue().getData() : new ArrayList<>();
                 boolean updated = false;
 
+                // Replace existing feedback or add new one
                 for (int i = 0; i < currentFeedbacks.size(); i++) {
-                    if (currentFeedbacks.get(i).getFeedbackId().equals(feedback.getFeedbackId())) {
-                        currentFeedbacks.set(i, feedback); // Replace if exists
+                    if (currentFeedbacks.get(i).getFeedbackId().equals(apiResponse.getData().getFeedbackId())) {
+                        currentFeedbacks.set(i, apiResponse.getData()); // Replace if exists
                         updated = true;
                         break;
                     }
                 }
 
                 if (!updated) {
-                    currentFeedbacks.add(feedback); // Add new feedback
+                    currentFeedbacks.add(apiResponse.getData()); // Add new feedback
                 }
 
-                feedbacks.setValue(currentFeedbacks); // Update LiveData
+                // Update LiveData with the new list
+                feedbacks.setValue(new ApiResponse<>(true, currentFeedbacks, "Feedback added successfully", 200));
             }
         });
 

@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Category;
 import com.example.electrohive.Models.Product;
 import com.example.electrohive.Models.ProductAttribute;
@@ -37,39 +38,60 @@ public class ProductRepository {
 
 
 
-    public LiveData<List<Product>> searchProducts(String searchText, String category, String priceRange) {
-        MutableLiveData<List<Product>> filteredProductData = new MutableLiveData<>();
+    public LiveData<ApiResponse<List<Product>>> searchProducts(String searchText, String category, String priceRange) {
+        MutableLiveData<ApiResponse<List<Product>>> filteredProductData = new MutableLiveData<>();
 
-        // Fetch all products if not already fetched
-        getProducts(0).observeForever(products -> {
-            if (products != null && !products.isEmpty()) {
-                List<Product> filteredProducts = new ArrayList<>(products);
+        getProducts(0).observeForever(apiResponse -> {
+            if (apiResponse != null) {
+                // Check if the API response is successful
+                if (apiResponse.isSuccess()) {
+                    List<Product> products = apiResponse.getData();
 
-                // Filter by search text (product name)
-                if (searchText != null && !searchText.isEmpty()) {
-                    filteredProducts = ProductUtils.filterBySearchText(filteredProducts, searchText);
+                    // If products are not null or empty, apply filters
+                    if (products != null && !products.isEmpty()) {
+                        List<Product> filteredProducts = new ArrayList<>(products);
+
+                        // Apply search text filter if provided
+                        if (searchText != null && !searchText.isEmpty()) {
+                            filteredProducts = ProductUtils.filterBySearchText(filteredProducts, searchText);
+                        }
+
+                        // Apply category filter if provided
+                        if (category != null && !category.isEmpty()) {
+                            filteredProducts = ProductUtils.filterByCategory(filteredProducts, category);
+                        }
+
+                        // Apply price range filter if provided
+                        if (priceRange != null && !priceRange.isEmpty()) {
+                            filteredProducts = ProductUtils.filterByPriceRange(filteredProducts, priceRange);
+                        }
+
+                        // Wrap the filtered products in an ApiResponse and post it
+                        ApiResponse<List<Product>> filteredApiResponse = new ApiResponse<>(true, filteredProducts, "Products fetched successfully", 200);
+                        filteredProductData.postValue(filteredApiResponse);
+                    } else {
+                        // If no products were found
+                        ApiResponse<List<Product>> emptyResponse = new ApiResponse<>(false, null, "No products found", 404);
+                        filteredProductData.postValue(emptyResponse);
+                    }
+                } else {
+                    // Handle failed API response
+                    ApiResponse<List<Product>> errorResponse = new ApiResponse<>(false, null, apiResponse.getMessage(), apiResponse.getStatusCode());
+                    filteredProductData.postValue(errorResponse);
                 }
-
-                // Filter by category
-                if (category != null && !category.isEmpty()) {
-                    filteredProducts = ProductUtils.filterByCategory(filteredProducts, category);
-                }
-
-                // Filter by price range
-                if (priceRange != null && !priceRange.isEmpty()) {
-                    filteredProducts = ProductUtils.filterByPriceRange(filteredProducts, priceRange);
-                }
-
-                // Post filtered data
-                filteredProductData.postValue(filteredProducts);
+            } else {
+                // Handle null API response
+                ApiResponse<List<Product>> nullResponse = new ApiResponse<>(false, null, "Error: No response from API", 500);
+                filteredProductData.postValue(nullResponse);
             }
         });
+
 
         return filteredProductData;
     }
 
-    public LiveData<List<Product>> getProducts(int pageSize) {
-        MutableLiveData<List<Product>> productData = new MutableLiveData<>();
+    public LiveData<ApiResponse<List<Product>>> getProducts(int pageSize) {
+        MutableLiveData<ApiResponse<List<Product>>> productData = new MutableLiveData<>();
 
         productService.getProducts(pageSize).enqueue(new Callback<JsonArray>() {
             @Override
@@ -77,26 +99,33 @@ public class ProductRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         List<Product> products = ProductUtils.parseProducts(response.body());
-                        productData.postValue(products);
+                        ApiResponse<List<Product>> apiResponse = new ApiResponse<>(true, products, "Products loaded successfully", response.code());
+                        productData.postValue(apiResponse);
                     } catch (Exception e) {
                         Log.d("Repository Error", "Error parsing response: " + e.getMessage());
+                        ApiResponse<List<Product>> apiResponse = new ApiResponse<>(false, null, "Error parsing response", 500);
+                        productData.postValue(apiResponse);
                     }
                 } else {
                     Log.d("Repository Error", "Failed to load products: " + response.code());
+                    ApiResponse<List<Product>> apiResponse = new ApiResponse<>(false, null, "Failed to load products", response.code());
+                    productData.postValue(apiResponse);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
                 Log.e("Repository Error", "Error making request: " + t.getMessage());
+                ApiResponse<List<Product>> apiResponse = new ApiResponse<>(false, null, "Request failed: " + t.getMessage(), 500);
+                productData.postValue(apiResponse);
             }
         });
 
         return productData;
     }
 
-    public LiveData<Product> getProductDetail(String id) {
-        MutableLiveData<Product> productData = new MutableLiveData<>();
+    public LiveData<ApiResponse<Product>> getProductDetail(String id) {
+        MutableLiveData<ApiResponse<Product>> productData = new MutableLiveData<>();
 
         productService.getProductDetail(id).enqueue(new Callback<JsonObject>() {
             @Override
@@ -105,7 +134,6 @@ public class ProductRepository {
                     try {
                         JsonObject resultProduct = response.body();
 
-                        // Extract fields from JSON
                         String productId = resultProduct.get("product_id").getAsString();
                         String productName = resultProduct.get("product_name").getAsString();
                         JsonArray imagesArray = resultProduct.get("images").getAsJsonArray();
@@ -117,32 +145,36 @@ public class ProductRepository {
                         JsonArray productFeedbacksArray = resultProduct.get("product_feedbacks").getAsJsonArray();
                         JsonArray attributesArray = resultProduct.get("attributes").getAsJsonArray();
 
-                        // Convert JSON arrays to lists
                         List<ProductImage> imageList = ProductUtils.parseImages(imagesArray);
                         List<Category> categoryList = ProductUtils.parseCategories(categoriesArray);
                         List<ProductFeedback> productFeedbackList = FeedbackUtils.parseProductFeedbacks(productFeedbacksArray);
                         List<ProductAttribute> attributeList = ProductUtils.parseAttributes(attributesArray);
 
-                        // Create Product object
                         Product product = new Product(
                                 productId, productName, imageList, description, price, discount,
                                 stockQuantity, categoryList, attributeList
                         );
                         product.setProductFeedbacks(productFeedbackList);
 
-                        // Update LiveData
-                        productData.postValue(product);
+                        ApiResponse<Product> apiResponse = new ApiResponse<>(true, product, "Product details fetched successfully", response.code());
+                        productData.postValue(apiResponse);
                     } catch (Exception e) {
                         Log.e("Repository Error", "Error parsing response: " + e.getMessage());
+                        ApiResponse<Product> apiResponse = new ApiResponse<>(false, null, "Error parsing response", 500);
+                        productData.postValue(apiResponse);
                     }
                 } else {
                     Log.e("Repository Error", "Failed to load product: " + response.code());
+                    ApiResponse<Product> apiResponse = new ApiResponse<>(false, null, "Failed to load product", response.code());
+                    productData.postValue(apiResponse);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e("Repository Error", "Error making request: " + t.getMessage());
+                ApiResponse<Product> apiResponse = new ApiResponse<>(false, null, "Request failed: " + t.getMessage(), 500);
+                productData.postValue(apiResponse);
             }
         });
 

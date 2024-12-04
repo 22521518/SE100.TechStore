@@ -87,30 +87,39 @@ public class ProvincePage extends AppCompatActivity {
 
 
 
-        // Set up Retrofit
-        viewModel.getProvinces().observe(this, new Observer<List<Province>>() {
-            @Override
-            public void onChanged(List<Province> updatedProvinces) {
+        viewModel.getProvinces().observe(this, apiResponse -> {
+            // Check if apiResponse is not null and if the request was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                provinces = apiResponse.getData();  // Get the actual data (list of provinces)
 
-                provinces = updatedProvinces;
+                if (provinces != null && !provinces.isEmpty()) {
+                    // Prepare the list of province names
+                    List<String> provinceNames = new ArrayList<>();
+                    for (Province province : provinces) {
+                        provinceNames.add(province.getProvinceName());
+                    }
 
-                // Update UI
-                List<String> provinceNames = new ArrayList<>();
-                for (Province province : provinces) {
-                    provinceNames.add(province.getProvinceName());
-                }
-
-                // Create adapter if null, otherwise update data
-                if (adapter == null) {
-                    adapter = new ArrayAdapter<>(ProvincePage.this, android.R.layout.simple_list_item_1, provinceNames);
-                    provinceListView.setAdapter(adapter);
+                    // Create or update the adapter
+                    if (adapter == null) {
+                        adapter = new ArrayAdapter<>(ProvincePage.this, android.R.layout.simple_list_item_1, provinceNames);
+                        provinceListView.setAdapter(adapter);
+                    } else {
+                        adapter.clear();
+                        adapter.addAll(provinceNames);
+                        adapter.notifyDataSetChanged();
+                    }
                 } else {
-                    adapter.clear();
-                    adapter.addAll(provinceNames);
-                    adapter.notifyDataSetChanged();
+                    // Handle empty or null data scenario
+                    Toast.makeText(ProvincePage.this, "No provinces found.", Toast.LENGTH_SHORT).show();
                 }
-                loadingSpinner.setVisibility(View.GONE);
+            } else {
+                // Handle failure scenario (success = false)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to load provinces.";
+                Toast.makeText(ProvincePage.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
+
+            // Hide loading spinner after data has been processed
+            loadingSpinner.setVisibility(View.GONE);
         });
 
         // Handle ListView clicks

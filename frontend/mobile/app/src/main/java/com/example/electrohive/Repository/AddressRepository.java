@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.electrohive.Models.Address;
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.api.AddressService;
 import com.example.electrohive.api.OrderService;
@@ -33,9 +34,8 @@ public class AddressRepository {
         addressService =  RetrofitClient.getClient().create(AddressService.class);
     }
 
-    public MutableLiveData<List<Address>> getAddress(String userId) {
-        MutableLiveData<List<Address>> addressData = new MutableLiveData<>();
-
+    public LiveData<ApiResponse<List<Address>>> getAddress(String userId) {
+        MutableLiveData<ApiResponse<List<Address>>> responseLiveData = new MutableLiveData<>();
 
         addressService.getUserAddresses(userId).enqueue(new Callback<JsonArray>() {
             @Override
@@ -43,62 +43,58 @@ public class AddressRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         JsonArray resultsArray = response.body().getAsJsonArray();
-                        List<Address> vouchers = AddressUtils.parseAddresses(resultsArray);
-
-                        addressData.postValue(vouchers);
+                        List<Address> addresses = AddressUtils.parseAddresses(resultsArray);
+                        responseLiveData.postValue(new ApiResponse<>(true, addresses, "Addresses loaded successfully", response.code()));
                     } catch (Exception e) {
                         Log.e("Repository Error", "Error parsing response: " + e.getMessage());
-                        addressData.postValue(new ArrayList<>());
+                        responseLiveData.postValue(new ApiResponse<>(false, null, "Error parsing response", response.code()));
                     }
                 } else {
                     Log.e("Repository Error", "Failed to load addresses: " + response.code());
-                    addressData.postValue(new ArrayList<>());
+                    responseLiveData.postValue(new ApiResponse<>(false, null, "Failed to load addresses", response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
                 Log.e("Repository Error", "Error making request: " + t.getMessage());
-                addressData.postValue(new ArrayList<>());
+                responseLiveData.postValue(new ApiResponse<>(false, null, "Network error", 0));
             }
         });
 
-        return addressData;
-
+        return responseLiveData;
     }
 
-    public LiveData<Address> addAddress(String userId,JsonObject addressPayload) {
-        MutableLiveData<Address> addressData = new MutableLiveData<>();
+    public LiveData<ApiResponse<Address>> addAddress(String userId, JsonObject addressPayload) {
+        MutableLiveData<ApiResponse<Address>> responseLiveData = new MutableLiveData<>();
 
-
-        addressService.postCustomerAddress(userId,"application/json",addressPayload).enqueue(new Callback<JsonObject>() {
+        addressService.postCustomerAddress(userId, "application/json", addressPayload).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
-
                         Address address = AddressUtils.parseAddress(response.body().getAsJsonObject());
-
-                        addressData.postValue(address);
+                        responseLiveData.postValue(new ApiResponse<>(true, address, "Address added successfully", response.code()));
                     } catch (Exception e) {
                         Log.e("Repository Error", "Error parsing response: " + e.getMessage());
-                        addressData.postValue(null);
+                        responseLiveData.postValue(new ApiResponse<>(false, null, "Error parsing response", response.code()));
                     }
                 } else {
-                    Log.e("Repository Error", "Failed to load addresses: " + response.code());
-                    addressData.postValue(null);
+                    Log.e("Repository Error", "Failed to add address: " + response.code());
+                    responseLiveData.postValue(new ApiResponse<>(false, null, "Failed to add address", response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                addressData.postValue(null);
+                responseLiveData.postValue(new ApiResponse<>(false, null, "Network error", 0));
             }
         });
-        return addressData;
+
+        return responseLiveData;
     }
-    public LiveData<Address> updateAddress(String userId,String addressId,JsonObject addressPayload) {
-        MutableLiveData<Address> addressData = new MutableLiveData<>();
+    public LiveData<ApiResponse<Address>> updateAddress(String userId,String addressId,JsonObject addressPayload) {
+        MutableLiveData<ApiResponse<Address>> responseLiveData = new MutableLiveData<>();
 
 
         addressService.patchCustomerAddress(userId,addressId,"application/json",addressPayload).enqueue(new Callback<JsonObject>() {
@@ -106,55 +102,47 @@ public class AddressRepository {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
-
                         Address address = AddressUtils.parseAddress(response.body().getAsJsonObject());
-
-                        addressData.postValue(address);
+                        responseLiveData.postValue(new ApiResponse<>(true, address, "Address added successfully", response.code()));
                     } catch (Exception e) {
                         Log.e("Repository Error", "Error parsing response: " + e.getMessage());
-                        addressData.postValue(null);
+                        responseLiveData.postValue(new ApiResponse<>(false, null, "Error parsing response", response.code()));
                     }
                 } else {
-                    Log.e("Repository Error", "Failed to load addresses: " + response.code());
-                    addressData.postValue(null);
+                    Log.e("Repository Error", "Failed to add address: " + response.code());
+                    responseLiveData.postValue(new ApiResponse<>(false, null, "Failed to add address", response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                addressData.postValue(null);
+                responseLiveData.postValue(new ApiResponse<>(false, null, "Network error", 0));
             }
         });
-        return addressData;
+        return responseLiveData;
     }
 
-    public LiveData<Boolean> deleteAddress(String userId, String addressId) {
-        MutableLiveData<Boolean> deleteState = new MutableLiveData<>();
+    public LiveData<ApiResponse<Boolean>> deleteAddress(String userId, String addressId) {
+        MutableLiveData<ApiResponse<Boolean>> responseLiveData = new MutableLiveData<>();
 
-
-        addressService.deleteCustomerAddress(userId,addressId).enqueue(new Callback<JsonObject>() {
+        addressService.deleteCustomerAddress(userId, addressId).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-
-                     deleteState.setValue(true);
-                    } catch (Exception e) {
-                        Log.e("Repository Error", "Error parsing response: " + e.getMessage());
-                        deleteState.setValue(false);
-                    }
+                if (response.isSuccessful()) {
+                    responseLiveData.postValue(new ApiResponse<>(true, true, "Address deleted successfully", response.code()));
                 } else {
-                    Log.e("Repository Error", "Failed to load addresses: " + response.code());
-                    deleteState.setValue(false);
+                    Log.e("Repository Error", "Failed to delete address: " + response.code());
+                    responseLiveData.postValue(new ApiResponse<>(false, false, "Failed to delete address", response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                deleteState.setValue(false);
+                responseLiveData.postValue(new ApiResponse<>(false, false, "Network error", 0));
             }
         });
-        return deleteState;
+
+        return responseLiveData;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.electrohive.ViewModel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -36,8 +38,8 @@ public class SupportChatViewModel extends ViewModel {
 
 
     public LiveData<List<Message>> fetchMessages() {
-        if (customerId.isEmpty()) {
-            throw new IllegalStateException("Customer ID is not available.");
+        if (customerId!=null && !customerId.isEmpty()) {
+            Log.e("Error","Customer ID is not available.");
         }
         return repository.getMessageLog();
     }

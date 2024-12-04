@@ -88,9 +88,11 @@ public class SearchPage extends DrawerBasePage {
 
         // Set up CategoryViewModel
         categoryViewModel = new CategoryViewModel();
-        categoryViewModel.getCategories().observe(this, new Observer<List<Category>>() {
-            @Override
-            public void onChanged(List<Category> categories) {
+        categoryViewModel.getCategories().observe(this, apiResponse -> {
+            // Check if the response is not null and the request was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                List<Category> categories = apiResponse.getData();  // Get the actual list of categories
+
                 List<String> categoryNames = new ArrayList<>();
                 categoryNames.add("All"); // Add "All" as the first option
 
@@ -100,22 +102,30 @@ public class SearchPage extends DrawerBasePage {
                     }
                 } else {
                     // Handle empty category list
-                    Log.d("CategoryViewModel", "No categories found or error fetching data");
+                    Log.d("CategoryViewModel", "No categories found.");
                 }
 
                 // Set up the spinner for categories
                 spinner_category.setItems(categoryNames);
                 spinner_category.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
-                    @Override public void onItemSelected(int oldIndex, @Nullable String oldItem, int newIndex, String newItem) {
+                    @Override
+                    public void onItemSelected(int oldIndex, @Nullable String oldItem, int newIndex, String newItem) {
                         category = newItem;
                         fetchProducts();
                     }
                 });
-                spinner_category.selectItemByIndex(0);
+                spinner_category.selectItemByIndex(0);  // Select "All" by default
 
-                loadingSpinner.setVisibility(View.GONE);
+            } else {
+                // Handle failure scenario (success = false)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to load categories.";
+                Log.d("CategoryViewModel", errorMessage);
             }
+
+            // Hide the loading spinner once data has been processed
+            loadingSpinner.setVisibility(View.GONE);
         });
+
 
         // Set up ProductViewModel
         productViewModel = new ProductViewModel();
@@ -134,19 +144,31 @@ public class SearchPage extends DrawerBasePage {
     private void fetchProducts() {
         loadingSpinner.setVisibility(View.VISIBLE);
 
-        productViewModel.searchProducts(searchText,category,priceRange).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(List<Product> products) {
+        productViewModel.searchProducts(searchText, category, priceRange).observe(this, apiResponse -> {
+            // Check if the response is not null and the request was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                List<Product> products = apiResponse.getData();  // Get the actual list of products
+
                 if (products != null && !products.isEmpty()) {
                     Log.d("SearchPage", "Fetched products: " + products.size());
                     productAdapter.updateProducts(products); // Update adapter with new data
                 } else {
-
+                    Log.d("SearchPage", "No products found.");
                     productAdapter.updateProducts(new ArrayList<>()); // Pass an empty list to handle the UI state
                 }
-                loadingSpinner.setVisibility(View.GONE);
+
+            } else {
+                // Handle failure scenario (success = false)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to search products.";
+                Log.d("SearchPage", errorMessage);
+
+                productAdapter.updateProducts(new ArrayList<>()); // Update UI with empty list in case of error
             }
+
+            // Hide the loading spinner once data has been processed
+            loadingSpinner.setVisibility(View.GONE);
         });
+
     }
 
 

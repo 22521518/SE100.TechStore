@@ -69,16 +69,24 @@ public class AccountChangePassword extends AppCompatActivity {
         }
 
         // Proceed with changing the password using ViewModel or backend API
-        accountViewModel.changePassword(currentPwd, newPwd).observe(this, success -> {
-            if (success) {
+        accountViewModel.changePassword(currentPwd, newPwd).observe(this, apiResponse -> {
+            if (apiResponse != null && apiResponse.isSuccess()) {
                 // Password change successful
-                Toast.makeText(this, "Password changed successfully please log in again", Toast.LENGTH_LONG).show();
-                signOut();
+                boolean success = apiResponse.getData(); // Get the success flag
+                if (success) {
+                    Toast.makeText(this, "Password changed successfully, please log in again", Toast.LENGTH_LONG).show();
+                    signOut(); // Log the user out after a successful password change
+                } else {
+                    // If the API returned a failure flag
+                    Toast.makeText(this, "Failed to change password", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                // Password change failed
-                Toast.makeText(this, "Failed to change password", Toast.LENGTH_SHORT).show();
+                // Handle failure or error response
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "An error occurred while changing password.";
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
+
 
     }
     private void signOut() {

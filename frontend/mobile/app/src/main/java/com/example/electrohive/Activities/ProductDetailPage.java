@@ -151,20 +151,31 @@ public class ProductDetailPage extends DrawerBasePage {
         imageSlider.setAdapter(imagesAdapter);
         indicator.setViewPager(imageSlider);
 
-        productViewModel.getProducts(16).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(List<Product> products) {
+        productViewModel.getProducts(16).observe(this, apiResponse -> {
+            // Hide the loading spinner once the response is processed
+            loadingSpinner.setVisibility(View.GONE);
+
+            // Check if the response is not null and was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                List<Product> products = apiResponse.getData();
                 if (products != null) {
                     productAdapter.updateProducts(products);  // Method to update the adapter data
                 }
-                loadingSpinner.setVisibility(View.GONE);
+            } else {
+                // Handle failure scenario
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to fetch products. Please try again.";
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
-        productViewModel.getProductDetail(productId).observe(this, new Observer<Product>() {
-            @Override
-            public void onChanged(Product product) {
+
+        productViewModel.getProductDetail(productId).observe(this, apiResponse -> {
+
+            // Check if the response is not null and was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                Product product = apiResponse.getData();
                 if (product != null) {
+                    // Handle the successful response by updating the UI
                     curProduct = product;
                     productImages = product.getImages();
                     imagesAdapter.updateImages(productImages);
@@ -176,11 +187,11 @@ public class ProductDetailPage extends DrawerBasePage {
                     product_price.setText(Format.getFormattedTotalPrice(product.getRetailPrice()) + " VNĐ");
                     product_original_price.setText(Format.getFormattedTotalPrice(product.getPrice()) + "  VNĐ");
                     product_discount.setText("-" + product.getDiscount() + "%");
-                    product_stock_count.setText(product.getStockQuantity() + " in-stocks");
+                    product_stock_count.setText(product.getStockQuantity() + " in-stock");
                     product_add_to_cart_button.setOnClickListener(v -> addItemToCart(productId, Integer.parseInt(product_quantity_input.getText().toString())));
                     product_buy_now_button.setOnClickListener(v -> buyProduct(productId, Integer.parseInt(product_quantity_input.getText().toString())));
                     product_detail.setText(product.getDescription());
-                    product_rating.setText(calculateAverageRating(product.getProductFeedbacks())+" / 5");
+                    product_rating.setText(calculateAverageRating(product.getProductFeedbacks()) + " / 5");
                     product_5_star_count.setText("★★★★★ (" + countRating(5, product.getProductFeedbacks()) + ")");
                     product_4_star_count.setText("★★★★ (" + countRating(4, product.getProductFeedbacks()) + ")");
                     product_3_star_count.setText("★★★ (" + countRating(3, product.getProductFeedbacks()) + ")");
@@ -190,10 +201,16 @@ public class ProductDetailPage extends DrawerBasePage {
                     see_feedback_button.setOnClickListener(v -> seeFeedback(productId));
                     Log.d("ProductAttributes", product.getAttributes().toString());
 
+                    // Update attributes adapter
                     attributeAdapter.updateAttribute(product.getAttributes());
                 }
+            } else {
+                // Handle failure scenario (optional)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to fetch product details.";
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
 
@@ -205,16 +222,22 @@ public class ProductDetailPage extends DrawerBasePage {
             Toast.makeText(this, "Insufficient quantity! please try again", Toast.LENGTH_SHORT).show();
             return false;
         }
-        cartViewModel.addItemToCart(productId, quantity).observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isAdded) {
-                if (isAdded) {
+        cartViewModel.addItemToCart(productId, quantity).observe(this, apiResponse -> {
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                // Check if the response is successful
+                Boolean isAdded = apiResponse.getData();
+                if (isAdded != null && isAdded) {
                     Toast.makeText(getApplicationContext(), "Product added to cart", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed to add product to cart", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                // Handle failure or error response
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "An error occurred";
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
+
 
         return true;
 

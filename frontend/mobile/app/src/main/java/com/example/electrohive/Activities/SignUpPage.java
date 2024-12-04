@@ -116,15 +116,21 @@ public class SignUpPage extends AppCompatActivity {
         // Assuming `customerViewModel.signUp` exists and is correctly implemented
         customerViewModel.signUp(
                 newAccount, newCustomer
-        ).observe(this, customer -> {
-            if (customer !=null) {
-                Toast.makeText(this, "New account created", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SignUpPage.this, LoginPage.class);
-                startActivity(intent);
+        ).observe(this, response  -> {
+            if (response != null) {
+                if (response.isSuccess()) {
+                    // Successfully signed up
+                    Toast.makeText(SignUpPage.this, "Account created successfully", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SignUpPage.this, LoginPage.class);
+                    startActivity(intent);
+                } else {
+                    // Failed to sign up, show error message
+                    Toast.makeText(SignUpPage.this, response.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(this, "Failed to create new account, please try again later", Toast.LENGTH_SHORT).show();
+                // Network or other issues
+                Toast.makeText(SignUpPage.this, "An error occurred. Please try again.", Toast.LENGTH_SHORT).show();
             }
-            sign_up_button.setText("Create account");
         });
     }
 

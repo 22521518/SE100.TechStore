@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -96,14 +97,17 @@ public class TrackPage extends AppCompatActivity {
     }
 
     private void fetchOrder(String orderId) {
-        orderViewModel.getOrder(orderId).observe(this, new Observer<Order>() {
-            @Override
-            public void onChanged(Order order) {
+        orderViewModel.getOrder(orderId).observe(this, apiResponse -> {
+            // Check if the apiResponse is not null and if the request was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                Order order = apiResponse.getData();  // Get the actual order data
+
                 if (order != null) {
                     List<OrderItem> items = order.getOrderItems();
 
+                    // Update the UI with the order data
                     order_id_input.setText(orderId);
-                    if(order.getShippingAddress() != null) {
+                    if (order.getShippingAddress() != null) {
                         order_date.setText(Format.getFormattedDateFromString((String) order.getShippingAddress().getDeliveryDate()));
                         order_fullname.setText(order.getShippingAddress().getAddress().getFullName());
                         order_phonenumber.setText(order.getShippingAddress().getAddress().getPhoneNumber());
@@ -113,17 +117,22 @@ public class TrackPage extends AppCompatActivity {
                                         order.getShippingAddress().getAddress().getDistrict() + ", " +
                                         order.getShippingAddress().getAddress().getCity());
                     }
-                    // Update the UI with the order data
 
                     order_payment_method.setText(order.getPaymentMethod().toString());
-                    order_id.setText("Order: "+order.getOrderId());
-                    order_total_price.setText("Total: "+Format.getFormattedTotalPrice(order.getTotalPrice())+ " ("+items.size()+" items)");
+                    order_id.setText("Order: " + order.getOrderId());
+                    order_total_price.setText("Total: " + Format.getFormattedTotalPrice(order.getTotalPrice()) + " (" + items.size() + " items)");
+
                     // Set the order items in the adapter
                     OrderItemAdapter adapter = new OrderItemAdapter(TrackPage.this, items);
                     order_items_listview.setLayoutManager(new LinearLayoutManager(TrackPage.this));
                     order_items_listview.setAdapter(adapter);
                 }
+            } else {
+                // Handle failure scenario (success = false)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to load order.";
+                Toast.makeText(TrackPage.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 }

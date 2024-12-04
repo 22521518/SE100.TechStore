@@ -1,5 +1,6 @@
 package com.example.electrohive.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -38,11 +39,11 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     private ActivityResultLauncher resultLauncher;
 
 
-    public AddressAdapter(Context context, List<Address> addressList, ActivityResultLauncher<Intent> resultLauncher) {
+    public AddressAdapter(Context context, List<Address> addressList, ActivityResultLauncher<Intent> resultLauncher,AddressViewModel addressViewModel) {
         this.context = context;
         this.addressList = addressList;
         this.resultLauncher = resultLauncher;
-        this.addressViewModel = new AddressViewModel();
+        this.addressViewModel = addressViewModel;
     }
 
     @NonNull
@@ -73,33 +74,54 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
         // Optionally, handle set default button clicks
         holder.setDefaultButton.setOnClickListener(v -> {
-            addressViewModel.setDefaultAddress(address.getAddressId()).observe((LifecycleOwner) context, result -> {
-                if(result) {
-                    Toast.makeText(context, "Default address updated", Toast.LENGTH_SHORT).show();
+            addressViewModel.setDefaultAddress(address.getAddressId()).observe((LifecycleOwner) context, apiResponse -> {
+                if (apiResponse != null && apiResponse.isSuccess()) {
+                    // Assuming `isSuccessful()` checks if the operation was successful
+                    Toast.makeText(context, apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "Failed to update default address", Toast.LENGTH_SHORT).show();
+                    // Handle failure case, assuming `getErrorMessage()` can give you a reason
+                    String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to update default address";
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
                 }
-            });  // Set the selected address as default
+            });
+
             notifyDataSetChanged();  // Notify the adapter to refresh the views
         });
 
         // Handle update address button click
         holder.updateButton.setOnClickListener(v -> {
             Intent intent = new Intent(context, AccountEditAddressPage.class);
-            intent.putExtra("ADDRESS",address );
+            intent.putExtra("ADDRESS", address);
             resultLauncher.launch(intent);
 
         });
 
-        holder.deleteAddressButton.setOnClickListener(v-> {
-            addressViewModel.deleteAddress(address.getAddressId()).observe((LifecycleOwner) context, result -> {
-                if(result) {
-                    Toast.makeText(context, "Address deleted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, "Failed to delete address", Toast.LENGTH_SHORT).show();
-                }
-            });
-            notifyDataSetChanged();
+        holder.deleteAddressButton.setOnClickListener(v -> {
+
+            // Create an AlertDialog to confirm deletion
+            new AlertDialog.Builder(context)
+                    .setTitle("Delete Address")
+                    .setMessage("Are you sure you want to delete this address?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        // Proceed with deletion if user confirms
+                        addressViewModel.deleteAddress(address.getAddressId()).observe((LifecycleOwner) context, apiResponse -> {
+                            if (apiResponse != null && apiResponse.isSuccess()) {
+                                Toast.makeText(context, "Address deleted", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to delete address";
+                                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        notifyDataSetChanged(); // Update UI
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                        // Do nothing if user cancels
+                        dialog.dismiss();
+                    })
+                    .create()
+                    .show();
+
+
         });
     }
 

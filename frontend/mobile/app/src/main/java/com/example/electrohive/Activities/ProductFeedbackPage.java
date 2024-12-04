@@ -2,6 +2,7 @@ package com.example.electrohive.Activities;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -96,16 +97,30 @@ public class ProductFeedbackPage extends AppCompatActivity {
     private void fetchFeedbacks() {
 
 
-        feedbackViewModel.getProductFeedback(productId, rating_filter).observe(this, new Observer<List<ProductFeedback>>() {
-            @Override
-            public void onChanged(List<ProductFeedback> productFeedbacks) {
+        feedbackViewModel.getProductFeedback(productId, rating_filter).observe(this, apiResponse -> {
+            // Check if the response is not null and the request was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                List<ProductFeedback> productFeedbacks = apiResponse.getData();  // Get the actual feedback list
+
                 if (productFeedbacks != null) {
-                    productFeedbackAdapter.updateFeedbackList(productFeedbacks);
+                    productFeedbackAdapter.updateFeedbackList(productFeedbacks); // Update adapter with feedback data
+                } else {
+                    Log.d("FeedbackPage", "No feedback found.");
+                    productFeedbackAdapter.updateFeedbackList(new ArrayList<>()); // Handle empty feedback list scenario
                 }
-                loadingSpinner.setVisibility(View.GONE);
+
+            } else {
+                // Handle failure scenario (success = false)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to fetch feedback.";
+                Log.d("FeedbackPage", errorMessage);
+
+                productFeedbackAdapter.updateFeedbackList(new ArrayList<>()); // Handle failure by passing empty list
             }
 
+            // Hide the loading spinner once data has been processed
+            loadingSpinner.setVisibility(View.GONE);
         });
+
 
 
     }
@@ -130,17 +145,27 @@ public class ProductFeedbackPage extends AppCompatActivity {
         loadingSpinner.setVisibility(View.VISIBLE);
 
         // Add Feedback
-        feedbackViewModel.addProductFeedback(productId, feedbackText, rating).observe(this, feedback -> {
+        feedbackViewModel.addProductFeedback(productId, feedbackText, rating).observe(this, apiResponse -> {
+            // Hide the loading spinner after the response is processed
             loadingSpinner.setVisibility(View.GONE);
 
-            if (feedback!=null) {
+            // Check if the response is not null and was successful
+            if (apiResponse != null && apiResponse.isSuccess()) {
                 Toast.makeText(this, "Thank you for your feedback!", Toast.LENGTH_SHORT).show();
+
+                // Clear the feedback input fields
                 feedbackInput.setText("");
                 feedbackRating.setRating(1);
-                fetchFeedbacks(); // Refresh the feedback list
+
+                // Refresh the feedback list to show the new feedback
+                fetchFeedbacks();
+
             } else {
-                Toast.makeText(this, "Failed to submit feedback. Please try again.", Toast.LENGTH_SHORT).show();
+                // Handle failure scenario (either response is null or success is false)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to submit feedback. Please try again.";
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 }

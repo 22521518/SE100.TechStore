@@ -1,6 +1,7 @@
 package com.example.electrohive.Activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -52,16 +53,22 @@ public class AccountVoucherPage extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
 
         // Observe the LiveData from the ViewModel
-        voucherViewModel.getVouchers().observe(this, new Observer<List<Voucher>>() {
-            @Override
-            public void onChanged(List<Voucher> vouchers) {
-                // Update the adapter with new data
+        voucherViewModel.getVouchers().observe(this, apiResponse -> {
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                // Check if the response is successful
+                List<Voucher> vouchers = apiResponse.getData();
                 if (vouchers != null) {
+                    // Update the adapter with new data
                     voucherAdapter.updateVouchers(vouchers);  // Method to update the adapter data
                 }
-                loadingSpinner.setVisibility(View.GONE);
+            } else {
+                // Handle failure or error response (optional)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "An error occurred while fetching vouchers.";
+                Log.e("VoucherViewModel", errorMessage);
             }
+            loadingSpinner.setVisibility(View.GONE);  // Hide the loading spinner
         });
+
     }
 
     // Method to create mock voucher data

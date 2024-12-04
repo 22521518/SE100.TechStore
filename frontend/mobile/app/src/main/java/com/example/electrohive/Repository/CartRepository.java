@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
@@ -32,30 +33,30 @@ public class CartRepository {
         cartService =  RetrofitClient.getClient().create(CartService.class);
     }
 
-    public LiveData<Boolean> deleteItemFromCart(String userId, String productId) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
+    public LiveData<ApiResponse<Boolean>> deleteItemFromCart(String userId, String productId) {
+        MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
         Call<ResponseBody> call = cartService.deleteCartItem(userId, productId);
 
         try {
             // Synchronous execution
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
-                // Successfully deleted the specific item
-                result.postValue(true);
+                result.postValue(new ApiResponse<>(true, true, "Item deleted successfully", response.code()));
             } else {
-                System.err.println("Error: " + response.errorBody().string());
+                result.postValue(new ApiResponse<>(false, false, "Error: " + response.errorBody().string(), response.code()));
             }
         } catch (Exception e) {
+            result.postValue(new ApiResponse<>(false, false, "Exception: " + e.getMessage(), 500));
             e.printStackTrace();
         }
-        return result; // Return false if an error occurs
+        return result;
     }
 
 
-    public LiveData<Boolean> deleteAllItemsFromCart(String userId) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
-        result.postValue(false);
-
+    // Delete all items from cart
+    public LiveData<ApiResponse<Boolean>> deleteAllItemsFromCart(String userId) {
+        MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
+        result.postValue(new ApiResponse<>(false, false, "Failed to delete items", 500));
 
         Call<ResponseBody> call = cartService.deleteAllCartItems(userId);
 
@@ -63,85 +64,92 @@ public class CartRepository {
             // Synchronous execution
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
-                // Successfully deleted all items
-                result.postValue(true);
-
+                result.postValue(new ApiResponse<>(true, true, "All items deleted successfully", response.code()));
             } else {
-                System.err.println("Error: " + response.errorBody().string());
+                result.postValue(new ApiResponse<>(false, false, "Error: " + response.errorBody().string(), response.code()));
             }
         } catch (Exception e) {
-
+            result.postValue(new ApiResponse<>(false, false, "Exception: " + e.getMessage(), 500));
+            e.printStackTrace();
         }
-        return result; // Return false if an error occurs
+        return result;
     }
-    public LiveData<Boolean> addItemToCart(String userId,JsonObject payload) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
+    // Add item to cart
+    public LiveData<ApiResponse<Boolean>> addItemToCart(String userId, JsonObject payload) {
+        MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
 
-        cartService.addCartItem(userId,"application/json", payload).enqueue(new Callback<JsonObject>() {
+        cartService.addCartItem(userId, "application/json", payload).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    result.postValue(true);
+                    result.postValue(new ApiResponse<>(true, true, "Item added to cart successfully", response.code()));
                 } else {
-                    result.postValue(false);
+                    result.postValue(new ApiResponse<>(false, false, "Failed to add item", response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                result.postValue(false);
+                result.postValue(new ApiResponse<>(false, false, "Request failed: " + t.getMessage(), 500));
             }
         });
-        return  result;
+
+        return result;
     }
 
-    public LiveData<Boolean> updateCartItem(String userId, JsonObject payload) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
+    // Update cart item
+    public LiveData<ApiResponse<Boolean>> updateCartItem(String userId, JsonObject payload) {
+        MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
 
-        cartService.patchCartItem(userId,"application/json", payload).enqueue(new Callback<JsonObject>() {
+        cartService.patchCartItem(userId, "application/json", payload).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    result.postValue(true);
+                    result.postValue(new ApiResponse<>(true, true, "Cart item updated successfully", response.code()));
                 } else {
-                    result.postValue(false);
+                    result.postValue(new ApiResponse<>(false, false, "Failed to update item", response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                result.postValue(false);
+                result.postValue(new ApiResponse<>(false, false, "Request failed: " + t.getMessage(), 500));
             }
         });
-        return  result;
+
+        return result;
     }
 
 
 
-    public LiveData<List<CartItem>> getCart(String userId) {
-        MutableLiveData<List<CartItem>> cartData = new MutableLiveData<>();
+    // Get cart items
+    public LiveData<ApiResponse<List<CartItem>>> getCart(String userId) {
+        MutableLiveData<ApiResponse<List<CartItem>>> cartData = new MutableLiveData<>();
 
         cartService.getCart(userId).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
-                         List<CartItem> cartItemList = CartUtils.parseCart(response.body());
-
-                        cartData.postValue(cartItemList);
+                        List<CartItem> cartItemList = CartUtils.parseCart(response.body());
+                        cartData.postValue(new ApiResponse<>(true, cartItemList, "Cart items fetched successfully", response.code()));
                     } catch (Exception e) {
+                        cartData.postValue(new ApiResponse<>(false, null, "Error parsing response: " + e.getMessage(), response.code()));
                         Log.d("Repository Error", "Error parsing response: " + e.getMessage());
                     }
                 } else {
+                    cartData.postValue(new ApiResponse<>(false, null, "Failed to load cart", response.code()));
                     Log.d("Repository Error", "Failed to load products: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
+                cartData.postValue(new ApiResponse<>(false, null, "Error making request: " + t.getMessage(), 500));
                 Log.e("Repository Error", "Error making request: " + t.getMessage());
             }
         });
+
         return cartData;
     }
 }

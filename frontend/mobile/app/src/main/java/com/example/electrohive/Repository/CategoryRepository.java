@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Category;
 import com.example.electrohive.api.CategoryService;
 import com.example.electrohive.utils.RetrofitClient;
@@ -28,8 +29,8 @@ public class CategoryRepository {
     }
 
     // Fetch Categories
-    public LiveData<List<Category>> getCategories() {
-        MutableLiveData<List<Category>> categoryData = new MutableLiveData<>();
+    public LiveData<ApiResponse<List<Category>>> getCategories() {
+        MutableLiveData<ApiResponse<List<Category>>> categoryResponseData = new MutableLiveData<>();
 
         categoryService.getCategories().enqueue(new Callback<JsonArray>() {
             @Override
@@ -38,6 +39,7 @@ public class CategoryRepository {
                     try {
                         JsonArray results = response.body();
                         List<Category> categories = new ArrayList<>();
+
                         // Parse JSON into Category objects
                         for (JsonElement element : results) {
                             JsonObject category = element.getAsJsonObject();
@@ -50,22 +52,55 @@ public class CategoryRepository {
                             categories.add(cate);
                         }
 
-                        // Post parsed categories
-                        categoryData.postValue(categories);
+                        // Post success response
+                        ApiResponse<List<Category>> apiResponse = new ApiResponse<>(
+                                true,
+                                categories,
+                                "Categories fetched successfully",
+                                response.code()
+                        );
+                        categoryResponseData.postValue(apiResponse);
                     } catch (Exception e) {
                         Log.e("Repository Error", "Error parsing response: " + e.getMessage());
+
+                        // Post error response
+                        ApiResponse<List<Category>> apiResponse = new ApiResponse<>(
+                                false,
+                                null,
+                                "Error parsing response: " + e.getMessage(),
+                                response.code()
+                        );
+                        categoryResponseData.postValue(apiResponse);
                     }
                 } else {
                     Log.e("Repository Error", "Failed to load categories: " + response.code());
+
+                    // Post error response
+                    ApiResponse<List<Category>> apiResponse = new ApiResponse<>(
+                            false,
+                            null,
+                            "Failed to load categories",
+                            response.code()
+                    );
+                    categoryResponseData.postValue(apiResponse);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
                 Log.e("Repository Error", "Error making request: " + t.getMessage());
+
+                // Post failure response
+                ApiResponse<List<Category>> apiResponse = new ApiResponse<>(
+                        false,
+                        null,
+                        "Error making request: " + t.getMessage(),
+                        500
+                );
+                categoryResponseData.postValue(apiResponse);
             }
         });
 
-        return categoryData;
+        return categoryResponseData;
     }
 }

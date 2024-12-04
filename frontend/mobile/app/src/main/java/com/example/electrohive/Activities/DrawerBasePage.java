@@ -2,6 +2,7 @@ package com.example.electrohive.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
+import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Models.Message;
 import com.example.electrohive.R;
@@ -25,6 +27,8 @@ import com.example.electrohive.ViewModel.CustomerViewModel;
 import com.example.electrohive.ViewModel.SupportChatViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.List;
 
 public class DrawerBasePage extends AppCompatActivity {
 
@@ -105,10 +109,18 @@ public class DrawerBasePage extends AppCompatActivity {
         MenuItem cartMenu = menu.findItem(R.id.nav_cart);
 
 
-        cartViewModel.getCart().observe(this, cartItems -> {
-            if (cartItems != null) {
-                int itemCount = cartItems.size(); // Assuming `getCart()` returns a list of cart items
-                cartMenu.setTitle("Cart (" + itemCount + ")"); // Update the cart menu title with the item count
+        cartViewModel.getCart().observe(this, apiResponse -> {
+            if (apiResponse != null && apiResponse.isSuccess()) {
+                // Check if the response is successful
+                List<CartItem> cartItems = apiResponse.getData();
+                if (cartItems != null) {
+                    int itemCount = cartItems.size(); // Assuming `getData()` returns a list of cart items
+                    cartMenu.setTitle("Cart (" + itemCount + ")"); // Update the cart menu title with the item count
+                }
+            } else {
+                // Handle failure or error response (optional)
+                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "An error occurred while fetching cart items.";
+                Log.e("CartViewModel", errorMessage);
             }
         });
 
