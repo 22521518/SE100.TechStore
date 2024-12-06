@@ -28,30 +28,46 @@ export const options = {
         },
       },
       async authorize(credentials, req) {
-        console.log("Credentials provided:", credentials);
-
-        const data = await login({
+        const { statusCode, data } = await login({
           email: credentials.email,
           password: credentials.password,
         });
-  
-        if (data && data.access_token) {
-          // Decode the token to get user ID
-          const decodedToken = jwt.decode(data.access_token);
-          const userId = decodedToken?.id;
-  
-          if (!userId) {
-            throw new Error("Invalid token");
-          }
-          return {
-            id:userId, 
-            accessToken: data.access_token,
-            expiresIn: data.expires_in,
-          };
+        console.log(statusCode,data)
+    
+        // Handle specific status codes for user-friendly messages
+        if (statusCode) {
+            if (statusCode === 401) {
+                throw new Error("Invalid email or password.");
+            } else if (statusCode === 403) {
+                throw new Error("Your account is not authorized to log in.");
+            } else if (statusCode >= 500) {
+                throw new Error("Server error. Please try again later.");
+            } else if (!data) {
+                throw new Error("An unexpected error occurred. Please try again.");
+            }
+        } else {
+            throw new Error("Unable to connect to the server. Check your network connection.");
         }
-  
+    
+        // If the login is successful
+        if (data && data.access_token) {
+            const decodedToken = jwt.decode(data.access_token);
+            const userId = decodedToken?.id;
+    
+            if (!userId) {
+                throw new Error("Invalid token.");
+            }
+    
+            return {
+                id: userId,
+                accessToken: data.access_token,
+                expiresIn: data.expires_in,
+            };
+        }
+    
+        // Fallback if something unexpected occurs
         return null;
-      },
+    }
     }),
   ],
   pages: {
