@@ -99,7 +99,7 @@ export class MomoPaymentController {
       const rep = await this.momoPaymentService.requestMomoPayment(
         order_id,
         customerId,
-        total_price,
+        total_price * 0 + 50000,
         items,
         redirect,
       );
