@@ -26,7 +26,9 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class PaymentPage  extends AppCompatActivity {
 
@@ -36,7 +38,7 @@ public class PaymentPage  extends AppCompatActivity {
     ImageButton backbutton;
     EditText voucherName;
     TextView Grandtotal,Subtotal,Discount,voucher,Shipcost,finish;
-    DecimalFormat df = new DecimalFormat("0.#");
+    NumberFormat currencyFormat = NumberFormat.getInstance(Locale.US);
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -73,7 +75,7 @@ public class PaymentPage  extends AppCompatActivity {
             if(cash.isChecked())
                 intent.putExtra("payment_method","COD");
             else
-                intent.putExtra("payment_method","MOMO");
+                intent.putExtra("payment_method","ZaloPay");
             Bundle bundle=new Bundle();
             bundle.putString("subtotal",Subtotal.getText().toString());
             bundle.putString("discount",Discount.getText().toString());
@@ -94,7 +96,7 @@ public class PaymentPage  extends AppCompatActivity {
         });
         momo=findViewById(R.id.wallet);
         cash=findViewById(R.id.cash);
-        cartItems=new ArrayList<>();
+        cartItems= new ArrayList<>();
         String productJson = getIntent().getStringExtra("checkedItems");
         Gson gson = new Gson();
         cartItems=gson.fromJson(productJson, new TypeToken<ArrayList<CartItem>>() {}.getType());
@@ -102,8 +104,8 @@ public class PaymentPage  extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         paymentAdapter=new PaymentAdapter(this,cartItems);
         recyclerView.setAdapter(paymentAdapter);
-        Subtotal.setText(df.format(SubTotal())+" VNĐ");
-        Grandtotal.setText(df.format(SubTotal()+30000)+" VNĐ");
+        Subtotal.setText(currencyFormat.format(SubTotal())+" VNĐ");
+        Grandtotal.setText(currencyFormat.format(SubTotal()+30000)+" VNĐ");
         momo.setOnClickListener(v->{
             cash.setChecked(false);
         });
@@ -129,8 +131,8 @@ public class PaymentPage  extends AppCompatActivity {
 
     private void UpdateTotal(double shipCost,double discount){
         double grandtotal=SubTotal()+shipCost-(SubTotal()*discount)/100;
-        Shipcost.setText(df.format(shipCost)+" VNĐ");
-        Discount.setText(df.format((SubTotal()*discount)/100) +" VNĐ");
-        Grandtotal.setText(df.format(grandtotal)+" VNĐ");
+        Shipcost.setText(currencyFormat.format(shipCost)+" VNĐ");
+        Discount.setText(currencyFormat.format((SubTotal()*discount)/100) +" VNĐ");
+        Grandtotal.setText(currencyFormat.format(grandtotal)+" VNĐ");
     }
 }

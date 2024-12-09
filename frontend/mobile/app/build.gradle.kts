@@ -35,6 +35,8 @@ android {
 dependencies {
 
     implementation ("com.github.bumptech.glide:glide:4.12.0")
+
+
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
     // Appium Java client
@@ -70,4 +72,11 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
+    implementation(fileTree(mapOf(
+        "dir" to "C:\\Users\\Admin\\AndroidStudioProjects\\SE100.TechStore\\frontend\\mobile\\app\\libs",
+        "include" to listOf("*.aar", "*.jar"),
+        "exclude" to listOf("")
+    )))
+
 }

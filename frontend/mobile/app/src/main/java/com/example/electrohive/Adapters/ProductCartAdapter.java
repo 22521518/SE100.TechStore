@@ -27,7 +27,9 @@ import com.example.electrohive.ViewModel.CartViewModel;
 import com.example.electrohive.api.CartService;
 import com.google.gson.JsonArray;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,13 +54,15 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     public interface CartItemCheckboxListener {
         void onItemCheckedChanged();
     }
+    private Runnable updateTotalCallback;
 
     // Constructor
-    public ProductCartAdapter(Context context, List<CartItem> cartItems, CartViewModel cartViewModel, CartItemCheckboxListener listener) {
+    public ProductCartAdapter(Context context, List<CartItem> cartItems, CartViewModel cartViewModel, CartItemCheckboxListener listener,Runnable updateTotalCallback) {
         this.context = context;
         this.cartItems = cartItems;
         this.cartViewModel = cartViewModel;
         this.listener=listener;
+        this.updateTotalCallback=updateTotalCallback;
     }
 
 
@@ -104,6 +108,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
                     int newQuantity = Integer.parseInt(s.toString());
                     cartitem.setQuantity(newQuantity);
                 }
+                updateTotalCallback.run();
             }
         });
 
@@ -111,7 +116,8 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         if (cartitem.getProduct().getCategories() != null && !cartitem.getProduct().getCategories().isEmpty()) {
             holder.category.setText(cartitem.getProduct().getCategories().get(0).getCategoryName());
         }
-        holder.price.setText(String.valueOf(cartitem.getProduct().getPrice()));
+        NumberFormat currencyFormat = NumberFormat.getInstance(Locale.US);
+        holder.price.setText(currencyFormat.format(cartitem.getProduct().getPrice())+" VNĐ");
 //
 //        // Load image using Glide
         if (cartitem.getProduct().getImages() != null && !cartitem.getProduct().getImages().isEmpty()) {

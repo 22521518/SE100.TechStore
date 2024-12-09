@@ -56,7 +56,7 @@
             android:layout_centerInParent="true"
             android:layout_marginLeft="12dp"
             android:layout_toRightOf="@+id/E_wallet"
-            android:src="@drawable/momo" />
+            android:src="@drawable/zalopay" />
 
         <ImageView
             android:layout_width="32dp"
@@ -218,7 +218,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="30000 VNĐ" />
+                android:text="30,000 VNĐ" />
 
         </LinearLayout>
 

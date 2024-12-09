@@ -99,7 +99,4 @@ public class OrderViewModel extends ViewModel {
     public LiveData<Boolean> postUserOrder(double totalPrice, ArrayList<OrderItemRequest> list, String paymentMethod, CheckoutAddress address) {
         return repository.postOrder(PreferencesHelper.getCustomerData().getCustomerId(),totalPrice,list,paymentMethod,address);
     }
-    public LiveData<String> postMOMO(double totalPrice, ArrayList<OrderItemRequest> list, String paymentMethod, CheckoutAddress address) {
-        return repository.postMOMO(PreferencesHelper.getCustomerData().getCustomerId(),totalPrice,list,paymentMethod,address);
-    }
 }

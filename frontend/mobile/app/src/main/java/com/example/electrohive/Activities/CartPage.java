@@ -21,7 +21,9 @@ import com.example.electrohive.ViewModel.CartViewModel;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CartPage extends AppCompatActivity {
 
@@ -68,7 +70,7 @@ public class CartPage extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Tạo Adapter và truyền đối tượng checkAll để cập nhật trạng thái của nó khi cần thiết
-        adapter = new ProductCartAdapter(this, cartItems, cartViewModel, this::updateCheckAllState);
+        adapter = new ProductCartAdapter(this, cartItems, cartViewModel, this::updateCheckAllState,this::updateTotal);
         recyclerView.setAdapter(adapter);
 
         // Lắng nghe sự kiện thay đổi dữ liệu từ ViewModel
@@ -118,10 +120,10 @@ public class CartPage extends AppCompatActivity {
             }
         }
         grandtotal=subtotal-discount;
-        DecimalFormat df = new DecimalFormat("0.#");
-        Grandtotal.setText(df.format(grandtotal)+" VNĐ");
-        Subtotal.setText(df.format(subtotal)+" VNĐ");
-        Discount.setText(df.format(discount)+" VNĐ");
+        NumberFormat currencyFormat = NumberFormat.getInstance(Locale.US);
+        Grandtotal.setText(currencyFormat.format(grandtotal)+" VNĐ");
+        Subtotal.setText(currencyFormat.format(subtotal)+" VNĐ");
+        Discount.setText(currencyFormat.format(discount)+" VNĐ");
     }
 
     // Lấy danh sách các item đã được chọn
