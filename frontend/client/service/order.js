@@ -75,9 +75,11 @@ export const payWithMoMo = async (payload) => {
 
 
     if (response.ok) {
+      console.log(response);
       const data = await response.json()
       return data.shortLink
     } else {
+      console.log(response);
       return "";
     }
   } catch (error) {

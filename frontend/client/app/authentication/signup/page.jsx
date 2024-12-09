@@ -79,7 +79,6 @@ export default function SignUp() {
     };
 
     setIsLoading(true);
-    console.log(signUpData)
 
     const result = await singUp(signUpData);
     if (result) {

@@ -78,20 +78,6 @@ const Cart = () => {
 
     dispatch({ type: "change_subtotal", payload: newSubtotal });
 
-    const handleBeforeUnload = (event) => {
-      // You can prevent the default behavior here if necessary
-      event.preventDefault();
-      // Call your API to update cart
-      cartItems.forEach((item) => {
-        updateCartItem(session.customer.customer_id, item.product_id, item.quantity);
-      });
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
   }, [cartItems]);
 
   useEffect(() => {

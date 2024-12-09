@@ -50,9 +50,9 @@ const Address = () => {
 
   const checkEmptyInput = () => {
     if (
-      !province||
-      !district||
-      !ward||
+      !province ||
+      !district ||
+      !ward ||
       !newAddress.address.trim() ||
       !newAddress.full_name.trim() ||
       !newAddress.phone_number.trim() ||
@@ -66,12 +66,17 @@ const Address = () => {
     return false;
   };
   const deleteAddress = (address_id) => {
-    deleteCustomerAddress({ user_id: session.customer.customer_id, address_id }).then(
-      (data) =>
-        data
-          ? toastSuccess("Address deleted")
-          : toastError("Failed to delete address")
-    );
+    deleteCustomerAddress({
+      user_id: session.customer.customer_id,
+      address_id,
+    }).then((data) => {
+      if (data) {
+        toastSuccess("Address deleted");
+        setAddresses(addresses.filter((address) => address.address_id !== id));
+      } else {
+        toastError("Failed to delete address");
+      }
+    });
   };
   const addAddress = () => {
     const payload = {
@@ -115,7 +120,7 @@ const Address = () => {
         full_name: newAddress.full_name,
         phone_number: newAddress.phone_number,
       },
-      address_id: id
+      address_id: id,
     };
     setIsUpdatingAddresses("");
     patchCustomerAddress(payload).then((data) => {
@@ -141,7 +146,7 @@ const Address = () => {
   const fetchAddress = () => {
     setIsLoading(true);
     getCustomerAddresses(session.customer?.customer_id).then((data) => {
-      setAddresses(data.map(a => ({...a,province:a.city  })));
+      setAddresses(data.map((a) => ({ ...a, province: a.city })));
     });
 
     setTimeout(() => setIsLoading(false), 1000);
@@ -224,14 +229,12 @@ const Address = () => {
   };
 
   const handleDeleteAddress = (id) => {
-    setAddresses(addresses.filter((address) => address.address_id !== id));
-
     deleteAddress(id);
   };
 
   const handleUpdateAddress = () => {
     if (checkEmptyInput()) return;
-    updateAddress(newAddress.address_id)
+    updateAddress(newAddress.address_id);
     setIsUpdatingAddresses("");
   };
 
@@ -251,7 +254,7 @@ const Address = () => {
         const payload = {
           user_id: session.customer.customer_id,
           address_id: address.address_id,
-          new_address: { "is_primary": false },
+          new_address: { is_primary: false },
         };
         patchCustomerAddress(payload);
       }
@@ -259,7 +262,7 @@ const Address = () => {
         const payload = {
           user_id: session.customer.customer_id,
           address_id: address.address_id,
-          new_address: { "is_primary": true },
+          new_address: { is_primary: true },
         };
         patchCustomerAddress(payload).then((data) => {
           if (data) {
@@ -278,8 +281,6 @@ const Address = () => {
         });
       }
     });
-
-
   };
 
   const handleInitUpdateAddress = async (id) => {

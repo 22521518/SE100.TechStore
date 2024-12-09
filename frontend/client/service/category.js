@@ -4,7 +4,7 @@ import { categoriesPreset } from "@util/generator/category"
 
 
 export const getAllCategory = async () => {
-    // if (process.env.DEV_ENV !== "production") return categoriesPreset
+    if (process.env.DEV_ENV !== "production") return categoriesPreset
     try {
         const response = await fetch(`${process.env.APP_URL}/categories`)
         if(response.ok) {

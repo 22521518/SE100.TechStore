@@ -4,7 +4,7 @@ import { generateDummyProductData, generateDummyProductDetailData } from "@util/
 
 
 export const getAllProduct = async () => {
-  // if(process.env.DEV_ENV!=="production") return generateDummyProductData(36)
+  if(process.env.DEV_ENV!=="production") return generateDummyProductData(36)
   try {
     const response = await fetch(
       `${process.env.APP_URL}/products`
@@ -25,7 +25,7 @@ export const getAllProduct = async () => {
 
 export const getProducts = async (size) => {
   
-  // if(process.env.DEV_ENV!=="production") return generateDummyProductData(size)
+  if(process.env.DEV_ENV!=="production") return generateDummyProductData(size)
   try {
     const response = await fetch(
       `${process.env.APP_URL}/products?pageSize=${size}`

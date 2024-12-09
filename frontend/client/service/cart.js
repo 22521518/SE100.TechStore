@@ -3,8 +3,8 @@
 import { generateDummyCart } from "@util/generator/cart";
 
 export const getCart = async (id) => {
-  // if (process.env.DEV_ENV !== "production")
-  //   return generateDummyCart(Math.round(Math.random() * 10) + 1);
+  if (process.env.DEV_ENV !== "production")
+    return generateDummyCart(Math.round(Math.random() * 10) + 1);
   try {
     const response = await fetch(`${process.env.APP_URL}/carts/${id}`);
     if (response.ok) {
@@ -20,7 +20,7 @@ export const getCart = async (id) => {
 };
 
 export const addCartItem = async (id,product_id,quantity) => {
-   // if (process.env.DEV_ENV !== "production") return true;
+   if (process.env.DEV_ENV !== "production") return true;
    try {
     const response = await fetch(
       `${process.env.APP_URL}/carts/${id}`,

@@ -108,7 +108,7 @@ const Payment = () => {
     const payload = {
       customer_id: session.customer.customer_id,
       order: {
-        total_price: 10000,
+        total_price: receipt.total + 30000,
         order_items: order.order_items.map((item) => ({
           product_id: item.product_id,
           quantity: item.quantity,
@@ -135,6 +135,7 @@ const Payment = () => {
           router.push(data, "_blank", "noopener,noreferrer");
         } else {
           toastError("Failed to initiate payment");
+          setIsLoading(false);
           return;
         }
         setIsLoading(false);
@@ -252,7 +253,7 @@ const Payment = () => {
         <div className="flex flex-row justify-between items-center font-bold gap-4">
           <h3>Grand total</h3>
           <span className="font-bold text-lg">
-            {formattedPrice(receipt.total - 30000)}
+            {formattedPrice(receipt.total + 30000)}
           </span>
         </div>
 
