@@ -4,10 +4,12 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:background="@drawable/border">
+    android:background="@drawable/border"
+    android:layout_marginBottom="7dp">
 
 
         <RadioButton
+            android:id="@+id/radio"
             android:layout_width="48dp"
             android:layout_height="48dp" />
 
@@ -18,12 +20,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/name_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="User full name | 1234 567 890"
                 android:textColor="@android:color/black" />
 
             <TextView
+                android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="123 Street, Phuong 1, Quan 2, Ho Chi Minh"

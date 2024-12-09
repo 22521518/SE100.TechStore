@@ -1,10 +1,14 @@
 package com.example.electrohive.Models;
 
+
+
 public class CartItem {
     private String customerId;
     private String productId;
     private int quantity;
     private Product product;
+
+    private Boolean checked;
 
     // Constructors
     public CartItem() {}
@@ -14,6 +18,7 @@ public class CartItem {
         this.productId = productId;
         this.quantity = quantity;
         this.product = product;
+        this.checked=false;
     }
 
     // Getters and Setters
@@ -47,6 +52,14 @@ public class CartItem {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 
     // Helper Methods

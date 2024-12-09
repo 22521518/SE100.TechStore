@@ -164,7 +164,7 @@ public class DrawerBasePage extends AppCompatActivity {
                 // Home selected
             } else if (id == R.id.nav_cart) {
                 // Cart selected this, "Cart Selected", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), SearchPage.class);
+                Intent intent = new Intent(getApplicationContext(), CartPage.class);
                 startActivity(intent);
             } else if (id == R.id.nav_track) {
                 // Tracking selected

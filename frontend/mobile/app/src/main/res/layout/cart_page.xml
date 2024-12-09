@@ -46,7 +46,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rc_trend"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                />
 
 
             <!-- Repeat the above item layout for more items as needed -->
@@ -70,6 +71,7 @@
             android:gravity="center_vertical">
 
             <CheckBox
+                android:id="@+id/checkAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="All Product" />
@@ -96,9 +98,10 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/subtotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3,996,000 VNĐ"
+                    android:text="0 VNĐ"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -116,6 +119,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 VNĐ"
@@ -143,9 +147,10 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/grandtotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3,996,000 VNĐ"
+                    android:text="0 VNĐ"
                     android:textStyle="bold"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -153,6 +158,7 @@
 
         <!-- Checkout Button -->
         <TextView
+            android:id="@+id/checkout"
             android:focusable="true"
             android:clickable="true"
             android:textAlignment="center"

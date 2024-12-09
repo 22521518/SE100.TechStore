@@ -6,30 +6,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.electrohive.Models.ApiResponse;
+import com.example.electrohive.Models.CheckoutAddress;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
-import com.example.electrohive.Models.Province;
-import com.example.electrohive.Models.Voucher;
+import com.example.electrohive.Models.OrderItemRequest;
 import com.example.electrohive.api.OrderService;
-import com.example.electrohive.api.VoucherService;
-import com.example.electrohive.api.VoucherService;
 import com.example.electrohive.utils.Model.OrderUtils;
 import com.example.electrohive.utils.RetrofitClient;
-import com.example.electrohive.utils.generator.MockOrder;
-import com.example.electrohive.utils.generator.MockVoucher;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OrderRepository {
 
@@ -158,4 +151,52 @@ public class OrderRepository {
         return orderStatusData;
     }
 
+    public LiveData<Boolean> postOrder(String userId, double totalPrice, ArrayList<OrderItemRequest> list, String paymentMethod, CheckoutAddress address)
+    {
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+        result.postValue(false);
+
+        Gson gson = new Gson();
+        JsonObject payload = new JsonObject();
+        payload.addProperty("total_price", totalPrice);
+        JsonArray orderItemsArray = new JsonArray();
+        for (OrderItemRequest item : list) {
+            JsonObject orderItemJson = new JsonObject();
+            orderItemJson.addProperty("product_id", item.getProductId());
+            orderItemJson.addProperty("quantity", item.getQuantity());
+            orderItemJson.addProperty("unit_price", item.getUnitPrice());
+            orderItemJson.addProperty("total_price", item.getTotalPrice());
+            orderItemsArray.add(orderItemJson);
+        }
+        payload.add("order_items", orderItemsArray);
+        payload.addProperty("payment_method", paymentMethod);
+        JsonObject shippingAddress = new JsonObject();
+        shippingAddress.addProperty("address", address.getAddress());
+        shippingAddress.addProperty("city", address.getCity());
+        shippingAddress.addProperty("district", address.getDistrict());
+        shippingAddress.addProperty("ward", address.getWard());
+        shippingAddress.addProperty("full_name", address.getFullName());
+        shippingAddress.addProperty("phone_number", address.getPhoneNumber());
+        payload.add("shipping_address", shippingAddress);
+
+        System.out.println("Payload: " + gson.toJson(payload));
+
+        orderService.postUserOrders(userId,payload).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    result.postValue(true);
+                    System.out.println("THANH CONG");
+                } else {
+                    System.out.println("Failed: " + response.code() + " " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+        return result;
+    }
 }
