@@ -36,9 +36,10 @@ public class PaymentVoucherAdapter extends RecyclerView.Adapter<PaymentVoucherAd
     public VoucherViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate the item layout for each voucher
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.voucher_payment_item, parent, false);
+                .inflate(R.layout.voucher_item, parent, false);
         return new VoucherViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(VoucherViewHolder holder, int position) {
@@ -53,8 +54,8 @@ public class PaymentVoucherAdapter extends RecyclerView.Adapter<PaymentVoucherAd
         holder.voucher.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent intent=new Intent();
-            intent.putExtra("voucherName",voucher.getVoucherName());
-            intent.putExtra("discount",voucher.getDiscountAmount());
+            intent.putExtra("voucher",voucher);
+
             ((Activity) context).setResult(Activity.RESULT_OK, intent);
             ((Activity) context).finish();
         });

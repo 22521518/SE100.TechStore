@@ -38,7 +38,6 @@ public class CustomerViewModel {
     // Fetch customer details by customerId
     public LiveData<ApiResponse<Customer>> getCustomer(String customerId) {
         MutableLiveData<ApiResponse<Customer>> customerData = new MutableLiveData<>();
-        customerData.setValue(new ApiResponse<>(false, null, "Loading...", 200));
 
         repository.getCustomer(customerId).observeForever(response -> {
             if (response != null) {

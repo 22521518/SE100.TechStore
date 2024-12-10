@@ -11,9 +11,11 @@ import androidx.lifecycle.ViewModel;
 import com.example.electrohive.Models.CheckoutAddress;
 import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
+import com.example.electrohive.Models.Enum.PAYMENT_METHOD;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.Models.OrderItemRequest;
 import com.example.electrohive.Models.OrderItem;
+import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.Repository.OrderRepository;
 import com.example.electrohive.utils.PreferencesHelper;
 
@@ -145,7 +147,7 @@ public class OrderViewModel extends ViewModel {
         allOrders.postValue(currentOrders);
     }
 
-    public LiveData<Boolean> postUserOrder(double totalPrice, ArrayList<OrderItemRequest> list, String paymentMethod, CheckoutAddress address) {
-        return repository.postOrder(PreferencesHelper.getCustomerData().getCustomerId(),totalPrice,list,paymentMethod,address);
+    public LiveData<ApiResponse<Boolean>> postUserOrder(double totalPrice, ArrayList<OrderItemRequest> list, PAYMENT_METHOD paymentMethod, CheckoutAddress address, Voucher voucher) {
+        return repository.postOrder(PreferencesHelper.getCustomerData().getCustomerId(),totalPrice,list,paymentMethod,address,voucher);
     }
 }

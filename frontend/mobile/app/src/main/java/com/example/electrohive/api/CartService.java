@@ -30,9 +30,9 @@ public interface CartService {
                                     @Body JsonObject payload);
 
     @DELETE("/carts/{id}")
-    Call<ResponseBody> deleteAllCartItems(@Path("id") String userId);
+    Call<JsonObject> deleteAllCartItems(@Path("id") String userId);
 
     // Deletes a specific item from the user's cart
     @DELETE("/carts/{id}/{pro_id}")
-    Call<ResponseBody> deleteCartItem(@Path("id") String userId, @Path("pro_id") String productId);
+    Call<JsonObject> deleteCartItem(@Path("id") String userId, @Path("pro_id") String productId);
 }

@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/footer_border"
-        android:padding="16dp">
+        android:padding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"

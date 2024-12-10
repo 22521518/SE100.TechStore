@@ -8,8 +8,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.CheckoutAddress;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
+import com.example.electrohive.Models.Enum.PAYMENT_METHOD;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.Models.OrderItemRequest;
+import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.api.OrderService;
 import com.example.electrohive.utils.Model.OrderUtils;
 import com.example.electrohive.utils.RetrofitClient;
@@ -151,10 +153,9 @@ public class OrderRepository {
         return orderStatusData;
     }
 
-    public LiveData<Boolean> postOrder(String userId, double totalPrice, ArrayList<OrderItemRequest> list, String paymentMethod, CheckoutAddress address)
+    public LiveData<ApiResponse<Boolean>> postOrder(String userId, double totalPrice, ArrayList<OrderItemRequest> list, PAYMENT_METHOD paymentMethod, CheckoutAddress address, Voucher voucher)
     {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
-        result.postValue(false);
+        MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
 
         Gson gson = new Gson();
         JsonObject payload = new JsonObject();
@@ -169,7 +170,7 @@ public class OrderRepository {
             orderItemsArray.add(orderItemJson);
         }
         payload.add("order_items", orderItemsArray);
-        payload.addProperty("payment_method", paymentMethod);
+        payload.addProperty("payment_method", paymentMethod.toString());
         JsonObject shippingAddress = new JsonObject();
         shippingAddress.addProperty("address", address.getAddress());
         shippingAddress.addProperty("city", address.getCity());
@@ -178,6 +179,7 @@ public class OrderRepository {
         shippingAddress.addProperty("full_name", address.getFullName());
         shippingAddress.addProperty("phone_number", address.getPhoneNumber());
         payload.add("shipping_address", shippingAddress);
+        payload.addProperty("voucher",voucher!=null?voucher.getVoucherCode():"");
 
         System.out.println("Payload: " + gson.toJson(payload));
 
@@ -185,16 +187,15 @@ public class OrderRepository {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    result.postValue(true);
-                    System.out.println("THANH CONG");
+                    result.postValue(new ApiResponse<>(true,true,"New order created",response.code()));
                 } else {
-                    System.out.println("Failed: " + response.code() + " " + response.message());
+                    result.postValue(new ApiResponse<>(false,false,response.message(),response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
+                result.postValue(new ApiResponse<>(false,false,t.getMessage(),-1));
             }
         });
         return result;

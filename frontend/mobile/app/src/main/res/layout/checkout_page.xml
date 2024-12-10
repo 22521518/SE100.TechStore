@@ -137,6 +137,7 @@
             <!-- RecyclerView for Saved Addresses -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rc_trend"
+                android:paddingHorizontal="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

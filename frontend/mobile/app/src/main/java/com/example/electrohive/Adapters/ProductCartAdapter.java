@@ -1,5 +1,7 @@
 package com.example.electrohive.Adapters;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,8 +15,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,7 +51,6 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     private Context context;
 
     private CartViewModel cartViewModel;
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private final CartItemCheckboxListener listener;
 
@@ -136,13 +139,27 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             listener.onItemCheckedChanged();
         });
 
-        holder.deleteItem.setOnClickListener(v->{
-            executorService.execute(() -> {
-                // Thực hiện công việc xóa item trong background
-                cartViewModel.deleteCartItem(cartitem.getProductId());
-            });
-            cartItems.remove(position);
-            notifyItemRemoved(position);
+        holder.deleteItem.setOnClickListener(v -> {
+            Context context = v.getContext();
+
+            // Create an AlertDialog to ask for confirmation
+            new AlertDialog.Builder(context)
+                    .setTitle("Confirm Deletion")
+                    .setMessage("Are you sure you want to remove this item from the cart?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        cartViewModel.deleteCartItem(cartitem.getProductId()).observe((LifecycleOwner) context, res-> {
+                            if(!res.isSuccess()) {
+                                Toast.makeText(context, res.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        cartItems.remove(position);
+                        notifyItemRemoved(position);
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                        // If user cancels, dismiss the dialog
+                        dialog.dismiss();
+                    })
+                    .show();
         });
 
 

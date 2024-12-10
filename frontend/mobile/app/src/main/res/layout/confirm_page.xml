@@ -3,24 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@drawable/header_border"
     android:fitsSystemWindows="true"
-    android:background="@drawable/header_border">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/backbutton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="12dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_arrow_left_icon"/>
+            android:padding="12dp"
+            android:src="@drawable/ic_arrow_left_icon" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,50 +30,65 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:text="Transaction date"
-        android:textSize="20dp"
-        android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:text="Monday, October 9th, 2024"
-        android:textSize="15dp" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transaction date"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.7"
+            android:text="Monday, October 9th, 2024"
+            android:textAlignment="viewEnd"
+            android:textSize="15dp" />
+    </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="1dp"
+        android:layout_marginVertical="4dp"
         android:background="@android:color/darker_gray" />
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:text="Payment method"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/payment_method"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:text="Cash on delivery"
-        android:textSize="15dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:text="Payment method"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/payment_method"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="Cash on delivery"
+            android:alpha="0.7"
+            android:textAlignment="viewEnd"
+            android:textSize="15dp" />
+    </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="1dp"
+        android:layout_marginVertical="4dp"
         android:background="@android:color/darker_gray" />
 
     <TextView
@@ -81,29 +96,27 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
         android:text="Address"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:textSize="15dp" />
+        android:textSize="14dp" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="1dp"
+        android:layout_marginVertical="4dp"
         android:background="@android:color/darker_gray" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="5dp"
+        android:layout_marginBottom="5dp"
         android:text="Your order"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:textStyle="bold" />
 
     <ScrollView
@@ -116,115 +129,162 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </ScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Subtotal"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/receipt_subtotal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="00000 VNĐ"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="1dp"
+        android:layout_marginVertical="4dp"
         android:background="@android:color/darker_gray" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Discount"
-            android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/receipt_discount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="00000 VNĐ"
-            android:textSize="15dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Shipment cost"
-            android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/receipt_shipment_cost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="00000 VNĐ"
-            android:textSize="15dp" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/darker_gray" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Grand total"
-            android:textSize="20dp"
+            android:layout_marginBottom="5dp"
+            android:text="Selected voucher: "
+            android:textSize="16dp"
             android:textStyle="bold" />
-
         <TextView
-            android:id="@+id/receipt_grand_total"
-            android:layout_width="match_parent"
+            android:textAlignment="viewEnd"
+            android:id="@+id/receipt_discount_code"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="00000 VNĐ"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="5dp"
+            android:text=""
+            android:textSize="14sp"
+            android:alpha="0.7" />
+
     </LinearLayout>
 
-    <TextView
-        android:clickable="true"
-        android:focusable="true"
-        android:id="@+id/confirm"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:background="@drawable/clickable_textview_button"
-        android:textAlignment="center"
-        android:layout_marginTop="16dp"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Confirm Order" />
+        android:orientation="vertical"
+        android:background="@drawable/footer_border">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subtotal"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/receipt_subtotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="0 VNĐ"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discount"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/receipt_discount_percentage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="(0%)"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/receipt_discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="0 VNĐ"
+                android:textSize="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shipment cost"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/receipt_shipment_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="0 VNĐ"
+                android:textSize="15dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Grand total"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/receipt_grand_total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="0 VNĐ"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/clickable_textview_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Confirm Order"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+    </LinearLayout>
+
 </LinearLayout>

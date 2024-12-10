@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
@@ -34,20 +35,22 @@ public class CartRepository {
 
     public LiveData<ApiResponse<Boolean>> deleteItemFromCart(String userId, String productId) {
         MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
-        Call<ResponseBody> call = cartService.deleteCartItem(userId, productId);
 
-        try {
-            // Synchronous execution
-            Response<ResponseBody> response = call.execute();
-            if (response.isSuccessful()) {
-                result.postValue(new ApiResponse<>(true, true, "Item deleted successfully", response.code()));
-            } else {
-                result.postValue(new ApiResponse<>(false, false, "Error: " + response.errorBody().string(), response.code()));
+        cartService.deleteCartItem(userId, productId).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    result.postValue(new ApiResponse<>(true, true, "Item deleted successfully", response.code()));
+                } else {
+                    result.postValue(new ApiResponse<>(false, false, "Failed to delete item" , response.code()));
+                }
             }
-        } catch (Exception e) {
-            result.postValue(new ApiResponse<>(false, false, "Exception: " + e.getMessage(), 500));
-            e.printStackTrace();
-        }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                result.postValue(new ApiResponse<>(false, false, "Exception: " + t.getMessage(), 500));
+            }
+        });
         return result;
     }
 
@@ -57,20 +60,21 @@ public class CartRepository {
         MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
         result.postValue(new ApiResponse<>(false, false, "Failed to delete items", 500));
 
-        Call<ResponseBody> call = cartService.deleteAllCartItems(userId);
-
-        try {
-            // Synchronous execution
-            Response<ResponseBody> response = call.execute();
-            if (response.isSuccessful()) {
-                result.postValue(new ApiResponse<>(true, true, "All items deleted successfully", response.code()));
-            } else {
-                result.postValue(new ApiResponse<>(false, false, "Error: " + response.errorBody().string(), response.code()));
+        cartService.deleteAllCartItems(userId).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    result.postValue(new ApiResponse<>(true, true, "Item deleted successfully", response.code()));
+                } else {
+                    result.postValue(new ApiResponse<>(false, false, "Failed to delete item" , response.code()));
+                }
             }
-        } catch (Exception e) {
-            result.postValue(new ApiResponse<>(false, false, "Exception: " + e.getMessage(), 500));
-            e.printStackTrace();
-        }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                result.postValue(new ApiResponse<>(false, false, "Exception: " + t.getMessage(), 500));
+            }
+        });
         return result;
     }
     // Add item to cart

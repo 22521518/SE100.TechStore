@@ -76,10 +76,11 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
+
+    // Include local .aar and .jar files
     implementation(fileTree(mapOf(
-        "dir" to "C:\\Users\\Admin\\AndroidStudioProjects\\SE100.TechStore\\frontend\\mobile\\app\\libs",
-        "include" to listOf("*.aar", "*.jar"),
-        "exclude" to listOf("")
+        "dir" to "libs",
+        "include" to listOf("*.aar", "*.jar")
     )))
 
 }

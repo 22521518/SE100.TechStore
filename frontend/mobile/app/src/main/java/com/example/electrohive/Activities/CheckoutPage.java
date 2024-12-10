@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -21,6 +22,7 @@ import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.CheckoutAddress;
 import com.example.electrohive.Models.District;
 import com.example.electrohive.Models.Province;
+import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.Models.Ward;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.AddressViewModel;
@@ -41,6 +43,8 @@ public class CheckoutPage extends AppCompatActivity {
     private TextInputEditText address_fullname;
     private TextInputEditText address_phone;
     private TextInputEditText address_address;
+
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -112,22 +116,28 @@ public class CheckoutPage extends AppCompatActivity {
         });
         recyclerView.setAdapter(addressAdapter);
 
-        addressViewModel.getAddress().observe(this,addresses -> {
+        addressViewModel.getAddress().observe(this,res -> {
 
-            if (addresses != null && !addresses.isEmpty()) {
-                addressList.clear();
-                addressList.addAll(addresses);
-                for(int i=0;i<addresses.size();i++)
-                {
-                    if(addresses.get(i).getIsPrimary())
+            if(res.isSuccess()) {
+                List<Address> addresses = res.getData();
+                if (addresses != null && !addresses.isEmpty()) {
+                    addressList.clear();
+                    addressList.addAll(addresses);
+                    for(int i=0;i<addresses.size();i++)
                     {
-                        defaultPosition=i;
-                        break;
+                        if(addresses.get(i).getIsPrimary())
+                        {
+                            defaultPosition=i;
+                            break;
+                        }
                     }
+                    addressAdapter.setRadioButtonPosition(defaultPosition);
+                    addressAdapter.notifyDataSetChanged();
                 }
-                addressAdapter.setRadioButtonPosition(defaultPosition);
-                addressAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(this,res.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
         });
     }
 }

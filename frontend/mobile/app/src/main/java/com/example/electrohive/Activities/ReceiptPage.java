@@ -15,6 +15,7 @@ import com.example.electrohive.Adapters.PaymentAdapter;
 import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.CheckoutAddress;
 import com.example.electrohive.Models.OrderItemRequest;
+import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.OrderViewModel;
 import com.google.common.reflect.TypeToken;
@@ -27,14 +28,12 @@ import java.util.Locale;
 
 public class ReceiptPage  extends AppCompatActivity {
 
-    TextView date,payment,address,Subtotal,Discount,ShipCost,GrandTotal,confirm;
+    TextView date,payment,address,Subtotal,Discount,ShipCost,GrandTotal,confirm,voucher_code,voucher_discount_percentage;
 
     @Override
     protected void  onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.receipt_page);
-
-        OrderViewModel orderViewModel=new OrderViewModel();
 
         payment=findViewById(R.id.payment_method);
         payment.setText(getIntent().getStringExtra("payment_method"));
@@ -61,6 +60,7 @@ public class ReceiptPage  extends AppCompatActivity {
         }
 
         Bundle bundle = getIntent().getExtras();
+        Voucher voucher = (Voucher) bundle.getSerializable("voucher");
         String subtotal= bundle.getString("subtotal");
         String discount=bundle.getString("discount");
         String shipCost=bundle.getString("shipCost");
@@ -69,15 +69,23 @@ public class ReceiptPage  extends AppCompatActivity {
         Discount=findViewById(R.id.receipt_discount);
         ShipCost=findViewById(R.id.receipt_shipment_cost);
         GrandTotal=findViewById(R.id.receipt_grand_total);
+        voucher_code = findViewById(R.id.receipt_discount_code);
+        voucher_discount_percentage = findViewById(R.id.receipt_discount_percentage);
+        if(voucher!=null) {
+            voucher_code.setText(voucher.getVoucherCode());
+            voucher_discount_percentage.setText("("+voucher.getDiscountAmount()+"%)");
+        }
         Subtotal.setText(subtotal);
         Discount.setText(discount);
         ShipCost.setText(shipCost);
         GrandTotal.setText(grandTotal);
 
+
         confirm=findViewById(R.id.continue_shopping);
         confirm.setOnClickListener(v -> {
             Intent intent=new Intent(getApplicationContext(), HomePage.class);
             startActivity(intent);
+            finish();
         });
     }
 }

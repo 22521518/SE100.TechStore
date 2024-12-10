@@ -58,7 +58,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ProductV
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflate the item layout
-        View view = LayoutInflater.from(context).inflate(R.layout.payment_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.orders_item, parent, false);
         return new ProductViewHolder(view);
     }
 
@@ -76,9 +76,6 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ProductV
         holder.quantity.setText(String.valueOf(cartitem.getQuantity()));
 
         holder.name.setText(cartitem.getProduct().getProductName());
-        if (cartitem.getProduct().getCategories() != null && !cartitem.getProduct().getCategories().isEmpty()) {
-            holder.category.setText(cartitem.getProduct().getCategories().get(0).getCategoryName());
-        }
         NumberFormat currencyFormat = NumberFormat.getInstance(Locale.US);
         holder.price.setText(currencyFormat.format(cartitem.getProduct().getPrice())+" VNĐ");
 //
@@ -106,17 +103,16 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ProductV
 
     // ViewHolder class to hold references to the views
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
-        TextView name, category, price;
+        TextView name, price;
         ImageView imageView;
         TextView quantity;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.name_product);
-            category = itemView.findViewById(R.id.category_product);
-            price = itemView.findViewById(R.id.price_product);
-            imageView = itemView.findViewById(R.id.image);
-            quantity=itemView.findViewById(R.id.quantity);
+            name = itemView.findViewById(R.id.order_item_product_name);
+            price = itemView.findViewById(R.id.order_item_product_unitprice);
+            imageView = itemView.findViewById(R.id.order_item_product_image);
+            quantity=itemView.findViewById(R.id.order_item_quantity);
         }
     }
 }

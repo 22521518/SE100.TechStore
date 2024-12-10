@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,15 +54,17 @@ public class PaymentVoucherPage extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
 
         // Observe the LiveData from the ViewModel
-        voucherViewModel.getVouchers().observe(this, new Observer<List<Voucher>>() {
-            @Override
-            public void onChanged(List<Voucher> vouchers) {
-                // Update the adapter with new data
+        voucherViewModel.getVouchers().observe(this, res -> {
+
+            if(res.isSuccess()) {
+                List<Voucher> vouchers = res.getData();
                 if (vouchers != null) {
                     voucherAdapter.updateVouchers(vouchers);  // Method to update the adapter data
                 }
-                loadingSpinner.setVisibility(View.GONE);
+            } else {
+                Toast.makeText(this,res.getMessage(), Toast.LENGTH_SHORT).show();
             }
+            loadingSpinner.setVisibility(View.GONE);
         });
     }
 

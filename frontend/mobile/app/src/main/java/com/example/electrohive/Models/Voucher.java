@@ -1,8 +1,9 @@
 package com.example.electrohive.Models;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Voucher {
+public class Voucher implements Serializable {
     private String voucherCode;
     private String voucherName;
     private String description;

@@ -20,18 +20,19 @@
             android:orientation="vertical">
 
             <TextView
+                android:textStyle="bold"
+                android:textSize="16sp"
                 android:id="@+id/name_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="User full name | 1234 567 890"
-                android:textColor="@android:color/black" />
+                android:text="User full name | 1234 567 890" />
 
             <TextView
                 android:id="@+id/address"
+                android:alpha="0.7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="123 Street, Phuong 1, Quan 2, Ho Chi Minh"
-                android:textColor="@android:color/black" />
+                android:text="123 Street, Phuong 1, Quan 2, Ho Chi Minh" />
         </LinearLayout>
 
 </LinearLayout>

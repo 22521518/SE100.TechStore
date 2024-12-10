@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.electrohive.Adapters.PaymentAdapter;
 import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.CheckoutAddress;
+import com.example.electrohive.Models.Enum.PAYMENT_METHOD;
 import com.example.electrohive.Models.OrderItemRequest;
+import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.CartViewModel;
 import com.example.electrohive.ViewModel.OrderViewModel;
@@ -38,14 +40,18 @@ import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class ConfirmPage  extends AppCompatActivity {
 
-    TextView date,payment,address,Subtotal,Discount,ShipCost,GrandTotal,confirm;
+    TextView date,payment,address,Subtotal,Discount,ShipCost,GrandTotal,confirm,voucher_code,voucher_discount_percentage;
 
 
+    OrderViewModel orderViewModel;
+    CartViewModel cartViewModel= CartViewModel.getInstance();
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void  onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.confirm_page);
+
+        orderViewModel = new OrderViewModel(this);
 
         StrictMode.ThreadPolicy policy = new
         StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -53,8 +59,7 @@ public class ConfirmPage  extends AppCompatActivity {
 
         ZaloPaySDK.init(554, Environment.SANDBOX);
 
-        OrderViewModel orderViewModel=new OrderViewModel();
-        CartViewModel cartViewModel=new CartViewModel();
+
 
         ImageButton backbutton=findViewById(R.id.backbutton);
         backbutton.setOnClickListener(v -> {
@@ -86,10 +91,13 @@ public class ConfirmPage  extends AppCompatActivity {
         }
 
         Bundle bundle = getIntent().getExtras();
+        Voucher voucher = (Voucher) bundle.getSerializable("voucher");
         String subtotal= bundle.getString("subtotal");
         String discount=bundle.getString("discount");
         String shipCost=bundle.getString("shipCost");
         String grandTotal=bundle.getString("grandTotal");
+        voucher_code = findViewById(R.id.receipt_discount_code);
+        voucher_discount_percentage = findViewById(R.id.receipt_discount_percentage);
         Subtotal=findViewById(R.id.receipt_subtotal);
         Discount=findViewById(R.id.receipt_discount);
         ShipCost=findViewById(R.id.receipt_shipment_cost);
@@ -98,6 +106,10 @@ public class ConfirmPage  extends AppCompatActivity {
         Discount.setText(discount);
         ShipCost.setText(shipCost);
         GrandTotal.setText(grandTotal);
+        if(voucher!=null) {
+            voucher_code.setText(voucher.getVoucherCode());
+            voucher_discount_percentage.setText("("+voucher.getDiscountAmount()+"%)");
+        }
 
         confirm=findViewById(R.id.confirm);
         confirm.setOnClickListener(v -> {
@@ -108,10 +120,11 @@ public class ConfirmPage  extends AppCompatActivity {
             double price = Double.parseDouble(numericPart);
             if(payment_method.equals("COD"))
             {
-                orderViewModel.postUserOrder(price,list,payment.getText().toString(),Address);
+                orderViewModel.postUserOrder(price,list,PAYMENT_METHOD.valueOf(payment_method),Address,voucher);
                 Intent intent=new Intent(getApplicationContext(),ReceiptPage.class);
                 intent.putExtra("checkedItems",productJson);
                 intent.putExtra("address", Address);
+                intent.putExtra("voucher",voucher);
                 intent.putExtra("payment_method",getIntent().getStringExtra("payment_method"));
                 intent.putExtra("date",date.getText().toString());
                 for(CartItem item: cartItems){
@@ -121,7 +134,7 @@ public class ConfirmPage  extends AppCompatActivity {
 
                 startActivity(intent);
             }
-            else if(payment_method.equals("ZaloPay"))
+            else if(payment_method.equals("ZALO_PAY"))
             {
                 CreateOrder orderApi = new CreateOrder();
                 try {
@@ -131,11 +144,12 @@ public class ConfirmPage  extends AppCompatActivity {
                         String token = data.getString("zptranstoken");
                         ZaloPaySDK.getInstance().payOrder(ConfirmPage.this, token, "demozpdk://app", new PayOrderListener() {
                             @Override
-                            public void onPaymentSucceeded(String s, String s1, String s2) {
-                                orderViewModel.postUserOrder(price,list,payment.getText().toString(),Address);
+                             public void onPaymentSucceeded(String s, String s1, String s2) {
+                                orderViewModel.postUserOrder(price,list, PAYMENT_METHOD.valueOf(payment_method),Address,voucher);
                                 Intent intent1=new Intent(getApplicationContext(),ReceiptPage.class);
                                 intent1.putExtra("checkedItems",productJson);
                                 intent1.putExtra("address", Address);
+                                intent1.putExtra("voucher",voucher);
                                 intent1.putExtra("payment_method",getIntent().getStringExtra("payment_method"));
                                 intent1.putExtra("date",date.getText().toString());
                                 intent1.putExtras(bundle);

@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class CartPage extends AppCompatActivity {
@@ -33,6 +34,7 @@ public class CartPage extends AppCompatActivity {
 
     private TextView Subtotal,Discount,Grandtotal;
 
+    CartViewModel cartViewModel = CartViewModel.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,7 @@ public class CartPage extends AppCompatActivity {
             startActivity(intent);
 
         });
-        CartViewModel cartViewModel = new CartViewModel();
+
 
         // Khởi tạo RecyclerView
         RecyclerView recyclerView = findViewById(R.id.rc_trend);
@@ -74,12 +76,18 @@ public class CartPage extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // Lắng nghe sự kiện thay đổi dữ liệu từ ViewModel
-        cartViewModel.getCart().observe(this, cartItemsFromViewModel -> {
-            if (cartItemsFromViewModel != null && !cartItemsFromViewModel.isEmpty()) {
-                cartItems.clear();
-                cartItems.addAll(cartItemsFromViewModel);
-                adapter.notifyDataSetChanged();
+        cartViewModel.getCart().observe(this, res -> {
+            if(res.isSuccess()) {
+                List<CartItem> cart = res.getData();
+                if (cart!= null && !cart.isEmpty()) {
+                    cartItems.clear();
+                    cartItems.addAll(cart);
+                    adapter.notifyDataSetChanged();
+                }
+            } else {
+                Toast.makeText(this,res.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
         });
 
         // Lắng nghe sự kiện "Check All"
