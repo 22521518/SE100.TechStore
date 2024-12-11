@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class MomoPaymentStore {
+export class PaymentStore {
   private customerPaymentList: CustomerPayment[] = [];
 
   getPayments() {
@@ -20,7 +20,7 @@ export class MomoPaymentStore {
     this.customerPaymentList.push(payment);
   }
 
-  async removePaymentByCustomer(
+  removePaymentByCustomer(
     customerId: string,
     callback?: (orderId: string) => void,
   ) {

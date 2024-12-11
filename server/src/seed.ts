@@ -5,4 +5,4 @@ import seed from './utils/seeding/seed.util';
 // seed('data/seed-2-product.sql');
 // seed('data/seed-3-order.sql');
 // seed('data/seed-4-product-feedback.sql');
-seedProducts();
+// seedProducts();

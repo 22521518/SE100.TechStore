@@ -136,6 +136,10 @@ export class OrdersService {
     including_voucher: boolean = true,
   ) {
     try {
+      if (!orderId) {
+        throw new BadRequestException('Order ID is required');
+      }
+
       const order = await this.prismaDbService.orders.findUnique({
         where: {
           order_id: orderId,

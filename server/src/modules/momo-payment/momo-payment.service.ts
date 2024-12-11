@@ -8,8 +8,7 @@ import { AddressesService } from '../addresses/addresses.service';
 import { CreateOrderDto } from '../orders/dto/create-order.dto';
 import { ShippingAddress } from '../orders/entities/order.entity';
 import { PAYMENT_STATUS, Prisma } from '@prisma/client';
-import { CallbackMomoDto } from './dto/callback-momo.dto';
-import { MomoItem } from './entities/momo-item.entity';
+import { EPaymentOrderItem } from './entities/momo-item.entity';
 import { ProductsService } from '../products/products.service';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 
@@ -86,7 +85,7 @@ export class MomoPaymentService {
     customerId: string,
     requestId: string,
     amount: number,
-    items: MomoItem[],
+    items: EPaymentOrderItem[],
     redirectUrl: string,
   ) {
     const orderInfo = this.orderInfo + orderId + customerId;
@@ -117,11 +116,11 @@ export class MomoPaymentService {
     });
   }
 
-  async requestMomoPayment(
+  async requestPayment(
     orderId: string,
     customerId: string,
     amount: number,
-    items: MomoItem[],
+    items: EPaymentOrderItem[],
     redirectUrl?: string | undefined,
   ) {
     let redirect = this.redirectUrl;
@@ -152,14 +151,13 @@ export class MomoPaymentService {
             throw new Error(error.message);
           }),
         );
-
       return response;
     } catch (error) {
       throw new BadRequestException(`Can't request payment ${error}`);
     }
   }
 
-  async handleCMomoCallback(body: CallbackMomoDto) {
+  async handleCallback(body: any) {
     try {
       if (body.resultCode !== 0) {
         const { orderId } = body;

@@ -1,4 +1,4 @@
-export class MomoItem {
+export class EPaymentOrderItem {
   id: string;
   name: string;
   price: number;
