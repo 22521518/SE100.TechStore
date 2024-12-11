@@ -1,0 +1,1 @@
+GRANT pg_signal_backend TO electro_hive_db_qb8y_user;

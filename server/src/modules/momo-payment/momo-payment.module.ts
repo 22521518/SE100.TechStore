@@ -5,7 +5,7 @@ import { OrdersModule } from '../orders/orders.module';
 import { HttpModule } from '@nestjs/axios';
 import { AddressesModule } from '../addresses/addresses.module';
 import { ProductsModule } from '../products/products.module';
-import { MomoPaymentStore } from './entities/payment_store.entity';
+import { PaymentStore } from './entities/payment_store.entity';
 
 @Module({
   imports: [
@@ -18,6 +18,6 @@ import { MomoPaymentStore } from './entities/payment_store.entity';
     }),
   ],
   controllers: [MomoPaymentController],
-  providers: [MomoPaymentService, MomoPaymentStore],
+  providers: [MomoPaymentService, PaymentStore],
 })
 export class MomoPaymentModule {}

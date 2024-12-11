@@ -1,42 +1,50 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
   Param,
-  BadRequestException,
+  Post,
 } from '@nestjs/common';
-import { MomoPaymentService } from './momo-payment.service';
+import { ZaloPaymentService } from './zalo-payment.service';
+import { CreateMomoPaymentDto } from '../momo-payment/dto/create-momo-payment.dto';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
-import { CreateMomoPaymentDto } from './dto/create-momo-payment.dto';
-import { EPaymentOrderItem } from './entities/momo-item.entity';
-import { PaymentStore } from './entities/payment_store.entity';
+import { PaymentStore } from '../momo-payment/entities/payment_store.entity';
+import { EPaymentOrderItem } from '../momo-payment/entities/momo-item.entity';
 import { PAYMENT_STATUS } from '@prisma/client';
 
-@Controller('momo-payment')
-export class MomoPaymentController {
+@Controller('zalo-payment')
+export class ZaloPaymentController {
   constructor(
-    private readonly momoPaymentService: MomoPaymentService,
+    private readonly zaloPaymentService: ZaloPaymentService,
     private readonly paymentStore: PaymentStore,
   ) {}
 
-  @Post('cancel/:id')
-  async cancelTransaction(@Param('id') customerId: string) {
-    // return this.momoPaymentService.cancelTransaction(body);
+  @Post('callback')
+  async callback(@Body() body: any) {
     try {
-      this.paymentStore.removePaymentByCustomer(customerId, (orderId) =>
-        this.momoPaymentService.removeOrder(orderId),
-      );
+      return this.zaloPaymentService.handleCallback(body);
     } catch (error: BadRequestException | any) {
       throw new BadRequestException(error.message);
     }
   }
 
-  @Post('callback')
-  async callback(@Body() body: any) {
+  @Post('order-status/:id')
+  async orderStatus(@Param('id') app_trans_id: string) {
     try {
-      console.log('Momo calback\n', body);
-      return this.momoPaymentService.handleCallback(body);
+      console.log('Zalo order status\n', app_trans_id);
+      return this.zaloPaymentService.handleOrderStatus(app_trans_id);
+    } catch (error: BadRequestException | any) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Post('cancel/:id')
+  async cancelTransaction(@Param('id') customerId: string) {
+    try {
+      this.paymentStore.removePaymentByCustomer(customerId, (orderId) =>
+        this.zaloPaymentService.removeOrder(orderId),
+      );
     } catch (error: BadRequestException | any) {
       throw new BadRequestException(error.message);
     }
@@ -46,7 +54,7 @@ export class MomoPaymentController {
   async checkTransaction(@Param('id') orderId: string) {
     try {
       const paymentStatus =
-        await this.momoPaymentService.checkPaymentStatus(orderId);
+        await this.zaloPaymentService.checkPaymentStatus(orderId);
       return {
         status: paymentStatus,
         success: paymentStatus === PAYMENT_STATUS.PAID,
@@ -65,7 +73,7 @@ export class MomoPaymentController {
   ) {
     try {
       this.paymentStore.removePaymentByCustomer(customerId, (orderId) =>
-        this.momoPaymentService.removeOrder(orderId),
+        this.zaloPaymentService.removeOrder(orderId),
       );
     } catch (error: BadRequestException | any) {
       throw new BadRequestException(error.message);
@@ -73,10 +81,11 @@ export class MomoPaymentController {
 
     try {
       const { redirectUrl, ...orderDto } = createOrderDto;
-      const order = await this.momoPaymentService.createOrder(
+      const order = await this.zaloPaymentService.createOrder(
         orderDto,
         customerId,
       );
+
       const { order_id, total_price, order_items } = order;
 
       this.paymentStore.addPayment({
@@ -100,10 +109,10 @@ export class MomoPaymentController {
         redirect = process.env.CLIENT + redirectUrl;
       }
 
-      const rep = await this.momoPaymentService.requestPayment(
+      const rep = await this.zaloPaymentService.requestPayment(
         order_id,
         customerId,
-        total_price * 0 + 50000,
+        total_price,
         items,
         redirect,
       );
@@ -111,7 +120,7 @@ export class MomoPaymentController {
       setTimeout(() => {
         this.trackPaymentStatus(
           order_id,
-          this.momoPaymentService.timeOut * 1000,
+          this.zaloPaymentService.timeOut * 1000,
         );
       }, 0);
 
@@ -124,6 +133,12 @@ export class MomoPaymentController {
   private async trackPaymentStatus(orderId: string, totalSeconds: number) {
     let elapsedSeconds = 0;
     const intervalId = setInterval(async () => {
+      console.log(
+        'Checking transaction for order',
+        this.paymentStore.getPayments(),
+      );
+      console.log('Elapsed seconds:', elapsedSeconds);
+
       elapsedSeconds++;
       const currentOrder = this.paymentStore.getPaymentByOrder(orderId);
       if (!currentOrder) {
@@ -133,16 +148,16 @@ export class MomoPaymentController {
 
       try {
         const transactionSuccess =
-          await this.momoPaymentService.checkTransaction(orderId);
+          await this.zaloPaymentService.checkTransaction(orderId);
 
         if (transactionSuccess) {
           this.paymentStore.removePaymentByOrder(orderId);
           clearInterval(intervalId);
         } else if (elapsedSeconds >= totalSeconds) {
           if (!transactionSuccess) {
-            this.momoPaymentService.removeOrder(orderId);
+            this.zaloPaymentService.removeOrder(orderId);
             this.paymentStore.removePaymentByOrder(orderId, (id) =>
-              this.momoPaymentService.removeOrder(id),
+              this.zaloPaymentService.removeOrder(id),
             );
           }
           clearInterval(intervalId);

@@ -29,6 +29,7 @@ import { PermissionsGuard } from './common/guards/permission.guard';
 import { ProfileModule } from './modules/profile/profile.module';
 import { EventMessageModule } from './event-message/event-message.module';
 import { MomoPaymentModule } from './modules/momo-payment/momo-payment.module';
+import { ZaloPaymentModule } from './modules/zalo-payment/zalo-payment.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { MomoPaymentModule } from './modules/momo-payment/momo-payment.module';
     ProfileModule,
     EventMessageModule,
     MomoPaymentModule,
+    ZaloPaymentModule,
   ],
   controllers: [AppController],
   providers: [
