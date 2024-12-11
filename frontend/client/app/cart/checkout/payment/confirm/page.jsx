@@ -27,7 +27,12 @@ import {
   faWallet,
 } from "@node_modules/@fortawesome/free-solid-svg-icons";
 import Image from "@node_modules/next/image";
-import { getOrder, payWithMoMo, postOrder } from "@service/order";
+import {
+  getOrder,
+  payWithMoMo,
+  payWithZaloPay,
+  postOrder,
+} from "@service/order";
 import { toastError, toastRequest, toastSuccess } from "@util/toaster";
 
 const Payment = () => {
@@ -73,16 +78,15 @@ const Payment = () => {
       case "COD":
         return (
           <h4 className="opacity-70 text-xl font-bold flex flex-row gap-2 items-center">
-            <FontAwesomeIcon icon={faMoneyBill} />
             {order.order_payment_method}
+            <FontAwesomeIcon icon={faMoneyBill} />
           </h4>
         );
       case "MOMO":
         return (
           <h4 className="opacity-70 text-xl font-bold flex flex-row gap-2 items-center">
-            <FontAwesomeIcon icon={faWallet} />
             {order.order_payment_method}{" "}
-            <div className="size-9">
+            <div className="size-9 overflow-hidden rounded-md">
               <Image
                 src={"/images/MoMo_Logo.png"}
                 alt="MOMO"
@@ -90,16 +94,34 @@ const Payment = () => {
                 height={100}
               />
             </div>
+            <FontAwesomeIcon icon={faWallet} />
+          </h4>
+        );
+      case "ZALOPAY":
+        return (
+          <h4 className="opacity-70 text-xl font-bold flex flex-row gap-2 items-center">
+            {order.order_payment_method}{" "}
+            <div className="size-9 overflow-hidden rounded-md">
+              <Image
+                src={"/images/ZaloPay_Logo.png"}
+                alt="MOMO"
+                width={100}
+                height={100}
+              />
+            </div>
+            <FontAwesomeIcon icon={faWallet} />
           </h4>
         );
     }
   };
 
   const handleCancel = async () => {
-    setIsCanceling(true)
+    setIsCanceling(true);
     await reduxDispatch(setOrderStateAsync(0));
     reduxDispatch(clearOrder());
-    setTimeout(()=>{router.push("/")},1000);
+    setTimeout(() => {
+      router.push("/");
+    }, 1000);
   };
 
   const handleConfirm = async () => {
@@ -115,7 +137,7 @@ const Payment = () => {
           unit_price: item.unit_price,
           total_price: item.total_price,
         })),
-        redirectUrl: "/receipt",
+        redirectUrl: `${process.env.NEXT_PUBLIC_CLIENT_URL}/receipt`,
         payment_method: order.order_payment_method,
         shipping_address: {
           address: order.order_address.address,
@@ -130,6 +152,18 @@ const Payment = () => {
     };
     if (order.order_payment_method === "MOMO") {
       await payWithMoMo(payload).then((data) => {
+        if (data) {
+          toastSuccess("Redirecting please wait...");
+          router.push(data, "_blank", "noopener,noreferrer");
+        } else {
+          toastError("Failed to initiate payment");
+          setIsLoading(false);
+          return;
+        }
+        setIsLoading(false);
+      });
+    } else if (order.order_payment_method === "ZALOPAY") {
+      await payWithZaloPay(payload).then((data) => {
         if (data) {
           toastSuccess("Redirecting please wait...");
           router.push(data, "_blank", "noopener,noreferrer");
@@ -168,7 +202,7 @@ const Payment = () => {
         <h4 className="opacity-70">{formattedFullDate(new Date())}</h4>
         <Divider />
         <h3 className="font-bold md:text-xl">Shipping address</h3>
-        <div className="flex flex-col items-start h-fit justify-around md:text-xl">
+        <div className="flex flex-col items-start h-fit justify-around md:text-lg">
           <h4>
             {order?.order_address.full_name} |{" "}
             {order?.order_address.phone_number}
@@ -184,8 +218,11 @@ const Payment = () => {
           </h3>
         </div>
         <Divider />
-        <h3 className="font-bold md:text-xl">Payment method</h3>
-        {renderPaymentMethod(order.order_payment_method)}
+        <div className="flex flex-wrap items-center gap-2 justify-between">
+          <h3 className="font-bold md:text-xl">Payment method</h3>
+          {renderPaymentMethod(order.order_payment_method)}
+        </div>
+
         <Divider />
 
         <h3 className="font-bold md:text-xl">Your order</h3>

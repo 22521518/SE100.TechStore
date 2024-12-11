@@ -190,6 +190,45 @@ const Orders = () => {
               </div>
             );
         }
+        case "ZALOPAY":
+        switch (order.payment_status) {
+          case "PENDING":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-gray-500/50  px-2 py-1 text-white">
+                PENDING{" "}
+                <Image
+                  src={"/images/ZaloPay_Logo.png"}
+                  alt="MOMO"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            );
+          case "PAID":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-green-500/50  px-2 py-1 text-white">
+                PAID{" "}
+                <Image
+                  src={"/images/ZaloPay_Logo.png"}
+                  alt="MOMO"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            );
+          case "REFUNDED":
+            return (
+              <div className="flex flex-row items-center gap-2 rounded-xl bg-black/50  px-2 py-1 text-white">
+                REFUNDED{" "}
+                <Image
+                  src={"/images/ZaloPay_Logo.png"}
+                  alt="MOMO"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            );
+        }
       case "COD":
         switch (order.payment_status) {
           case "PENDING":

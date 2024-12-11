@@ -61,6 +61,33 @@ export const cancelOrder = async (customer_id,id) => {
   }
 };
 
+export const payWithZaloPay = async (payload) => {
+  try {
+    const response = await fetch(`${process.env.APP_URL}/zalo-payment/${payload.customer_id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(
+        	payload.order
+      ),
+    });
+
+
+    if (response.ok) {
+      console.log(response);
+      const data = await response.json()
+      return data.order_url
+    } else {
+      console.log(response);
+      return "";
+    }
+  } catch (error) {
+    console.log(error);
+    return "";
+  }
+}
+
 export const payWithMoMo = async (payload) => {
   try {
     const response = await fetch(`${process.env.APP_URL}/momo-payment/${payload.customer_id}`, {

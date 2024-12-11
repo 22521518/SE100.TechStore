@@ -33,6 +33,7 @@ import { toastError, toastRequest, toastSuccess } from "@util/toaster";
 const Payment = () => {
   const params = useSearchParams();
   const orderId = params.get("orderId");
+  const orderId_Zalo = params.get("apptransid")
   const router = useRouter();
   const session = useSelector((state) => state.session);
   const order = useSelector((state) => state.order);
@@ -45,12 +46,12 @@ const Payment = () => {
     total: 0,
   });
 
-  if (!orderId) router.replace("/");
+  if (!orderId&&!orderId_Zalo) router.replace("/");
 
   const checkPaymentStatus = () => {
-    if (!orderId || !session.customer?.customer_id) return;
+    if ((!orderId &&!orderId_Zalo ) || !session.customer?.customer_id) return;
 
-    getOrder(session.customer?.customer_id, orderId).then((data) => {
+    getOrder(session.customer?.customer_id, orderId?orderId:orderId_Zalo).then((data) => {
       setIsSuccessful(
         (data.payment_method === "MOMO" && data.payment_status === "PAID") ||
           data.payment_method === "COD"
@@ -94,6 +95,21 @@ const Payment = () => {
                 height={100}
               />
             </div>
+          </h4>
+        );
+        case "ZALOPAY":
+        return (
+          <h4 className="opacity-70 text-xl font-bold flex flex-row gap-2 items-center">
+            {order.order_payment_method}{" "}
+            <div className="size-9 overflow-hidden rounded-md">
+              <Image
+                src={"/images/ZaloPay_Logo.png"}
+                alt="MOMO"
+                width={100}
+                height={100}
+              />
+            </div>
+            <FontAwesomeIcon icon={faWallet} />
           </h4>
         );
     }
@@ -143,7 +159,7 @@ const Payment = () => {
         <h4 className="opacity-70">{formattedFullDate(new Date())}</h4>
         <Divider />
         <h3 className="font-bold md:text-xl">Shipping address</h3>
-        <div className="flex flex-col items-start h-fit justify-around md:text-xl">
+        <div className="flex flex-col items-start h-fit justify-around md:text-lg">
           <h4>
             {order?.order_address.full_name} |{" "}
             {order?.order_address.phone_number}
@@ -159,8 +175,10 @@ const Payment = () => {
           </h3>
         </div>
         <Divider />
-        <h3 className="font-bold md:text-xl">Payment method</h3>
-        {renderPaymentMethod(order.order_payment_method)}
+        <div className="flex flex-wrap items-center gap-2  justify-between">
+          <h3 className="font-bold md:text-xl">Payment method</h3>
+          {renderPaymentMethod(order.order_payment_method)}
+        </div>
         <Divider />
 
         <h3 className="font-bold md:text-xl">Your order</h3>

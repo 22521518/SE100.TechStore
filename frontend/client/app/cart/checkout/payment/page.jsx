@@ -53,7 +53,7 @@ function reducer(state, action) {
 const Payment = () => {
   const session = useSelector((state) => state.session);
   const order = useSelector((state) => state.order);
-  const paymentMethods = ["MOMO", "COD"];
+  const paymentMethods = ["MOMO", "COD","ZALOPAY"];
   const router = useRouter();
 
   const [selectedOption, setSelectedOption] = useState("COD");
@@ -162,10 +162,34 @@ const Payment = () => {
               />
               
               <h3>E-wallet (MOMO)</h3>
-              <div className="size-9">
+              <div className="size-9 overflow-hidden rounded-md">
                 <Image
                   src={"/images/MoMo_Logo.png"}
                   alt="MOMO"
+                  width={100}
+                  height={100}
+                />
+              </div>
+            </div>
+            <FontAwesomeIcon icon={faWallet} />
+          </label>
+          <label
+            className=" py-4 gap-4 rounded-xl bg-surface my-2 flex flex-row justify-between  h-fit items-center px-4"
+            htmlFor="ZALOPAY"
+          >
+            <div className="flex flex-row gap-4 items-center">
+              <RadioButton
+                name={"payment method"}
+                value={"ZALOPAY"}
+                checked={selectedOption === "ZALOPAY"}
+                onChange={handleRadioSelectionChange}
+              />
+              
+              <h3>E-wallet (ZALOPAY)</h3>
+              <div className="size-9 overflow-hidden rounded-md">
+                <Image
+                  src={"/images/ZaloPay_Logo.png"}
+                  alt="ZALOPAY"
                   width={100}
                   height={100}
                 />
