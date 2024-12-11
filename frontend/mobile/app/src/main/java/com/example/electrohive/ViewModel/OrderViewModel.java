@@ -18,8 +18,10 @@ import com.example.electrohive.Models.OrderItem;
 import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.Repository.OrderRepository;
 import com.example.electrohive.utils.PreferencesHelper;
+import com.example.electrohive.utils.format.Format;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class OrderViewModel extends ViewModel {
@@ -77,6 +79,24 @@ public class OrderViewModel extends ViewModel {
         } else {
             filteredList = new ArrayList<>(currentOrders);
         }
+        // Sort the filtered list by created_at in descending order (most recent first)
+        filteredList.sort((o1, o2) -> {
+            try {
+                // Extract and convert created_at from custom object
+                Object createdAt1 = o1.getCreatedAt();
+                Object createdAt2 = o2.getCreatedAt();
+
+                // Assuming createdAt has a method to fetch a Date or ISO 8601 string
+                Date date1 = Format.convertToDate(createdAt1);
+                Date date2 = Format.convertToDate(createdAt2);
+
+                return date2.compareTo(date1); // Descending order
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0; // Fallback to equal comparison in case of an error
+            }
+        });
+
         filteredOrders.setValue(filteredList);
     }
 

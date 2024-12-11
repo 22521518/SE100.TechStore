@@ -58,6 +58,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         OrderItemAdapter orderItemsAdapter = new OrderItemAdapter(context, order.getOrderItems());
         holder.orderItemsRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.orderItemsRecyclerView.setAdapter(orderItemsAdapter);
+        holder.orderCreatedAt.setText(Format.getFormattedDateFromString(((String) order.getCreatedAt())));
         // Conditionally render the button based on order status
         ORDER_STATUS orderStatus = order.getOrderStatus();
         switch (orderStatus) {
@@ -115,7 +116,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView orderId, orderStatus, orderTotalPrice,actionButton;
+        TextView orderId, orderStatus, orderTotalPrice,actionButton,orderCreatedAt;
         RecyclerView orderItemsRecyclerView;
 
         public OrderViewHolder(View view) {
@@ -125,6 +126,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             orderTotalPrice = view.findViewById(R.id.order_totalprice);
             actionButton = itemView.findViewById(R.id.action_button);
             orderItemsRecyclerView = view.findViewById(R.id.order_items_listview);
+            orderCreatedAt = view.findViewById(R.id.order_created_at);
         }
     }
 

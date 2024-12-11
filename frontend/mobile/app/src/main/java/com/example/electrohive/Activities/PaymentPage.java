@@ -80,7 +80,7 @@ public class PaymentPage extends AppCompatActivity {
             if (cash.isChecked())
                 intent.putExtra("payment_method", "COD");
             else
-                intent.putExtra("payment_method", "ZALO_PAY");
+                intent.putExtra("payment_method", "ZALOPAY");
             Bundle bundle = new Bundle();
             bundle.putSerializable("voucher",selectedVoucher);
             bundle.putString("subtotal", Subtotal.getText().toString());

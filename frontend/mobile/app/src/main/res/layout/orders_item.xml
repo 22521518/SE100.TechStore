@@ -45,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3,999,000 VNĐ"
+                android:textColor="@android:color/holo_green_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

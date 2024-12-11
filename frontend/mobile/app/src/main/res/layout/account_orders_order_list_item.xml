@@ -62,8 +62,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
-        android:gravity="end"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
+        <TextView
+            android:alpha="0.7"
+            android:id="@+id/order_created_at"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="--/--/----"
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/action_button"

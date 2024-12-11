@@ -12,6 +12,20 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class Format {
+    // Helper method to convert custom object to Date
+    public static Date convertToDate(Object createdAt) {
+        if (createdAt instanceof Date) {
+            return (Date) createdAt;
+        } else if (createdAt instanceof String) {
+            // Parse ISO 8601 string to Date
+            try {
+                return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse((String) createdAt);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return null; // Handle unsupported cases
+    }
     public static String getFormattedTotalPrice(double totalPrice) {
         DecimalFormat formatter = new DecimalFormat("#,###");
         return formatter.format(totalPrice);
