@@ -106,7 +106,7 @@ export class ZaloPaymentController {
 
       let redirect = null;
       if (redirectUrl != null && redirectUrl != undefined) {
-        redirect = process.env.CLIENT + redirectUrl;
+        redirect = redirectUrl; //process.env.CLIENT + redirectUrl;
       }
 
       const rep = await this.zaloPaymentService.requestPayment(
@@ -133,12 +133,6 @@ export class ZaloPaymentController {
   private async trackPaymentStatus(orderId: string, totalSeconds: number) {
     let elapsedSeconds = 0;
     const intervalId = setInterval(async () => {
-      console.log(
-        'Checking transaction for order',
-        this.paymentStore.getPayments(),
-      );
-      console.log('Elapsed seconds:', elapsedSeconds);
-
       elapsedSeconds++;
       const currentOrder = this.paymentStore.getPaymentByOrder(orderId);
       if (!currentOrder) {

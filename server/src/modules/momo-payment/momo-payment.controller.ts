@@ -97,7 +97,7 @@ export class MomoPaymentController {
 
       let redirect = null;
       if (redirectUrl != null && redirectUrl != undefined) {
-        redirect = process.env.CLIENT + redirectUrl;
+        redirect = redirectUrl; //process.env.CLIENT + redirectUrl;
       }
 
       const rep = await this.momoPaymentService.requestPayment(
