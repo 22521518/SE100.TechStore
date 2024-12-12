@@ -49,28 +49,35 @@ export class CustomersService {
     }
   }
 
-  async findAll(contain_username: string, contain_customer_id: string) {
+  async findAll(
+    contain_username: string = '',
+    contain_customer_id: string = '',
+    limit: number,
+    offset: number,
+  ) {
     try {
       const customers = await this.prismaDbService.customers.findMany({
         where: {
-          ...(contain_username
-            ? {
-                username: {
-                  contains: contain_username,
-                },
-              }
-            : {}),
-          ...(contain_customer_id
-            ? {
-                customer_id: {
-                  contains: contain_customer_id,
-                },
-              }
-            : {}),
+          OR: [
+            {
+              username: {
+                contains: contain_username,
+                mode: 'insensitive',
+              },
+            },
+            {
+              customer_id: {
+                contains: contain_customer_id,
+                mode: 'insensitive',
+              },
+            },
+          ],
         },
         include: {
           account: true,
         },
+        ...(offset ? { skip: offset } : {}),
+        ...(limit ? { take: limit } : {}),
       });
       const customersWithAccount = customers.map((customer) => {
         const { account, ...rest } = customer;

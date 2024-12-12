@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { Prisma } from '@prisma/client';
@@ -36,9 +37,9 @@ export class SupplierController {
 
   @Get()
   @Permissions(['supplier-read'])
-  async findAll() {
+  async findAll(@Query('q') query: string) {
     try {
-      const suppliers = await this.supplierService.findAll();
+      const suppliers = await this.supplierService.findAll(query);
       return suppliers;
     } catch (error) {
       console.error(error);

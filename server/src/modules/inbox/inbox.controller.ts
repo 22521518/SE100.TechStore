@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { InboxService } from './inbox.service';
 import { UpdateInboxDto } from './dto/update-inbox.dto';
@@ -27,8 +28,16 @@ export class InboxController {
 
   @Get()
   @Permissions(['inbox-read'])
-  async findAll() {
-    return this.inboxService.findAll();
+  async findAll(
+    @Query('q') customer_name_id: string = '',
+    @Query('pageSize') limit: string,
+    @Query('current') offset: string,
+  ) {
+    return this.inboxService.findAll(
+      customer_name_id,
+      +limit,
+      (+offset > 0 ? +offset - 1 : 0) * +limit,
+    );
   }
 
   @Get(':customer_id')

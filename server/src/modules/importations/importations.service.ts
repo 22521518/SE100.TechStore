@@ -34,12 +34,42 @@ export class ImportationsService {
     }
   }
 
-  async findAll(
+  async findBySupplier(
+    supplier_id: number,
     including_item: boolean = true,
     including_supplier: boolean = true,
   ) {
     try {
       const importations = await this.prismaDbService.importations.findMany({
+        where: {
+          supplier_id,
+        },
+        include: {
+          import_items: {
+            include: { product: including_item },
+          },
+          supplier: including_supplier,
+        },
+      });
+      return importations;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching importations by supplier');
+    }
+  }
+
+  async findAll(
+    importation_id: string = '',
+    including_item: boolean = true,
+    including_supplier: boolean = true,
+  ) {
+    try {
+      const numberId = Number(importation_id) ?? -1;
+
+      const importations = await this.prismaDbService.importations.findMany({
+        where: {
+          ...(numberId > 0 ? { OR: [{ importation_id: numberId }] } : {}),
+        },
         include: {
           import_items: {
             include: { product: including_item },
@@ -61,7 +91,9 @@ export class ImportationsService {
   ) {
     try {
       const importation = await this.prismaDbService.importations.findUnique({
-        where: { importation_id: id },
+        where: {
+          importation_id: id,
+        },
         include: {
           import_items: {
             include: { product: including_item },

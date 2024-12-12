@@ -125,10 +125,27 @@ export class InboxService {
     }
   }
 
-  async findAll(skip: number = 0, limit: number = 10) {
+  async findAll(
+    customer_name_id: string = '',
+    limit: number = 10,
+    skip: number = 0,
+  ) {
     try {
+      const customers = await this.customerService.findAll(
+        customer_name_id,
+        customer_name_id,
+        0,
+        0,
+      );
+      const customerIds = customers.map((customer) => customer.customer_id);
+
       const inboxRoom = await this.inboxRoomModel
         .aggregate([
+          {
+            $match: {
+              customer_id: { $in: customerIds },
+            },
+          },
           {
             $lookup: {
               from: 'inboxmessages',
@@ -191,8 +208,8 @@ export class InboxService {
               },
             },
           },
-          { $skip: skip },
-          { $limit: limit },
+          ...(skip ? [{ $skip: skip }] : [{ $skip: 0 }]),
+          ...(limit ? [{ $limit: limit }] : [{ $limit: 10 }]),
         ])
         .exec();
       const resolvedRooms = await Promise.all(

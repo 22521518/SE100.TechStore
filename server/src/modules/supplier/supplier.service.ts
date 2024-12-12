@@ -22,9 +22,17 @@ export class SupplierService {
     }
   }
 
-  async findAll(including_importations: boolean = true) {
+  async findAll(query: string = '', including_importations: boolean = true) {
     try {
+      const supplierId = parseInt(query) || -1;
+
       const suppliers = await this.prismaDbService.suppliers.findMany({
+        where: {
+          OR: [
+            { supplier_id: supplierId },
+            { supplier_name: { contains: query, mode: 'insensitive' } },
+          ],
+        },
         include: { importations: including_importations },
       });
       return suppliers;

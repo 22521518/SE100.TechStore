@@ -63,9 +63,29 @@ export class ProductsController {
   @Get()
   @Permissions(['product-read'])
   async findAll(
+    @Query('q') product_name_id: string = '',
     @Query('pageSize') limit: string,
     @Query('current') offset: string,
-    @Query('product_name') product_name: string = '',
+  ) {
+    try {
+      const product = await this.productsService.findAll(
+        +limit,
+        (+offset > 0 ? +offset - 1 : 0) * +limit,
+        product_name_id,
+      );
+      return product;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Fetching product failed');
+    }
+  }
+
+  @Get('search')
+  @Permissions(['product-read'])
+  async search(
+    @Query('q') product_name: string = '',
+    @Query('pageSize') limit: string,
+    @Query('current') offset: string,
   ) {
     try {
       const product = await this.productsService.findAll(

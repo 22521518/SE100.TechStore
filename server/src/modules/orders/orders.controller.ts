@@ -109,9 +109,20 @@ export class OrdersController {
 
   @Get()
   @Permissions(['order-read'])
-  async findAll(@Query('customer_id') customerId: string) {
+  async findAll(
+    @Query('q') query: string,
+    @Query('customer_id') customerId: string,
+    @Query('order_id') orderId: string,
+    @Query('product') productQuery: string,
+  ) {
     try {
-      const orders = await this.ordersService.findAll(customerId);
+      const productArray = productQuery ? productQuery.split(',') : [];
+      const orders = await this.ordersService.findAll(
+        query,
+        productArray,
+        customerId,
+        orderId,
+      );
       return orders;
     } catch (error) {
       console.error(error);

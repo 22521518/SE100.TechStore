@@ -4,7 +4,7 @@ import { ZaloPaymentController } from './zalo-payment.controller';
 import { AddressesModule } from '../addresses/addresses.module';
 import { OrdersModule } from '../orders/orders.module';
 import { ProductsModule } from '../products/products.module';
-import { PaymentStore } from '../momo-payment/entities/payment_store.entity';
+import { PaymentStore } from '../payment-momo/entities/payment_store.entity';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({

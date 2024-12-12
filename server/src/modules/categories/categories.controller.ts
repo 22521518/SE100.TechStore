@@ -37,9 +37,15 @@ export class CategoriesController {
 
   @Get()
   @Permissions(['category-read'])
-  async findAll(@Query('category') contain_category_name: string) {
+  async findAll(
+    @Query('q') contain_category_name: string,
+    @Query('pageSize') limit: string,
+    @Query('current') offset: string,
+  ) {
     try {
       const category = await this.categoriesService.findAll(
+        +limit,
+        (+offset > 0 ? +offset - 1 : 0) * +limit,
         contain_category_name,
       );
       return category;
@@ -54,6 +60,28 @@ export class CategoriesController {
   async findOne(@Param('id') id: string) {
     try {
       const category = await this.categoriesService.findOne(+id);
+      return category;
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException('Error fetching category');
+    }
+  }
+
+  @Get(':id/products')
+  @Permissions(['category-read'])
+  async findCategoryProducts(
+    @Param('id') id: string,
+    @Query('q') query: string,
+    @Query('pageSize') limit: string,
+    @Query('current') offset: string,
+  ) {
+    try {
+      const category = await this.categoriesService.findCategoryProducts(
+        query,
+        +id,
+        +limit,
+        (+offset > 0 ? +offset - 1 : 0) * +limit,
+      );
       return category;
     } catch (error) {
       console.error(error);

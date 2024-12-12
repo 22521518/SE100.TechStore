@@ -9,6 +9,7 @@ import {
   BadRequestException,
   NotFoundException,
   InternalServerErrorException,
+  Query,
 } from '@nestjs/common';
 import { ImportationsService } from './importations.service';
 import { Prisma } from '@prisma/client';
@@ -33,7 +34,6 @@ export class ImportationsController {
     try {
       const { supplier_id, import_items, ...imprt } = createImportationDto;
       const importItems: Prisma.Import_ItemsCreateManyImportationInput[] = [];
-      console.log(createImportationDto);
 
       for (const item of import_items) {
         const product = await this.productsService.findOne(item.product_id);
@@ -76,7 +76,6 @@ export class ImportationsController {
         imprtDto,
         import_items,
       );
-      console.log(importation);
       return importation;
     } catch (error: BadRequestException | any) {
       throw new BadRequestException(error.message);
@@ -85,10 +84,21 @@ export class ImportationsController {
 
   @Get()
   @Permissions(['importation-read'])
-  async findAll() {
+  async findAll(@Query('q') query: string) {
     try {
-      const importation = await this.importationsService.findAll();
+      const importation = await this.importationsService.findAll(query);
 
+      return importation;
+    } catch (error: BadRequestException | any) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('supplier/:id')
+  @Permissions(['importation-read'])
+  async findBySupplier(@Param('id') id: string) {
+    try {
+      const importation = await this.importationsService.findBySupplier(+id);
       return importation;
     } catch (error: BadRequestException | any) {
       throw new BadRequestException(error.message);

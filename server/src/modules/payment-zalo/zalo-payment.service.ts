@@ -5,7 +5,7 @@ import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 import { OrdersService } from '../orders/orders.service';
 import { AddressesService } from '../addresses/addresses.service';
 import { createHmac } from 'crypto';
-import { EPaymentOrderItem } from '../momo-payment/entities/momo-item.entity';
+import { EPaymentOrderItem } from '../payment-momo/entities/momo-item.entity';
 import moment from 'moment';
 import { PAYMENT_STATUS, Prisma } from '@prisma/client';
 import { ShippingAddress } from '../orders/entities/order.entity';
@@ -315,10 +315,11 @@ export class ZaloPaymentService {
     }
   }
 }
+
 const config = {
-  app_id: '2554',
-  key1: 'sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn',
-  key2: 'trMrHtvjo6myautxDUiAcYsVtaeQ8nhf',
+  app_id: '2553',
+  key1: 'PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL',
+  key2: 'kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz',
   endpoint_create: 'https://sb-openapi.zalopay.vn/v2/create',
   endpoint_refund: 'https://sb-openapi.zalopay.vn/v2/query_refund',
   endpoint_query: 'https://sb-openapi.zalopay.vn/v2/query',

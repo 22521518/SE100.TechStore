@@ -84,15 +84,25 @@ export class ProductsService {
     }
   }
 
-  async findAll(limit: number, offset: number, product_name: string) {
+  async findAll(limit: number, offset: number, product_name_id: string) {
     try {
       // Fetch products and their categories
       const productsData = await this.prismaDbService.products.findMany({
         where: {
-          product_name: {
-            contains: product_name,
-            mode: 'insensitive',
-          },
+          OR: [
+            {
+              product_name: {
+                contains: product_name_id,
+                mode: 'insensitive',
+              },
+            },
+            {
+              product_id: {
+                contains: product_name_id,
+                mode: 'insensitive',
+              },
+            },
+          ],
         },
         include: { categories: true, product_feedbacks: true },
         ...(offset ? { skip: offset } : {}),

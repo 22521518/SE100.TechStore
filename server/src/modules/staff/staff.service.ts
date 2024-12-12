@@ -33,10 +33,37 @@ export class StaffService {
     }
   }
 
-  async findAll(full_name: string, staff_id: string, email: string) {
+  async findAll(
+    query: string,
+    full_name: string,
+    staff_id: string,
+    email: string,
+  ) {
     try {
       const staff = await this.prismaDbService.staff.findMany({
         where: {
+          OR: [
+            {
+              full_name: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              staff_id: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              account: {
+                email: {
+                  contains: query,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          ],
           ...(full_name
             ? {
                 full_name: {

@@ -7,10 +7,10 @@ import {
   Post,
 } from '@nestjs/common';
 import { ZaloPaymentService } from './zalo-payment.service';
-import { CreateMomoPaymentDto } from '../momo-payment/dto/create-momo-payment.dto';
+import { CreateMomoPaymentDto } from '../payment-momo/dto/create-momo-payment.dto';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
-import { PaymentStore } from '../momo-payment/entities/payment_store.entity';
-import { EPaymentOrderItem } from '../momo-payment/entities/momo-item.entity';
+import { PaymentStore } from '../payment-momo/entities/payment_store.entity';
+import { EPaymentOrderItem } from '../payment-momo/entities/momo-item.entity';
 import { PAYMENT_STATUS } from '@prisma/client';
 
 @Controller('zalo-payment')
@@ -124,7 +124,10 @@ export class ZaloPaymentController {
         );
       }, 0);
 
-      return rep;
+      return {
+        ...rep,
+        orderId: order_id,
+      };
     } catch (error: BadRequestException | any) {
       throw new BadRequestException(error.message);
     }

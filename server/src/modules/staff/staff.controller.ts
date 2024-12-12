@@ -78,12 +78,18 @@ export class StaffController {
   @Get()
   @Permissions(['staff-read'])
   async findAll(
+    @Query('q') query: string,
     @Query('full_name') full_name: string,
     @Query('staff_id') staff_id: string,
     @Query('email') email: string,
   ) {
     try {
-      const staff = await this.staffService.findAll(full_name, staff_id, email);
+      const staff = await this.staffService.findAll(
+        query,
+        full_name,
+        staff_id,
+        email,
+      );
       return staff;
     } catch (error) {
       console.error(error);

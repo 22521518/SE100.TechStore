@@ -71,18 +71,78 @@ export class OrdersService {
   }
 
   async findAll(
+    query: string = '',
+    productArray: string[] = [],
     customer_id: string,
+    order_id: string,
     including_items: boolean = true,
     including_customer: boolean = true,
     including_voucher: boolean = true,
   ) {
+    const orArray = [];
+    if (query) {
+      orArray.push(
+        {
+          order_id: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
+        {
+          customer_id: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
+      );
+    }
+
+    productArray.forEach((productQuery) => {
+      orArray.push({
+        order_items: {
+          some: {
+            product: {
+              OR: [
+                {
+                  product_name: {
+                    contains: productQuery.trim(),
+                    mode: 'insensitive',
+                  },
+                },
+                {
+                  product_id: {
+                    contains: productQuery.trim(),
+                    mode: 'insensitive',
+                  },
+                },
+              ],
+            },
+          },
+        },
+      });
+    });
+
     try {
       const orders = await this.prismaDbService.orders.findMany({
         where: {
+          ...(orArray.length > 0
+            ? {
+                OR: orArray,
+              }
+            : {}),
           ...(customer_id
             ? {
                 customer_id: {
-                  equals: customer_id,
+                  contains: customer_id,
+                  mode: 'insensitive',
+                },
+              }
+            : {}),
+          ...(order_id
+            ? {
+                order_id: {
+                  contains: order_id,
+                  mode: 'insensitive',
                 },
               }
             : {}),

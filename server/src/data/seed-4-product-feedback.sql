@@ -6,7 +6,7 @@ WITH random_feedbacks AS (
         -- Generate random feedback message
         CONCAT('I really like the ', p."product_name", ' I purchased.') AS "feedback",
         -- Generate random ratings between 1 and 5
-        (RANDOM() * 5 + 1)::INTEGER AS "rating"
+        ((RANDOM() * 5 + 1) % 5)::INTEGER AS "rating"
     FROM "Products" p
     CROSS JOIN "Customers" c
 ),

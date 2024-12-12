@@ -42,7 +42,7 @@ export class VouchersController {
   @Permissions(['voucher-read'])
   async findAll(
     @Query('voucher_code') voucher_code: string,
-    @Query('voucher_name') voucher_name: string,
+    @Query('q') voucher_name: string,
   ) {
     try {
       const vouchers = await this.vouchersService.findAll(

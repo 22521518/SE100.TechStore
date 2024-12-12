@@ -28,8 +28,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { PermissionsGuard } from './common/guards/permission.guard';
 import { ProfileModule } from './modules/profile/profile.module';
 import { EventMessageModule } from './event-message/event-message.module';
-import { MomoPaymentModule } from './modules/momo-payment/momo-payment.module';
-import { ZaloPaymentModule } from './modules/zalo-payment/zalo-payment.module';
+import { MomoPaymentModule } from './modules/payment-momo/momo-payment.module';
+import { ZaloPaymentModule } from './modules/payment-zalo/zalo-payment.module';
 
 @Module({
   imports: [
