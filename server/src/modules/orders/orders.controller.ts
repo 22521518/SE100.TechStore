@@ -111,6 +111,8 @@ export class OrdersController {
   @Permissions(['order-read'])
   async findAll(
     @Query('q') query: string,
+    @Query('order_status') order_status: string,
+    @Query('payment_status') payment_status: string,
     @Query('customer_id') customerId: string,
     @Query('order_id') orderId: string,
     @Query('product') productQuery: string,
@@ -119,6 +121,8 @@ export class OrdersController {
       const productArray = productQuery ? productQuery.split(',') : [];
       const orders = await this.ordersService.findAll(
         query,
+        order_status?.toUpperCase(),
+        payment_status?.toUpperCase(),
         productArray,
         customerId,
         orderId,

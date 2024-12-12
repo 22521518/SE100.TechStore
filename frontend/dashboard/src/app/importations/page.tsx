@@ -16,14 +16,17 @@ import { transformDate } from '@utils/transform.util';
 import ImportationDetail from '@components/importations/item-detail';
 import ImportationCreate from './create/page';
 import { useDelete, useNavigation } from '@refinedev/core';
+import { DeleteForever } from '@mui/icons-material';
 
 const ImportationList = () => {
   const { mutate: deleteAction, isLoading, isError } = useDelete();
+  const [query, setQuery] = React.useState('');
 
   const [importationCreateModal, setImportationCreateModal] =
     React.useState(false);
 
   const { dataGridProps } = useDataGrid<IImportation>({
+    resource: `importations?q=${query}&`,
     pagination: {
       pageSize: 10
     },
@@ -51,10 +54,12 @@ const ImportationList = () => {
         type: 'number'
       },
       {
-        field: 'supplier?.supplier_name',
+        field: 'supplier_name',
         headerName: 'Supplier',
         flex: 2,
-        type: 'string'
+        renderCell: ({ row }) => {
+          return <span>{row.supplier?.supplier_name}</span>;
+        }
       },
       {
         field: 'import_date',
@@ -95,8 +100,8 @@ const ImportationList = () => {
     []
   );
 
-  const SearchImportationSubmit = async (query: string) => {
-    console.log('searchImportationSubmit', query);
+  const SearchImportationSubmit = async (q: string) => {
+    setQuery(q);
   };
 
   React.useEffect(() => {
@@ -118,13 +123,25 @@ const ImportationList = () => {
           <Box>
             <Box className="flex flex-row justify-between items-center">
               <Box className="flex flex-row items-center gap-2">
-                <Typography variant="h2" className="font-bold text-2xl">
-                  Importations
-                </Typography>
                 <SearchBar
                   title="Product"
                   handleSubmit={SearchImportationSubmit}
                 />
+                {query ? (
+                  <>
+                    <Typography variant="h2" className="text-lg font-bold">
+                      Search Result: {query}
+                    </Typography>
+                    <DeleteForever
+                      className="text-lg hover:cursor-pointer"
+                      onClick={() => setQuery('')}
+                    />
+                  </>
+                ) : (
+                  <Typography variant="h2" className="font-bold text-lg">
+                    Importations
+                  </Typography>
+                )}
               </Box>
               <Button
                 className="bg-accent text-secondary-100 font-bold px-4 py-2"
@@ -173,6 +190,12 @@ const ImportationList = () => {
 
       {importationCreateModal && (
         <div className="bg-slate-700 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
+          <div
+            className="absolute h-screen w-dvw -z-50 top-0 left-0"
+            onClick={() => {
+              console.log('clic ssk');
+            }}
+          ></div>
           <Box className="w-4/5 h-[80%]">
             {importationCreateModal && (
               <ImportationCreate

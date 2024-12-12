@@ -4,10 +4,6 @@ import SearchBar from '@components/searchbar';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 
 import React from 'react';
@@ -19,35 +15,27 @@ import CategoryList from '@app/categories/page';
 import { useNavigation } from '@refinedev/core';
 import CategoryCreate from '@app/categories/create/page';
 import CategoryEdit from '@app/categories/edit/[id]/page';
-
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import InventoryIcon from '@mui/icons-material/Inventory';
-import { dummyProductImage } from '@constant/value.constant';
 import CommonContainer from '@components/common-container';
+import { transformVNMoney } from '@utils/transform.util';
 
 const ProductList = () => {
   const { create, edit, show } = useNavigation();
 
-  const filterList = ['Newest', 'Price', 'Name', 'Category'];
-  const [filter, setFilter] = React.useState({
-    search: filterList[0].toLowerCase()
-  });
-  const handleFilterChange = (event: SelectChangeEvent<string>) => {
-    setFilter({
-      ...filter,
-      search: event.target.value as string
-    });
-  };
-
-  const SearchProductSubmit = async (query: String) => {
-    console.log('SearchProductSubmit', query);
+  const [productQuery, setProductQuery] = React.useState('');
+  const SearchProductSubmit = async (query: string) => {
+    setProductQuery(query);
   };
 
   const { dataGridProps } = useDataGrid<IProduct>({
+    resource: `products?q=${productQuery}&`,
     pagination: {
-      pageSize: 10
+      pageSize: 10,
+      mode: 'client'
     },
     sorters: {
       initial: [
@@ -76,7 +64,7 @@ const ProductList = () => {
         renderCell: ({ row }) => {
           return (
             <Image
-              src={`${(row.images && row.images[0]) || dummyProductImage}`}
+              src={`${row.images && row.images[0]}`}
               alt={row.product_name}
               width={48}
               height={48}
@@ -105,7 +93,14 @@ const ProductList = () => {
       {
         field: 'price',
         headerName: 'Price',
-        flex: 4
+        flex: 4,
+        renderCell: ({ row }) => {
+          return (
+            <Typography className="h-full flex items-center">
+              {transformVNMoney(row.price)}
+            </Typography>
+          );
+        }
       },
       {
         field: 'stock_quantity',
@@ -135,7 +130,7 @@ const ProductList = () => {
         }
       }
     ],
-    []
+    [edit]
   );
 
   const [categoryCreateModal, setCategoryCreateModal] = React.useState(false);
@@ -158,28 +153,24 @@ const ProductList = () => {
       <CommonContainer className="gap-4">
         <Box className="flex flex-row justify-between items-center">
           <Box className="flex flex-row items-center gap-2">
-            <InventoryIcon className="text-2xl" />
-            <Typography variant="h2" className="text-2xl font-bold">
-              All Products
-            </Typography>
             <SearchBar title="Product" handleSubmit={SearchProductSubmit} />
-            <FormControl variant="outlined" className="mr-1 min-w-max hidden">
-              <InputLabel id="sort-by-label">Sort by:</InputLabel>
-              <Select
-                labelId="sort-by-label"
-                id="sort-by-select"
-                value={filter.search}
-                onChange={handleFilterChange}
-                label="Sort by"
-                className="rounded-sm min-w-max"
-              >
-                {filterList.map((item, index) => (
-                  <MenuItem key={index} value={item.toLowerCase()}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <InventoryIcon className="text-2xl" />
+
+            {productQuery ? (
+              <>
+                <Typography variant="h2" className="text-2xl font-bold">
+                  Search Result: {productQuery}
+                </Typography>
+                <DeleteForeverIcon
+                  className="text-2xl hover:cursor-pointer"
+                  onClick={() => setProductQuery('')}
+                />
+              </>
+            ) : (
+              <Typography variant="h2" className="text-2xl font-bold">
+                All Products
+              </Typography>
+            )}
           </Box>
 
           <Button
@@ -190,7 +181,6 @@ const ProductList = () => {
             Add Product
           </Button>
         </Box>
-        {/* List */}
         <Box className="flex flex-col">
           <DataGrid
             {...dataGridProps}
@@ -209,7 +199,7 @@ const ProductList = () => {
                   color: 'black'
                 }
             }}
-            className="text-accent my-4 bg-transparent overflow-hidden"
+            className="text-accent my-4 bg-transparent overflow-hidden xl:min-h-[670px]"
           />
         </Box>
       </CommonContainer>

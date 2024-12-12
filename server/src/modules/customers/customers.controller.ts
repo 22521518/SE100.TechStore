@@ -73,15 +73,16 @@ export class CustomersController {
   @Get()
   @Permissions(['customer-read'])
   async findAll(
-    @Query('username') contain_username: string = '',
-    @Query('customer_id') contain_customer_id: string = '',
+    @Query('q') query: string,
+    @Query('username') contain_username: string,
+    @Query('customer_id') contain_customer_id: string,
     @Query('pageSize') limit: string,
     @Query('current') offset: string,
   ) {
     try {
       const customer = await this.customersService.findAll(
-        contain_username,
-        contain_customer_id,
+        query,
+        query,
         +limit,
         (+offset > 0 ? +offset - 1 : 0) * +limit,
       );

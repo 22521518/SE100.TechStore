@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { Prisma } from '@prisma/client';
@@ -49,9 +50,9 @@ export class RolesController {
 
   @Get()
   @Permissions(['role-read'])
-  async findAll() {
+  async findAll(@Query('q') query: string) {
     try {
-      const role = await this.rolesService.findAll();
+      const role = await this.rolesService.findAll(query);
       return role;
     } catch (error) {
       console.error(error);

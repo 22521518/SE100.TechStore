@@ -33,7 +33,7 @@ const InboxRoomCard = ({
       onClick={onClick}
     >
       <AvatarImage
-        src={room.customer.image || dummyAvatar}
+        src={room.customer?.image || dummyAvatar}
         size={46}
         alt="avatar"
       />
@@ -45,7 +45,7 @@ const InboxRoomCard = ({
             ${!isSeen ? 'font-bold' : ' '}
               `}
             >
-              {room.customer.full_name}
+              {room.customer?.full_name}
             </span>
             <Box className="flex flex-row items-center gap-1 w-full">
               <Typography

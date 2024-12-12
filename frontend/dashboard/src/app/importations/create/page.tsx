@@ -30,7 +30,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { HttpError, useForm, useList } from '@refinedev/core';
+import { HttpError, useForm, useList, useNotification } from '@refinedev/core';
 import React from 'react';
 import { transformVNMoney } from '@utils/transform.util';
 
@@ -92,7 +92,7 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
   const [importItem, setImportItem] = React.useState<ImportItem[]>([]);
 
   React.useEffect(() => {
-    setProducts([productsList[0]]);
+    setProducts([]);
   }, [productsList]);
 
   const totalPrice = React.useMemo(() => {
@@ -118,8 +118,46 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
     setProducts(selectedProducts);
   };
 
+  const { open } = useNotification();
+  const onOpenNotification = React.useCallback(
+    (
+      type: 'success' | 'error' | 'progress',
+      message: string,
+      description: string
+    ) => {
+      open?.({
+        type: type,
+        message: message,
+        description: description
+      });
+    },
+    [open]
+  );
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let hasError = importItem.length === 0;
+
+    importItem.forEach((item) => {
+      if (item.unit_price <= 0 || item.quantity <= 0) {
+        hasError = true;
+        onOpenNotification(
+          'error',
+          'Invalid data for product',
+          'Price and quantity must be greater than 0.'
+        );
+      }
+    });
+
+    if (hasError) {
+      onOpenNotification(
+        'error',
+        'Invalid data for product',
+        'Price and quantity must be greater than 0.'
+      );
+      return; // Prevent submission if there are errors
+    }
+
     try {
       const importation = {
         total_price: totalPrice,
@@ -131,8 +169,22 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
         })),
         supplier_id: supplier?.supplier_id
       };
-      await onFinish(importation);
+      const response = await onFinish(importation);
       console.log('importation', importation);
+      if (response) {
+        onOpenNotification(
+          'success',
+          'Importation created',
+          'The importation has been created successfully.'
+        );
+        onCancel();
+      } else {
+        onOpenNotification(
+          'error',
+          'Importation not created',
+          'The importation has not been created successfully.'
+        );
+      }
     } catch (error) {
       console.log('error', error);
     }
@@ -182,7 +234,10 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
       <Typography variant="h3" className="text-3xl font-semibold self-center">
         Importation
       </Typography>
-      <form onSubmit={onSubmit} className="grid grid-cols-7 mt-4 h-auto">
+      <form
+        onSubmit={onSubmit}
+        className="grid grid-cols-7 mt-4 min-h-[80%] h-auto"
+      >
         <Stack className="gap-3 col-span-3 border-r-[1px] border-solid border-accent border-opacity-20 pr-2 ">
           <Typography variant="h3" className="text-lg font-bold">
             Total Price: {transformVNMoney(totalPrice)}
@@ -247,19 +302,40 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
               />
             </FormLabel>
           </FormControl>
-          <Box>
-            <Button type="submit">Click</Button>
+          <Box className="flex flex-grow gap-4 max-h-12">
+            <Button
+              className="bg-accent text-secondary-100 font-bold py-4 px-16 "
+              type="submit"
+            >
+              Save
+            </Button>
+            <Button
+              className="border-accent border-solid border-2 text-accent py-4 px-8 text-base font-bold min-w-max max-h-max"
+              onClick={onCancel}
+            >
+              Cancel
+            </Button>
           </Box>
         </Stack>
         <Stack className="gap-1 col-span-4">
-          <Box className=" px-3 flex flex-row justify-betweenitems-center gap-4 py-2">
+          <Box className=" px-3 flex flex-col justify-betweenitems-center py-2">
             <Typography variant="h3" className="  text-lg font-bold">
               Items Information
             </Typography>
-            <FormControl sx={{ m: 1, width: 300, mt: 3 }}>
+            <FormControl
+              className="grid grid-cols-5 gap-2 w-full items-center"
+              sx={{
+                m: 1,
+                width: 300,
+                mt: 3
+              }}
+            >
+              <Typography className="col-span-2">Choose Products: </Typography>
               <Select
+                className="col-span-3"
                 multiple
                 displayEmpty
+                defaultValue={[]}
                 value={products
                   .map((prod) => prod?.product_id)
                   .filter((id): id is string => id !== undefined)}
@@ -267,7 +343,7 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
                 input={<OutlinedInput />}
                 renderValue={(selected) => {
                   if (selected.length === 0) {
-                    return <em>Placeholder</em>;
+                    return <em>Please choose one</em>;
                   }
 
                   // Display product names
@@ -283,7 +359,7 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
                 inputProps={{ 'aria-label': 'Without label' }}
               >
                 <MenuItem disabled value="">
-                  <em>Placeholder</em>
+                  <em>Please choose one</em>
                 </MenuItem>
                 {productsList.map((prod) => (
                   <MenuItem
@@ -300,7 +376,6 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
                 ))}
               </Select>
             </FormControl>
-            ;
           </Box>
           {importItem.map((item, index) => (
             <ListItem

@@ -59,16 +59,35 @@ export class ImportationsService {
   }
 
   async findAll(
-    importation_id: string = '',
+    query: string = '',
     including_item: boolean = true,
     including_supplier: boolean = true,
   ) {
     try {
-      const numberId = Number(importation_id) ?? -1;
+      const numberId = Number(query) ?? -1;
 
       const importations = await this.prismaDbService.importations.findMany({
         where: {
-          ...(numberId > 0 ? { OR: [{ importation_id: numberId }] } : {}),
+          ...(numberId > 0
+            ? {
+                OR: [
+                  { importation_id: numberId },
+                  {
+                    supplier: {
+                      supplier_name: { contains: query },
+                    },
+                  },
+                ],
+              }
+            : {
+                ...(query
+                  ? {
+                      supplier: {
+                        supplier_name: { contains: query },
+                      },
+                    }
+                  : {}),
+              }),
         },
         include: {
           import_items: {

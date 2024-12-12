@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import CommonContainer from '@components/common-container';
 import OrderStatusTag from '@components/tags/order-status-tag';
 import { IOrder } from '@constant/interface.constant';
@@ -10,15 +11,18 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Stack,
   Typography
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useDataGrid } from '@refinedev/mui';
 import { transformVNMoney, transformDate } from '@utils/transform.util';
-import React from 'react';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
-import { ORDER_STATUS } from '@constant/enum.constant';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { ORDER_STATUS, PAYMENT_STATUS } from '@constant/enum.constant';
 import OrderShow from './show/[id]/page';
+import SearchBar from '@components/searchbar';
+import { API_DEV_URL } from '@constant/api.constant';
 
 type OrderCustomerId = {
   order_id: string;
@@ -26,24 +30,71 @@ type OrderCustomerId = {
 };
 
 const OrderList = () => {
-  const filterList = [
+  const orderStatusList = [
+    'ALL',
     ORDER_STATUS.PENDING,
     ORDER_STATUS.CONFIRMED,
     ORDER_STATUS.SHIPPED,
     ORDER_STATUS.DELIVERED,
     ORDER_STATUS.CANCELLED
   ];
+
+  const paymentStatusList = [
+    'ALL',
+    PAYMENT_STATUS.PENDING,
+    PAYMENT_STATUS.PAID,
+    PAYMENT_STATUS.REFUNDED,
+    PAYMENT_STATUS.CANCELLED
+  ];
+
   const [filter, setFilter] = React.useState({
-    search: filterList[0].toLowerCase()
+    orderStatus: orderStatusList[0].toUpperCase(),
+    paymentStatus: paymentStatusList[0].toUpperCase()
   });
-  const handleFilterChange = (event: SelectChangeEvent<string>) => {
+
+  const [orderQuery, setOrderQuery] = React.useState('');
+  const SearchCategorySubmit = async (query: string) => {
+    setOrderQuery(query);
+  };
+
+  const handleOrderStatusFilterChange = (event: SelectChangeEvent<string>) => {
     setFilter({
       ...filter,
-      search: event.target.value as string
+      orderStatus: event.target.value as string
     });
   };
-  const { dataGridProps } = useDataGrid<IOrder>();
+
   const [orderIdDetail, setOrderIdDetail] = React.useState<OrderCustomerId>();
+  const { dataGridProps } = useDataGrid<IOrder>({
+    resource: `orders?q=${orderQuery}&order_status=${
+      filter.orderStatus.toUpperCase() === 'ALL'
+        ? ''
+        : filter.orderStatus.toUpperCase()
+    }&payment_status=${
+      filter.paymentStatus.toUpperCase() === 'ALL'
+        ? ''
+        : filter.paymentStatus.toUpperCase()
+    }`,
+    pagination: {
+      pageSize: 10,
+      mode: 'client'
+    }
+  });
+
+  React.useEffect(() => {
+    console.log(API_DEV_URL);
+    console.log(
+      `orders?q=${orderQuery}&status=${
+        filter.orderStatus.toUpperCase() === 'ALL'
+          ? ''
+          : filter.orderStatus.toUpperCase()
+      }&payment_status=${
+        filter.paymentStatus.toUpperCase() === 'ALL'
+          ? ''
+          : filter.paymentStatus.toUpperCase()
+      }`
+    );
+  }, [dataGridProps]);
 
   const columns = React.useMemo<GridColDef<IOrder>[]>(
     () => [
@@ -101,47 +152,63 @@ const OrderList = () => {
     <Box className="grid grid-cols-5 h-full gap-2">
       <CommonContainer className="col-span-3">
         <Box className="flex flex-row justify-between items-center">
-          <Box className="flex flex-row gap-2 px-4 items-center">
-            <AssignmentOutlinedIcon className="font-bold text-3xl" />
-            <Typography variant="h4" className="font-bold text-2xl">
-              Orders
-            </Typography>
-          </Box>
-          <FormControl
-            className="min-w-max "
-            sx={{
-              '& .MuiOutlinedInput-notchedOutline': {
-                border: 'none'
-              }
-            }}
-          >
-            <InputLabel
-              id="sort-by-label"
-              variant="standard"
-              className="mix-w-max"
+          <Stack gap={2}>
+            <Box className="flex flex-row gap-2 px-4 items-center">
+              <SearchBar title="Order" handleSubmit={SearchCategorySubmit} />
+              <AssignmentOutlinedIcon className="font-bold text-3xl" />
+              {orderQuery ? (
+                <>
+                  <Typography variant="h2" className="text-lg font-bold">
+                    Search Result: {orderQuery} {`(${dataGridProps.rowCount})`}
+                  </Typography>
+                  <DeleteForeverIcon
+                    className="text-2xl hover:cursor-pointer"
+                    onClick={() => setOrderQuery('')}
+                  />
+                </>
+              ) : (
+                <Typography variant="h4" className="font-bold text-lg">
+                  Orders
+                </Typography>
+              )}
+            </Box>
+            <FormControl
+              className="min-w-max max-w-max px-4"
+              sx={{
+                '& .MuiOutlinedInput-notchedOutline': {
+                  border: 'none'
+                }
+              }}
             >
-              Filter status:
-            </InputLabel>
-            <Select
-              labelId="sort-by-label"
-              id="sort-by-select"
-              value={filter.search}
-              onChange={handleFilterChange}
-              label="Sort by"
-              className="rounded-sm border-none min-w-max"
-            >
-              {filterList.map((item, index) => (
-                <MenuItem key={index} value={item.toLowerCase()}>
-                  {item}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+              <InputLabel
+                id="sort-by-label"
+                variant="standard"
+                className="mix-w-max max-w-max forced-colors:to-black"
+              >
+                Filter status:
+              </InputLabel>
+              <Select
+                labelId="sort-by-label"
+                id="sort-by-select"
+                value={filter.orderStatus}
+                onChange={handleOrderStatusFilterChange}
+                label="Sort by"
+                className="rounded-sm border-none min-w-max"
+              >
+                {orderStatusList.map((item, index) => (
+                  <MenuItem key={index} value={item.toUpperCase()}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
         </Box>
         <DataGrid
           columns={columns}
           {...dataGridProps}
           getRowId={(row: IOrder) => row.order_id}
+          pagination
           onCellClick={(cell) => {
             setOrderIdDetail({
               order_id: cell.row.order_id,
@@ -161,7 +228,7 @@ const OrderList = () => {
                 color: 'black'
               }
           }}
-          className="text-accent my-4"
+          className="text-accent xl:min-h-[630px]"
         />
       </CommonContainer>
       <Box className="col-span-2">
