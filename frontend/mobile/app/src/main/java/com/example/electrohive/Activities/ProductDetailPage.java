@@ -123,7 +123,10 @@ public class ProductDetailPage extends DrawerBasePage {
         product_attribute_listview = findViewById(R.id.product_attribute_listview);
 
         product_listview = findViewById(R.id.product_listview);
-
+        ImageButton backbutton=findViewById(R.id.backbutton);
+        backbutton.setOnClickListener(v->{
+            finish();
+        });
         Intent intent = getIntent();
         String productId = intent.getStringExtra("PRODUCT_ID");
         productViewModel = new ProductViewModel();
