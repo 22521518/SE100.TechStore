@@ -24,10 +24,11 @@
 
             <ImageButton
                 android:id="@+id/backbutton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:background="@android:color/transparent"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/rounded_corners"
+                android:backgroundTint="#70B0B0B0"
+                android:layout_margin="8dp"
                 android:src="@drawable/ic_arrow_left_icon"/>
 
 
