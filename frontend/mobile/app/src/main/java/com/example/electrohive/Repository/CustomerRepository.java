@@ -37,7 +37,6 @@ public class CustomerRepository {
 
     public LiveData<ApiResponse<Customer>> updateCustomer(String userId, JsonObject updatePayload) {
         MutableLiveData<ApiResponse<Customer>> result = new MutableLiveData<>();
-        result.setValue(new ApiResponse<>(false, null, "Loading...", 200));
 
         customerService.patchCustomer(userId, "application/json", updatePayload).enqueue(new Callback<JsonObject>() {
             @Override

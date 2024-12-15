@@ -26,9 +26,9 @@ public class LoginPage extends AppCompatActivity {
 
     private EditText password_input;
 
-    private AccountViewModel accountViewModel;
+    public AccountViewModel accountViewModel;
 
-    private CustomerViewModel customerViewModel = CustomerViewModel.getInstance();
+    public CustomerViewModel customerViewModel = CustomerViewModel.getInstance();
 
     protected TextView log_in_button;
 
@@ -91,7 +91,7 @@ public class LoginPage extends AppCompatActivity {
     }
 
 
-    private void login() {
+    public void login() {
         if (log_in_button.getText().toString().equals("Verifying...")) return;
 
         String email = email_input.getText().toString().trim();

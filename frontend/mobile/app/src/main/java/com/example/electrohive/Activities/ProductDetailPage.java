@@ -2,6 +2,8 @@ package com.example.electrohive.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -150,6 +152,27 @@ public class ProductDetailPage extends DrawerBasePage {
         );
         imageSlider.setAdapter(imagesAdapter);
         indicator.setViewPager(imageSlider);
+
+        product_quantity_input.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // No action needed here
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // If the input is empty, reset it to "1"
+                if (s.toString().isEmpty()) {
+                    product_quantity_input.setText("1");
+                    product_quantity_input.setSelection(product_quantity_input.getText().length()); // Move cursor to the end
+                }
+            }
+        });
 
         productViewModel.getProducts(16).observe(this, apiResponse -> {
             // Hide the loading spinner once the response is processed

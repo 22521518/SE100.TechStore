@@ -51,10 +51,12 @@ public class CustomerViewModel {
         return customerData;
     }
 
+    public void SetSessionCustomer(Customer customer) {
+        sessionCustomer.postValue(customer);
+    }
     // Update customer data and save it locally
     public LiveData<ApiResponse<Customer>> updateCustomer(Customer newCustomer) {
         MutableLiveData<ApiResponse<Customer>> result = new MutableLiveData<>();
-        result.setValue(new ApiResponse<>(false, null, "Updating...", 200));
 
         JsonObject updatePayload = buildCustomerUpdatePayload(newCustomer);
 

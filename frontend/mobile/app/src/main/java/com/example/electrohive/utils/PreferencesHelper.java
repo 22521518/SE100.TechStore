@@ -26,20 +26,53 @@ public class PreferencesHelper {
     }
 
 
+
     public static void saveCustomerData(Customer customer) {
+        if (customer == null) {
+            return; // If customer is null, do nothing
+        }
+
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("customer_id", customer.getCustomerId());
-        editor.putString("account_id", customer.getAccountId());
-        editor.putString("username", customer.getUsername());
-        editor.putString("full_name", customer.getFullName());
-        editor.putString("phone_number", customer.getPhoneNumber());
-        editor.putString("image", customer.getImage());
-        editor.putString("birth_date", customer.getBirthDate().toString());
-        editor.putString("date_joined", customer.getDateJoined().toString());
-        editor.putBoolean("male", customer.getMale());
+
+        if (customer.getCustomerId() != null) {
+            editor.putString("customer_id", customer.getCustomerId());
+        }
+
+        if (customer.getAccountId() != null) {
+            editor.putString("account_id", customer.getAccountId());
+        }
+
+        if (customer.getUsername() != null) {
+            editor.putString("username", customer.getUsername());
+        }
+
+        if (customer.getFullName() != null) {
+            editor.putString("full_name", customer.getFullName());
+        }
+
+        if (customer.getPhoneNumber() != null) {
+            editor.putString("phone_number", customer.getPhoneNumber());
+        }
+
+        if (customer.getImage() != null) {
+            editor.putString("image", customer.getImage());
+        }
+
+        if (customer.getBirthDate() != null) {
+            editor.putString("birth_date", customer.getBirthDate().toString());
+        }
+
+        if (customer.getDateJoined() != null) {
+            editor.putString("date_joined", customer.getDateJoined().toString());
+        }
+
+        // Assuming 'male' field is a Boolean
+        if (customer.getMale() != null) {
+            editor.putBoolean("male", customer.getMale());
+        }
+
         editor.apply();
     }
-
     public static Customer getCustomerData() {
         Customer customer = new Customer(
                 sharedPreferences.getString("customer_id", null),

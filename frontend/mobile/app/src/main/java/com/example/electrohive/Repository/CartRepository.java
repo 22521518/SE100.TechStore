@@ -58,7 +58,6 @@ public class CartRepository {
     // Delete all items from cart
     public LiveData<ApiResponse<Boolean>> deleteAllItemsFromCart(String userId) {
         MutableLiveData<ApiResponse<Boolean>> result = new MutableLiveData<>();
-        result.postValue(new ApiResponse<>(false, false, "Failed to delete items", 500));
 
         cartService.deleteAllCartItems(userId).enqueue(new Callback<JsonObject>() {
             @Override

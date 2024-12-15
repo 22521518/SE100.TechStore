@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -107,7 +109,7 @@ public class ConfirmPage  extends AppCompatActivity {
         ShipCost.setText(shipCost);
         GrandTotal.setText(grandTotal);
         if(voucher!=null) {
-            voucher_code.setText(voucher.getVoucherCode());
+            voucher_code.setText(voucher.getVoucherName());
             voucher_discount_percentage.setText("("+voucher.getDiscountAmount()+"%)");
         }
 
@@ -120,21 +122,24 @@ public class ConfirmPage  extends AppCompatActivity {
             double price = Double.parseDouble(numericPart);
             if(payment_method.equals("COD"))
             {
-                orderViewModel.postUserOrder(price,list,PAYMENT_METHOD.valueOf(payment_method),Address,voucher);
-                Intent intent=new Intent(getApplicationContext(),ReceiptPage.class);
-                intent.putExtra("checkedItems",productJson);
-                intent.putExtra("address", Address);
-                intent.putExtra("voucher",voucher);
-                intent.putExtra("payment_method",getIntent().getStringExtra("payment_method"));
-                intent.putExtra("date",date.getText().toString());
-                for(CartItem item: cartItems){
-                    cartViewModel.deleteCartItem(item.getProductId());
-                }
-                intent.putExtras(bundle);
-
-                startActivity(intent);
+                orderViewModel.postUserOrder(price,list,PAYMENT_METHOD.valueOf(payment_method),Address,voucher).observe(this, res-> {
+                    if(res.isSuccess()) {
+                        Intent intent1=new Intent(getApplicationContext(),ReceiptPage.class);
+                        intent1.putExtra("checkedItems",productJson);
+                        intent1.putExtra("address", Address);
+                        intent1.putExtra("voucher",voucher);
+                        intent1.putExtra("payment_method",getIntent().getStringExtra("payment_method"));
+                        intent1.putExtra("date",date.getText().toString());
+                        intent1.putExtras(bundle);
+                        for(CartItem item: cartItems){
+                            cartViewModel.deleteCartItem(item.getProductId());
+                        }
+                        startActivity(intent1);
+                    } else {
+                        Toast.makeText(ConfirmPage.this, res.getMessage(), Toast.LENGTH_SHORT).show();
+                    }});
             }
-            else if(payment_method.equals("ZALO_PAY"))
+            else if(payment_method.equals("ZALOPAY"))
             {
                 CreateOrder orderApi = new CreateOrder();
                 try {
@@ -145,18 +150,24 @@ public class ConfirmPage  extends AppCompatActivity {
                         ZaloPaySDK.getInstance().payOrder(ConfirmPage.this, token, "demozpdk://app", new PayOrderListener() {
                             @Override
                              public void onPaymentSucceeded(String s, String s1, String s2) {
-                                orderViewModel.postUserOrder(price,list, PAYMENT_METHOD.valueOf(payment_method),Address,voucher);
-                                Intent intent1=new Intent(getApplicationContext(),ReceiptPage.class);
-                                intent1.putExtra("checkedItems",productJson);
-                                intent1.putExtra("address", Address);
-                                intent1.putExtra("voucher",voucher);
-                                intent1.putExtra("payment_method",getIntent().getStringExtra("payment_method"));
-                                intent1.putExtra("date",date.getText().toString());
-                                intent1.putExtras(bundle);
-                                for(CartItem item: cartItems){
-                                    cartViewModel.deleteCartItem(item.getProductId());
-                                }
-                                startActivity(intent1);
+                                orderViewModel.postUserOrder(price,list, PAYMENT_METHOD.valueOf(payment_method),Address,voucher).observeForever(res-> {
+                                    if(res.isSuccess()) {
+                                        Intent intent1=new Intent(getApplicationContext(),ReceiptPage.class);
+                                        intent1.putExtra("checkedItems",productJson);
+                                        intent1.putExtra("address", Address);
+                                        intent1.putExtra("voucher",voucher);
+                                        intent1.putExtra("payment_method",getIntent().getStringExtra("payment_method"));
+                                        intent1.putExtra("date",date.getText().toString());
+                                        intent1.putExtras(bundle);
+                                        for(CartItem item: cartItems){
+                                            cartViewModel.deleteCartItem(item.getProductId());
+                                        }
+                                        startActivity(intent1);
+                                    } else {
+                                        Toast.makeText(ConfirmPage.this, res.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
                             }
 
                             @Override

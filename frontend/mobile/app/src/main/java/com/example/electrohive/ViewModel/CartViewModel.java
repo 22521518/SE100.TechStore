@@ -93,7 +93,7 @@ public class CartViewModel extends ViewModel {
         LiveData<ApiResponse<Boolean>> result = repository.deleteAllItemsFromCart(PreferencesHelper.getCustomerData().getCustomerId());
         result.observeForever(apiResponse -> {
             if (apiResponse.isSuccess()) {
-                cart.setValue(new ApiResponse<>(true, null, "Cart cleared successfully", 200)); // Clear local cart
+                fetchCartFromServer(); // Refresh cart from server on success
             }
         });
         return result;

@@ -72,7 +72,7 @@ public class ReceiptPage  extends AppCompatActivity {
         voucher_code = findViewById(R.id.receipt_discount_code);
         voucher_discount_percentage = findViewById(R.id.receipt_discount_percentage);
         if(voucher!=null) {
-            voucher_code.setText(voucher.getVoucherCode());
+            voucher_code.setText(voucher.getVoucherName());
             voucher_discount_percentage.setText("("+voucher.getDiscountAmount()+"%)");
         }
         Subtotal.setText(subtotal);

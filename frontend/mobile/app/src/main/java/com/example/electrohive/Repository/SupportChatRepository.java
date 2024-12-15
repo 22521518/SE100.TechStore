@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Models.Enum.SOCKET_INBOX_CHANNEL;
 import com.example.electrohive.Models.Enum.SOCKET_JOIN_CHANNEL;
 import com.example.electrohive.Models.Message;
@@ -55,14 +56,18 @@ public class SupportChatRepository {
                 socket.onAnyIncoming(event -> Log.d(TAG, "Event: " + event.toString() + ", Data: " + Arrays.toString(event)));
 
                 JSONObject roomId = new JSONObject();
+                JSONObject joinId = new JSONObject();
                 try {
                     roomId.put("socket_id", socketId); // Use the ID here
                     roomId.put("user_id", PreferencesHelper.getCustomerData().getCustomerId());
+                    joinId.put("room_id", PreferencesHelper.getCustomerData().getCustomerId());
+
                 } catch (JSONException e) {
                     Log.e(TAG, "Error creating room ID JSON object", e);
                 }
 
                 socket.emit(SOCKET_JOIN_CHANNEL.CUSTOMER_JOIN.toString(), roomId);
+                socket.emit(SOCKET_INBOX_CHANNEL.JOIN_ROOM.toString(), joinId);
 
                 // Fetch messages after connection is established
                 fetchMoreMessages();
@@ -85,11 +90,11 @@ public class SupportChatRepository {
         }
     }
 
-    public LiveData<Boolean> sendMessage(String customerId, JsonObject messagePayload) {
+    public LiveData<Boolean> sendMessage(Customer customer, JsonObject messagePayload) {
         MutableLiveData<Boolean> status = new MutableLiveData<>();
 
         // Send the message to the API first
-        supportChatService.postMessage(customerId, "application/json", messagePayload).enqueue(new Callback<JsonObject>() {
+        supportChatService.postMessage(customer.getCustomerId(), "application/json", messagePayload).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -99,22 +104,28 @@ public class SupportChatRepository {
                     // On successful API call, prepare the WebSocket payload as JSONObject
                     JSONObject socketPayload = new JSONObject();
                     try {
-                        // Adding data to the socket payload
 
-                        // Check if 'sender' is a JsonObject or JsonPrimitive
-                        JsonObject senderElement = messagePayload.get("sender").getAsJsonObject();
-                        JSONObject senderJSON = new JSONObject();
 
-                        senderJSON.put("sender_id", senderElement.get("sender_id").getAsString());
-                        senderJSON.put("sender_name", senderElement.get("sender_name").getAsString());
+                        JSONObject customerJson = new JSONObject();
+                        customerJson.put("customer_id",customer.getCustomerId());
+                        customerJson.put("account_id",customer.getAccountId());
+                        customerJson.put("username",customer.getUsername());
+                        customerJson.put("full_name",customer.getFullName());
+                        customerJson.put("phone_number",customer.getPhoneNumber());
+                        customerJson.put("image",customer.getImage());
+                        customerJson.put("male",customer.getMale());
+                        customerJson.put("birth_date",customer.getBirthDate());
 
-                        socketPayload.put("room_id", customerId);
 
-                        socketPayload.put("sender", senderJSON);
-                        socketPayload.put("message", messagePayload.get("message").getAsString());
-                        socketPayload.put("created_at", new Date().toString());
-                        socketPayload.put("is_seen", false);
+                        socketPayload.put("room_id", customer.getCustomerId());
+                        socketPayload.put("customer", customerJson);
 
+                        String rawMessage = responseBody.toString();
+                        JSONObject messageJson = new JSONObject(rawMessage); // Parse the string back to JSON
+                        socketPayload.put("message", messageJson);
+
+
+                        Log.d("socket payload",socketPayload.toString());
                         // Emit the message via WebSocket
                         socket.emit(SOCKET_INBOX_CHANNEL.ADD_MESSAGE.toString(), socketPayload);
 
@@ -124,8 +135,8 @@ public class SupportChatRepository {
                                 responseBody.get("message").getAsString(),
                                 true,
                                 new Sender(
-                                        responseBody.get("sender").getAsJsonObject().get("sender_id").getAsString(),
-                                        responseBody.get("sender").getAsJsonObject().get("sender_name").getAsString()
+                                        responseBody.getAsJsonObject("sender").get("sender_id").getAsString(),
+                                        responseBody.getAsJsonObject("sender").get("sender_name").getAsString()
                                 )
                         );
 
@@ -181,19 +192,18 @@ public class SupportChatRepository {
         socket.on(SOCKET_INBOX_CHANNEL.GET_MESSAGES.toString(), args -> {
             if (args.length > 0 && args[0] instanceof JSONObject) {
                 try {
-                    JSONObject data = (JSONObject) args[0];
-                    String roomId = data.getString("room_id");
+                    JSONObject data = ((JSONObject) args[0]).getJSONObject("message");
                     String messageText = data.getString("message");
                     boolean isSeen = data.getBoolean("is_seen");
                     JSONObject sender = data.getJSONObject("sender");
 
                     Message message = new Message(
-                            roomId,
+                            PreferencesHelper.getCustomerData().getCustomerId(),
                             messageText,
                             isSeen,
                             new Sender(
                                     sender.getString("sender_id"),
-                                    sender.getString("name")
+                                    sender.getString("sender_name")
                             )
                     );
                     message.setIs_customer(PreferencesHelper.getCustomerData().getCustomerId());

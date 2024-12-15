@@ -52,9 +52,9 @@ public class PaymentPage extends AppCompatActivity {
 
 
             // Compare the new voucher and discount values with the current ones
-            if (selectedVoucher == null || !voucher.getText().toString().equals(returnVoucher.getVoucherCode())) {
+            if (selectedVoucher == null || !selectedVoucher.getVoucherCode().equals(returnVoucher.getVoucherCode())) {
                 selectedVoucher = returnVoucher;
-                voucher.setText(returnVoucher.getVoucherCode()); // Update voucher text
+                voucher.setText(returnVoucher.getVoucherName()); // Update voucher text
                 UpdateTotal(returnVoucher.getDiscountAmount());
             }
 

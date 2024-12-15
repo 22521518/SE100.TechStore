@@ -39,7 +39,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
         Voucher voucher = voucherList.get(position);
 
         // Set the voucher information to the corresponding views
-        holder.voucherCode.setText(voucher.getVoucherCode());
+        holder.voucherName.setText(voucher.getVoucherName());
         holder.voucherDescription.setText(voucher.getDescription());
 
         Object voucherValidTo = voucher.getValidTo();  // This returns an Object
@@ -78,7 +78,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
 
     // ViewHolder class to hold the views for each voucher item
     public static class VoucherViewHolder extends RecyclerView.ViewHolder {
-        private TextView voucherCode, voucherDescription, voucherExpireDate;
+        private TextView voucherName, voucherDescription, voucherExpireDate;
         private ImageView clockIcon;
         private View voucherBackground;  // Add reference to the background view
 
@@ -86,7 +86,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
             super(itemView);
 
             // Initialize the views
-            voucherCode = itemView.findViewById(R.id.voucherCode);
+            voucherName = itemView.findViewById(R.id.voucherCode);
             voucherDescription = itemView.findViewById(R.id.voucherDescription);
             voucherExpireDate = itemView.findViewById(R.id.voucherExpireDate);
             voucherBackground = itemView.findViewById(R.id.voucherBackground);  // Initialize the background view

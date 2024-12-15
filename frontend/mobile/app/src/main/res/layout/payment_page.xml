@@ -131,19 +131,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Discount" />
+            android:text="Voucher" />
 
         <TextView
             android:id="@+id/voucherCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:alpha="0.7"
             android:background="@drawable/clickable_item_background"
             android:drawableEnd="@drawable/ic_angle_right_icon"
             android:text="Select a voucher"
             android:textAlignment="center"
-            android:textSize="20sp"></TextView>
+            android:textSize="16sp"/>
 
         <View
             android:layout_width="match_parent"

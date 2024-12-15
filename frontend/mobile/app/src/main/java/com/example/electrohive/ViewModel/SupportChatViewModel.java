@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Models.Message;
 import com.example.electrohive.Models.SupportChat;
 import com.example.electrohive.Repository.SupportChatRepository;
@@ -20,13 +21,13 @@ public class SupportChatViewModel extends ViewModel {
     private final SupportChatRepository repository;
 
     private static SupportChatViewModel instance;
-    private final String customerId; // Cached customer ID for reuse
+    private final Customer customer; // Cached customer ID for reuse
 
     public SupportChatViewModel() {
         repository = new SupportChatRepository();
-        customerId = PreferencesHelper.getCustomerData() != null
-                ? PreferencesHelper.getCustomerData().getCustomerId()
-                : ""; // Fallback to empty string if customer data is unavailable
+        customer = PreferencesHelper.getCustomerData() != null
+                ? PreferencesHelper.getCustomerData()
+                : null; // Fallback to empty string if customer data is unavailable
     }
 
     public static synchronized SupportChatViewModel getInstance() {
@@ -38,19 +39,19 @@ public class SupportChatViewModel extends ViewModel {
 
 
     public LiveData<List<Message>> fetchMessages() {
-        if (customerId!=null && !customerId.isEmpty()) {
+        if (customer !=null && !customer.getCustomerId().isEmpty()) {
             Log.e("Error","Customer ID is not available.");
         }
         return repository.getMessageLog();
     }
 
     public LiveData<Boolean> sendUserMessage(String message) {
-        if (customerId.isEmpty()) {
+        if (customer.getCustomerId().isEmpty()) {
             throw new IllegalStateException("Customer ID is not available.");
         }
 
         JsonObject messagePayload = createMessagePayload(message);
-        return repository.sendMessage(customerId, messagePayload);
+        return repository.sendMessage(customer, messagePayload);
     }
 
     private JsonObject createMessagePayload(String message) {
@@ -60,7 +61,7 @@ public class SupportChatViewModel extends ViewModel {
 
             // Sender details
             JsonObject senderPayload = new JsonObject();
-            senderPayload.addProperty("sender_id", customerId);
+            senderPayload.addProperty("sender_id", customer.getCustomerId());
             senderPayload.addProperty("sender_name", PreferencesHelper.getCustomerData() != null
                     ? PreferencesHelper.getCustomerData().getUsername()
                     : "Unknown");
@@ -82,7 +83,7 @@ public class SupportChatViewModel extends ViewModel {
 
 
     public void fetchMoreMessages() {
-        if (customerId.isEmpty()) {
+        if (customer.getCustomerId().isEmpty()) {
             throw new IllegalStateException("Customer ID is not available.");
         }
         repository.fetchMoreMessages();

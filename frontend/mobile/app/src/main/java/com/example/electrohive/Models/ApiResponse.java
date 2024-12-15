@@ -1,7 +1,7 @@
 package com.example.electrohive.Models;
 
 public class ApiResponse<T> {
-    private boolean success;
+    private boolean success = false;
     private T data;
     private String message;
     private int statusCode;

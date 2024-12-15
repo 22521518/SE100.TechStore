@@ -24,6 +24,7 @@ import java.util.List;
 public class AccountViewModel extends ViewModel {
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
+    private final CustomerViewModel customerViewModel = CustomerViewModel.getInstance();
 
 
     public AccountViewModel() {
@@ -47,6 +48,7 @@ public class AccountViewModel extends ViewModel {
                         customerRepository.getCustomer(userId).observeForever(customerResponse -> {
                             if (customerResponse != null && customerResponse.isSuccess()) {
                                 PreferencesHelper.saveCustomerData(customerResponse.getData());
+                                customerViewModel.SetSessionCustomer(customerResponse.getData());
                                 resultLiveData.postValue(new ApiResponse<>(true, true, "Login successful", 200));
                             } else {
                                 resultLiveData.postValue(new ApiResponse<>(false, false, "Failed to fetch customer data", 500));
