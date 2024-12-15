@@ -5,16 +5,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.test.core.app.ApplicationProvider;
 
-import com.example.electrohive.Models.Customer;
-import com.example.electrohive.ViewModel.CartViewModel;
 import com.example.electrohive.ViewModel.VoucherViewModel;
-import com.example.electrohive.utils.PreferencesHelper;
 
 import org.junit.Before;
 import org.junit.Rule;

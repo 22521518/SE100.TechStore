@@ -12,7 +12,6 @@ import androidx.test.core.app.ApplicationProvider;
 
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Models.ProductFeedback;
-import com.example.electrohive.ViewModel.CustomerViewModel;
 import com.example.electrohive.ViewModel.FeedbackViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 

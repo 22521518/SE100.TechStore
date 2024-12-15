@@ -13,7 +13,6 @@ import com.example.electrohive.Models.CheckoutAddress;
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Models.Enum.PAYMENT_METHOD;
 import com.example.electrohive.Models.OrderItemRequest;
-import com.example.electrohive.ViewModel.FeedbackViewModel;
 import com.example.electrohive.ViewModel.OrderViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 
@@ -21,7 +20,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.internal.matchers.Or;
 
 import java.util.ArrayList;
 import java.util.Arrays;

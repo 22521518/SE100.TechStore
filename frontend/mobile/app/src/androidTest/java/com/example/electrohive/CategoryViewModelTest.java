@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
-import com.example.electrohive.ViewModel.CartViewModel;
 import com.example.electrohive.ViewModel.CategoryViewModel;
 
 import org.junit.BeforeClass;

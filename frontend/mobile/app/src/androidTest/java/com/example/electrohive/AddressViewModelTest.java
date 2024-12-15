@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -16,7 +15,6 @@ import androidx.test.core.app.ApplicationProvider;
 import com.example.electrohive.Models.Address;
 import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Customer;
-import com.example.electrohive.ViewModel.AccountViewModel;
 import com.example.electrohive.ViewModel.AddressViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 
@@ -25,7 +23,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Random;
 
 public class AddressViewModelTest {

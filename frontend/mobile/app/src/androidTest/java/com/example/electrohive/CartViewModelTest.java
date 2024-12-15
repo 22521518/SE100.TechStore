@@ -6,17 +6,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
 import androidx.test.core.app.ApplicationProvider;
 
-import com.example.electrohive.Models.Address;
-import com.example.electrohive.Models.ApiResponse;
-import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.Customer;
-import com.example.electrohive.ViewModel.AddressViewModel;
 import com.example.electrohive.ViewModel.CartViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 
@@ -24,8 +18,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.lang.ref.PhantomReference;
 
 public class CartViewModelTest {
     @Rule

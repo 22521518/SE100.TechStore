@@ -11,11 +11,9 @@ import androidx.test.core.app.ApplicationProvider;
 
 import com.example.electrohive.Models.Account;
 import com.example.electrohive.Models.Customer;
-import com.example.electrohive.ViewModel.CartViewModel;
 import com.example.electrohive.ViewModel.CustomerViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;

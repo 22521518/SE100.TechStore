@@ -2,37 +2,20 @@ package com.example.electrohive;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
 
-import com.example.electrohive.Models.Account;
 import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Customer;
-import com.example.electrohive.Repository.AccountRepository;
-import com.example.electrohive.Repository.CustomerRepository;
 import com.example.electrohive.ViewModel.AccountViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 public class AccountViewModelTest {
     @Rule
