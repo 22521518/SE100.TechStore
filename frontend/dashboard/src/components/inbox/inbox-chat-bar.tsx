@@ -25,6 +25,7 @@ const InboxChatBar = ({ onSend }: InboxChatBarProps) => {
   // const { query } = useShow<IInboxMessage, HttpError>();
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if(message.message.trim()==="") return
     // query.create({ message: 'Hello' });
     const sendMessage = {
       ...message,
