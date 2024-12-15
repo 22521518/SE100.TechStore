@@ -144,7 +144,7 @@ public class DrawerBasePage extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.nav_logout) {
+            if (id == R.id.nav_account) {
                 // Account selected (Logout or Account screen)
                 Intent intent = new Intent(getApplicationContext(), AccountPage.class);
                 startActivity(intent);

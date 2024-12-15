@@ -90,6 +90,7 @@ public class ProductDetailPage extends DrawerBasePage {
     private ProductAdapter productAdapter;
 
     private Product curProduct = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,15 +101,15 @@ public class ProductDetailPage extends DrawerBasePage {
         loadingSpinner = findViewById(R.id.loading_spinner);
         loadingSpinner.setVisibility(View.VISIBLE);
 
-        imageSlider = findViewById(R.id.display_image);
-        indicator  = findViewById(R.id.display_image_indicator );
+        imageSlider = findViewById(R.id.dt_display_image);
+        indicator  = findViewById(R.id.dt_display_image_indicator );
 
         product_average_rating = findViewById(R.id.product_average_rating);
-        product_name = findViewById(R.id.product_name);
+        product_name = findViewById(R.id.dt_product_name);
         product_feedback_count_1 = findViewById(R.id.product_feedback_count_1);
-        product_price = findViewById(R.id.product_price);
-        product_original_price = findViewById(R.id.product_original_price);
-        product_discount = findViewById(R.id.product_discount);
+        product_price = findViewById(R.id.dt_product_price);
+        product_original_price = findViewById(R.id.dt_product_original_price);
+        product_discount = findViewById(R.id.dt_product_discount);
         product_stock_count = findViewById(R.id.product_stock_count);
         product_add_to_cart_button = findViewById(R.id.product_add_to_cart_button);
         product_buy_now_button = findViewById(R.id.product_buy_now_button);

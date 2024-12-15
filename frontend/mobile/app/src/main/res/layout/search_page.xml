@@ -62,6 +62,7 @@
         android:layout_marginVertical="32dp"
         android:indeterminate="true"
         android:visibility="gone" />
+    
     <!-- Product Item -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_listview"

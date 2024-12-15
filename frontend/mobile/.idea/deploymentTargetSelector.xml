@@ -13,19 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="ProductViewModelTest">
+      <SelectionState runConfigName="testChangeQuantity_valid()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testSearchProduct_Category()">
+      <SelectionState runConfigName="testChangeQuantity_valid_999()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="LoginPageTest">
+      <SelectionState runConfigName="testBuyWithInSufficientQuantity()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testLoginButtonWithoutInput()">
+      <SelectionState runConfigName="testBuyWithSufficientQuantity()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testSignupNavigation()">
+      <SelectionState runConfigName="testClickProductFeedbackButton()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

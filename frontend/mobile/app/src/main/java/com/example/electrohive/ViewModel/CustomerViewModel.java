@@ -51,7 +51,7 @@ public class CustomerViewModel {
         return customerData;
     }
 
-    public void SetSessionCustomer(Customer customer) {
+    public void setSessionCustomer(Customer customer) {
         sessionCustomer.postValue(customer);
     }
     // Update customer data and save it locally

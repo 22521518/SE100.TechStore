@@ -119,7 +119,7 @@ public class TrackPage extends AppCompatActivity {
                     }
 
                     order_payment_method.setText(order.getPaymentMethod().toString());
-                    order_id.setText("Order: " + order.getOrderId());
+                    order_id.setText("Order id: " + order.getOrderId());
                     order_total_price.setText("Total: " + Format.getFormattedTotalPrice(order.getTotalPrice()) + " (" + items.size() + " items)");
 
                     // Set the order items in the adapter
@@ -128,9 +128,8 @@ public class TrackPage extends AppCompatActivity {
                     order_items_listview.setAdapter(adapter);
                 }
             } else {
-                // Handle failure scenario (success = false)
-                String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Failed to load order.";
-                Toast.makeText(TrackPage.this, errorMessage, Toast.LENGTH_SHORT).show();
+                this.recreate();
+                Toast.makeText(TrackPage.this, "Failed to load order", Toast.LENGTH_SHORT).show();
             }
         });
     }

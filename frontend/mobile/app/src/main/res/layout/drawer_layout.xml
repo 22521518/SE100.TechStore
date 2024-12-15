@@ -16,6 +16,7 @@
 
         <!-- Scrollable main content -->
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_layout"
             android:layout_marginTop="56dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

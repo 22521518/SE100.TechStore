@@ -48,7 +48,7 @@ public class AccountViewModel extends ViewModel {
                         customerRepository.getCustomer(userId).observeForever(customerResponse -> {
                             if (customerResponse != null && customerResponse.isSuccess()) {
                                 PreferencesHelper.saveCustomerData(customerResponse.getData());
-                                customerViewModel.SetSessionCustomer(customerResponse.getData());
+                                customerViewModel.setSessionCustomer(customerResponse.getData());
                                 resultLiveData.postValue(new ApiResponse<>(true, true, "Login successful", 200));
                             } else {
                                 resultLiveData.postValue(new ApiResponse<>(false, false, "Failed to fetch customer data", 500));

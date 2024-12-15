@@ -5,7 +5,7 @@
         android:id="@+id/account_section"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_logout"
+            android:id="@+id/nav_account"
             android:title="Account"
             android:icon="@drawable/ic_user_icon" />
     </group>

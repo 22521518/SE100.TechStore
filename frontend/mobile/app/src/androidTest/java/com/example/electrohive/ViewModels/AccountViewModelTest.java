@@ -1,4 +1,4 @@
-package com.example.electrohive;
+package com.example.electrohive.ViewModels;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;

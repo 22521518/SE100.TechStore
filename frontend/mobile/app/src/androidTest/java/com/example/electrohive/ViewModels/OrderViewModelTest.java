@@ -1,4 +1,4 @@
-package com.example.electrohive;
+package com.example.electrohive.ViewModels;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
