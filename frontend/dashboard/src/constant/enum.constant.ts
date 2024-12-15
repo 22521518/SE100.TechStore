@@ -1,3 +1,5 @@
+import { CANCELLED } from 'dns';
+
 export enum ORDER_STATUS {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',
@@ -22,5 +24,6 @@ export enum PAYMENT_METHOD {
 export enum PAYMENT_STATUS {
   PENDING = 'PENDING',
   PAID = 'PAID',
-  REFUNDED = 'REFUNDED'
+  REFUNDED = 'REFUNDED',
+  CANCELLED = 'CANCELLED'
 }

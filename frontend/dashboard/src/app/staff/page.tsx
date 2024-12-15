@@ -12,10 +12,17 @@ import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import React from 'react';
 import { useNavigation } from '@refinedev/core';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import { DeleteForever } from '@mui/icons-material';
 
 const StaffList = () => {
   const { create, edit, show } = useNavigation();
-  const { dataGridProps } = useDataGrid<IStaff>();
+  const [query, setQuery] = React.useState('');
+  const { dataGridProps } = useDataGrid<IStaff>({
+    resource: `staff?q=${query}&`,
+    pagination: {
+      mode: 'server'
+    }
+  });
   const columns = React.useMemo<GridColDef<IStaff>[]>(
     () => [
       {
@@ -99,19 +106,31 @@ const StaffList = () => {
     []
   );
 
-  const searchStaffHandle = async (query: string) => {
-    console.log('searchStaffHandle', query);
+  const searchStaffHandle = async (q: string) => {
+    setQuery(q);
   };
 
   return (
     <CommonContainer className="flex flex-col">
       <Box className="flex flex-row justify-between items-center min-h-max">
         <Box className="flex flex-row items-center gap-2 px-2">
-          <SupportAgentOutlinedIcon className="text-2xl" />
-          <Typography variant="h2" className="text-2xl font-bold">
-            Staff
-          </Typography>
           <SearchBar title="Staff" handleSubmit={searchStaffHandle} />
+          <SupportAgentOutlinedIcon className="text-lg" />
+          {query ? (
+            <>
+              <Typography variant="h2" className="text-lg font-bold">
+                Search Result: {query}
+              </Typography>
+              <DeleteForever
+                className="text-lg hover:cursor-pointer"
+                onClick={() => setQuery('')}
+              />
+            </>
+          ) : (
+            <Typography variant="h2" className="text-lg font-bold">
+              Staff
+            </Typography>
+          )}
         </Box>
         <Button
           className="bg-accent text-secondary-100 font-bold px-4 py-2 gap-2"

@@ -28,6 +28,8 @@ const InboxRoomShow = ({ showRoom }: InboxRoomShowProps) => {
     action: 'create'
   });
 
+  const messagesEndRef = React.useRef<HTMLDivElement | null>(null);
+
   const [messages, setMessages] = React.useState<IInboxMessage[]>(
     showRoom.messages || []
   );
@@ -144,7 +146,7 @@ const InboxRoomShow = ({ showRoom }: InboxRoomShowProps) => {
   }, [showRoom, socket]);
 
   //Scroll to bottom when new message is received
-  const messagesEndRef = React.useRef<HTMLDivElement | null>(null);
+
   React.useEffect(() => {
     if (messagesEndRef.current && bottomScoll) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });

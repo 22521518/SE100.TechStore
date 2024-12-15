@@ -12,12 +12,16 @@ import { useDataGrid } from '@refinedev/mui';
 import { transformDate } from '@utils/transform.util';
 import SentimentSatisfiedAltOutlinedIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import AvatarImage from '@components/avatar';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { dummyAvatar } from '@constant/value.constant';
 import CommonContainer from '@components/common-container';
 
 const CustomerList = () => {
   const { show } = useNavigation();
-  const { dataGridProps } = useDataGrid<ICustomer>();
+  const [query, setQuery] = React.useState('');
+  const { dataGridProps } = useDataGrid<ICustomer>({
+    resource: `customers?q=${query}&`
+  });
 
   const columns = React.useMemo<GridColDef<ICustomer>[]>(
     () => [
@@ -79,53 +83,63 @@ const CustomerList = () => {
     []
   );
 
-  const searchCustomerHandle = async (query: string) => {
-    console.log('searchCustomerHandle', query);
+  const searchCustomerHandle = async (q: string) => {
+    setQuery(q);
   };
 
   return (
-    <>
-      <div className="pb-4 px-2">
-        <CommonContainer className="">
-          <Box className="flex flex-row justify-between items-center">
-            <Box className="flex flex-row items-center gap-2">
-              <SentimentSatisfiedAltOutlinedIcon className="text-2xl" />
+    <div className="pb-4 px-2">
+      <CommonContainer className="">
+        <Box className="flex flex-row justify-between items-center">
+          <Box className="flex flex-row items-center gap-2">
+            <SearchBar title="Customer" handleSubmit={searchCustomerHandle} />
+            <SentimentSatisfiedAltOutlinedIcon className="text-2xl" />
+            {query ? (
+              <>
+                <Typography variant="h2" className="text-2xl font-bold">
+                  Search Result: {query}
+                </Typography>
+                <DeleteForeverIcon
+                  className="text-2xl hover:cursor-pointer"
+                  onClick={() => setQuery('')}
+                />
+              </>
+            ) : (
               <Typography variant="h2" className="text-2xl font-bold">
                 Customers
               </Typography>
-              <SearchBar title="Customer" handleSubmit={searchCustomerHandle} />
-            </Box>
+            )}
           </Box>
-          <Box className="flex flex-col">
-            <DataGrid
-              {...dataGridProps}
-              getRowId={(row) => row.customer_id}
-              onCellClick={(cell) => {
-                if (cell.field !== 'actions') {
-                  show('customers', cell.row.customer_id);
+        </Box>
+        <Box className="flex flex-col">
+          <DataGrid
+            {...dataGridProps}
+            getRowId={(row) => row.customer_id}
+            onCellClick={(cell) => {
+              if (cell.field !== 'actions') {
+                show('customers', cell.row.customer_id);
+              }
+            }}
+            columns={columns}
+            sx={{
+              color: 'black',
+              fontSize: '14px',
+              '& .MuiDataGrid-row': {
+                '&:nth-of-type(odd)': {
+                  backgroundColor: 'rgba(0,0,0,0.04)'
                 }
-              }}
-              columns={columns}
-              sx={{
-                color: 'black',
-                fontSize: '14px',
-                '& .MuiDataGrid-row': {
-                  '&:nth-of-type(odd)': {
-                    backgroundColor: 'rgba(0,0,0,0.04)'
-                  }
-                },
-                '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
-                  {
-                    backgroundColor: 'transparent !important',
-                    color: 'black'
-                  }
-              }}
-              className="text-accent my-4"
-            />
-          </Box>
-        </CommonContainer>
-      </div>
-    </>
+              },
+              '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
+                {
+                  backgroundColor: 'transparent !important',
+                  color: 'black'
+                }
+            }}
+            className="text-accent my-4"
+          />
+        </Box>
+      </CommonContainer>
+    </div>
   );
 };
 

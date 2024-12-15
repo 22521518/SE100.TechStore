@@ -16,6 +16,7 @@ import {
 import ProductCard from '@components/order/product-card';
 import { dummyAvatar } from '@constant/value.constant';
 import { HttpError, useForm } from '@refinedev/core';
+import PaymentStatusTag from '@components/tags/payment_status';
 
 type OrderShowProps = {
   customerId?: string;
@@ -67,7 +68,7 @@ const OrderShow = ({ orderId, customerId }: OrderShowProps) => {
             <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               <Box className="flex flex-row gap-2 items-start">
                 <AvatarImage
-                  src={dummyAvatar}
+                  src={customer?.image || dummyAvatar}
                   alt={customer?.username || 'avatar'}
                   size={48}
                 />
@@ -82,23 +83,47 @@ const OrderShow = ({ orderId, customerId }: OrderShowProps) => {
               </Box>
             </Box>
 
-            <Box className="flex flex-row gap-2 justify-between items-center border-b-2 border-solid border-secondary-300 pb-4 mb-4">
-              <Typography className="font-semibold text-base">
-                Deliveried date:
-              </Typography>
-              <Typography
-                variant="caption"
-                className="text-base text-secondary-border-secondary-300"
-              >
-                {order.shipping_address?.shipping_status ===
-                  ORDER_STATUS.DELIVERED &&
-                order.shipping_address?.delivery_date
-                  ? transformDateWithMonthText(
-                      order.shipping_address?.delivery_date?.toString()
-                    )
-                  : 'Not yet'}
-              </Typography>
-            </Box>
+            <Stack className="gap-2 border-b-2 border-solid border-secondary-300 pb-4 mb-4">
+              <Box className="flex flex-row gap-2 justify-between items-center pb-4">
+                <Typography className="font-semibold text-base">
+                  Deliveried date:
+                </Typography>
+                <Typography
+                  variant="caption"
+                  className="text-base text-secondary-border-secondary-300"
+                >
+                  {order.shipping_address?.shipping_status ===
+                    ORDER_STATUS.DELIVERED &&
+                  order.shipping_address?.delivery_date
+                    ? transformDateWithMonthText(
+                        order.shipping_address?.delivery_date?.toString()
+                      )
+                    : 'Not yet'}
+                </Typography>
+              </Box>
+              <Box className="flex flex-row gap-2 justify-between items-center pb-4">
+                <Typography className="font-semibold text-base">
+                  Payment Method:
+                </Typography>
+                <Typography
+                  variant="caption"
+                  className="text-base text-secondary-border-secondary-300"
+                >
+                  {order.payment_method}
+                </Typography>
+              </Box>
+              <Box className="flex flex-row gap-2 justify-between items-center pb-4">
+                <Typography className="font-semibold text-base">
+                  Payment Status:
+                </Typography>
+                <Typography
+                  variant="caption"
+                  className="text-base text-secondary-border-secondary-300"
+                >
+                  <PaymentStatusTag status={order.payment_status} />
+                </Typography>
+              </Box>
+            </Stack>
 
             <Box className="flex flex-col gap-2 border-b-2 border-solid border-secondary-300 pb-4 mb-4">
               <Box className="flex flex-row gap-3 items-center">

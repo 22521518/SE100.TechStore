@@ -24,11 +24,28 @@ export class RolesService {
     }
   }
 
-  async findAll(including_permissions: boolean = true) {
+  async findAll(query: string = '', including_permissions: boolean = true) {
     try {
       const roles = await this.prismaDbService.roles.findMany({
+        where: {
+          OR: [
+            {
+              role_name: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              description: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+          ],
+        },
         include: {
           role_permissions: including_permissions,
+          staff: true,
         },
         orderBy: {
           role_id: 'asc',

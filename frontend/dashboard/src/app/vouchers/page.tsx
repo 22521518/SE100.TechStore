@@ -14,10 +14,17 @@ import SearchBar from '@components/searchbar';
 import LoyaltyOutlinedIcon from '@mui/icons-material/LoyaltyOutlined';
 import VoucherCreate from './create/page';
 import VoucherEdit from './edit/[id]/page';
+import { DeleteForever } from '@mui/icons-material';
 
 const VoucherList = () => {
   const { edit, create, show } = useNavigation();
-  const { dataGridProps } = useDataGrid<IVoucher>();
+  const [query, setQuery] = React.useState('');
+  const { dataGridProps } = useDataGrid<IVoucher>({
+    resource: `vouchers?q=${query}&`,
+    pagination: {
+      mode: 'server'
+    }
+  });
   const columns = React.useMemo<GridColDef<IVoucher>[]>(
     () => [
       {
@@ -97,20 +104,31 @@ const VoucherList = () => {
     setVoucherEditModal(true);
   }, []);
 
-  const searchVoucherHandle = async (query: string) => {
-    console.log('searchVoucherHandle', query);
+  const searchVoucherHandle = async (q: string) => {
+    setQuery(q);
   };
-
   return (
     <>
       <CommonContainer className="flex flex-col">
         <Box className="flex flex-row justify-between items-center">
           <Box className="flex flex-row items-center gap-2 px-2">
-            <LoyaltyOutlinedIcon className="text-2xl" />
-            <Typography variant="h2" className="text-2xl font-bold">
-              Vouchers
-            </Typography>
             <SearchBar title="Voucher" handleSubmit={searchVoucherHandle} />
+            <LoyaltyOutlinedIcon className="text-2xl" />
+            {query ? (
+              <>
+                <Typography variant="h2" className="text-2xl font-bold">
+                  Search Result: {query}
+                </Typography>
+                <DeleteForever
+                  className="text-2xl hover:cursor-pointer"
+                  onClick={() => setQuery('')}
+                />
+              </>
+            ) : (
+              <Typography variant="h2" className="text-2xl font-bold">
+                Vouchers
+              </Typography>
+            )}
           </Box>
           <Button
             className="bg-accent text-secondary-100 font-bold px-4 py-2 gap-2"

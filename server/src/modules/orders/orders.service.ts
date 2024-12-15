@@ -72,6 +72,8 @@ export class OrdersService {
 
   async findAll(
     query: string = '',
+    order_status: string = '',
+    payment_status: string = '',
     productArray: string[] = [],
     customer_id: string,
     order_id: string,
@@ -121,6 +123,14 @@ export class OrdersService {
         },
       });
     });
+
+    if (order_status) {
+      orArray.push({ order_status });
+    }
+
+    if (payment_status) {
+      orArray.push({ payment_status });
+    }
 
     try {
       const orders = await this.prismaDbService.orders.findMany({
