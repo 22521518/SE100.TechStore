@@ -145,16 +145,17 @@
             android:text="Selected voucher: "
             android:textSize="16dp"
             android:textStyle="bold" />
+
         <TextView
-            android:textAlignment="viewEnd"
             android:id="@+id/receipt_discount_code"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:alpha="0.7"
             android:text=""
-            android:textSize="14sp"
-            android:alpha="0.7" />
+            android:textAlignment="viewEnd"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

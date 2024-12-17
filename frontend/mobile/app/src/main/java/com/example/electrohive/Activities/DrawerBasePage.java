@@ -52,8 +52,6 @@ public class DrawerBasePage extends AppCompatActivity {
     private NavigationView navigationView;
 
     private  Menu menu;
-    private Customer sessionCustomer = new Customer();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

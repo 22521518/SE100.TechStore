@@ -9,14 +9,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.AccountViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 
-public class AccountChangePassword extends AppCompatActivity {
+public class AccountChangePasswordPage extends AppCompatActivity {
 
     private AccountViewModel accountViewModel;
 
@@ -93,7 +92,7 @@ public class AccountChangePassword extends AppCompatActivity {
 
         PreferencesHelper.clear();
 
-        Intent intent = new Intent(AccountChangePassword.this, LoginPage.class);
+        Intent intent = new Intent(AccountChangePasswordPage.this, LoginPage.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish(); // Ends the current activity

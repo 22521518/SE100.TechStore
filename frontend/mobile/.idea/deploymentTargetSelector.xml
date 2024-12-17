@@ -13,19 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="testChangeQuantity_valid()">
+      <SelectionState runConfigName="testVisibilityOfViewsWithCOD() (1)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testChangeQuantity_valid_999()">
+      <SelectionState runConfigName="testVisibilityOfViewsWithWallet() (1)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testBuyWithInSufficientQuantity()">
+      <SelectionState runConfigName="testContinueShoppingClick()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testBuyWithSufficientQuantity()">
+      <SelectionState runConfigName="testContinueShoppingClickZaloPay()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testClickProductFeedbackButton()">
+      <SelectionState runConfigName="testContinueShoppingClickCOD()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

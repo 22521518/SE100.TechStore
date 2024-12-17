@@ -62,9 +62,6 @@ public class AccountInfoPage extends AppCompatActivity {
 
         setContentView(R.layout.account_info_page);
 
-
-        sessionCustomer = PreferencesHelper.getCustomerData();
-
         ImageButton backButton = findViewById(R.id.backbutton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,52 +81,55 @@ public class AccountInfoPage extends AppCompatActivity {
         userInfoChangePhotoButton = findViewById(R.id.userInfoChangePhotoButton);
         updateCustomerButton = findViewById(R.id.updateCustomerButton);
 
-        Glide.with(AccountInfoPage.this)
-                .load(sessionCustomer.getImage()) // URL to the image
-                .placeholder(R.drawable.ic_user_icon) // Optional placeholder
-                .error(R.drawable.ic_image_error_icon) // Optional error image
-                .into(userInfoImage); // Your ImageView
+        customerViewModel.getSessionCustomer().observe(this,sessionCustomer -> {
+            Glide.with(AccountInfoPage.this)
+                    .load(sessionCustomer.getImage()) // URL to the image
+                    .placeholder(R.drawable.ic_user_icon) // Optional placeholder
+                    .error(R.drawable.ic_image_error_icon) // Optional error image
+                    .into(userInfoImage); // Your ImageView
 
-        String fullName = sessionCustomer.getFullName();
-        String[] nameParts = fullName.split("\\s+"); // This splits by one or more spaces
+            String fullName = sessionCustomer.getFullName();
+            String[] nameParts = fullName.split("\\s+"); // This splits by one or more spaces
 
-        if (nameParts.length > 1) {
-            // Assuming the first part is the first name and the last part is the last name
-            firstnameInput.setText(nameParts[0]); // First name
-            lastnameInput.setText(nameParts[nameParts.length - 1]); // Last name (last part)
-        } else {
-            // In case the full name is just one word (single name)
-            firstnameInput.setText(nameParts[0]);
-            lastnameInput.setText(""); // If no last name exists, you can leave this empty
-        }
-
-        usernameInput.setText(sessionCustomer.getUsername());
-        phonenumberInput.setText(sessionCustomer.getPhoneNumber());
-
-        Object birthDateObject = sessionCustomer.getBirthDate();  // This returns an Object
-
-        if (birthDateObject != null) {
-            String formattedDate = null;
-
-            // Check if the object is a Date
-            if (birthDateObject instanceof Date) {
-                formattedDate = Format.getFormattedDate((Date) birthDateObject);
-            } else if (birthDateObject instanceof String) {
-                // If it's a String, try parsing it
-                formattedDate = Format.getFormattedDateFromString((String) birthDateObject);
+            if (nameParts.length > 1) {
+                // Assuming the first part is the first name and the last part is the last name
+                firstnameInput.setText(nameParts[0]); // First name
+                lastnameInput.setText(nameParts[nameParts.length - 1]); // Last name (last part)
+            } else {
+                // In case the full name is just one word (single name)
+                firstnameInput.setText(nameParts[0]);
+                lastnameInput.setText(""); // If no last name exists, you can leave this empty
             }
 
-            // Set the formatted date to the EditText
-            if (formattedDate != null) {
-                birthDateInput.setText(formattedDate);
-            }
-        }
+            usernameInput.setText(sessionCustomer.getUsername());
+            phonenumberInput.setText(sessionCustomer.getPhoneNumber());
 
-        if(sessionCustomer.getMale()) {
-            radioMale.setChecked(true);
-        } else {
-            radioFemale.setChecked(true);
-        }
+            Object birthDateObject = sessionCustomer.getBirthDate();  // This returns an Object
+
+            if (birthDateObject != null) {
+                String formattedDate = null;
+
+                // Check if the object is a Date
+                if (birthDateObject instanceof Date) {
+                    formattedDate = Format.getFormattedDate((Date) birthDateObject);
+                } else if (birthDateObject instanceof String) {
+                    // If it's a String, try parsing it
+                    formattedDate = Format.getFormattedDateFromString((String) birthDateObject);
+                }
+
+                // Set the formatted date to the EditText
+                if (formattedDate != null) {
+                    birthDateInput.setText(formattedDate);
+                }
+            }
+
+            if(sessionCustomer.getMale()) {
+                radioMale.setChecked(true);
+            } else {
+                radioFemale.setChecked(true);
+            }
+        });
+
 
         // Updated imagePickerLauncher
         imagePickerLauncher = registerForActivityResult(

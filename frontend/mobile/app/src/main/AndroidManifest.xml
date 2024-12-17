@@ -58,7 +58,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Activities.AccountChangePassword"
+            android:name=".Activities.AccountChangePasswordPage"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -138,10 +138,6 @@
             android:name=".Activities.ReceiptPage"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
-
-
-
     </application>
 
 

@@ -70,7 +70,7 @@ public class CheckoutPage extends AppCompatActivity {
         address_location=findViewById(R.id.addressInput);
         address_fullname=findViewById(R.id.fullname);
         address_phone=findViewById(R.id.phone);
-        address_address=findViewById(R.id.address);
+        address_address=findViewById(R.id.n_address);
         address_location.setOnClickListener(v->{
             Intent intent=new Intent(getApplicationContext(),ProvincePage.class);
             startActivityForResult(intent, 1);
@@ -81,6 +81,17 @@ public class CheckoutPage extends AppCompatActivity {
             String[] split= address_location.getText().toString().split(", ");
             if(radioButton5.isChecked())
             {
+                if(address_fullname.getText().toString().isEmpty()||
+                        address_phone.getText().toString().isEmpty()||
+                        address_location.getText().toString().isEmpty()||
+                        address_address.getText().toString().isEmpty()
+                ) {
+                    Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (address_phone.getText().toString().length()!=10) {
+                    Toast.makeText(this, "Phone number must be exactly 10 digits", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 tmp=new CheckoutAddress(address_address.getText().toString(),split[0],split[1],split[2],address_fullname.getText().toString(),address_phone.getText().toString());
             }
             else {

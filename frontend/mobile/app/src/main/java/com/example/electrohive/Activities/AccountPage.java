@@ -1,27 +1,23 @@
 package com.example.electrohive.Activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.electrohive.Models.Customer;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.CustomerViewModel;
 import com.example.electrohive.utils.PreferencesHelper;
 
-import org.checkerframework.checker.units.qual.C;
-
 public class AccountPage extends AppCompatActivity {
+
+    private CustomerViewModel customerViewModel = CustomerViewModel.getInstance();
+
     private TextView menuItemUserInfo;
     private TextView menuItemUserAddress;
     private TextView menuItemUserChangePassword;
@@ -52,9 +48,8 @@ public class AccountPage extends AppCompatActivity {
             }
         });
 
-        CustomerViewModel.getInstance().getSessionCustomer().observe(this,sessionCustomer->{
+        customerViewModel.getSessionCustomer().observe(this,sessionCustomer->{
             if(sessionCustomer!=null) {
-                sessionCustomer = PreferencesHelper.getCustomerData();
                 // Update UI after receiving the customer data
                 userNameTextView.setText(sessionCustomer.getUsername());
                 Glide.with(AccountPage.this)
@@ -90,7 +85,7 @@ public class AccountPage extends AppCompatActivity {
         menuItemUserChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AccountPage.this, AccountChangePassword.class);
+                Intent intent = new Intent(AccountPage.this, AccountChangePasswordPage.class);
 
                 startActivity(intent);
             }
