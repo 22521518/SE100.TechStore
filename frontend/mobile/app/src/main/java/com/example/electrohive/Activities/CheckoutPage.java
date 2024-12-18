@@ -96,6 +96,10 @@ public class CheckoutPage extends AppCompatActivity {
             }
             else {
                 Address tmp1=addressAdapter.getAddress();
+                if(tmp1 == null) {
+                    Toast.makeText(this, "Please select an address before proceed to payment", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 tmp=new CheckoutAddress(tmp1.getAddress(),tmp1.getCity(),tmp1.getDistrict(),tmp1.getWard(),tmp1.getFullName(),tmp1.getPhoneNumber());
             }
             String json = getIntent().getStringExtra("checkedItems");

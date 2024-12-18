@@ -83,9 +83,9 @@ public class ProvincePage extends AppCompatActivity {
         // Initialize the list to hold provinces
         provinces = new ArrayList<>();
 
-        loadingSpinner.setVisibility(View.VISIBLE); // Hide spinner once data loads
 
 
+        loadingSpinner.setVisibility(View.VISIBLE);
 
         viewModel.getProvinces().observe(this, apiResponse -> {
             // Check if apiResponse is not null and if the request was successful

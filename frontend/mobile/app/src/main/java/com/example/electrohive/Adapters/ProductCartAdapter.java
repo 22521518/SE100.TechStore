@@ -106,10 +106,25 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(!s.toString().isEmpty())
-                {
+                if (!s.toString().isEmpty()) {
                     int newQuantity = Integer.parseInt(s.toString());
-                    cartitem.setQuantity(newQuantity);
+                    if (newQuantity > 0) {
+                        cartitem.setQuantity(newQuantity);
+                    } else {
+                        // Reset to 1 if the input is invalid (e.g., 0)
+                        holder.quantity.removeTextChangedListener(this);
+                        holder.quantity.setText("1");
+                        holder.quantity.setSelection(holder.quantity.getText().length());
+                        cartitem.setQuantity(1);
+                        holder.quantity.addTextChangedListener(this);
+                    }
+                } else {
+                    // Reset to 1 if the input is empty
+                    holder.quantity.removeTextChangedListener(this);
+                    holder.quantity.setText("1");
+                    holder.quantity.setSelection(holder.quantity.getText().length());
+                    cartitem.setQuantity(1);
+                    holder.quantity.addTextChangedListener(this);
                 }
                 updateTotalCallback.run();
             }
