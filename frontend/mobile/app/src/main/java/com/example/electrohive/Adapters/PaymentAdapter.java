@@ -1,45 +1,22 @@
 package com.example.electrohive.Adapters;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.electrohive.Models.CartItem;
-import com.example.electrohive.Models.Product;
 import com.example.electrohive.R;
-import com.example.electrohive.Repository.CartRepository;
-import com.example.electrohive.ViewModel.CartViewModel;
-import com.example.electrohive.api.CartService;
-import com.google.gson.JsonArray;
 
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ProductViewHolder> {
 
