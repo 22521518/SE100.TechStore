@@ -3,7 +3,7 @@
 import { generateDummyCustomerAddresses } from "@util/generator/address";
 
 export const fetchProvinces = async () => {
-  const response = await fetch("https://vapi.vnappmob.com/api/province/");
+  const response = await fetch("https://api.vnappmob.com/api/v2/province/");
   if (response.ok) {
     const data = await response.json();
     return data.results;
@@ -13,7 +13,7 @@ export const fetchProvinces = async () => {
 
 export const fetchDistricts = async (id) => {
   const response = await fetch(
-    `https://vapi.vnappmob.com/api/province/district/${id}`
+    `https://api.vnappmob.com/api/v2/province/district/${id}`
   );
   if (response.ok) {
     const data = await response.json();
@@ -24,7 +24,7 @@ export const fetchDistricts = async (id) => {
 
 export const fetchWards = async (id) => {
   const response = await fetch(
-    `https://vapi.vnappmob.com/api/province/ward/${id}`
+    `https://api.vnappmob.com/api/v2/province/ward/${id}`
   );
   if (response.ok) {
     const data = await response.json();

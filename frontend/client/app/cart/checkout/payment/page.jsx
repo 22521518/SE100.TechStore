@@ -252,7 +252,7 @@ const Payment = () => {
           <div className="flex flex-row gap-2 items-center justify-between">
             <InputBox
               name={"Vouchers"}
-              value={voucher ? voucher.voucher_code : ""}
+              value={voucher ? voucher.voucher_name : ""}
               onChange={() => {}}
             />
             <button
@@ -275,7 +275,7 @@ const Payment = () => {
                   </div>
                   <div className="p-2 flex flex-col gap-[1px] ">
                     <h3 className="text-base font-bold">
-                     {vc.voucher_code}
+                     {vc.voucher_name}
                     </h3>
                     <h4 className="opacity-60 text-xs ">
                       {vc.description}

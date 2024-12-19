@@ -2,6 +2,7 @@
 
 import { faPersonWalkingWithCane } from "@node_modules/@fortawesome/free-solid-svg-icons";
 import { generateMockInboxRoom } from "@util/generator/message";
+import { json } from "stream/consumers";
 
 export const getMessages = async (id) => {
   if (process.env.DEV_ENV !== "production")
@@ -31,9 +32,10 @@ export const sendMessage = async (payload) => {
       body: JSON.stringify(payload.content),
     })
     if(response.ok) {
-      return true
+      const data = await response.json()
+      return data
     } else {
-      return false
+      return null
     }
   } catch (error) {
     console.log(error)

@@ -37,6 +37,30 @@ const useSocket = (customerId) => {
       user_id: customerId,
     });
 
+    socketInstance.emit(SOCKET_INBOX_CHANNEL.JOIN_ROOM,{
+      room_id: customerId,
+    })
+
+    socketInstance.on("connect", () => {
+      console.log("Socket connected",socketInstance.id);
+    });
+
+    socketInstance.on("disconnect", () => {
+      console.log("Socket disconnected");
+    });
+
+    socketInstance.on("reconnect", () => {
+      console.log("Socket reconnected");
+      socket.emit(SOCKET_JOIN_CHANNEL.CUSTOMER_JOIN, {
+        socket_id: socketInstance.id,
+        user_id: customerId,
+      });
+    });
+    
+    socketInstance.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
+    });
+
 
     return () => {
       socketInstance.disconnect();

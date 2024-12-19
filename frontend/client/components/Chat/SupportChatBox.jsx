@@ -14,6 +14,7 @@ import { getMessageLog, getMessages, sendMessage } from "@service/message";
 import SupportButton from "./SupportButton";
 import { toastError } from "@util/toaster";
 import useSocket from "@components/socket/useSocket";
+import { io } from "@node_modules/socket.io-client/build/esm";
 
 export const SOCKET_JOIN_CHANNEL = {
   STAFF_JOIN: "STAFF_JOIN",
@@ -39,23 +40,23 @@ export const SOCKET_INBOX_CHANNEL = {
 const SupportChatBox = () => {
   const session = useSelector((state) => state.session);
 
-  const socket = useSocket(session?.customer?.customer_id);
-
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [unreadMessage, setUnreadMessage] = useState(0);
   const [messageLog, setMessageLog] = useState([]);
 
-  const [message, setMessage] = useState("");
   const [isMore, setIsMore] = useState(true);
   const [skip, setSkip] = useState(0);
 
   const [isScrolledUp, setIsScrolledUp] = useState(false);
 
   const messageLogRef = useRef(null);
+  const inputRef = useRef(null);
+
+  const socket = useSocket(session.customer?.customer_id);
 
   const fetchMessageLog = async () => {
-    if (isLoading||!isMore) return;
+    if (isLoading || !isMore) return;
     setIsLoading(true);
     try {
       const payload = {
@@ -70,41 +71,56 @@ const SupportChatBox = () => {
 
   useEffect(() => {
     if (!socket) return;
+  
+    socket.on("connect", () => {
+      console.log("connected for chat");
 
-    fetchMessageLog();
-    socket.on(SOCKET_INBOX_CHANNEL.GET_MESSAGES, (data) => {
-      setMessageLog((prev) => [
-        {
-          ...data,
-          is_customer: data.sender.sender_id === session.customer?.customer_id,
-        },
-        ...prev,
-      ]);
-    });
-
-    socket.on(SOCKET_INBOX_CHANNEL.GET_MORE_MESSAGES, (data) => {
-      if (data?.messages?.length > 0) {
+      fetchMessageLog()
+  
+      socket.on(SOCKET_INBOX_CHANNEL.GET_MESSAGES, (data) => {
+        console.log("new message received", data);
         setMessageLog((prev) => [
+          {
+            ...data.message,
+            is_customer: data.message.sender.sender_id === session.customer?.customer_id,
+          },
           ...prev,
-          ...data.messages.map((msg) => ({
-            ...msg,
-            is_customer: msg.sender.sender_id === session.customer?.customer_id,
-          })),
         ]);
-        setIsMore(data.messages.length >= 20);
-        setSkip((prev) => prev + (data.messages.length > 0 ? 1 : 0));
-      }
-      setIsLoading(false);
+      });
+  
+      socket.on(SOCKET_INBOX_CHANNEL.GET_MORE_MESSAGES, (data) => {
+        console.log("old message received", data);
+        if (data?.messages?.length > 0) {
+          setMessageLog((prev) => [
+            ...prev,
+            ...data.messages.map((msg) => ({
+              ...msg,
+              is_customer: msg.sender.sender_id === session.customer?.customer_id,
+            })),
+          ]);
+          setIsMore(data.messages.length >= 20);
+          setSkip((prev) => prev + (data.messages.length > 0 ? 1 : 0));
+        }
+        
+        setIsLoading(false);
+      });
     });
-
+  
     return () => {
       socket.off(SOCKET_INBOX_CHANNEL.GET_MESSAGES);
       socket.off(SOCKET_INBOX_CHANNEL.GET_MORE_MESSAGES);
     };
   }, [socket]);
+  
 
   const handleSend = async () => {
-    if (socket && message.trim() && session.customer) {
+    if (
+      socket &&
+      inputRef.current &&
+      inputRef.current.value.trim() &&
+      session.customer
+    ) {
+      const message = inputRef.current.value.trim();
       const payload = {
         customer_id: session.customer?.customer_id,
         content: {
@@ -119,21 +135,17 @@ const SupportChatBox = () => {
         if (data) {
           const msgData = {
             room_id: session.customer?.customer_id,
-            sender: {
-              sender_id: session.customer?.customer_id,
-              sender_name: session.customer?.username,
-            },
-            message: message,
-            created_at: new Date().toISOString(),
-            is_seen: false,
+            customer: session.customer,
+            message: data,
           };
 
+          console.log(socket);
           socket.emit(SOCKET_INBOX_CHANNEL.ADD_MESSAGE, msgData);
           setMessageLog((prevMessages) => [
-            { ...msgData,message_id:data.message_id, is_customer: true },
+            { ...data, is_customer: true },
             ...prevMessages,
           ]);
-          setMessage("");
+          inputRef.current.value = "";
         } else {
           toastError("Failed to send message");
         }
@@ -184,10 +196,10 @@ const SupportChatBox = () => {
     <>
       {isOpen ? (
         <div className="fixed bottom-0 right-0 w-full sm:w-[400px] h-[500px] grid grid-rows-[auto_1fr_auto] shadow-xl z-50">
-          <div className="size-full grid grid-cols-[1fr_auto] items-center bg-primary-variant text-on-primary p-2">
+          <div className="size-full grid grid-cols-[1fr_auto] items-center bg-primary-variant text-on-primary p-2 rounded-t-xl">
             <div className="flex flex-row items-center justify-start p-2 gap-2">
               <FontAwesomeIcon icon={faHeadset} className="text-2xl" />
-              <h2 className="font-bold text-xl ">Support chat</h2>
+              <h2 className="font-bold text-xl ">Electro Support</h2>
             </div>
             <button className="p-2 text-xl" onClick={() => setIsOpen(false)}>
               <FontAwesomeIcon icon={faX} />
@@ -201,7 +213,7 @@ const SupportChatBox = () => {
           >
             {messageLog?.slice(0).map((item) => (
               <li
-                key={item.message_id || item._id}
+                key={item.message_id}
                 className={`${
                   item.is_customer ? "my-message" : "other-message"
                 }`}
@@ -217,7 +229,7 @@ const SupportChatBox = () => {
           </ul>
 
           {isScrolledUp && (
-            <div className="fixed bottom-[70px] flex items-center justify-center w-[400px]">
+            <div className="absolute bottom-[70px] flex items-center justify-center w-full">
               <button
                 className=" bg-on-primary text-primary size-9 shadow-lg rounded-full z-50"
                 onClick={handleScrollToBottom}
@@ -228,10 +240,20 @@ const SupportChatBox = () => {
           )}
 
           <div className="bg-primary-variant text-on-primary flex p-2">
-            <InputBox value={message} onChange={setMessage} />
-            <button className="p-2 text-xl" onClick={handleSend}>
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </button>
+            <div className="rounded-full bg-surface size-full p-1 flex flex-row items-center justify-between">
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Ask us something..."
+                className="grow bg-transparent select-none outline-none px-2"
+              />
+              <button
+                className="p-1 size-9 rounded-full bg-on-surface text-lg text-surface hover:scale-105 active:scale-95 transition-all duration-200"
+                onClick={handleSend}
+              >
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </button>
+            </div>
           </div>
         </div>
       ) : (

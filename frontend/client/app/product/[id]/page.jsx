@@ -527,7 +527,7 @@ const Product = () => {
         </div>
       </div>
       <p className="text-2xl font-semibold my-4 ">
-        Other products from {product?.categories[0]?.category_name}
+        Products from {product?.categories[0]?.category_name}
       </p>
       <ul className="w-full overflow-scroll no-scrollbar flex flex-row gap-2">
         {isLoading

@@ -32,7 +32,7 @@ const Voucher = ({ loading, voucher}) => {
         {voucher.discount_amount}%
       </div>
       <div className="p-2 flex flex-col justify-between h-full overflow-x-scroll no-scrollbar whitespace-nowrap gap-[1px] ">
-        <h3 className="text-base font-bold ">{voucher.voucher_code}</h3>
+        <h3 className="text-base font-bold ">{voucher.voucher_name}</h3>
         <h4 className="opacity-60 text-xs ">{voucher.description}</h4>
         <div className="flex flex-row items-center gap-2 text-xs whitespace-normal">
           <FontAwesomeIcon icon={faClock} />

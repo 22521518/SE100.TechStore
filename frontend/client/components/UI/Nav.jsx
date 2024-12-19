@@ -95,7 +95,7 @@ const Nav = () => {
   return (
     <>
       {/* Desktop navbar */}
-      <div className="hidden sm:grid sticky w-full bg-secondary top-0 left-0 grid-cols-3 z-50 text-on-secondary">
+      <div className="hidden md:grid sticky w-full bg-secondary top-0 left-0 grid-cols-3 z-50 text-on-secondary">
         <div className="flex gap-4 items-center justify-between md:justify-start bg-secondary p-2">
           <Link href="/" className="flex flex-row gap-2 items-center">
             <Image
@@ -112,7 +112,7 @@ const Nav = () => {
         </div>
 
         <ul
-          className={`hidden bg-secondary  h-full whitespace-nowrap justify-between px-2 items-center text-sm font-semibold md:row-auto row-start-3 sm:flex`}
+          className={`hidden bg-secondary  h-full whitespace-nowrap justify-between px-2 items-center text-sm font-semibold md:row-auto row-start-3 sm:flex w-full`}
         >
           <Link
             href="/"
@@ -178,7 +178,7 @@ const Nav = () => {
       {/* Mobile navbar */}
       <animated.div
         style={navBarMobileAnimation}
-        className={`flex flex-col sm:hidden sticky w-full top-0 left-0  z-50 text-on-secondary`}
+        className={`flex flex-col md:hidden sticky w-full top-0 left-0  z-50 text-on-secondary`}
       >
         <div className="bg-secondary">
         <div className="flex gap-4 items-center justify-between md:justify-start  p-2 m-0">
@@ -236,7 +236,7 @@ const Nav = () => {
             item && (
               <animated.div
                 style={style}
-                className={`flex bg-secondary h-full whitespace-nowrap justify-between items-center text-sm font-semibold row-start-3 sm:hidden -z-10`}
+                className={`flex bg-secondary h-full whitespace-nowrap justify-between items-center text-sm font-semibold row-start-3 md:hidden -z-10`}
               >
                 <Link
                   href="/"

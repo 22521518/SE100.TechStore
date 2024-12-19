@@ -18,9 +18,9 @@ export default function Search() {
   const [products, setProducts] = useState([]);
   const priceRange = [
     { id: 0, name: "none" },
-    { id: 1, name: "10,000,000 VND and less" },
-    { id: 2, name: "50,000,000 VND and less" },
-    { id: 3, name: "100,000,000 VND and less" },
+    { id: 1, name: "<= 10M VNĐ" },
+    { id: 2, name: "> 10M VNĐ, <50M VNĐ" },
+    { id: 3, name: ">= 50M VNĐ" },
   ];
   const [categories, setCategories] = useState([]);
 
@@ -61,9 +61,9 @@ export default function Search() {
       case 1:
         return price < 10000000;
       case 2:
-        return price < 50000000;
+        return 10000000 < price && price < 50000000;
       case 3:
-        return price < 100000000;
+        return price > 50000000;
       default:
         return true; // If no valid price range, don't filter by price
     }

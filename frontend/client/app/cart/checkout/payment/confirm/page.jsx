@@ -247,7 +247,7 @@ const Payment = () => {
             </div>
             <div className="p-2 flex flex-col  gap-[1px] ">
               <h3 className="text-base font-bold ">
-                {order.order_voucher?.voucher_code}
+                {order.order_voucher?.voucher_name}
               </h3>
               <h4 className="opacity-60 text-xs ">
                 {order.order_voucher?.description}
