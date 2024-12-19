@@ -1,28 +1,19 @@
 package com.example.electrohive.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.electrohive.Activities.AccountEditAddressPage;
-import com.example.electrohive.Activities.DistrictPage;
-import com.example.electrohive.Activities.ProvincePage;
 import com.example.electrohive.Models.Address;
-import com.example.electrohive.Models.Province;
 import com.example.electrohive.R;
 
 import java.util.List;
-
-import io.appium.java_client.android.StartsActivity;
 
 public class AddressCheckOutAdapter extends RecyclerView.Adapter<AddressCheckOutAdapter.AddressViewHolder> {
 
@@ -30,7 +21,7 @@ public class AddressCheckOutAdapter extends RecyclerView.Adapter<AddressCheckOut
     private List<Address> addressList;
     private int radioButtonPosition;
     private OnRadioButtonSelectedListener listener;
-
+    //
     public interface OnRadioButtonSelectedListener {
         void onRadioButtonSelected();
     }

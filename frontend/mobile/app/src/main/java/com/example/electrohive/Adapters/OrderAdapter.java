@@ -1,7 +1,5 @@
 package com.example.electrohive.Adapters;
 
-import static androidx.core.content.ContextCompat.startActivities;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,17 +8,14 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electrohive.Activities.TrackPage;
 import com.example.electrohive.Models.Enum.ORDER_STATUS;
 import com.example.electrohive.Models.Order;
-import com.example.electrohive.Models.OrderItem;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.OrderViewModel;
 import com.example.electrohive.utils.format.Format;
