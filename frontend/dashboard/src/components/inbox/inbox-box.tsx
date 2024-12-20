@@ -52,7 +52,8 @@ const InboxBox = ({
             isSender ? 'text-end' : 'md:-mr-2'
           }`}
         >
-          {transformDate(new Date(message.created_at).toISOString(), true)}
+          {message.created_at &&
+            transformDate(new Date(message.created_at).toISOString(), true)}
         </Typography>
       </Box>
     </Box>

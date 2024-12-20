@@ -4,11 +4,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PermissionsList } from 'src/permissions/permissions.config';
 import { AccountsService } from 'src/modules/accounts/accounts.service';
 import { CustomersService } from 'src/modules/customers/customers.service';
 import { StaffService } from 'src/modules/staff/staff.service';
 import ms from 'ms';
+import { EMPLOY_STATUS } from '@prisma/client';
 
 const CUSTOMER_ROLE = {
   role_id: 0,
@@ -24,8 +24,6 @@ export class AuthService {
     private readonly staffService: StaffService,
     private readonly jwtService: JwtService,
   ) {}
-
-  private readonly permissionsList = PermissionsList;
 
   private async authenticate(email: string, password: string) {
     const account = await this.accountsService.findOneByEmail(email);
@@ -54,6 +52,10 @@ export class AuthService {
 
       if (!staff) {
         throw new BadRequestException('Staff not found');
+      }
+
+      if (staff.employee_status !== EMPLOY_STATUS.ACTIVE) {
+        throw new BadRequestException('Staff is not active');
       }
 
       const payload = {

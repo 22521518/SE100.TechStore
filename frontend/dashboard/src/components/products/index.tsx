@@ -34,28 +34,29 @@ const ProductAttributeFields = ({
         <Box className="grid grid-cols-7 py-2 px-4 gap-2">
           <Typography
             variant="h6"
-            className="text-accent col-span-1 opacity-80"
+            className="text-accent text-base col-span-1 opacity-80"
           >
             No.
           </Typography>
           <Typography
             variant="h6"
-            className="text-accent col-span-2 opacity-80"
+            className="text-accent text-base  col-span-2 opacity-80"
           >
             Name
           </Typography>
           <Typography
             variant="h6"
-            className="text-accent col-span-3 opacity-80"
+            className="text-accent text-base col-span-3 opacity-80"
           >
             Detail
           </Typography>
         </Box>
-        <Box className="grid grid-cols-7 py-4 gap-2 border-y-2 border-solid border-accent border-opacity-45 items-center">
+        <Box className="grid grid-cols-7 py-4 gap-2 border-y-[1px] border-solid border-accent border-opacity-45 items-center">
           <span className="col-span-1"></span>
           <Input
-            className="col-span-2 border-solid p-2 border-accent border-2 rounded-md"
-            placeholder="Attribute name"
+            className="col-span-2 border-solid p-2 border-accent border-2 rounded-md max-x-full"
+            multiline
+            placeholder="Attribute"
             disableUnderline
             value={currentAttribute.name}
             onChange={(e) =>
@@ -63,7 +64,8 @@ const ProductAttributeFields = ({
             }
           />
           <Input
-            className="col-span-3 border-solid p-2 border-accent border-2 rounded-md"
+            className="col-span-3 border-solid p-2 border-accent border-2 rounded-md max-x-full"
+            multiline
             placeholder="Attribute detail"
             disableUnderline
             value={currentAttribute.detail}
@@ -75,7 +77,7 @@ const ProductAttributeFields = ({
             }
           />
           <Button
-            className="bg-accent text-secondary-100 inline-block h-full rounded-lg"
+            className=" text-accent hover:bg-secondary-300 inline-block h-full rounded-lg"
             onClick={() => {
               if (currentAttribute.name && currentAttribute.detail) {
                 setAttributes([...attributes, currentAttribute]);
@@ -97,19 +99,19 @@ const ProductAttributeFields = ({
           >
             <Typography
               variant="h6"
-              className="text-accent col-span-1 text-base"
+              className="text-accent col-span-1 text-base max-w-full overflow-wrap break-words"
             >
               {index + 1}
             </Typography>
             <Typography
               variant="h6"
-              className="text-accent col-span-2 text-base"
+              className="text-accent col-span-2 text-base max-w-full overflow-wrap break-words"
             >
               {attribute.name}
             </Typography>
             <Typography
               variant="h6"
-              className="text-accent col-span-3 text-base"
+              className="text-accent col-span-3 text-base max-w-full overflow-wrap break-words"
             >
               {attribute.detail}
             </Typography>
@@ -117,7 +119,7 @@ const ProductAttributeFields = ({
               className="bg-accent text-secondary-100 inline-block h-full rounded-lg"
               onClick={() => {
                 const newAttributes = attributes.filter(
-                  (attr) => attr.id !== attribute.id
+                  (attr, id) => id !== index
                 );
                 newAttributes.map((attr, index) => {
                   attr.id = index;

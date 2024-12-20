@@ -94,13 +94,6 @@ const LoginPage = () => {
             Login
           </Button>
         </form>
-
-        <Typography className="text-center">
-          {"Don't have an account? "}
-          <a href="/register" className="text-accent underline font-semibold">
-            Join us here
-          </a>
-        </Typography>
       </CommonContainer>
     </div>
   );

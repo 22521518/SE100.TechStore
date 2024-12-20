@@ -12,7 +12,8 @@ import { ImageDto } from 'src/dto/ImageDto';
 
 export class UpdateStaffRoleDto {
   @IsNumber()
-  role_id: number;
+  @IsOptional()
+  role_id?: number;
 }
 
 export class UpdateStaffDto {

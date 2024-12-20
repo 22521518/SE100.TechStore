@@ -15,7 +15,7 @@ import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import { DeleteForever } from '@mui/icons-material';
 
 const StaffList = () => {
-  const { create, edit, show } = useNavigation();
+  const { create, show } = useNavigation();
   const [query, setQuery] = React.useState('');
   const { dataGridProps } = useDataGrid<IStaff>({
     resource: `staff?q=${query}&`,
@@ -39,7 +39,11 @@ const StaffList = () => {
         renderCell: ({ row }) => {
           return (
             <Box className="flex h-full items-center justify-center">
-              <AvatarImage src={dummyAvatar} alt={row.full_name} size={32} />
+              <AvatarImage
+                src={row.image || dummyAvatar}
+                alt={row.full_name}
+                size={32}
+              />
             </Box>
           );
         }

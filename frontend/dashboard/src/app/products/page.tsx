@@ -7,12 +7,12 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import React from 'react';
-import { useDataGrid } from '@refinedev/mui';
+import { DeleteButton, useDataGrid } from '@refinedev/mui';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ICategory, IProduct } from '@constant/interface.constant';
 import Image from 'next/image';
 import CategoryList from '@app/categories/page';
-import { useNavigation } from '@refinedev/core';
+import { useDelete, useNavigation } from '@refinedev/core';
 import CategoryCreate from '@app/categories/create/page';
 import CategoryEdit from '@app/categories/edit/[id]/page';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -122,8 +122,13 @@ const ProductList = () => {
               >
                 <EditIcon />
               </Button>
-              <Button className="text-accent">
+              <Button className="text-accent overflow-hidden">
                 <DeleteIcon />
+                <DeleteButton
+                  className="absolute top-0 left-0 opacity-0"
+                  recordItemId={row.product_id}
+                  resource="products"
+                />
               </Button>
             </Box>
           );

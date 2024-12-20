@@ -33,7 +33,7 @@ export class ProductsController {
         createProductDto;
 
       const imageFiles = await Promise.all(
-        images.map(handleImageJpgBaseString),
+        images?.map(handleImageJpgBaseString),
       );
 
       const productDto: Prisma.ProductsCreateInput = {
@@ -125,8 +125,14 @@ export class ProductsController {
         updateProductDto;
 
       const imageFiles = await Promise.all(
-        images.map(handleImageJpgBaseString),
+        images
+          ?.filter((img) => img.name !== updateProductDto.product_name)
+          .map(handleImageJpgBaseString),
       );
+
+      const oldImage = images
+        ?.filter((img) => img.name === updateProductDto.product_name)
+        .map((img) => img.url);
 
       const productDto: Prisma.ProductsUpdateInput = {
         ...product_info,
@@ -137,11 +143,13 @@ export class ProductsController {
           })) as Prisma.CategoriesWhereUniqueInput[],
         },
       };
+
       const product = await this.productsService.update(
         id,
         productDto,
         attributes,
         imageFiles as Express.Multer.File[],
+        oldImage,
       );
       return product;
       // return updateProductDto;
