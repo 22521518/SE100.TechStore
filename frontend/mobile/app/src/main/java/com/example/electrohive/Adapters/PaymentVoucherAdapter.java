@@ -1,7 +1,5 @@
 package com.example.electrohive.Adapters;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +17,6 @@ import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.R;
 import com.example.electrohive.utils.format.Format;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
