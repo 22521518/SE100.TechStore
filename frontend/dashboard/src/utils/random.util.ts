@@ -1,4 +1,8 @@
-import { EMPLOY_STATUS, ORDER_STATUS } from '@constant/enum.constant';
+import {
+  EMPLOY_STATUS,
+  ORDER_STATUS,
+  PAYMENT_STATUS
+} from '@constant/enum.constant';
 import {
   IAccount,
   IAddress,
@@ -33,7 +37,6 @@ export function generateRandomProduct(): IProduct {
   return {
     product_id: `product-${Math.floor(Math.random() * 1000)}`, // Random product id
     product_name: `Product Name ${Math.random().toString(36).substr(2, 5)}`, // Random product name
-    images: [],
     description: `This is a random product description for ${Math.random()
       .toString(36)
       .substr(2, 5)}.`,
@@ -101,7 +104,7 @@ export const generateRandomAddresses = (count: number): IAddress[] => {
     const city = getRandomItem(cities);
     const state = getRandomItem(states);
 
-    randomAddresses.push({ address, city, state });
+    randomAddresses.push({ address, city, district: state, ward: state });
   }
 
   return randomAddresses;
@@ -164,8 +167,7 @@ function generateRandomOrderItem(order_id: string): IOrderItem {
       ]
     },
     quantity: quantity,
-    unit_price: unit_price,
-    total_price: unit_price * quantity
+    unit_price: unit_price
   };
 }
 
@@ -187,7 +189,7 @@ export function generateRandomOrder(loops: number): IOrder[] {
     }
 
     const total_price = order_items.reduce(
-      (sum, item) => sum + item.total_price,
+      (sum, item) => sum + item.quantity * item.unit_price,
       0
     );
 
@@ -198,18 +200,20 @@ export function generateRandomOrder(loops: number): IOrder[] {
       order_status:
         orderStatuses[Math.floor(Math.random() * orderStatuses.length)],
       total_price: parseFloat(total_price.toFixed(2)),
-      voucher_code:
-        Math.random() > 0.5
-          ? `voucher-${Math.floor(Math.random() * 50)}`
-          : null,
+      voucher: generateRandomVoucher(1)[0],
       created_at: new Date().toISOString(),
       shipping_address: {
         shipping_status:
           orderStatuses[Math.floor(Math.random() * orderStatuses.length)],
         delivery_date: new Date().toISOString(),
-        address: generateRandomAddresses(1)[0]
+        address: generateRandomAddresses(1)[0].address,
+        city: generateRandomAddresses(1)[0].city,
+        district: generateRandomAddresses(1)[0].district,
+        ward: generateRandomAddresses(1)[0].ward,
+        created_at: new Date().toISOString()
       },
-      order_items: order_items
+      order_items: order_items,
+      payment_status: PAYMENT_STATUS.PAID // Add the payment_status property
     });
   }
 

@@ -30,6 +30,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { EventMessageModule } from './event-message/event-message.module';
 import { MomoPaymentModule } from './modules/payment-momo/momo-payment.module';
 import { ZaloPaymentModule } from './modules/payment-zalo/zalo-payment.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { ZaloPaymentModule } from './modules/payment-zalo/zalo-payment.module';
     EventMessageModule,
     MomoPaymentModule,
     ZaloPaymentModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [

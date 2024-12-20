@@ -121,13 +121,14 @@ export class StaffController {
 
       const staffDto: Prisma.StaffUpdateInput = {
         ...rest,
-        ...(role && {
-          role: {
-            connect: {
-              role_id: role.role_id,
+        ...(role &&
+          role.role_id > 0 && {
+            role: {
+              connect: {
+                role_id: role.role_id,
+              },
             },
-          },
-        }),
+          }),
       };
 
       let imageAvatar = null;
@@ -141,7 +142,6 @@ export class StaffController {
           }
         }
       }
-
       const staff = await this.staffService.update(id, staffDto, imageAvatar);
       return staff;
     } catch (error) {

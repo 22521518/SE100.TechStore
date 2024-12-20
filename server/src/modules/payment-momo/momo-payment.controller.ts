@@ -89,9 +89,9 @@ export class MomoPaymentController {
           item.product_id,
           item.product.product_name,
           item.product.images[0],
-          item.unit_price,
+          Number(item.unit_price),
           item.quantity,
-          item.total_price,
+          Number(item.total_price),
         );
       });
 
@@ -103,7 +103,7 @@ export class MomoPaymentController {
       const rep = await this.momoPaymentService.requestPayment(
         order_id,
         customerId,
-        total_price * 0 + 50000,
+        Number(total_price) * 0 + 50000,
         items,
         redirect,
       );

@@ -184,60 +184,72 @@ export class ProductsService {
     id: string,
     updateProductDto: Prisma.ProductsUpdateInput,
     attributes: ProductAttribute[],
-    images: Express.Multer.File[], // Assume these are local file paths or base64 strings
+    images: Express.Multer.File[], // Assume these are local file paths or base64 strings,
+    oldImages: string[],
   ) {
     try {
-      // Start a transaction to ensure atomicity
-      return await this.prismaDbService.$transaction(async (prisma) => {
-        // Fetch the current product to get existing images
-        const currentProduct = await prisma.products.findUnique({
-          where: { product_id: id },
-          select: { images: true }, // Only fetch the images field
-        });
-
-        await Promise.all(
-          currentProduct.images.map(async (img) => {
-            console.log('Deleting image:', img);
-            // Delete the existing images from Cloudinary
-            await this.cloudinaryDbService.delete(img);
-          }),
-        );
-
-        const updatedImage = await Promise.all(
-          images.map(
-            async (img) =>
-              await this.cloudinaryDbService.upload(img, 'products/' + id),
-          ),
-        );
-
-        // Update the product
-        const product = await prisma.products.update({
-          where: { product_id: id },
-          data: {
-            ...updateProductDto,
-            images: updatedImage, // Update with the combined list of images
-          },
-          include: {
-            categories: true,
-          },
-        });
-
-        // Update attributes if provided
-        if (attributes && attributes.length > 0) {
-          // Delete existing attributes
-          await this.productAttributeModel.deleteMany({ product_id: id });
-
-          // Insert new attributes
-          await this.productAttributeModel.insertMany(
-            attributes.map((attr) => ({
-              ...attr,
-              product_id: id,
-            })),
-          );
-        }
-
-        return product; // Return the updated product with categories
+      // Fetch the current product to get existing images
+      const currentProduct = await this.prismaDbService.products.findUnique({
+        where: { product_id: id },
+        select: { images: true }, // Only fetch the images field
       });
+
+      if (!currentProduct) {
+        throw new Error('Product not found');
+      }
+
+      // Exclude old images from the current images list
+      const deleteProductImages = currentProduct.images.filter(
+        (image) => !oldImages.includes(image),
+      );
+
+      await Promise.all(
+        deleteProductImages?.map(async (img) => {
+          console.log('Deleting image:', img);
+          // Delete the existing images from Cloudinary
+          await this.cloudinaryDbService.delete(img);
+        }),
+      );
+
+      let updatedImage = [];
+      if (images && images.length > 0) {
+        updatedImage = await Promise.all(
+          images
+            ?.filter((img) => img)
+            .map(
+              async (img) =>
+                await this.cloudinaryDbService.upload(img, 'products/' + id),
+            ),
+        );
+      }
+
+      // Update the product
+      const product = await this.prismaDbService.products.update({
+        where: { product_id: id },
+        data: {
+          ...updateProductDto,
+          images: [...updatedImage, ...oldImages], // Update with the combined list of images
+        },
+        include: {
+          categories: true,
+        },
+      });
+
+      // Update attributes if provided
+      if (attributes && attributes.length > 0) {
+        // Delete existing attributes
+        await this.productAttributeModel.deleteMany({ product_id: id });
+
+        // Insert new attributes
+        await this.productAttributeModel.insertMany(
+          attributes.map((attr) => ({
+            ...attr,
+            product_id: id,
+          })),
+        );
+      }
+
+      return product; // Return the updated product with categories
     } catch (error) {
       throw new BadRequestException(
         error.message || 'Failed to update product',

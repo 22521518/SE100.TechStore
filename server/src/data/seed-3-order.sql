@@ -7,6 +7,8 @@ WITH all_products AS (
     FROM "Products" p
     LEFT JOIN "Order_Items" oi ON p."product_id" = oi."product_id"
     GROUP BY p."product_id", p."product_name", p."price"
+    ORDER BY random()  -- Randomize product selection
+    LIMIT 10          -- Restrict to 10 random products
 ),
 
 new_orders AS (
@@ -14,47 +16,50 @@ new_orders AS (
     SELECT
         'ORD' || LPAD((ROW_NUMBER() OVER (ORDER BY random()))::TEXT, 3, '0'),
         c."customer_id",
-        'CONFIRMED'::"ORDER_STATUS",
-        p."price" * 1,  -- Assuming unit price for 1 quantity per product
+        (ARRAY['PENDING', 'CONFIRMED', 'SHIPPED', 'CANCELLED'])[FLOOR(random() * 4 + 1)::INT]::"ORDER_STATUS", -- Random order status
+        p."price",
         NULL,
         'COD'::"PAYMENT_METHOD"
     FROM "Customers" c
-    CROSS JOIN all_products p  -- Ensure "all_products" is being properly referenced
-    WHERE p."order_count" < 10  -- Only generate orders for products with less than 10 orders
-    LIMIT 30
-    RETURNING "order_id", "customer_id", p."product_id"  -- Return product_id here correctly
+    CROSS JOIN all_products p
+    LIMIT 10 -- Generate orders for 10 products
+    RETURNING "order_id", "customer_id"
+),
+
+new_orders_with_products AS (
+    SELECT
+        o."order_id",
+        o."customer_id",
+        p."product_id",
+        p."price"
+    FROM new_orders o
+    CROSS JOIN all_products p
 ),
 
 order_items AS (
     INSERT INTO "Order_Items" ("order_id", "product_id", "quantity", "unit_price", "total_price")
     SELECT
-        nor."order_id",
-        p."product_id",  -- p is now referenced correctly
-        1,  -- 1 unit per order item (adjust as needed)
-        p."price",
-        p."price" * 1  -- Total price for 1 unit
-    FROM new_orders nor
-    JOIN "Products" p ON nor."product_id" = p."product_id"  -- Proper join with "Products"
-    RETURNING "order_id", "product_id"
-),
-
-new_invoices AS (
-    INSERT INTO "Invoices" ("invoice_id", "order_id", "total_price")
-    SELECT
-        'INV' || LPAD((ROW_NUMBER() OVER (ORDER BY random()))::TEXT, 3, '0'),
-        nor."order_id",
-        o."total_price" * 1  -- Total price for 1 unit
-    FROM new_orders nor
-    JOIN "Orders" o ON nor."order_id" = o."order_id"
-    RETURNING "invoice_id", "order_id"
+        nop."order_id",
+        nop."product_id",
+        3,  -- Fixed quantity per product
+        nop."price",
+        nop."price" * 3  -- Total price for the quantity
+    FROM new_orders_with_products nop
+    RETURNING "order_id", "product_id", "quantity", "unit_price", "total_price"
 )
 
-INSERT INTO "Shipping_Address" ("shipping_id", "address_id", "order_id", "shipping_status", "delivery_date")
+INSERT INTO "Shipping_Address" ("shipping_id", "order_id", "shipping_status", "delivery_date", "city", "district", "ward", "address", "full_name", "phone_number")
 SELECT
     'SHIP' || LPAD((ROW_NUMBER() OVER (ORDER BY random()))::TEXT, 3, '0'),
-    ca."address_id",
     nor."order_id",
-    'CONFIRMED'::"ORDER_STATUS",
-    '2024-11-25 10:00:00'::TIMESTAMP
+    (ARRAY['PENDING', 'CONFIRMED', 'SHIPPED', 'CANCELLED'])[FLOOR(random() * 4 + 1)::INT]::"ORDER_STATUS", -- Random shipping status
+    '2024-11-25 10:00:00'::TIMESTAMP,
+    ca."city",
+    ca."district",
+    ca."ward",
+    ca."address",
+    c."full_name",
+    c."phone_number"
 FROM new_orders nor
-JOIN "Customer_Address" ca ON nor."customer_id" = ca."customer_id";
+JOIN "Customer_Address" ca ON nor."customer_id" = ca."customer_id"
+JOIN "Customers" c ON nor."customer_id" = c."customer_id";

@@ -1,13 +1,13 @@
 import {
   ICategory,
   IProductAttribute,
-  IProductImage
+  IImage
 } from '@constant/interface.constant';
 
 export interface ProductFormValues {
   product_id?: string;
   product_name: string;
-  images?: IProductImage[];
+  images?: IImage[];
   description: string;
   price: number;
   discount?: number | null;

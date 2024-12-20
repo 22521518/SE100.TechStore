@@ -8,13 +8,19 @@ import { HttpError, useList } from '@refinedev/core';
 import React from 'react';
 import InboxShow from './show/[id]/page';
 import { useSocket } from '@components/socket/socketClient';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { SOCKET_INBOX_CHANNEL } from '@constant/socket-channel/socket.channel';
-import { ConversationPayload } from '@constant/socket-payload/inbox-message.payload';
 
 const InboxList = () => {
   const socket = useSocket();
+  const [searchQuery, setSearchQuery] = React.useState<string>('');
+
+  const SearchSubmit = async (query: string) => {
+    setSearchQuery(query);
+  };
+
   const { data, isLoading, isError } = useList<IInboxRoomCard, HttpError>({
-    resource: 'inbox',
+    resource: `inbox?q=${searchQuery}&`,
     successNotification: (data, values, resource) => {
       return {
         message: `${data?.title} Successfully fetched.`,
@@ -38,7 +44,6 @@ const InboxList = () => {
   const [selectedRoom, setSelectedRoom] = React.useState<IInboxRoomCard>(
     rooms[0]
   );
-  const [searchQuery, setSearchQuery] = React.useState<string>('');
 
   React.useEffect(() => {
     setRooms(records);
@@ -101,12 +106,24 @@ const InboxList = () => {
       <Box className="mr-2 bg-transparent rounded-lg shadow-sm grid grid-cols-5 overflow-hidden h-full gap-2">
         <Stack className="col-span-2 bg-primary-200 w-full h-full gap-1 px-1 overflow-y-scroll scrollbar-none py-2 rounded-lg">
           <Box>
-            <Typography variant="h6" className="text-white px-6 font-bold">
-              Inbox
-            </Typography>
+            {searchQuery ? (
+              <div className="flex flex-row gap-2 w-full items-center my-2">
+                <Typography variant="h6" className="text-white px-6 font-bold">
+                  Search Result: {searchQuery}
+                </Typography>
+                <DeleteForeverIcon
+                  className="hover:cursor-pointer text-2xl text-white font-bold"
+                  onClick={() => setSearchQuery('')}
+                />
+              </div>
+            ) : (
+              <Typography variant="h6" className="text-white px-6 font-bold">
+                Inbox
+              </Typography>
+            )}
             <SearchBar
               title="Inbox"
-              handleSubmit={async (q: string) => {}}
+              handleSubmit={SearchSubmit}
               className="rounded-full mx-4 px-2"
               showSearchButton={false}
             />

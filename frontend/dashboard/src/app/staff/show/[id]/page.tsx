@@ -3,7 +3,7 @@
 import CommonContainer from '@components/common-container';
 import { IStaff } from '@constant/interface.constant';
 import { Box, Button, Divider, Stack, Typography } from '@mui/material';
-import { useForm, useNavigation } from '@refinedev/core';
+import { useForm, useNavigation, useResourceParams } from '@refinedev/core';
 import React from 'react';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import AvatarImage from '@components/avatar';
@@ -19,13 +19,18 @@ import { transformDate } from '@utils/transform.util';
 import EmployStatusIcon from '@components/icons/employ-status-icon';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
+import { DeleteButton, EditButton } from '@refinedev/mui';
+import { EMPLOY_STATUS } from '@constant/enum.constant';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 
 const StaffShow = () => {
-  const { edit } = useNavigation();
-  const { query, formLoading, onFinish } = useForm<IStaff>({
+  const { id } = useResourceParams();
+  const { query, onFinish } = useForm<IStaff>({
     resource: 'staff',
     action: 'edit',
-    redirect: 'show'
+    id: id,
+    redirect: false
   });
   const record = query?.data?.data;
 
@@ -42,6 +47,27 @@ const StaffShow = () => {
     birth_date: record?.birth_date || new Date('2003-01-01')
   });
 
+  const [status, setStatus] = React.useState(staffValue.employee_status);
+
+  const updateStaffStatus = React.useCallback(async () => {
+    const newStatus =
+      status === EMPLOY_STATUS.ACTIVE
+        ? EMPLOY_STATUS.SUSPENDED
+        : EMPLOY_STATUS.ACTIVE;
+    setStatus(newStatus);
+
+    const newStaff = {
+      ...staffValue,
+      employee_status: newStatus
+    };
+    try {
+      await onFinish(newStaff);
+      setStaffValue(newStaff);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [status, staffValue, onFinish]);
+
   React.useEffect(() => {
     if (record) {
       setStaffValue({
@@ -54,12 +80,12 @@ const StaffShow = () => {
         employee_status: record?.employee_status,
         account: record?.account || { email: '' },
         male: record?.male || false,
-        birth_date: record?.birth_date || new Date('2003-01-01')
+        birth_date: record?.birth_date || new Date('2003-01-01'),
+        image: record?.image || ''
       });
     }
   }, [record]);
 
-  if (formLoading) return <div>Loading...</div>;
   return (
     <Stack className="gap-4 xl:px-32 px-20 h-full justify-center">
       <CommonContainer className="w-full">
@@ -80,7 +106,7 @@ const StaffShow = () => {
         </Box>
         <Box className="flex flex-row gap-4 items-center p-2">
           <AvatarImage
-            src={dummyAvatar}
+            src={staffValue.image || dummyAvatar}
             alt={staffValue?.full_name}
             size={96}
           />
@@ -175,16 +201,41 @@ const StaffShow = () => {
       </CommonContainer>
 
       <CommonContainer className="gap-4 justify-end flex flex-row w-full">
-        <Button
-          className="gap-2 bg-accent text-white py-2 px-4 min-w-max"
-          onClick={() => edit('staff', staffValue?.staff_id || '')}
-          disabled={formLoading || !staffValue?.staff_id}
-        >
+        {staffValue.employee_status === EMPLOY_STATUS.ACTIVE ? (
+          <Button
+            id="suspend"
+            className="gap-2 bg-accent text-white lg:py-2.5 lg:px-6 min-w-max border-solid border-[2px] border-white outline-2 outline-accent outline md:text-base md:py-1.5 md:px-4"
+            onClick={updateStaffStatus}
+          >
+            <DeleteOutlinedIcon />
+            <Typography className="font-boldmd:inline-block max-sm:hidden">
+              Suspend
+            </Typography>
+          </Button>
+        ) : (
+          <Button
+            id="activate"
+            className="gap-2 bg-accent text-white lg:py-2.5 lg:px-6 min-w-max border-solid border-2 border-white outline-2 outline-accent outline md:text-base md:py-1.5 md:px-4 max-sm:hidden"
+            onClick={updateStaffStatus}
+          >
+            <CheckCircleOutlinedIcon />
+            <Typography className="font-bold md:inline-block max-sm:hidden">
+              Activate
+            </Typography>
+          </Button>
+        )}
+
+        <Button className="gap-2 bg-accent text-white py-2 px-4 min-w-max overflow-hidden relative">
+          <EditButton className="w-full h-full absolute top-0 left-0 opacity-0" />
           <EditOutlinedIcon />
           <Typography className="font-bold">Edit</Typography>
         </Button>
 
-        <Button className="gap-2 bg-accent text-white py-2 px-4 min-w-max">
+        <Button className="gap-2 bg-accent text-white py-2 px-4 min-w-max relative overflow-hidden ">
+          <DeleteButton
+            className="w-full h-full absolute top-0 left-0 opacity-0"
+            recordItemId={staffValue.staff_id}
+          />
           <BlockOutlinedIcon />
           <Typography className="font-bold">Remove</Typography>
         </Button>

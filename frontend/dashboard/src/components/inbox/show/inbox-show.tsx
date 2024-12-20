@@ -31,7 +31,7 @@ const InboxRoomShow = ({ showRoom }: InboxRoomShowProps) => {
   const messagesEndRef = React.useRef<HTMLDivElement | null>(null);
 
   const [messages, setMessages] = React.useState<IInboxMessage[]>(
-    showRoom.messages || []
+    showRoom?.messages?.[0]?.message ? showRoom?.messages : []
   );
 
   const messagesContainerRef = React.useRef<HTMLDivElement | null>(null);
@@ -50,6 +50,11 @@ const InboxRoomShow = ({ showRoom }: InboxRoomShowProps) => {
       ),
     [messages]
   );
+
+  React.useEffect(() => {
+    console.log('messages', messages);
+    console.log('sortedMessages', sortedMessages);
+  }, [messages, sortedMessages]);
 
   //Send message to server
   const handleSend = async (message: IInboxMessage) => {
@@ -126,7 +131,7 @@ const InboxRoomShow = ({ showRoom }: InboxRoomShowProps) => {
     setMessages(() => {
       setSkip(0);
       setBottomScroll(true);
-      return showRoom.messages || [];
+      return showRoom?.messages?.[0]?.message ? showRoom?.messages : [];
     });
   }, [showRoom]);
 
@@ -162,7 +167,7 @@ const InboxRoomShow = ({ showRoom }: InboxRoomShowProps) => {
           src={showRoom.customer.image || dummyAvatar}
         />
         <Typography className="text-white font-semibold text-lg text-font">
-          {showRoom.customer.full_name}
+          {showRoom.customer.username} - {showRoom.customer.full_name}
         </Typography>
         <Typography className="text-white text-base text-opacity-60 text-font ml-auto mr-2">
           {showRoom.customer.customer_id}
@@ -173,28 +178,35 @@ const InboxRoomShow = ({ showRoom }: InboxRoomShowProps) => {
         onScroll={handleScroll}
         className="w-full flex flex-col gap-0.5 overflow-y-scroll scrollbar-thin p-2 overflow-x-hidden h-full my-1"
       >
-        {sortedMessages.map((message, index) => (
-          <InboxBox
-            key={index}
-            message={{
-              ...message,
-              message: message.message
-            }}
-            isSender={
-              message.sender.sender_id !== showRoom.customer.customer_id
-            }
-            isStart={
-              index < sortedMessages.length - 1 &&
-              sortedMessages[index + 1].sender.sender_id ===
-                message.sender.sender_id
-            }
-            isEnd={
-              index > 0 &&
-              sortedMessages[index - 1].sender.sender_id ===
-                message.sender.sender_id
-            }
-          />
-        ))}
+        {(sortedMessages.length > 0 &&
+          sortedMessages?.map((message, index) => (
+            <InboxBox
+              key={index}
+              message={{
+                ...message,
+                message: message.message
+              }}
+              isSender={
+                message.sender.sender_id !== showRoom.customer.customer_id
+              }
+              isStart={
+                index < sortedMessages.length - 1 &&
+                sortedMessages[index + 1].sender.sender_id ===
+                  message.sender.sender_id
+              }
+              isEnd={
+                index > 0 &&
+                sortedMessages[index - 1].sender.sender_id ===
+                  message.sender.sender_id
+              }
+            />
+          ))) || (
+          <div className="size-full flex items-center justify-center">
+            <Typography className="font-thin italic">
+              No messages yet
+            </Typography>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </Box>
 

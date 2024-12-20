@@ -2,7 +2,7 @@ model Orders {
   order_id         String            @id @default(cuid()) @db.VarChar(25)
   customer_id      String?
   order_status     ORDER_STATUS      @default(PENDING)
-  total_price      Float
+  total_price      Decimal           @db.Decimal(18, 2)
   voucher_code     String?
   created_at       DateTime          @default(now())
   payment_status   PAYMENT_STATUS    @default(PENDING)
@@ -18,8 +18,8 @@ model Order_Items {
   order_id    String   @db.VarChar(25)
   product_id  String   @db.VarChar(50)
   quantity    Int
-  unit_price  Float
-  total_price Float
+  unit_price  Decimal  @db.Decimal(18, 2)
+  total_price Decimal  @db.Decimal(18, 2)
   order       Orders   @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
   product     Products @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
 
@@ -29,7 +29,7 @@ model Order_Items {
 model Invoices {
   invoice_id  String   @id @default(cuid()) @db.VarChar(50)
   order_id    String?  @db.VarChar(10)
-  total_price Float
+  total_price Decimal  @db.Decimal(18, 2)
   created_at  DateTime @default(now())
   order       Orders?  @relation(fields: [order_id], references: [order_id])
 }
