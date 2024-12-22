@@ -1,7 +1,5 @@
 package com.example.electrohive.Adapters;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,14 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-
 import com.example.electrohive.Activities.FullScreenImageActivity;
-import com.example.electrohive.Models.ProductAttribute;
 import com.example.electrohive.Models.ProductImage;
 import com.example.electrohive.R;
 

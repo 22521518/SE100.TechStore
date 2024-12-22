@@ -13,7 +13,6 @@ import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.R;
 import com.example.electrohive.utils.format.Format;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
