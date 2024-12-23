@@ -95,7 +95,7 @@ const Address = () => {
       if (data) {
         toastSuccess("Address added");
         setAddresses((prev) => [
-          ...prev,
+          ...prev.map(addr=>({...addr,is_primary:false})),
           {
             ...data,
             province: data.city,

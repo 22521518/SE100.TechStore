@@ -191,12 +191,10 @@ export default function Home() {
               <Image
                 src={image}
                 alt="product image"
-                width={0} // Set the width of the image
-                height={0}
-                blurDataURL="data:/images/PLACEHOLDER.jpg"
-                placeholder="blur"
-                layout="responsive" // Set the height of the image for proper aspect ratio
+                width={800}
+                height={800}
                 className="size-full object-contain snap-start" // Ensure the image covers the entire area
+                priority
               />
             </li>
           ))}

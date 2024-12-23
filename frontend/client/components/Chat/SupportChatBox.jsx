@@ -83,6 +83,7 @@ const SupportChatBox = () => {
           {
             ...data.message,
             is_customer: data.message.sender.sender_id === session.customer?.customer_id,
+            is_seen:isOpen,
           },
           ...prev,
         ]);
@@ -142,7 +143,7 @@ const SupportChatBox = () => {
           console.log(socket);
           socket.emit(SOCKET_INBOX_CHANNEL.ADD_MESSAGE, msgData);
           setMessageLog((prevMessages) => [
-            { ...data, is_customer: true },
+            { ...data, is_customer: true, is_seen:true},
             ...prevMessages,
           ]);
           inputRef.current.value = "";
