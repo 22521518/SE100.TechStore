@@ -98,6 +98,12 @@ public class AccountAddAddressPage extends AppCompatActivity {
             return;  // Don't save if any field is empty
         }
 
+        if(phoneNumber.length()!=10){
+            // Show a Toast message to the user
+            Toast.makeText(AccountAddAddressPage.this, "Phone number must be exactly 10 digits", Toast.LENGTH_SHORT).show();
+            return;  // Don't save if any field is empty
+        }
+
         // If all fields are filled, proceed to update the address
         String city = location.split(", ")[2];
         String district = location.split(", ")[1];

@@ -29,16 +29,16 @@ public class AccountEditAddressPage extends AppCompatActivity {
 
     private Address address;
     private TextView save_address_button;
-    private final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult (
+    private final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    Intent data =result.getData();
+                    Intent data = result.getData();
                     if (data != null) {
                         Ward resultWard = (Ward) data.getSerializableExtra("WARD");
                         District resultDistrict = (District) data.getSerializableExtra("DISTRICT");
                         Province resultProvince = (Province) data.getSerializableExtra("PROVINCE");
-                        String finalAddress =   resultWard.getWardName() +", "+ resultDistrict.getDistrictName() +", "+ resultProvince.getProvinceName();
+                        String finalAddress = resultWard.getWardName() + ", " + resultDistrict.getDistrictName() + ", " + resultProvince.getProvinceName();
 
                         address_location.setText(finalAddress);
                     }
@@ -71,7 +71,7 @@ public class AccountEditAddressPage extends AppCompatActivity {
 
         address_fullname.setText(address.getFullName());
         address_phonenumber.setText(address.getPhoneNumber());
-        address_location.setText(address.getWard()+", "+address.getDistrict()+", "+address.getCity());
+        address_location.setText(address.getWard() + ", " + address.getDistrict() + ", " + address.getCity());
         address_address.setText(address.getAddress());
 
         address_location.setOnClickListener(new View.OnClickListener() {
@@ -84,44 +84,49 @@ public class AccountEditAddressPage extends AppCompatActivity {
         });
 
         save_address_button = findViewById(R.id.save_address_button);
-        save_address_button.setOnClickListener(v->updateAddress());
+        save_address_button.setOnClickListener(v -> updateAddress());
 
     }
 
     private void updateAddress() {
-            // Get the input values
-            String location = address_location.getText().toString().trim();
-            String fullName = address_fullname.getText().toString().trim();
-            String phoneNumber = address_phonenumber.getText().toString().trim();
-            String addressText = address_address.getText().toString().trim();
+        // Get the input values
+        String location = address_location.getText().toString().trim();
+        String fullName = address_fullname.getText().toString().trim();
+        String phoneNumber = address_phonenumber.getText().toString().trim();
+        String addressText = address_address.getText().toString().trim();
 
-            // Validate that all required fields are filled
-            if (location.isEmpty() || fullName.isEmpty() || phoneNumber.isEmpty() || addressText.isEmpty()) {
-                // Show a Toast message to the user
-                Toast.makeText(AccountEditAddressPage.this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
-                return;  // Don't save if any field is empty
-            }
+        // Validate that all required fields are filled
+        if (location.isEmpty() || fullName.isEmpty() || phoneNumber.isEmpty() || addressText.isEmpty()) {
+            // Show a Toast message to the user
+            Toast.makeText(AccountEditAddressPage.this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
+            return;  // Don't save if any field is empty
+        }
 
-            // If all fields are filled, proceed to update the address
-            String city = location.split(", ")[2];
-            String district = location.split(", ")[1];
-            String ward = location.split(", ")[0];
+        if (phoneNumber.length() != 10) {
+            // Show a Toast message to the user
+            Toast.makeText(AccountEditAddressPage.this, "Phone number must be exactly 10 digits", Toast.LENGTH_SHORT).show();
+            return;  // Don't save if any field is empty
+        }
+        // If all fields are filled, proceed to update the address
+        String city = location.split(", ")[2];
+        String district = location.split(", ")[1];
+        String ward = location.split(", ")[0];
 
-            // Update the address object
-            address.setFullName(fullName);
-            address.setPhoneNumber(phoneNumber);
-            address.setCity(city);
-            address.setDistrict(district);
-            address.setWard(ward);
-            address.setAddress(addressText);
+        // Update the address object
+        address.setFullName(fullName);
+        address.setPhoneNumber(phoneNumber);
+        address.setCity(city);
+        address.setDistrict(district);
+        address.setWard(ward);
+        address.setAddress(addressText);
 
-            // Return the updated address back to the calling activity
-            Intent intent = new Intent();
-            intent.putExtra("UPDATED_ADDRESS", address);
-            setResult(RESULT_OK, intent);
+        // Return the updated address back to the calling activity
+        Intent intent = new Intent();
+        intent.putExtra("UPDATED_ADDRESS", address);
+        setResult(RESULT_OK, intent);
 
-            // Finish the activity to return to the previous screen
-            finish();
+        // Finish the activity to return to the previous screen
+        finish();
     }
 
 
