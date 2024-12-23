@@ -8,7 +8,7 @@ import {
 export interface IProduct {
   product_id?: string;
   product_name: string;
-  images?: IProductImage[];
+  images?: IImage[];
   description: string;
   price: number;
   discount?: number | null;
@@ -30,7 +30,7 @@ export interface IProductReceive {
   product_feedbacks?: IProductFeedback[];
 }
 
-export interface IProductImage {
+export interface IImage {
   name: string;
   url: string;
 }
@@ -147,11 +147,25 @@ export interface IRole {
   staff?: IStaff[];
 }
 
+export interface IStaffEdit {
+  image: IImage;
+  staff_id?: string;
+  account_id?: string;
+  full_name: string;
+  male?: boolean;
+  birth_date?: Date | string;
+  phone_number: string;
+  employee_status?: EMPLOY_STATUS;
+  hire_date: Date | string;
+  role?: IRole;
+  account?: IAccount;
+}
+
 export interface IStaff {
   staff_id?: string;
   account_id?: string;
   full_name: string;
-  images?: string;
+  image?: string;
   male?: boolean;
   birth_date?: Date | string;
   phone_number: string;
@@ -174,7 +188,7 @@ export interface IStaffInfo {
   hire_date: Date | string;
   account: IAccountWithPassword;
   role?: IRole;
-  images?: string;
+  image?: string;
   male?: boolean;
   birth_date?: Date | string;
 }
@@ -246,4 +260,51 @@ export interface ISupplier {
   email: string;
   description: string;
   created_at?: Date | string;
+}
+
+export interface IDashboardData {
+  revenueThisYear: {
+    total_price: number;
+  }[];
+  inventoryStockAnalysisThisYear: {
+    month: number;
+    data: {
+      product_name: string;
+      imported: number;
+      sold: number;
+      rate: number;
+    }[];
+  }[];
+
+  //
+  revenueTopProductsThisMonth: {
+    product_name: string;
+    total_price: number;
+  }[];
+  revenueByCategoryThisMonth: {
+    category_name: string;
+    total_price: number;
+  }[];
+  revenueByCustomerThisMonth: {
+    username: string;
+    total_price: number;
+  }[];
+
+  //
+  totalCustomers: ICustomer[];
+  newCustomerThisMonth: ICustomer[];
+
+  //
+  totalRevenueCategory: {
+    category_name: string;
+    total_price: number;
+  }[];
+  totalRevenueCustomer: {
+    username: string;
+    total_price: number;
+  }[];
+  totalRevenueProduct: {
+    product_name: string;
+    total_price: number;
+  }[];
 }

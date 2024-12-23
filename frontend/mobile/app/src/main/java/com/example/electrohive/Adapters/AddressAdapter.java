@@ -16,16 +16,11 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electrohive.Activities.AccountEditAddressPage;
-import com.example.electrohive.Activities.DistrictPage;
-import com.example.electrohive.Activities.ProvincePage;
 import com.example.electrohive.Models.Address;
-import com.example.electrohive.Models.Province;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.AddressViewModel;
 
 import java.util.List;
-
-import io.appium.java_client.android.StartsActivity;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder> {
 

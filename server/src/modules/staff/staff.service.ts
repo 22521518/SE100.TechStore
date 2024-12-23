@@ -195,6 +195,11 @@ export class StaffService {
           role: true,
         },
       });
+
+      await this.prismaDbService.accounts.delete({
+        where: { account_id: staff.account_id },
+      });
+
       return staff;
     } catch (error) {
       console.error(error);

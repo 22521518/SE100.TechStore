@@ -98,9 +98,9 @@ export class ZaloPaymentController {
           item.product_id,
           item.product.product_name,
           item.product.images[0],
-          item.unit_price,
+          Number(item.unit_price),
           item.quantity,
-          item.total_price,
+          Number(item.total_price),
         );
       });
 
@@ -112,7 +112,7 @@ export class ZaloPaymentController {
       const rep = await this.zaloPaymentService.requestPayment(
         order_id,
         customerId,
-        total_price,
+        Number(total_price),
         items,
         redirect,
       );

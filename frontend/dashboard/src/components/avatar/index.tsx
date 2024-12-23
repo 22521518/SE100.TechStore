@@ -16,7 +16,7 @@ const AvatarImage = ({ src, alt, size = 64, className }: AvatarImageProps) => {
   return (
     <>
       <Box
-        className={`rounded-full overflow-hidden shadow-sm ${className}`}
+        className={`rounded-full overflow-hidden shadow-sm ${className} `}
         style={{ width: size, height: size }}
       >
         <Image
@@ -24,7 +24,7 @@ const AvatarImage = ({ src, alt, size = 64, className }: AvatarImageProps) => {
           alt={alt}
           width={size}
           height={size}
-          className={`items-center object-fit flex justify-center w-full`}
+          className={`items-center object-contain flex justify-center w-full h-full  `}
         />
       </Box>
     </>

@@ -1,7 +1,12 @@
 'use client';
 
 import CommonContainer from '@components/common-container';
-import { IRole, IStaff } from '@constant/interface.constant';
+import {
+  IImage,
+  IRole,
+  IStaff,
+  IStaffEdit
+} from '@constant/interface.constant';
 import {
   Box,
   Button,
@@ -17,10 +22,6 @@ import {
 import { useForm, useList, useNavigation } from '@refinedev/core';
 import React from 'react';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
-import {
-  generateRandomRoleList,
-  generateRandomStaffList
-} from '@utils/random.util';
 import AvatarImage from '@components/avatar';
 import { dummyAvatar } from '@constant/value.constant';
 import CallOutlinedIcon from '@mui/icons-material/CallOutlined';
@@ -33,10 +34,8 @@ import GenderIcon from '@components/icons/gender-icon';
 import EmployStatusIcon from '@components/icons/employ-status-icon';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
-import { EMPLOY_STATUS } from '@constant/enum.constant';
 import { transformDate } from '@utils/transform.util';
+import { handleImage } from '@utils/image.utils';
 
 const StaffEdit = () => {
   const { show } = useNavigation();
@@ -46,10 +45,17 @@ const StaffEdit = () => {
   });
   const roleList = getRoleList?.data || [];
 
-  const { query, formLoading, onFinish } = useForm<IStaff>();
+  const { query, formLoading, onFinish } = useForm<IStaff>({
+    redirect: false
+  });
   const record = query?.data?.data;
 
-  const [staffValue, setStaffValue] = React.useState<IStaff>({
+  const [image, setImage] = React.useState<IImage>({
+    name: record?.full_name || '',
+    url: record?.image || ''
+  });
+
+  const [staffValue, setStaffValue] = React.useState<IStaffEdit>({
     staff_id: record?.staff_id || '',
     full_name: record?.full_name || '',
     phone_number: record?.phone_number || '',
@@ -59,8 +65,37 @@ const StaffEdit = () => {
     employee_status: record?.employee_status,
     account: record?.account || { email: '' },
     male: record?.male || false,
-    birth_date: record?.birth_date
+    birth_date: record?.birth_date,
+    image: { name: record?.full_name || '', url: record?.image || '' }
   });
+
+  const changeImage = ({ name, url }: { name: string; url: string }) => {
+    setImage({ name, url });
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      await handleImage(files[0], changeImage);
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await onFinish(staffValue);
+      show('staff', staffValue.staff_id || '');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    setStaffValue((prev) => ({
+      ...prev,
+      image: image
+    }));
+  }, [image]);
 
   React.useEffect(() => {
     if (record) {
@@ -74,29 +109,16 @@ const StaffEdit = () => {
         employee_status: record?.employee_status,
         account: record?.account || { email: '' },
         male: record?.male || false,
-        birth_date: record?.birth_date
+        birth_date: record?.birth_date,
+        image: { name: record?.full_name || '', url: record?.image || '' }
+      });
+
+      setImage({
+        name: record?.full_name || '',
+        url: record?.image || ''
       });
     }
   }, [record]);
-
-  const handleStatus = () => {
-    setStaffValue({
-      ...staffValue,
-      employee_status:
-        staffValue.employee_status === EMPLOY_STATUS.ACTIVE
-          ? EMPLOY_STATUS.SUSPENDED
-          : EMPLOY_STATUS.ACTIVE
-    });
-  };
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      await onFinish(staffValue);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <Stack className="gap-4 px-2   lg:px-32 md:px-16">
@@ -119,12 +141,28 @@ const StaffEdit = () => {
           </Box>
         </Box>
         <Box className="flex flex-row gap-4 items-center p-2 max-sm:justify-center">
-          <AvatarImage
-            src={dummyAvatar}
-            alt={staffValue?.full_name}
-            size={96}
-            className="sm:inline-block hidden max-md:min-w-12 max-md:h-12"
-          />
+          <div className="size-[96px] overflow-hidden relative items-center justify-center group hover:opacity-50 hover:cursor-pointer">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{
+                zIndex: 999,
+                position: 'absolute',
+                opacity: 0,
+                width: '100%',
+                height: '100%',
+                cursor: 'pointer'
+              }}
+            />
+            <EditOutlinedIcon className="absolute right-0 bottom-0 text-white bg-accent p-1 rounded-full" />
+            <AvatarImage
+              src={image.url || dummyAvatar}
+              alt={staffValue?.full_name}
+              size={96}
+              className="sm:inline-block hidden max-md:min-w-12 max-md:h-12"
+            />
+          </div>
           <Stack className="justify-start gap-5">
             <Typography className="sm:text-base lg:text-lg font-bold">
               {staffValue.full_name}
@@ -171,16 +209,13 @@ const StaffEdit = () => {
                     value={staffValue.role?.role_id}
                     defaultValue={staffValue.role?.role_id}
                     onChange={(e) => {
-                      setStaffValue(
-                        (prev) =>
-                          ({
-                            ...prev,
-                            role: roleList?.find(
-                              (role: IRole) =>
-                                role.role_id === Number(e.target.value)
-                            )
-                          } as IStaff)
-                      );
+                      setStaffValue((prev) => ({
+                        ...prev,
+                        role: roleList?.find(
+                          (role: IRole) =>
+                            role.role_id === Number(e.target.value)
+                        )
+                      }));
                     }}
                   >
                     {roleList &&
@@ -216,13 +251,10 @@ const StaffEdit = () => {
                   label="Phone Number"
                   value={staffValue.phone_number}
                   onChange={(e) =>
-                    setStaffValue(
-                      (prev) =>
-                        ({
-                          ...prev,
-                          phone_number: e.target.value
-                        } as IStaff)
-                    )
+                    setStaffValue((prev) => ({
+                      ...prev,
+                      phone_number: e.target.value
+                    }))
                   }
                   sx={{
                     '& .MuiInputBase-root': { fontSize: '1rem' }
@@ -246,13 +278,10 @@ const StaffEdit = () => {
                       : new Date().toISOString().split('T')[0]
                   }
                   onChange={(e) =>
-                    setStaffValue(
-                      (prev) =>
-                        ({
-                          ...prev,
-                          birth_date: new Date(e.target.value)
-                        } as IStaff)
-                    )
+                    setStaffValue((prev) => ({
+                      ...prev,
+                      birth_date: new Date(e.target.value)
+                    }))
                   }
                   className="text-lg"
                 />
@@ -268,13 +297,10 @@ const StaffEdit = () => {
                     value={staffValue.male ? 'male' : 'female'}
                     className="min-w-36"
                     onChange={(e) => {
-                      setStaffValue(
-                        (prev) =>
-                          ({
-                            ...prev,
-                            male: e.target.value === 'male'
-                          } as IStaff)
-                      );
+                      setStaffValue((prev) => ({
+                        ...prev,
+                        male: e.target.value === 'male'
+                      }));
                     }}
                   >
                     <MenuItem value="male">Male</MenuItem>
@@ -299,13 +325,10 @@ const StaffEdit = () => {
                       ...staffValue,
                       hire_date: new Date(e.target.value).toISOString()
                     });
-                    setStaffValue(
-                      (prev) =>
-                        ({
-                          ...prev,
-                          hire_date: new Date(e.target.value).toISOString()
-                        } as IStaff)
-                    );
+                    setStaffValue((prev) => ({
+                      ...prev,
+                      hire_date: new Date(e.target.value).toISOString()
+                    }));
                   }}
                   className="text-lg"
                 />
@@ -314,30 +337,6 @@ const StaffEdit = () => {
           </Box>
           {/* ACTION */}
           <Box className="flex flex-row items-center gap-4 py-10  w-full lg:justify-end justify-center">
-            {staffValue.employee_status === EMPLOY_STATUS.ACTIVE ? (
-              <Button
-                id="suspend"
-                className="gap-2 bg-accent text-white lg:py-2.5 lg:px-6 min-w-max border-solid border-[2px] border-white outline-2 outline-accent outline md:text-base md:py-1.5 md:px-4"
-                onClick={handleStatus}
-              >
-                <DeleteOutlinedIcon />
-                <Typography className="font-boldmd:inline-block max-sm:hidden">
-                  Suspend
-                </Typography>
-              </Button>
-            ) : (
-              <Button
-                id="activate"
-                className="gap-2 bg-accent text-white lg:py-2.5 lg:px-6 min-w-max border-solid border-2 border-white outline-2 outline-accent outline md:text-base md:py-1.5 md:px-4 max-sm:hidden"
-                onClick={handleStatus}
-              >
-                <CheckCircleOutlinedIcon />
-                <Typography className="font-bold md:inline-block max-sm:hidden">
-                  Activate
-                </Typography>
-              </Button>
-            )}
-
             <Button
               className="gap-2 bg-accent text-white lg:py-2.5 lg:px-6 min-w-max border-solid border-2 border-white outline-2 outline-accent outline md:text-base md:py-1.5 md:px-4"
               type="submit"

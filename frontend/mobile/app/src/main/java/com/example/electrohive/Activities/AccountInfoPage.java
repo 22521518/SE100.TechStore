@@ -49,7 +49,7 @@ public class AccountInfoPage extends AppCompatActivity {
     private RadioButton radioMale;
 
     private RadioButton radioFemale;
-    private Customer sessionCustomer;
+    private Customer SessionCustomer;
 
     private CustomerViewModel customerViewModel = CustomerViewModel.getInstance();
 
@@ -82,6 +82,7 @@ public class AccountInfoPage extends AppCompatActivity {
         updateCustomerButton = findViewById(R.id.updateCustomerButton);
 
         customerViewModel.getSessionCustomer().observe(this,sessionCustomer -> {
+            SessionCustomer=sessionCustomer;
             Glide.with(AccountInfoPage.this)
                     .load(sessionCustomer.getImage()) // URL to the image
                     .placeholder(R.drawable.ic_user_icon) // Optional placeholder
@@ -194,6 +195,10 @@ public class AccountInfoPage extends AppCompatActivity {
     }
 
     private void updateCustomer() {
+        if (SessionCustomer == null) {
+            Toast.makeText(this, "Customer data is not loaded. Please try again later.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if(updateCustomerButton.getText().toString().equals("Updating...")) return ;
 
         // Get inputs
@@ -222,15 +227,15 @@ public class AccountInfoPage extends AppCompatActivity {
 
 
 
-        sessionCustomer.setUsername(username);
-        sessionCustomer.setFullName(fullName);
-        sessionCustomer.setPhoneNumber(phoneNumber);
-        sessionCustomer.setImage(imageUrl);
-        sessionCustomer.setBirthDate(birthDate);
-        sessionCustomer.setMale(male);
+        SessionCustomer.setUsername(username);
+        SessionCustomer.setFullName(fullName);
+        SessionCustomer.setPhoneNumber(phoneNumber);
+        SessionCustomer.setImage(imageUrl);
+        SessionCustomer.setBirthDate(birthDate);
+        SessionCustomer.setMale(male);
 
 
-        customerViewModel.updateCustomer(sessionCustomer).observe(this, apiResponse -> {
+        customerViewModel.updateCustomer(SessionCustomer).observe(this, apiResponse -> {
             if (apiResponse != null && apiResponse.isSuccess()) {
                 // If the response is successful
                 boolean success = apiResponse.getData() !=null; // Get the success flag

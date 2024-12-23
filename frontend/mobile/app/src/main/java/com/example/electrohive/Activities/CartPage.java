@@ -2,9 +2,7 @@ package com.example.electrohive.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +18,6 @@ import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.CartViewModel;
 import com.google.gson.Gson;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;

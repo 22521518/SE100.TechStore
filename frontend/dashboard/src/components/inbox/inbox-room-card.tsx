@@ -19,7 +19,7 @@ const InboxRoomCard = ({
   onClick
 }: InboxRoomCardProps) => {
   const message = room.latestMessage;
-  const isSeen = message.is_seen;
+  const isSeen = message.is_seen ?? true;
 
   return (
     <Box
@@ -42,44 +42,54 @@ const InboxRoomCard = ({
           <div className="flex flex-col">
             <span
               className={`text-accent
-            ${!isSeen ? 'font-bold' : ' '}
+            ${isSeen === true ? ' ' : ' font-bold'}
               `}
             >
-              {room.customer?.full_name}
+              {room.customer?.username} - {room.customer?.full_name}
             </span>
             <Box className="flex flex-row items-center gap-1 w-full">
               <Typography
                 noWrap={true}
-                className={`text-slate-200 text-sm overflow-hidden max-w-[50%] ${
-                  !isSeen ? 'font-bold' : ' '
-                }`}
+                className={`text-slate-200 text-sm overflow-hidden ${
+                  isSeen === true ? ' ' : ' font-bold'
+                } ${
+                  message?.message?.length > 30
+                    ? 'text-[0.7rem] max-w-[50%]'
+                    : ' '
+                }
+
+                `}
               >
-                {message.message}
+                {message?.message || 'No message'}
               </Typography>
-              <span
-                className={`text-slate-200 text-sm ${
-                  !isSeen ? 'font-bold' : ' '
-                }`}
-              >
-                {' • '}
-              </span>
-              <Typography
-                className={`text-slate-200 text-[0.6rem] h-max min-w-max align-text-bottom flex-1 ${
-                  !isSeen ? 'font-bold' : ' '
-                }`}
-              >
-                {transformDate(
-                  new Date(message.created_at).toISOString(),
-                  true
-                )}
-              </Typography>
+              {message?.created_at && (
+                <>
+                  <span
+                    className={`text-slate-200 text-sm ${
+                      isSeen === true ? ' ' : ' font-bold'
+                    }`}
+                  >
+                    {' • '}
+                  </span>
+                  <Typography
+                    className={`text-slate-200 text-[0.6rem] h-max min-w-max align-text-bottom flex-1 ${
+                      isSeen === true ? ' ' : ' font-bold'
+                    }`}
+                  >
+                    {transformDate(
+                      new Date(message.created_at).toISOString(),
+                      true
+                    )}
+                  </Typography>
+                </>
+              )}
             </Box>
           </div>
         </div>
       </Stack>
-      {!isSeen ? (
+      {isSeen !== true && (
         <span className="text-3xl text-accent ml-auto mr-4">•</span>
-      ) : null}
+      )}
     </Box>
   );
 };
