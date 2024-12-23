@@ -57,6 +57,9 @@ public class AddressViewModel extends ViewModel {
                 .observeForever(addedAddressResponse -> {
                     if (addedAddressResponse != null && addedAddressResponse.isSuccess()) {
                         // Add the successfully added address to the current list
+                        for(Address address:finalCurrentAddresses) {
+                            address.setIsPrimary(false);
+                        }
                         finalCurrentAddresses.add(addedAddressResponse.getData());
                         addresses.postValue(new ApiResponse<>(true, finalCurrentAddresses, "Address added successfully", 200)); // Notify LiveData observers
                         resultAddress.postValue(new ApiResponse<>(true, true, "Address added successfully", 200)); // Notify the caller of success
