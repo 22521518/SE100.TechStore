@@ -108,7 +108,6 @@ public class TrackPage extends AppCompatActivity {
                     // Update the UI with the order data
                     order_id_input.setText(orderId);
                     if (order.getShippingAddress() != null) {
-                        order_date.setText(Format.getFormattedDateFromString((String) order.getShippingAddress().getDeliveryDate()));
                         order_fullname.setText(order.getShippingAddress().getAddress().getFullName());
                         order_phonenumber.setText(order.getShippingAddress().getAddress().getPhoneNumber());
                         order_address.setText(
@@ -117,7 +116,7 @@ public class TrackPage extends AppCompatActivity {
                                         order.getShippingAddress().getAddress().getDistrict() + ", " +
                                         order.getShippingAddress().getAddress().getCity());
                     }
-
+                    order_date.setText(Format.getFormattedDate(new Date()));
                     order_payment_method.setText(order.getPaymentMethod().toString());
                     order_id.setText("Order id: " + order.getOrderId());
                     order_total_price.setText("Total: " + Format.getFormattedTotalPrice(order.getTotalPrice()) + " (" + items.size() + " items)");
