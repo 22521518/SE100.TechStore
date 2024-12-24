@@ -16,6 +16,7 @@ export class AddressesService {
             district: createAddressDto.district,
             ward: createAddressDto.ward,
             address: createAddressDto.address,
+            is_primary: false,
           },
         });
 
