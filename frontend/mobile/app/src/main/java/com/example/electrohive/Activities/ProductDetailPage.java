@@ -281,10 +281,12 @@ public class ProductDetailPage extends DrawerBasePage {
 //            Intent intent = new Intent(ProductDetailPage.this, CartPage.class);
 //            startActivity(intent);
 //        }
-
+        ArrayList<CartItem> items=new ArrayList<>();
         CartItem item=new CartItem(PreferencesHelper.getCustomerData().getCustomerId(),productId,quantity,product);
+        items.add(item);
+        System.out.println(items);
         Gson gson = new Gson();
-        String json = gson.toJson(item);
+        String json = gson.toJson(items);
         Intent intent=new Intent(getApplicationContext(),CheckoutPage.class);
         intent.putExtra("checkedItems",json);
         startActivity(intent);
