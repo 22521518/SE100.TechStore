@@ -5,21 +5,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.electrohive.Adapters.OrderAdapter;
 import com.example.electrohive.Adapters.OrderItemAdapter;
 import com.example.electrohive.Models.Order;
 import com.example.electrohive.Models.OrderItem;
-import com.example.electrohive.Models.Province;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.OrderViewModel;
 import com.example.electrohive.utils.format.Format;

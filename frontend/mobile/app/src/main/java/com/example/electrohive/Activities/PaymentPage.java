@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class PaymentPage extends AppCompatActivity {
 
-    RadioButton momo, cash;
+    RadioButton zaloPay, cash;
     ArrayList<CartItem> cartItems;
     PaymentAdapter paymentAdapter;
     ImageButton backbutton;
@@ -100,24 +100,25 @@ public class PaymentPage extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), PaymentVoucherPage.class);
             startActivityForResult(intent, 1);
         });
-        momo = findViewById(R.id.wallet);
+        zaloPay = findViewById(R.id.wallet);
         cash = findViewById(R.id.cash);
         cartItems = new ArrayList<>();
         String productJson = getIntent().getStringExtra("checkedItems");
         Gson gson = new Gson();
         cartItems = gson.fromJson(productJson, new TypeToken<ArrayList<CartItem>>() {
         }.getType());
+        System.out.println(cartItems);
         RecyclerView recyclerView = findViewById(R.id.order_items_listview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         paymentAdapter = new PaymentAdapter(this, cartItems);
         recyclerView.setAdapter(paymentAdapter);
         Subtotal.setText(currencyFormat.format(SubTotal()) + " VNĐ");
         Grandtotal.setText(currencyFormat.format(SubTotal() + 30000) + " VNĐ");
-        momo.setOnClickListener(v -> {
+        zaloPay.setOnClickListener(v -> {
             cash.setChecked(false);
         });
         cash.setOnClickListener(v -> {
-            momo.setChecked(false);
+            zaloPay.setChecked(false);
         });
     }
 
@@ -126,10 +127,8 @@ public class PaymentPage extends AppCompatActivity {
         double subtotal = 0;
         double discount = 0;
         for (CartItem item : cartItems) {
-            if (item.getChecked()) {
                 subtotal += item.getProduct().getPrice() * item.getQuantity();
                 discount += (item.getProduct().getDiscount() * item.getProduct().getPrice() * item.getQuantity()) / 100;
-            }
         }
         grandtotal = subtotal - discount;
         return grandtotal;
