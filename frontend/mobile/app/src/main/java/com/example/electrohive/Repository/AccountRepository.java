@@ -1,29 +1,19 @@
 package com.example.electrohive.Repository;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.electrohive.Models.Account;
 import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.api.AccountService;
-import com.example.electrohive.api.CustomerService;
 import com.example.electrohive.utils.ApiErrorParser;
 import com.example.electrohive.utils.Model.AccountUtils;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.example.electrohive.utils.RetrofitClient;
 import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AccountRepository {
     private final AccountService accountService;

@@ -25,6 +25,7 @@ public class CreateOrder {
         String Description;
         String Mac;
 
+        //Create Order
         private CreateOrderData(String amount) throws Exception {
             long appTime = new Date().getTime();
             AppId = String.valueOf(AppInfo.APP_ID);

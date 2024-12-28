@@ -54,7 +54,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
                 formattedDate = Format.getFormattedDateFromString((String) voucherValidTo);
             }
 
-            // Set the formatted date to the EditText
+
             if (formattedDate != null) {
                 holder.voucherExpireDate.setText(formattedDate);
             }

@@ -2,22 +2,16 @@ package com.example.electrohive.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.electrohive.Models.District;
@@ -25,7 +19,6 @@ import com.example.electrohive.Models.Province;
 import com.example.electrohive.Models.Ward;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.LocationViewModel;
-
 
 import java.util.ArrayList;
 import java.util.List;

@@ -62,7 +62,7 @@ public class ProductImage implements Parcelable {
 
     @Override
     public int describeContents() {
-        return 0; // No special contents
+        return 0;
     }
 
     // Optionally, toString method for better printing

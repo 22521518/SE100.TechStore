@@ -16,7 +16,7 @@ public class Category {
         this.description = description;
     }
 
-    // Getters and Setters
+
     public int getCategoryId() {
         return categoryId;
     }
