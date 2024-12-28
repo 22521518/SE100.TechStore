@@ -55,7 +55,7 @@ public class ConfirmPage  extends AppCompatActivity {
         orderViewModel = new OrderViewModel(this);
 
         StrictMode.ThreadPolicy policy = new
-        StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         ZaloPaySDK.init(554, Environment.SANDBOX);
@@ -148,7 +148,7 @@ public class ConfirmPage  extends AppCompatActivity {
                         String token = data.getString("zptranstoken");
                         ZaloPaySDK.getInstance().payOrder(ConfirmPage.this, token, "demozpdk://app", new PayOrderListener() {
                             @Override
-                             public void onPaymentSucceeded(String s, String s1, String s2) {
+                            public void onPaymentSucceeded(String s, String s1, String s2) {
                                 orderViewModel.postUserOrder(price,list, PAYMENT_METHOD.valueOf(payment_method),Address,voucher).observeForever(res-> {
                                     if(res.isSuccess()) {
                                         Intent intent1=new Intent(getApplicationContext(),ReceiptPage.class);

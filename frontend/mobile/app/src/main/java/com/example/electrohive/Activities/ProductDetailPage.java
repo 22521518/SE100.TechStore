@@ -26,6 +26,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.electrohive.Adapters.ProductAdapter;
 import com.example.electrohive.Adapters.ProductImagesAdapter;
 import com.example.electrohive.Adapters.ProductAttributeAdapter;
+import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.Product;
 import com.example.electrohive.Models.ProductAttribute;
 import com.example.electrohive.Models.ProductFeedback;
@@ -33,9 +34,11 @@ import com.example.electrohive.Models.ProductImage;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.CartViewModel;
 import com.example.electrohive.ViewModel.ProductViewModel;
+import com.example.electrohive.utils.PreferencesHelper;
 import com.example.electrohive.utils.format.Format;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,7 +219,7 @@ public class ProductDetailPage extends DrawerBasePage {
                     product_discount.setText("-" + product.getDiscount() + "%");
                     product_stock_count.setText(product.getStockQuantity() + " in-stock");
                     product_add_to_cart_button.setOnClickListener(v -> addItemToCart(productId, Integer.parseInt(product_quantity_input.getText().toString())));
-                    product_buy_now_button.setOnClickListener(v -> buyProduct(productId, Integer.parseInt(product_quantity_input.getText().toString())));
+                    product_buy_now_button.setOnClickListener(v -> buyProduct(productId,curProduct, Integer.parseInt(product_quantity_input.getText().toString())));
                     product_detail.setText(product.getDescription());
                     product_rating.setText(calculateAverageRating(product.getProductFeedbacks()) + " / 5");
                     product_5_star_count.setText("★★★★★ (" + countRating(5, product.getProductFeedbacks()) + ")");
@@ -270,14 +273,23 @@ public class ProductDetailPage extends DrawerBasePage {
 
     }
 
-    private void buyProduct(String productId, int quantity) {
-        boolean isAddedToCart = addItemToCart(productId, quantity);
-
-        // Proceed to Cart page if the item was added to cart
-        if (isAddedToCart) {
-            Intent intent = new Intent(ProductDetailPage.this, CartPage.class);
-            startActivity(intent);
-        }
+    private void buyProduct(String productId,Product product, int quantity) {
+//        boolean isAddedToCart = addItemToCart(productId, quantity);
+//
+//        // Proceed to Cart page if the item was added to cart
+//        if (isAddedToCart) {
+//            Intent intent = new Intent(ProductDetailPage.this, CartPage.class);
+//            startActivity(intent);
+//        }
+        ArrayList<CartItem> items=new ArrayList<>();
+        CartItem item=new CartItem(PreferencesHelper.getCustomerData().getCustomerId(),productId,quantity,product);
+        items.add(item);
+        System.out.println(items);
+        Gson gson = new Gson();
+        String json = gson.toJson(items);
+        Intent intent=new Intent(getApplicationContext(),CheckoutPage.class);
+        intent.putExtra("checkedItems",json);
+        startActivity(intent);
     }
 
 

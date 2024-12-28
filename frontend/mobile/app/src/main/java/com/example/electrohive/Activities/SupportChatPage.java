@@ -1,13 +1,11 @@
 package com.example.electrohive.Activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electrohive.Adapters.MessageAdapter;
 import com.example.electrohive.Models.Message;
-import com.example.electrohive.Models.SupportChat;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.SupportChatViewModel;
 
