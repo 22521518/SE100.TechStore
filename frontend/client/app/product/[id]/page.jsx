@@ -38,6 +38,7 @@ import {
 import { addItem } from "@provider/redux/cart/cartSlice";
 import { addCartItem } from "@service/cart";
 import ProfileImageHolder from "@components/UI/ProfileImageHolder";
+import { setOrderItems, setOrderStateAsync } from "@provider/redux/order/orderSlice";
 
 function reducer(state, action) {
   if (
@@ -103,7 +104,7 @@ const Product = () => {
           const existingFeedbackIndex = prev.findIndex(
             (feedbackItem) => feedbackItem.feedback_id === data.feedback_id
           );
-  
+
           if (existingFeedbackIndex >= 0) {
             // Feedback exists, replace it
             const updatedFeedbacks = [...prev];
@@ -153,11 +154,9 @@ const Product = () => {
             break;
         }
       } else {
-        toastError('Failed to add feedback')
+        toastError("Failed to add feedback");
       }
     });
-
-
   };
   const handleSetFeedbackFilter = (rate) => {
     setFeedbackFilter(rate === feedbackFilter ? -1 : rate);
@@ -199,8 +198,23 @@ const Product = () => {
   };
 
   const handleBuyNow = async () => {
-    await handleAddToCart();
-    router.push("/cart");
+    const orderItems = [
+      {
+        order_id: "",
+        product_id: product.product_id,
+        product: product,
+        quantity: state.quantity,
+        unit_price: product.price - (product.price / 100) * product.discount,
+        total_price:
+          (product.price - (product.price / 100) * product.discount) *
+          state.quantity,
+      },
+    ];
+
+    // Dispatching the order items to Redux
+    dispatch(setOrderItems({ items: orderItems }));
+    await dispatch(setOrderStateAsync(1));
+    router.replace("/cart/checkout");
   };
 
   const handleSetSelectedId = (index) => {
@@ -349,7 +363,9 @@ const Product = () => {
                 <span className="opacity-70">
                   {formattedPrice(product?.price)}
                 </span>
-                <span className="text-red-500 font-semibold">-{product?.discount}%</span>
+                <span className="text-red-500 font-semibold">
+                  -{product?.discount}%
+                </span>
               </div>
             )}
             <div>{product?.stock_quantity} in-stocks</div>
