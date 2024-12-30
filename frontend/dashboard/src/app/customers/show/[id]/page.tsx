@@ -44,7 +44,7 @@ const CustomerShow = () => {
   });
 
   const totalSpending = customerValue.orders?.reduce((acc, order) => {
-    acc += order.total_price;
+    acc += Number(order.total_price);
     return acc;
   }, 0);
 
@@ -171,7 +171,7 @@ const CustomerShow = () => {
             <Box className="flex flex-row gap-4 items-center h-full">
               <LocalAtmOutlinedIcon className="text-4xl" />
               <Typography variant="h4" className="text-2xl font-bold">
-                Total Spening
+                Total Spending
               </Typography>
             </Box>
             <Typography variant="h4" className="text-3xl font-bold">

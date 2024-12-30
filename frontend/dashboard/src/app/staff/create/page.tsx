@@ -127,15 +127,20 @@ const StaffCreate = () => {
               <FormControl>
                 <TextField
                   type="date"
-                  id="hire_date"
-                  label="Hire Date"
-                  name="hire_date"
+                  id="birth_date"
+                  label="Birthdate"
+                  name="birth_date"
                   value={
-                    new Date(staffValue.hire_date).toISOString().split('T')[0]
+                    new Date(staffValue.birth_date || '')
+                      .toISOString()
+                      .split('T')[0]
                   }
-                  onChange={(e) =>
-                    setStaffValue({ ...staffValue, hire_date: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setStaffValue({
+                      ...staffValue,
+                      birth_date: new Date(e.target.value)
+                    });
+                  }}
                 />
               </FormControl>
             </Box>
@@ -170,20 +175,15 @@ const StaffCreate = () => {
               <FormControl>
                 <TextField
                   type="date"
-                  id="birth_date"
-                  label="Birthdate"
-                  name="birth_date"
+                  id="hire_date"
+                  label="Hire Date"
+                  name="hire_date"
                   value={
-                    new Date(staffValue.birth_date || '')
-                      .toISOString()
-                      .split('T')[0]
+                    new Date(staffValue.hire_date).toISOString().split('T')[0]
                   }
-                  onChange={(e) => {
-                    setStaffValue({
-                      ...staffValue,
-                      birth_date: new Date(e.target.value)
-                    });
-                  }}
+                  onChange={(e) =>
+                    setStaffValue({ ...staffValue, hire_date: e.target.value })
+                  }
                 />
               </FormControl>
             </Box>
