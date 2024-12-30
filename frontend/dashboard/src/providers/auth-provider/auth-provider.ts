@@ -117,7 +117,7 @@ export const authProvider: AuthProvider = {
     })
       .then(async (response) => {
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          // throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return await response
           .text()
