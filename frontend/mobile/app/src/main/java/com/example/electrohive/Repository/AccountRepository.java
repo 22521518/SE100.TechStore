@@ -51,9 +51,7 @@ public class AccountRepository {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                // Handle failure (e.g., no internet, server down)
                 accessToken.postValue(new ApiResponse<>(false, null, t.getMessage(), -1));
-
             }
         });
 
