@@ -3,13 +3,11 @@ package com.example.electrohive.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +17,6 @@ import com.example.electrohive.Models.District;
 import com.example.electrohive.Models.Province;
 import com.example.electrohive.Models.Ward;
 import com.example.electrohive.R;
-import com.example.electrohive.Repository.AddressRepository;
-
-import org.checkerframework.checker.units.qual.A;
 
 public class AccountAddAddressPage extends AppCompatActivity {
 

@@ -39,7 +39,7 @@ public class Product {
         return this.productFeedbacks;
     }
 
-    // Getters and Setters
+
     public String getProductId() {
         return productId;
     }

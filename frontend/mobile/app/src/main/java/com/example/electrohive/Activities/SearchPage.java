@@ -3,44 +3,25 @@ package com.example.electrohive.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.electrohive.Adapters.ProductAdapter;
 import com.example.electrohive.Models.Category;
-import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Models.Product;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.CategoryViewModel;
 import com.example.electrohive.ViewModel.ProductViewModel;
-import com.example.electrohive.utils.PreferencesHelper;
-import com.google.android.material.navigation.NavigationView;
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.skydoves.powerspinner.PowerSpinnerView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import kotlin.collections.IntIterator;
 
 public class SearchPage extends DrawerBasePage {
 

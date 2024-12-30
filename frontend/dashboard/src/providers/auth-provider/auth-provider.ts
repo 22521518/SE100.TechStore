@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 
 export const authProvider: AuthProvider = {
   login: async ({ email, password }) => {
-    const rep = await fetch(`${API_DEV_URL}/auth/login/dashboard`, {
+    const rep = await fetch(`${API_URL}/auth/login/dashboard`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ export const authProvider: AuthProvider = {
       return [];
     }
 
-    const rep = await fetch(`${API_DEV_URL}/profile/staff/permissions`, {
+    const rep = await fetch(`${API_URL}/profile/staff/permissions`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ export const authProvider: AuthProvider = {
       return [];
     }
 
-    const rep = await fetch(`${API_DEV_URL}/profile/staff`, {
+    const rep = await fetch(`${API_URL}/profile/staff`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

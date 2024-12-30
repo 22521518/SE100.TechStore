@@ -71,7 +71,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
         CartItem cartitem = cartItems.get(position);
 
-        // Set data to views
+
         holder.quantity.setText(String.valueOf(cartitem.getQuantity()));
         holder.quantity.addTextChangedListener(new TextWatcher() {
             @Override

@@ -5,27 +5,16 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.electrohive.Models.Address;
 import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.Customer;
-import com.example.electrohive.api.AddressService;
 import com.example.electrohive.api.CustomerService;
 import com.example.electrohive.utils.Model.CustomerUtils;
-import com.example.electrohive.utils.PreferencesHelper;
 import com.example.electrohive.utils.RetrofitClient;
-import com.example.electrohive.utils.generator.MockAddress;
-import com.example.electrohive.utils.generator.MockCustomer;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CustomerRepository {
     private final CustomerService customerService;

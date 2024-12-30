@@ -18,7 +18,6 @@ public class SupportChat {
         this.messages = messages;
     }
 
-    // Getters and Setters
     public String getCustomerId() {
         return customerId;
     }

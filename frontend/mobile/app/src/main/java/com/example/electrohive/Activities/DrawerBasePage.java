@@ -19,7 +19,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.electrohive.Models.CartItem;
-import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Models.Message;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.CartViewModel;

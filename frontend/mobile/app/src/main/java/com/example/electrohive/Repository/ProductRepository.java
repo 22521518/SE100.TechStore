@@ -15,9 +15,7 @@ import com.example.electrohive.api.ProductService;
 import com.example.electrohive.utils.Model.FeedbackUtils;
 import com.example.electrohive.utils.Model.ProductUtils;
 import com.example.electrohive.utils.RetrofitClient;
-import com.example.electrohive.utils.generator.MockProduct;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
