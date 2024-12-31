@@ -3,29 +3,21 @@ package com.example.electrohive.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electrohive.Adapters.AddressAdapter;
-import com.example.electrohive.Adapters.OrderAdapter;
 import com.example.electrohive.Models.Address;
-import com.example.electrohive.Models.Order;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.AddressViewModel;
-import com.example.electrohive.utils.PreferencesHelper;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

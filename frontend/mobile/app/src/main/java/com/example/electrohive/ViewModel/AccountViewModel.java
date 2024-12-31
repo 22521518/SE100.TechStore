@@ -1,8 +1,5 @@
 package com.example.electrohive.ViewModel;
 
-import android.content.Context;
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,16 +7,11 @@ import androidx.lifecycle.ViewModel;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.electrohive.Models.Account;
-import com.example.electrohive.Models.Address;
 import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Repository.AccountRepository;
-import com.example.electrohive.Repository.AddressRepository;
 import com.example.electrohive.Repository.CustomerRepository;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.google.gson.JsonObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountViewModel extends ViewModel {
     private final AccountRepository accountRepository;
