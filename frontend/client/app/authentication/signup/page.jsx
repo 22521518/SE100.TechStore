@@ -51,7 +51,7 @@ export default function SignUp() {
       toastWarning("Invalid email!");
       return;
     }
-    if(newAccount.phonenumber.trim().length<10) {
+    if(newAccount.phonenumber.trim().length!=10) {
       toastWarning("Phone number must be at least 10 digits long!");
       return;
     }
@@ -172,7 +172,7 @@ export default function SignUp() {
             name={"username"}
           />
           <PhoneInput
-            maxLength={11}
+            maxLength={10}
             value={newAccount.phonenumber}
             onChange={(v) =>
               setNewAccount((prev) => ({ ...prev, phonenumber: v }))

@@ -71,7 +71,7 @@ export default function Search() {
 
   const filteredProducts = products.filter((item) => {
     const matchesCategory = selectedCategory && selectedCategory.id !==0
-      ? item.categories[0].category_id === selectedCategory.id
+      ? item.categories[0]?.category_id === selectedCategory.id
       : true;
     const matchesPriceRange = isWithinPriceRange(item.price);
 
