@@ -86,6 +86,10 @@ const Product = () => {
   const productImageListRef = useRef(null);
 
   const handleAddFeedback = async () => {
+    if (!session.isAuthenticated) {
+      toastError("You need to login to proceed");
+      return;
+    }
     if (feedback.content.trim() === "") {
       toastWarning("Please add your feedback before submit");
       return;

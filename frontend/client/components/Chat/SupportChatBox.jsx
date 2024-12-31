@@ -115,6 +115,11 @@ const SupportChatBox = () => {
   
 
   const handleSend = async () => {
+    if(!session.isAuthenticated) {
+      toastError("Please login to chat with us");
+      inputRef.current.value = "";
+      return;
+    }
     if (
       socket &&
       inputRef.current &&
