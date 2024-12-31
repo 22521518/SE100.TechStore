@@ -70,7 +70,6 @@ public class DistrictPage extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(LocationViewModel.class);
 
-
         provinceName = findViewById(R.id.selectedProvinceText);
         provinceName.setText(province.getProvinceName());
         districtListView = findViewById(R.id.district_listview);

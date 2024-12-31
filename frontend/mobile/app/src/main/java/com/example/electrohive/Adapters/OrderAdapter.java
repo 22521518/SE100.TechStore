@@ -26,7 +26,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     private List<Order> orderList;
     private Context context;
-
     private OrderViewModel orderViewModel;
 
     // Constructor

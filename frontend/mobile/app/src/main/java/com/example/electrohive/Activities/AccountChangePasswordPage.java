@@ -18,7 +18,6 @@ import com.example.electrohive.utils.PreferencesHelper;
 public class AccountChangePasswordPage extends AppCompatActivity {
 
     private AccountViewModel accountViewModel;
-
     private EditText currentPassword;
     private EditText newPassword;
     private EditText confirmPassword;
@@ -89,7 +88,6 @@ public class AccountChangePasswordPage extends AppCompatActivity {
 
     }
     private void signOut() {
-
         PreferencesHelper.clear();
 
         Intent intent = new Intent(AccountChangePasswordPage.this, LoginPage.class);

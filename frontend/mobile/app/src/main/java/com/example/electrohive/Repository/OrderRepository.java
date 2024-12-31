@@ -1,7 +1,5 @@
 package com.example.electrohive.Repository;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
