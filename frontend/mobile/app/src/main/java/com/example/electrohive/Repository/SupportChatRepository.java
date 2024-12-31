@@ -13,7 +13,6 @@ import com.example.electrohive.Models.Sender;
 import com.example.electrohive.api.SupportChatService;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.example.electrohive.utils.RetrofitClient;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -23,7 +22,6 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import io.socket.client.IO;
