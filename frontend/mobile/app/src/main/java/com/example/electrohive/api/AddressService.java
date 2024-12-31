@@ -1,10 +1,7 @@
 package com.example.electrohive.api;
 
-import com.example.electrohive.Models.Address;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import org.openqa.selenium.json.Json;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
