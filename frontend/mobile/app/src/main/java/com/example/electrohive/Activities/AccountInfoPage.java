@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -15,24 +14,19 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.CustomerViewModel;
-import com.example.electrohive.utils.PreferencesHelper;
 import com.example.electrohive.utils.format.Format;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-
-import retrofit2.http.Body;
 
 public class AccountInfoPage extends AppCompatActivity {
     private ImageView userInfoImage;

@@ -11,7 +11,6 @@ import com.example.electrohive.Adapters.ProductImagesAdapter;
 import com.example.electrohive.Models.ProductImage;
 import com.example.electrohive.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.relex.circleindicator.CircleIndicator3;
