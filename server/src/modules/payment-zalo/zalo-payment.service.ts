@@ -10,7 +10,7 @@ import moment from 'moment';
 import { PAYMENT_STATUS, Prisma } from '@prisma/client';
 import { ShippingAddress } from '../orders/entities/order.entity';
 import { CreateOrderDto } from '../orders/dto/create-order.dto';
-import { catchError, map } from 'rxjs';
+import { catchError, lastValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios';
 import qs from 'qs';
 
@@ -89,16 +89,18 @@ export class ZaloPaymentService {
       order.mac = createHmac('sha256', config.key1).update(data).digest('hex');
 
       try {
-        const response = await this.httpService
-          .post(config.endpoint_create, null, {
-            params: order,
-          })
-          .pipe(
-            map((res) => res.data),
-            catchError((error: AxiosError) => {
-              throw new Error(error.message);
-            }),
-          );
+        const response = await lastValueFrom(
+          this.httpService
+            .post(config.endpoint_create, null, {
+              params: order,
+            })
+            .pipe(
+              map((res) => res.data),
+              catchError((error: AxiosError) => {
+                throw new Error(error.message);
+              }),
+            ),
+        );
         return response;
       } catch (error: BadRequestException | any) {
         throw new BadRequestException(`Can't request payment ${error}`);
