@@ -19,7 +19,6 @@ public class CartViewModel extends ViewModel {
 
     private final MutableLiveData<ApiResponse<List<CartItem>>> cart = new MutableLiveData<>();
 
-    // Private constructor to enforce singleton pattern
     private CartViewModel() {
         repository = new CartRepository();
         fetchCartFromServer(); // Initialize cart from server

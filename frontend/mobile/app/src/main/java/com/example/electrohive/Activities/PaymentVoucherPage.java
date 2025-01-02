@@ -6,21 +6,16 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electrohive.Adapters.PaymentVoucherAdapter;
-import com.example.electrohive.Adapters.VoucherAdapter;
 import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.R;
 import com.example.electrohive.ViewModel.VoucherViewModel;
-import com.example.electrohive.utils.generator.MockVoucher;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class PaymentVoucherPage extends AppCompatActivity {

@@ -27,7 +27,7 @@ public class LocationRepository {
 
     public LocationRepository() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.vnappmob.com") // Base URL
+                .baseUrl("https://api.vnappmob.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

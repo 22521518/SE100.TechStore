@@ -93,7 +93,7 @@ public class OrderViewModel extends ViewModel {
                 return date2.compareTo(date1); // Descending order
             } catch (Exception e) {
                 e.printStackTrace();
-                return 0; // Fallback to equal comparison in case of an error
+                return 0;
             }
         });
 

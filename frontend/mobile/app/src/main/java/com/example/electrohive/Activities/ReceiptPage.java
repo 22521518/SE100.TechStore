@@ -1,12 +1,9 @@
 package com.example.electrohive.Activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,14 +14,10 @@ import com.example.electrohive.Models.CheckoutAddress;
 import com.example.electrohive.Models.OrderItemRequest;
 import com.example.electrohive.Models.Voucher;
 import com.example.electrohive.R;
-import com.example.electrohive.ViewModel.OrderViewModel;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import java.time.LocalDate;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class ReceiptPage  extends AppCompatActivity {
 
