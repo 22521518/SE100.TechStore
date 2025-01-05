@@ -42,7 +42,7 @@ public class ProductFeedbackAdapter extends RecyclerView.Adapter<ProductFeedback
         if (feedback.getCustomer() != null) {
             holder.username.setText(feedback.getCustomer().getUsername());
         } else {
-            holder.username.setText("Customer"); // Default if customer info is unavailable
+            holder.username.setText("Customer");
         }
 
         // Set rating

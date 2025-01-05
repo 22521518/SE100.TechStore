@@ -22,7 +22,6 @@ public class LocationViewModel extends ViewModel {
         repository = new LocationRepository();
     }
 
-    // Getter for provinces with ApiResponse
     public LiveData<ApiResponse<List<Province>>> getProvinces() {
         if (provinces == null) {
             provinces = repository.getProvinces(); // Retrieve provinces from repository

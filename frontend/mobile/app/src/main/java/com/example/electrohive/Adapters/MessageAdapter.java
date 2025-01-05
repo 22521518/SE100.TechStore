@@ -20,7 +20,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     private List<Message> messages;
 
-    // Constructor
     public MessageAdapter(List<Message> messages) {
         this.messages = messages;
     }

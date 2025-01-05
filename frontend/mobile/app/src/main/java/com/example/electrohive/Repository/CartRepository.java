@@ -7,21 +7,14 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.electrohive.Models.ApiResponse;
 import com.example.electrohive.Models.CartItem;
-import com.example.electrohive.Models.Enum.ORDER_STATUS;
-import com.example.electrohive.Models.Order;
-import com.example.electrohive.Models.Product;
 import com.example.electrohive.api.CartService;
-import com.example.electrohive.api.OrderService;
 import com.example.electrohive.utils.Model.CartUtils;
-import com.example.electrohive.utils.Model.ProductUtils;
 import com.example.electrohive.utils.RetrofitClient;
-import com.example.electrohive.utils.generator.MockOrder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -1,34 +1,23 @@
 package com.example.electrohive.Activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electrohive.Adapters.PaymentAdapter;
-import com.example.electrohive.Adapters.ProductCartAdapter;
-import com.example.electrohive.Models.Address;
 import com.example.electrohive.Models.CartItem;
 import com.example.electrohive.Models.CheckoutAddress;
-import com.example.electrohive.Models.District;
-import com.example.electrohive.Models.Province;
 import com.example.electrohive.Models.Voucher;
-import com.example.electrohive.Models.Ward;
 import com.example.electrohive.R;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import org.w3c.dom.Text;
-
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
