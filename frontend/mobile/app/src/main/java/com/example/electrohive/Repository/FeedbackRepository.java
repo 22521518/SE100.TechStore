@@ -1,18 +1,14 @@
 package com.example.electrohive.Repository;
 
-import android.icu.text.LocaleDisplayNames;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.electrohive.Models.ApiResponse;
-import com.example.electrohive.Models.Product;
 import com.example.electrohive.Models.ProductFeedback;
-import com.example.electrohive.api.CustomerService;
 import com.example.electrohive.api.FeedbackService;
 import com.example.electrohive.utils.Model.FeedbackUtils;
-import com.example.electrohive.utils.Model.ProductUtils;
 import com.example.electrohive.utils.RetrofitClient;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
