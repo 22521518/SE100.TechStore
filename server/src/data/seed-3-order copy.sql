@@ -1,41 +1,70 @@
------------------------------------------------------ ORDERS -----------------------------------------------------
--- Insert Orders
-WITH new_orders AS (
+WITH all_products AS (
+    SELECT
+        p."product_id",
+        p."product_name",
+        p."price",
+        p."discount",
+        COUNT(oi."order_id") AS "order_count"
+    FROM "Products" p
+    LEFT JOIN "Order_Items" oi ON p."product_id" = oi."product_id"
+    GROUP BY p."product_id", p."product_name", p."price"
+    ORDER BY random()  -- Randomize product selection
+    LIMIT 10          -- Restrict to 10 random products
+),
+
+new_orders AS (
     INSERT INTO "Orders" ("order_id", "customer_id", "order_status", "total_price", "voucher_code", "payment_method")
-    VALUES
-    ('ORD001', (SELECT "customer_id" FROM "Customers" WHERE "username" = 'user1'), 'CONFIRMED'::"ORDER_STATUS", 1500.00, NULL, 'COD'::"PAYMENT_METHOD"),
-    ('ORD002', (SELECT "customer_id" FROM "Customers" WHERE "username" = 'user2'), 'SHIPPED'::"ORDER_STATUS", 2500.00, NULL, 'CREDIT_CARD'::"PAYMENT_METHOD"),
-    ('ORD003', (SELECT "customer_id" FROM "Customers" WHERE "username" = 'user3'), 'DELIVERED'::"ORDER_STATUS", 1000.00, NULL, 'ELECTRO_WALLET'::"PAYMENT_METHOD")
+    SELECT
+        'ORD' || LEFT(MD5(now()::text || random()::text), 16),
+        c."customer_id",
+        (ARRAY['DELIVERED', 'DELIVERED', 'PENDING', 'DELIVERED', 'DELIVERED', 'CONFIRMED', 'DELIVERED', 'DELIVERED', 'DELIVERED', 'DELIVERED', 'SHIPPED', 'CANCELLED', 'DELIVERED', 'DELIVERED', 'DELIVERED'])[FLOOR(random() * 15 + 1)::INT]::"ORDER_STATUS", -- Random order status
+        p."price",
+        NULL,
+        'COD'::"PAYMENT_METHOD"
+    FROM "Customers" c
+    CROSS JOIN all_products p
+    LIMIT 10 -- Generate orders for 10 products
+    ON CONFLICT ("order_id") DO NOTHING 
     RETURNING "order_id", "customer_id"
 ),
 
--- Insert Order Items
-order_items AS (
-    INSERT INTO "Order_Items" ("order_id", "product_id", "quantity", "unit_price", "total_price")
-    VALUES
-    ('ORD001', (SELECT "product_id" FROM "Products" WHERE "product_name" = 'iPhone 14'), 1, 999.99, 999.99),
-    ('ORD002', (SELECT "product_id" FROM "Products" WHERE "product_name" = 'Samsung Galaxy S22'), 1, 899.99, 899.99),
-    ('ORD003', (SELECT "product_id" FROM "Products" WHERE "product_name" = 'Kingston Fury 16GB DDR5'), 2, 129.99, 200.00)
-    RETURNING "order_id", "product_id"
+new_orders_with_products AS (
+    SELECT   
+      DISTINCT  o."order_id",
+        o."customer_id",
+        p."product_id",
+        p."discount",
+        p."price"
+    FROM new_orders o
+    CROSS JOIN all_products p
 ),
 
--- Insert Invoices
-new_invoices AS (
-    INSERT INTO "Invoices" ("invoice_id", "order_id", "total_price")
-    VALUES
-    ('INV001', 'ORD001', 999.99),
-    ('INV002', 'ORD002', 899.99),
-    ('INV003', 'ORD003', 200.00)
-    RETURNING "invoice_id", "order_id"
+order_items AS (
+    INSERT INTO "Order_Items" ("order_id", "product_id", "quantity", "unit_price", "total_price")
+    SELECT
+        nop."order_id",
+        nop."product_id",
+        3,  -- Fixed quantity per product
+         nop."price" - (nop."price" * COALESCE(nop."discount", 0)), -- Discount applied
+        (nop."price" - (nop."price" * COALESCE(nop."discount", 0))) * 3 -- Total price for the quantity
+    FROM new_orders_with_products nop
+    ON CONFLICT ("order_id", "product_id") DO NOTHING 
+    RETURNING "order_id", "product_id", "quantity", "unit_price", "total_price"
 )
 
--- Insert Shipping Address
-INSERT INTO "Shipping_Address" ("shipping_id", "address_id", "order_id", "shipping_status", "delivery_date")
+INSERT INTO "Shipping_Address" ("shipping_id", "order_id", "shipping_status", "delivery_date", "city", "district", "ward", "address", "full_name", "phone_number")
 SELECT
-    'SHIP001', (SELECT "address_id" FROM "Customer_Address" WHERE "city" = 'Hanoi'), 'ORD001', 'CONFIRMED'::"ORDER_STATUS", '2024-11-18 10:00:00'::TIMESTAMP
-UNION ALL
-SELECT
-    'SHIP002', (SELECT "address_id" FROM "Customer_Address" WHERE "city" = 'Ho Chi Minh City'), 'ORD002', 'SHIPPED'::"ORDER_STATUS", '2024-11-20 15:00:00'::TIMESTAMP
-UNION ALL
-SELECT
-    'SHIP003', (SELECT "address_id" FROM "Customer_Address" WHERE "city" = 'Da Nang'), 'ORD003', 'DELIVERED'::"ORDER_STATUS", '2024-11-15 09:00:00'::TIMESTAMP;
+    -- 'SHIP' || LPAD((ROW_NUMBER() OVER (ORDER BY random()))::TEXT, 3, '0'),
+    'SHIP' || LEFT(MD5(now()::text || random()::text), 16),
+    nor."order_id",
+    (ARRAY['DELIVERED', 'DELIVERED', 'PENDING', 'DELIVERED', 'DELIVERED', 'CONFIRMED', 'DELIVERED', 'DELIVERED', 'DELIVERED', 'DELIVERED', 'SHIPPED', 'CANCELLED', 'DELIVERED', 'DELIVERED', 'DELIVERED'])[FLOOR(random() * 15 + 1)::INT]::"ORDER_STATUS", -- Random shipping status
+    '2025-01-12 10:00:00'::TIMESTAMP,
+    ca."city",
+    ca."district",
+    ca."ward",
+    ca."address",
+    c."full_name",
+    c."phone_number"
+FROM new_orders nor
+JOIN "Customer_Address" ca ON nor."customer_id" = ca."customer_id"
+JOIN "Customers" c ON nor."customer_id" = c."customer_id";

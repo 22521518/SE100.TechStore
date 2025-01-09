@@ -17,7 +17,12 @@ export class ImportationsService {
       // Create the importation along with the nested import_items if provided
       const importation = await this.prismaDbService.importations.create({
         data: createImportationDto,
-        include: { import_items: including_item, supplier: including_supplier },
+        include: {
+          import_items: {
+            include: { product: including_item },
+          },
+          supplier: including_supplier,
+        },
       });
 
       for (const item of import_items) {

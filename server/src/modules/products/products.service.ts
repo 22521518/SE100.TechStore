@@ -42,6 +42,8 @@ export class ProductsService {
           throw new BadRequestException('Failed to create product');
         }
 
+        let productWithImage = null;
+
         // Upload images to Cloudinary
         if (images && images.length > 0) {
           const imageUrl = await Promise.all(
@@ -54,10 +56,10 @@ export class ProductsService {
             ),
           );
 
-          await prisma.products.update({
+          productWithImage = await prisma.products.update({
             where: { product_id: product.product_id },
             data: {
-              images: imageUrl,
+              images: [...imageUrl],
             },
           });
         }
@@ -73,7 +75,7 @@ export class ProductsService {
         }
 
         return {
-          ...product,
+          ...(productWithImage || product),
           attributes,
         };
       });

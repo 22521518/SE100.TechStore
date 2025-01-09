@@ -52,7 +52,7 @@ export class CustomersController {
       };
 
       let imageAvatar = null;
-      if (image) {
+      if (image && image.url) {
         if (image.type === 'dev') {
           customerDto.image = image.url;
         } else {
@@ -119,7 +119,7 @@ export class CustomersController {
       };
 
       let imageAvatar = null;
-      if (image) {
+      if (image && image.url) {
         if (image.type === 'dev') {
           customerDto.image = image.url;
         } else {

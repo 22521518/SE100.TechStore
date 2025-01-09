@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ORDER_STATUS } from '@prisma/client';
 import { PrismaDbService } from 'src/databases/prisma-db/prisma-db.service';
 
 @Injectable()
@@ -87,6 +88,11 @@ export class DashboardService {
                 lt: endDate,
               },
             },
+            {
+              order_status: {
+                in: [ORDER_STATUS.DELIVERED],
+              },
+            },
           ],
         },
         select: {
@@ -130,6 +136,11 @@ export class DashboardService {
             {
               created_at: {
                 lt: endDate,
+              },
+            },
+            {
+              order_status: {
+                in: [ORDER_STATUS.DELIVERED],
               },
             },
           ],
@@ -186,6 +197,11 @@ export class DashboardService {
                 lt: endDate,
               },
             },
+            {
+              order_status: {
+                in: [ORDER_STATUS.DELIVERED],
+              },
+            },
           ],
         },
         select: {
@@ -225,6 +241,13 @@ export class DashboardService {
               order: {
                 created_at: {
                   lt: endDate,
+                },
+              },
+            },
+            {
+              order: {
+                order_status: {
+                  in: [ORDER_STATUS.DELIVERED],
                 },
               },
             },
@@ -295,6 +318,13 @@ export class DashboardService {
                 },
               },
             },
+            {
+              order: {
+                order_status: {
+                  in: [ORDER_STATUS.DELIVERED],
+                },
+              },
+            },
           ],
         },
         select: {
@@ -307,9 +337,6 @@ export class DashboardService {
         },
       });
     } catch {
-      throw new Error('Failed to get revenue category data by year');
-    }
-    {
       throw new Error('Failed to get revenue category data by year');
     }
   }
@@ -335,6 +362,13 @@ export class DashboardService {
               order: {
                 created_at: {
                   lt: endDate,
+                },
+              },
+            },
+            {
+              order: {
+                order_status: {
+                  in: [ORDER_STATUS.DELIVERED],
                 },
               },
             },
@@ -369,6 +403,13 @@ export class DashboardService {
               order: {
                 created_at: {
                   lt: endDate,
+                },
+              },
+            },
+            {
+              order: {
+                order_status: {
+                  in: [ORDER_STATUS.DELIVERED],
                 },
               },
             },
@@ -426,6 +467,13 @@ export class DashboardService {
   async GetTotalRevenueCategory(top: number = 5) {
     try {
       const orderItems = await this.prismaDbService.order_Items.findMany({
+        where: {
+          order: {
+            order_status: {
+              in: [ORDER_STATUS.DELIVERED],
+            },
+          },
+        },
         select: {
           product: {
             select: {
@@ -478,6 +526,11 @@ export class DashboardService {
   async GetTotalRevenueCustomer(top: number = 5) {
     try {
       const orders = await this.prismaDbService.orders.findMany({
+        where: {
+          order_status: {
+            in: [ORDER_STATUS.DELIVERED],
+          },
+        },
         select: {
           total_price: true,
           customer: true,
@@ -516,6 +569,13 @@ export class DashboardService {
   async GetTotalRevenueProduct(top: number = 5) {
     try {
       const revenueByProduct = await this.prismaDbService.order_Items.findMany({
+        where: {
+          order: {
+            order_status: {
+              in: [ORDER_STATUS.DELIVERED],
+            },
+          },
+        },
         select: {
           product: true,
           total_price: true,
@@ -554,6 +614,11 @@ export class DashboardService {
   async GetTotalRevenue() {
     try {
       const order = await this.prismaDbService.orders.findMany({
+        where: {
+          order_status: {
+            in: [ORDER_STATUS.DELIVERED],
+          },
+        },
         select: {
           total_price: true,
         },
@@ -602,6 +667,9 @@ export class DashboardService {
               created_at: {
                 gte: startDate,
                 lt: endDate,
+              },
+              order_status: {
+                in: [ORDER_STATUS.DELIVERED],
               },
             },
           },

@@ -20,6 +20,23 @@ export class VouchersService {
 
   async findAll(voucher_code: string, voucher_name: string) {
     try {
+      const currentDate = new Date();
+      await this.prismaDbService.vouchers.updateMany({
+        where: {
+          OR: [
+            {
+              valid_to: { lt: currentDate }, // Vouchers expired
+            },
+            {
+              valid_from: { gt: currentDate }, // Vouchers not yet active
+            },
+          ],
+        },
+        data: {
+          is_active: false, // Deactivate invalid vouchers
+        },
+      });
+
       const vouchers = await this.prismaDbService.vouchers.findMany({
         where: {
           ...(voucher_code

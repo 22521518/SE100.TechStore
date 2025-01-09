@@ -23,12 +23,32 @@ export class VouchersController {
   @Permissions(['voucher-create'])
   async create(@Body() createVoucherDto: CreateVoucherDto) {
     try {
+      const validDateTo = new Date(createVoucherDto.valid_to);
+      const validDateFrom = new Date(createVoucherDto.valid_from);
+
+      if (validDateFrom > validDateTo) {
+        throw new BadRequestException(
+          'Valid from date cannot be after valid to date',
+        );
+      }
+
+      const today = new Date();
+
+      const isActive =
+        validDateFrom.getFullYear() <= today.getFullYear() &&
+        validDateFrom.getMonth() <= today.getMonth() &&
+        validDateFrom.getDate() <= today.getDate() &&
+        validDateTo.getFullYear() >= today.getFullYear() &&
+        validDateTo.getMonth() >= today.getMonth() &&
+        validDateTo.getDate() >= today.getDate();
+
       const voucherDto: Prisma.VouchersCreateInput = {
         voucher_name: createVoucherDto.voucher_name,
         description: createVoucherDto.description,
         discount_amount: createVoucherDto.discount_amount,
         valid_from: createVoucherDto.valid_from,
         valid_to: createVoucherDto.valid_to,
+        is_active: isActive,
       };
       const voucher = await this.vouchersService.create(voucherDto);
       return voucher;
@@ -75,12 +95,32 @@ export class VouchersController {
     @Body() updateVoucherDto: UpdateVoucherDto,
   ) {
     try {
+      const validDateTo = new Date(updateVoucherDto.valid_to);
+      const validDateFrom = new Date(updateVoucherDto.valid_from);
+
+      if (validDateFrom > validDateTo) {
+        throw new BadRequestException(
+          'Valid from date cannot be after valid to date',
+        );
+      }
+
+      const today = new Date();
+
+      const isActive =
+        validDateFrom.getFullYear() <= today.getFullYear() &&
+        validDateFrom.getMonth() <= today.getMonth() &&
+        validDateFrom.getDate() <= today.getDate() &&
+        validDateTo.getFullYear() >= today.getFullYear() &&
+        validDateTo.getMonth() >= today.getMonth() &&
+        validDateTo.getDate() >= today.getDate();
+
       const voucherDto: Prisma.VouchersUpdateInput = {
         voucher_name: updateVoucherDto.voucher_name,
         description: updateVoucherDto.description,
         discount_amount: updateVoucherDto.discount_amount,
         valid_from: updateVoucherDto.valid_from,
         valid_to: updateVoucherDto.valid_to,
+        is_active: isActive,
       };
       const voucher = await this.vouchersService.update(id, voucherDto);
       return voucher;

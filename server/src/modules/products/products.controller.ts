@@ -114,7 +114,7 @@ export class ProductsController {
 
   @Patch(':id')
   @Permissions(['product-update'])
-  @UseInterceptors(FilesInterceptor('images', 6))
+  @UseInterceptors(FilesInterceptor('images', 8))
   async update(
     @Param('id') id: string,
     @Body()
@@ -126,12 +126,12 @@ export class ProductsController {
 
       const imageFiles = await Promise.all(
         images
-          ?.filter((img) => img.name !== updateProductDto.product_name)
+          ?.filter((img) => img.name !== product_info.product_id)
           .map(handleImageJpgBaseString),
       );
 
       const oldImage = images
-        ?.filter((img) => img.name === updateProductDto.product_name)
+        ?.filter((img) => img.name === product_info.product_id)
         .map((img) => img.url);
 
       const productDto: Prisma.ProductsUpdateInput = {

@@ -56,7 +56,7 @@ export class StaffController {
       };
 
       let imageAvatar = null;
-      if (image) {
+      if (image && image.url) {
         if (image.type === 'dev') {
           staffDto.image = image.url;
         } else {
@@ -132,7 +132,7 @@ export class StaffController {
       };
 
       let imageAvatar = null;
-      if (image) {
+      if (image && image.url) {
         if (image.type === 'dev') {
           staffDto.image = image.url;
         } else {

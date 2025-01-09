@@ -3,6 +3,7 @@ WITH all_products AS (
         p."product_id",
         p."product_name",
         p."price",
+        p."discount",
         COUNT(oi."order_id") AS "order_count"
     FROM "Products" p
     LEFT JOIN "Order_Items" oi ON p."product_id" = oi."product_id"
@@ -31,10 +32,11 @@ new_orders_with_products AS (
         o."order_id",
         o."customer_id",
         p."product_id",
+        p."discount",
         p."price"
     FROM new_orders o
     CROSS JOIN all_products p
-),
+),  
 
 order_items AS (
     INSERT INTO "Order_Items" ("order_id", "product_id", "quantity", "unit_price", "total_price")
@@ -42,8 +44,8 @@ order_items AS (
         nop."order_id",
         nop."product_id",
         3,  -- Fixed quantity per product
-        nop."price",
-        nop."price" * 3  -- Total price for the quantity
+        nop."price" - (nop."price" * COALESCE(nop."discount", 0)), -- Discount applied
+        (nop."price" - (nop."price" * COALESCE(nop."discount", 0))) * 3  -- Total price for the quantity
     FROM new_orders_with_products nop
     RETURNING "order_id", "product_id", "quantity", "unit_price", "total_price"
 )

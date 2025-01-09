@@ -163,7 +163,11 @@ export class OrdersService {
           voucher: including_voucher,
         },
       });
-      return orders;
+      return orders.sort((a, b) => {
+        return (
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      });
     } catch (error) {
       console.error(error);
       throw new BadRequestException(error.message || 'Error fetching orders');
@@ -192,7 +196,11 @@ export class OrdersService {
         },
       });
 
-      return orders;
+      return orders.sort((a, b) => {
+        return (
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      });
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Error fetching order');

@@ -12,10 +12,6 @@ import { ProductAttribute } from '../entities/product-attribute.entity';
 import { ImageDto } from '../../../dto/ImageDto';
 
 export class CreateProductDto {
-  @IsOptional()
-  @IsString()
-  product_id?: string;
-
   @IsString()
   product_name: string;
 
