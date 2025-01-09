@@ -1,6 +1,6 @@
 'use client';
 
-import { API_DEV_URL, API_PRO_URL, API_URL } from '@constant/api.constant';
+import { API_URL } from '@constant/api.constant';
 import type { AuthProvider } from '@refinedev/core';
 import Cookies from 'js-cookie';
 

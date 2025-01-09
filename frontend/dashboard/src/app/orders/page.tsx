@@ -22,7 +22,6 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@constant/enum.constant';
 import OrderShow from './show/[id]/page';
 import SearchBar from '@components/searchbar';
-import { API_DEV_URL } from '@constant/api.constant';
 
 type OrderCustomerId = {
   order_id: string;
@@ -80,21 +79,16 @@ const OrderList = () => {
       mode: 'client'
     }
   });
-
-  React.useEffect(() => {
-    console.log(API_DEV_URL);
-    console.log(
-      `orders?q=${orderQuery}&status=${
-        filter.orderStatus.toUpperCase() === 'ALL'
-          ? ''
-          : filter.orderStatus.toUpperCase()
-      }&payment_status=${
-        filter.paymentStatus.toUpperCase() === 'ALL'
-          ? ''
-          : filter.paymentStatus.toUpperCase()
-      }`
-    );
-  }, [dataGridProps]);
+  const {
+    paginationMode,
+    paginationModel,
+    onPaginationModelChange,
+    ...restDataGridProps
+  } = dataGridProps;
+  const [rowsDatagrid, setRowsDatagrid] = React.useState<IOrder[]>([
+    ...dataGridProps.rows
+  ]);
+  const [flag, setFlag] = React.useState(true);
 
   const columns = React.useMemo<GridColDef<IOrder>[]>(
     () => [
@@ -147,6 +141,26 @@ const OrderList = () => {
     ],
     []
   );
+
+  const onUpdateOrderStatus = (order: IOrder) => {
+    setRowsDatagrid((prev) => {
+      return prev.map((item) => {
+        if (item.order_id === order.order_id) {
+          return order;
+        }
+        return item;
+      });
+    });
+  };
+
+  React.useEffect(() => {
+    if (flag && dataGridProps.rows.length !== 0) {
+      setRowsDatagrid([...dataGridProps.rows]);
+    }
+    if (rowsDatagrid.length !== 0) {
+      setFlag(false);
+    }
+  }, [dataGridProps.rows, rowsDatagrid, flag]);
 
   return (
     <Box className="grid grid-cols-5 h-full gap-2">
@@ -205,15 +219,23 @@ const OrderList = () => {
           </Stack>
         </Box>
         <DataGrid
-          columns={columns}
           {...dataGridProps}
+          rows={rowsDatagrid}
+          columns={columns}
           getRowId={(row: IOrder) => row.order_id}
           pagination
+          paginationMode={paginationMode}
+          paginationModel={paginationModel}
+          onPaginationModelChange={(model, details) => {
+            onPaginationModelChange && onPaginationModelChange(model, details);
+            setFlag(true);
+          }}
           onCellClick={(cell) => {
-            setOrderIdDetail({
-              order_id: cell.row.order_id,
-              customer_id: cell.row.customer_id
-            });
+            if (cell.field !== 'actions')
+              setOrderIdDetail({
+                order_id: cell.row.order_id,
+                customer_id: cell.row.customer_id
+              });
           }}
           sx={{
             color: 'black',
@@ -233,6 +255,7 @@ const OrderList = () => {
       </CommonContainer>
       <Box className="col-span-2">
         <OrderShow
+          onUpdateOrderStatus={onUpdateOrderStatus}
           orderId={orderIdDetail?.order_id}
           customerId={orderIdDetail?.customer_id}
         />

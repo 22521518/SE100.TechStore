@@ -46,7 +46,9 @@ const StaffEdit = () => {
   const roleList = getRoleList?.data || [];
 
   const { query, formLoading, onFinish } = useForm<IStaff>({
-    redirect: false
+    redirect: false,
+    resource: 'staff',
+    action: 'edit'
   });
   const record = query?.data?.data;
 

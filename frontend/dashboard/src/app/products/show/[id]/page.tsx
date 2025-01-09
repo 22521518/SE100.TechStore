@@ -4,6 +4,7 @@ import ProductFeedbackList from '@app/product-feedback/show/[id]/page';
 import ProductSatistics from '@app/product-feedback/statistics';
 import CommonContainer from '@components/common-container';
 import { IProductReceive } from '@constant/interface.constant';
+import { dummyProductImage } from '@constant/value.constant';
 import { Box, Typography } from '@mui/material';
 import { HttpError, useNavigation, useForm } from '@refinedev/core';
 import Image from 'next/image';
@@ -51,7 +52,10 @@ const ProductShow = () => {
       <CommonContainer className="py-6 grid grid-cols-2">
         <Box className="flex flex-row gap-4 items-center">
           <Image
-            src={productValue.images && productValue.images[0]}
+            src={
+              (productValue.images && productValue.images[0]) ||
+              dummyProductImage
+            }
             alt={productValue.product_name}
             width={256}
             height={256}

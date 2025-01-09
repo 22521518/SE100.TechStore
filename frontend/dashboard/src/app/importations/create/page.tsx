@@ -36,6 +36,7 @@ import { transformVNMoney } from '@utils/transform.util';
 
 type ImportationCreateProps = {
   onCancel: () => void;
+  onSuccessfulCreate: (importationResponse: IImportation) => void;
 };
 
 type ImportItem = {
@@ -58,7 +59,10 @@ function getStyles(
   };
 }
 
-const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
+const ImportationCreate = ({
+  onCancel,
+  onSuccessfulCreate
+}: ImportationCreateProps) => {
   const theme = useTheme();
   const {
     data: prodRecords,
@@ -170,8 +174,9 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
         supplier_id: supplier?.supplier_id
       };
       const response = await onFinish(importation);
-      console.log('importation', importation);
+      console.log('importation', response);
       if (response) {
+        onSuccessfulCreate(response.data as IImportation);
         onOpenNotification(
           'success',
           'Importation created',
@@ -227,7 +232,7 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
   return (
     <CommonContainer
       isModal
-      className="p-8 flex flex-col gap-3 shadow-sm h-[100%] max-h-[100%] overflow-hidden overflow-y-scroll"
+      className="pt-8 pe-4 ps-8 flex flex-col gap-4 shadow-sm h-max max-h-max overflow-hidden overflow-y-scroll"
       heightMax={false}
       heightMin={false}
     >
@@ -238,7 +243,7 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
         onSubmit={onSubmit}
         className="grid grid-cols-7 mt-4 min-h-[80%] h-auto"
       >
-        <Stack className="gap-3 col-span-3 border-r-[1px] border-solid border-accent border-opacity-20 pr-2 ">
+        <Stack className="gap-3 col-span-3 border-r-[1px] me-4 border-solid border-accent border-opacity-20 pr-8 ">
           <Typography variant="h3" className="text-lg font-bold">
             Total Price: {transformVNMoney(totalPrice)}
           </Typography>
@@ -302,20 +307,6 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
               />
             </FormLabel>
           </FormControl>
-          <Box className="flex flex-grow gap-4 max-h-12">
-            <Button
-              className="bg-accent text-secondary-100 font-bold py-4 px-16 "
-              type="submit"
-            >
-              Save
-            </Button>
-            <Button
-              className="border-accent border-solid border-2 text-accent py-4 px-8 text-base font-bold min-w-max max-h-max"
-              onClick={onCancel}
-            >
-              Cancel
-            </Button>
-          </Box>
         </Stack>
         <Stack className="gap-1 col-span-4">
           <Box className=" px-3 flex flex-col justify-betweenitems-center py-2">
@@ -448,6 +439,20 @@ const ImportationCreate = ({ onCancel }: ImportationCreateProps) => {
             </ListItem>
           ))}
         </Stack>
+        <Box className="flex flex-grow gap-4 max-h-max col-span-full items-end justify-end mt-4">
+          <Button
+            className="bg-accent text-secondary-100 font-bold py-4 px-16 "
+            type="submit"
+          >
+            Save
+          </Button>
+          <Button
+            className="border-accent border-solid border-2 text-accent py-4 px-8 text-base font-bold min-w-max max-h-max"
+            onClick={onCancel}
+          >
+            Cancel
+          </Button>
+        </Box>
       </form>
     </CommonContainer>
   );

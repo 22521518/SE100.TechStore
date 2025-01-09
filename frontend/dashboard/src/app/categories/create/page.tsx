@@ -16,10 +16,14 @@ import { CategoryFormValues } from '../category.interface';
 import CommonContainer from '@components/common-container';
 
 type CategoryCreateProps = {
+  onSuccessfulCreate: (category: ICategory) => void;
   onCancel: () => void;
 };
 
-export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
+export default function CategoryCreate({
+  onCancel,
+  onSuccessfulCreate
+}: CategoryCreateProps) {
   const { onFinish } = useForm<ICategory, HttpError, CategoryFormValues>({
     resource: 'categories',
     action: 'create',
@@ -33,8 +37,11 @@ export default function CategoryCreate({ onCancel }: CategoryCreateProps) {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log('category', category);
-      await onFinish(category);
+      const rep = await onFinish(category);
+      if (rep) {
+        onSuccessfulCreate(rep.data as ICategory);
+      }
+      onCancel();
     } catch (error) {
       console.log('error', error);
     }

@@ -168,7 +168,7 @@ const RoleCreate = () => {
               type="text"
               value={roleValue.description}
               multiline
-              rows={15}
+              rows={8}
               onChange={(e) =>
                 setRoleValue((prev) => {
                   return { ...prev, description: e.target.value };

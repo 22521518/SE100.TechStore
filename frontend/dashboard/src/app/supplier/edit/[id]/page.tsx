@@ -1,40 +1,42 @@
-'use client';
-
 import CommonContainer from '@components/common-container';
 import { ISupplier } from '@constant/interface.constant';
-import { Button, FormControl, TextField, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, Button, FormControl, TextField, Typography } from '@mui/material';
 import { HttpError, useForm } from '@refinedev/core';
 import React from 'react';
 
-type SupplierCreateProps = {
-  onSuccessfulSubmit: (supplierResponse: ISupplier) => void;
+type SupplierEditProps = {
   onCancel: () => void;
+  onSuccessfulEdit: (supplierResponse: ISupplier) => void;
+  supplier: ISupplier;
 };
 
-const SupplierCreate = ({
+const SupplierEdit = ({
+  supplier,
   onCancel,
-  onSuccessfulSubmit
-}: SupplierCreateProps) => {
-  const { onFinish } = useForm<ISupplier, HttpError>({
-    resource: 'supplier'
+  onSuccessfulEdit
+}: SupplierEditProps) => {
+  const { query, onFinish } = useForm<ISupplier, HttpError>({
+    resource: 'supplier',
+    action: 'edit',
+    id: supplier.supplier_id,
+    redirect: false
   });
-
-  const [supplier, setSupplier] = React.useState<ISupplier>({
-    supplier_name: '',
-    contact_number: '',
-    email: '',
-    description: ''
+  const record = query?.data?.data;
+  const [supplierValue, setSupplierValue] = React.useState<ISupplier>({
+    supplier_name: record?.supplier_name || '',
+    contact_number: record?.contact_number || '',
+    email: record?.email || '',
+    description: record?.description || ''
   });
 
   const validateInfo = () => {
-    if (!supplier.supplier_name) {
+    if (!supplierValue.supplier_name) {
       return 'Supplier name is required';
     }
-    if (!supplier.contact_number) {
+    if (!supplierValue.contact_number) {
       return 'Contact number is required';
     }
-    if (!supplier.email) {
+    if (!supplierValue.email) {
       return 'Email is required';
     }
     return '';
@@ -50,10 +52,11 @@ const SupplierCreate = ({
     }
 
     try {
-      const response = await onFinish(supplier);
+      const response = await onFinish(supplierValue);
+      console.log('onSubmit response', response);
       if (response) {
         console.log('onSubmit response', response);
-        onSuccessfulSubmit(response.data as ISupplier);
+        onSuccessfulEdit(response.data as ISupplier);
         onCancel();
       } else {
         console.log('onSubmit error', response);
@@ -82,9 +85,12 @@ const SupplierCreate = ({
             <TextField
               type="text"
               label="Supplier Name"
-              value={supplier.supplier_name}
+              value={supplierValue.supplier_name}
               onChange={(e) =>
-                setSupplier({ ...supplier, supplier_name: e.target.value })
+                setSupplierValue((prev) => ({
+                  ...prev,
+                  supplier_name: e.target.value
+                }))
               }
               className="w-full"
             />
@@ -94,13 +100,16 @@ const SupplierCreate = ({
               type="text"
               label="Contact Number"
               placeholder="+639123456789"
-              value={supplier.contact_number}
+              value={supplierValue.contact_number}
               onChange={(e) => {
                 if (
                   e.target.value.length <= 10 &&
                   (e.target.value.match(/^[0-9]+$/) || e.target.value === '')
                 ) {
-                  setSupplier({ ...supplier, contact_number: e.target.value });
+                  setSupplierValue((prev) => ({
+                    ...prev,
+                    contact_number: e.target.value
+                  }));
                 }
               }}
               className="w-full"
@@ -111,9 +120,9 @@ const SupplierCreate = ({
               type="text"
               label="Email"
               placeholder="email@example.com"
-              value={supplier.email}
+              value={supplierValue.email}
               onChange={(e) =>
-                setSupplier({ ...supplier, email: e.target.value })
+                setSupplierValue((prev) => ({ ...prev, email: e.target.value }))
               }
               className="w-full"
             />
@@ -124,9 +133,12 @@ const SupplierCreate = ({
               label="Description"
               multiline
               rows={4}
-              value={supplier.description}
+              value={supplierValue.description}
               onChange={(e) =>
-                setSupplier({ ...supplier, description: e.target.value })
+                setSupplierValue((prev) => ({
+                  ...prev,
+                  description: e.target.value
+                }))
               }
               className="w-full"
             />
@@ -151,4 +163,4 @@ const SupplierCreate = ({
   );
 };
 
-export default SupplierCreate;
+export default SupplierEdit;

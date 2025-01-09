@@ -8,21 +8,33 @@ import SentimentSatisfiedAltOutlinedIcon from '@mui/icons-material/SentimentSati
 import { Box, Button, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useNavigation } from '@refinedev/core';
-import { useDataGrid } from '@refinedev/mui';
+import { DeleteButton, useDataGrid } from '@refinedev/mui';
 import React from 'react';
 import SupplierCreate from './create/page';
 import { DeleteForever } from '@mui/icons-material';
+import SupplierEdit from './edit/[id]/page';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const SupplierList = () => {
-  const { show } = useNavigation();
   const [query, setQuery] = React.useState('');
   const [supplierCreateModal, setSupplierCreateModal] = React.useState(false);
+  const [supplier, setSupplier] = React.useState<ISupplier | null>(null);
   const { dataGridProps } = useDataGrid<ISupplier>({
     resource: `supplier?q=${query}&`,
     pagination: {
       mode: 'server'
     }
   });
+  const {
+    paginationMode,
+    paginationModel,
+    onPaginationModelChange,
+    ...restDataGridProps
+  } = dataGridProps;
+  const [rowsDatagrid, setRowsDatagrid] = React.useState<ISupplier[]>([
+    ...dataGridProps.rows
+  ]);
+  const [flag, setFlag] = React.useState(true);
   const columns = React.useMemo<GridColDef<ISupplier>[]>(
     () => [
       {
@@ -50,6 +62,27 @@ const SupplierList = () => {
         field: 'description',
         headerName: 'Description',
         flex: 3
+      },
+      {
+        field: 'actions',
+        headerName: '',
+        flex: 1,
+        renderCell: ({ row }) => {
+          return (
+            <Button className="text-accent overflow-hidden">
+              <DeleteIcon />
+              <DeleteButton
+                className="absolute top-0 left-0 opacity-0"
+                recordItemId={row.supplier_id}
+                onSuccess={() => {
+                  setRowsDatagrid((prev) =>
+                    [...prev].filter((r) => r.supplier_id !== row.supplier_id)
+                  );
+                }}
+              />
+            </Button>
+          );
+        }
       }
     ],
     []
@@ -58,6 +91,15 @@ const SupplierList = () => {
   const searchSupplierHandle = async (q: string) => {
     setQuery(q);
   };
+
+  React.useEffect(() => {
+    if (flag && dataGridProps.rows.length !== 0) {
+      setRowsDatagrid([...dataGridProps.rows]);
+    }
+    if (rowsDatagrid.length !== 0) {
+      setFlag(false);
+    }
+  }, [dataGridProps.rows, rowsDatagrid, flag]);
 
   return (
     <div className="pb-4 px-2">
@@ -93,9 +135,23 @@ const SupplierList = () => {
 
         <Box className="flex flex-col">
           <DataGrid
-            {...dataGridProps}
-            getRowId={(row) => row.supplier_id}
+            {...restDataGridProps}
             columns={columns}
+            rows={rowsDatagrid}
+            getRowId={(row: ISupplier) => row.supplier_id || 0}
+            pagination
+            paginationMode={paginationMode}
+            paginationModel={paginationModel}
+            onPaginationModelChange={(model, details) => {
+              onPaginationModelChange &&
+                onPaginationModelChange(model, details);
+              setFlag(true);
+            }}
+            onCellClick={(cell) => {
+              if (cell.field !== 'actions') {
+                setSupplier(cell.row as ISupplier);
+              }
+            }}
             sx={{
               color: 'black',
               fontSize: '14px',
@@ -119,8 +175,34 @@ const SupplierList = () => {
         <div className="bg-slate-700 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
           <Box className="w-2/5 h-[80%]">
             <SupplierCreate
+              onSuccessfulSubmit={(supplierResponse) => {
+                setRowsDatagrid((prev) => [...prev, supplierResponse]);
+                console.log(supplierResponse);
+              }}
               onCancel={() => {
                 setSupplierCreateModal(false);
+              }}
+            />
+          </Box>
+        </div>
+      )}
+      {supplier && (
+        <div className="bg-slate-700 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
+          <Box className="w-2/5 h-[80%]">
+            <SupplierEdit
+              onSuccessfulEdit={(supplierResponse) => {
+                setRowsDatagrid((prev) => {
+                  return prev.map((s) => {
+                    if (s.supplier_id === supplierResponse.supplier_id) {
+                      return supplierResponse;
+                    }
+                    return s;
+                  });
+                });
+              }}
+              supplier={supplier}
+              onCancel={() => {
+                setSupplier(null);
               }}
             />
           </Box>

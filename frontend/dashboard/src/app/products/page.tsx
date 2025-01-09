@@ -12,7 +12,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ICategory, IProduct } from '@constant/interface.constant';
 import Image from 'next/image';
 import CategoryList from '@app/categories/page';
-import { useDelete, useNavigation } from '@refinedev/core';
+import { useDelete, useDeleteButton, useNavigation } from '@refinedev/core';
 import CategoryCreate from '@app/categories/create/page';
 import CategoryEdit from '@app/categories/edit/[id]/page';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -22,9 +22,10 @@ import AddIcon from '@mui/icons-material/Add';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import CommonContainer from '@components/common-container';
 import { transformVNMoney } from '@utils/transform.util';
+import { dummyProductImage } from '@constant/value.constant';
 
 const ProductList = () => {
-  const { create, edit, show } = useNavigation();
+  const { create, edit, show, list } = useNavigation();
 
   const [productQuery, setProductQuery] = React.useState('');
   const SearchProductSubmit = async (query: string) => {
@@ -47,6 +48,19 @@ const ProductList = () => {
     }
   });
 
+  const {
+    paginationMode,
+    paginationModel,
+    onPaginationModelChange,
+    ...restDataGridProps
+  } = dataGridProps;
+  const [rowsDatagrid, setRowsDatagrid] = React.useState<IProduct[]>([
+    ...dataGridProps.rows
+  ]);
+  const [flag, setFlag] = React.useState(true);
+  const [categoryCreateModal, setCategoryCreateModal] = React.useState(false);
+  const [categoryEditModal, setCategoryEditModal] = React.useState(false);
+  const [category, setCategory] = React.useState<ICategory | null>(null);
   const columns = React.useMemo<GridColDef<IProduct>[]>(
     () => [
       {
@@ -64,7 +78,7 @@ const ProductList = () => {
         renderCell: ({ row }) => {
           return (
             <Image
-              src={`${row.images && row.images[0]}`}
+              src={`${(row.images && row.images[0]) || dummyProductImage}`}
               alt={row.product_name}
               width={48}
               height={48}
@@ -127,7 +141,11 @@ const ProductList = () => {
                 <DeleteButton
                   className="absolute top-0 left-0 opacity-0"
                   recordItemId={row.product_id}
-                  resource="products"
+                  onSuccess={() => {
+                    setRowsDatagrid((prev) => [
+                      ...prev.filter((r) => r.product_id !== row.product_id)
+                    ]);
+                  }}
                 />
               </Button>
             </Box>
@@ -138,11 +156,6 @@ const ProductList = () => {
     [edit]
   );
 
-  const [categoryCreateModal, setCategoryCreateModal] = React.useState(false);
-  const [categoryEditModal, setCategoryEditModal] = React.useState(false);
-
-  const [category, setCategory] = React.useState<ICategory | null>(null);
-
   const handleCategoryCreate = (mode: boolean) => {
     setCategoryCreateModal(mode);
     setCategoryEditModal(false);
@@ -152,6 +165,17 @@ const ProductList = () => {
     setCategoryEditModal(mode);
     setCategoryCreateModal(false);
   };
+
+  const [newCategory, setNewCategory] = React.useState<ICategory | undefined>();
+
+  React.useEffect(() => {
+    if (flag && dataGridProps.rows.length !== 0) {
+      setRowsDatagrid([...dataGridProps.rows]);
+    }
+    if (rowsDatagrid.length !== 0) {
+      setFlag(false);
+    }
+  }, [dataGridProps.rows, rowsDatagrid, flag]);
 
   return (
     <div className="pb-4 mx-2 flex flex-col gap-4">
@@ -188,9 +212,17 @@ const ProductList = () => {
         </Box>
         <Box className="flex flex-col">
           <DataGrid
-            {...dataGridProps}
+            {...restDataGridProps}
+            rows={rowsDatagrid}
             getRowId={(row) => row.product_id}
             pagination
+            paginationMode={paginationMode}
+            paginationModel={paginationModel}
+            onPaginationModelChange={(model, details) => {
+              onPaginationModelChange &&
+                onPaginationModelChange(model, details);
+              setFlag(true);
+            }}
             onCellClick={(cell) => {
               if (cell.field !== 'actions') {
                 show('products', cell.row.product_id);
@@ -211,6 +243,7 @@ const ProductList = () => {
 
       <CommonContainer className="">
         <CategoryList
+          newData={newCategory}
           onEdit={(category: ICategory) => {
             handleCategoryEdit(true);
             setCategory(category);
@@ -222,10 +255,18 @@ const ProductList = () => {
         <div className="bg-slate-700 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
           <Box className="w-2/5">
             {categoryCreateModal && (
-              <CategoryCreate onCancel={() => handleCategoryCreate(false)} />
+              <CategoryCreate
+                onSuccessfulCreate={(category) => {
+                  setNewCategory(category);
+                }}
+                onCancel={() => handleCategoryCreate(false)}
+              />
             )}
             {categoryEditModal && (
               <CategoryEdit
+                onSuccessfulEdit={(category) => {
+                  setNewCategory(category);
+                }}
                 onCancel={() => handleCategoryEdit(false)}
                 category={category}
               />

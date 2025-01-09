@@ -13,15 +13,18 @@ import {
 } from '@mui/material';
 import LoyaltyOutlinedIcon from '@mui/icons-material/LoyaltyOutlined';
 import React from 'react';
-import { IVoucherWithoutCode } from '@constant/interface.constant';
+import { IVoucher, IVoucherWithoutCode } from '@constant/interface.constant';
 import { HttpError, useForm, useNavigation } from '@refinedev/core';
 
 type VoucherCreateProps = {
   onCancel: () => void;
+  onSuccessfulCreate: (voucher: IVoucher) => void;
 };
 
-const VoucherCreate = ({ onCancel }: VoucherCreateProps) => {
-  const { list } = useNavigation();
+const VoucherCreate = ({
+  onCancel,
+  onSuccessfulCreate
+}: VoucherCreateProps) => {
   const { onFinish } = useForm<IVoucherWithoutCode, HttpError>({
     resource: 'vouchers',
     action: 'create',
@@ -46,7 +49,12 @@ const VoucherCreate = ({ onCancel }: VoucherCreateProps) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await onFinish(voucher);
+      const rep = await onFinish(voucher);
+      if (rep) {
+        onSuccessfulCreate({
+          ...(rep.data as IVoucher)
+        });
+      }
       onCancelHandler();
     } catch (error) {
       console.log('error', error);
@@ -92,6 +100,21 @@ const VoucherCreate = ({ onCancel }: VoucherCreateProps) => {
                 setVoucher({
                   ...voucher,
                   discount_amount: Number(e.target.value)
+                })
+              }
+              className="w-full"
+            />
+          </FormControl>
+          <FormControl className="col-span-full">
+            <FormLabel className="mx-2">Description</FormLabel>
+            <TextField
+              type="text"
+              value={voucher.description}
+              multiline
+              rows={3}
+              onChange={(e) =>
+                setVoucher((prev) => {
+                  return { ...prev, description: e.target.value };
                 })
               }
               className="w-full"

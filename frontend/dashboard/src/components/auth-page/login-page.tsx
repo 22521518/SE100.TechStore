@@ -56,6 +56,7 @@ const LoginPage = () => {
               type="email"
               id="email"
               label="Email"
+              autoComplete={autoComplete}
               value={account.email}
               onInput={(e) =>
                 setAccount({
@@ -79,6 +80,7 @@ const LoginPage = () => {
               type="password"
               id="password"
               label="Password"
+              autoComplete='current-password'
               value={account.password}
               onChange={(e) =>
                 setAccount({ ...account, password: e.target.value })

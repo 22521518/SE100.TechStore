@@ -18,11 +18,13 @@ import CommonContainer from '@components/common-container';
 
 type CategoryEditProps = {
   category: ICategory | null;
+  onSuccessfulEdit: (category: ICategory) => void;
   onCancel: () => void;
 };
 
 export default function CategoryEdit({
   onCancel,
+  onSuccessfulEdit,
   category
 }: CategoryEditProps) {
   const { query, formLoading, onFinish } = useForm<
@@ -53,7 +55,10 @@ export default function CategoryEdit({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await onFinish(categoryValue);
+      const rep = await onFinish(categoryValue);
+      if (rep) {
+        onSuccessfulEdit(rep.data as ICategory);
+      }
       onCancel();
     } catch (error) {
       console.log('error', error);

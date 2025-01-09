@@ -1,6 +1,6 @@
 'use client';
 
-import { API_DEV_URL } from '@constant/api.constant';
+import { API_URL } from '@constant/api.constant';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useGetIdentity } from '@refinedev/core';
@@ -11,7 +11,7 @@ const SocketContext = createContext<Socket | null>(null);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: identity } = useGetIdentity<IStaff>();
-  const socket = io(API_DEV_URL);
+  const socket = io(API_URL);
 
   React.useEffect(() => {
     socket.emit(SOCKET_JOIN_CHANNEL.STAFF_JOIN, {

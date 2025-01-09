@@ -68,10 +68,7 @@ const CustomerOrderList = ({ orderList }: CustomerOrderListProps) => {
             Orders History
           </Typography>
         </Box>
-        <Typography
-          variant="h4"
-          className="font-semibold text-lg text-slate-500"
-        >
+        <Typography variant="h4" className="font-semibold text-lg text-black">
           Total {orderList.length} orders
         </Typography>
       </Box>

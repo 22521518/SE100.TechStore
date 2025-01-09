@@ -93,12 +93,12 @@ const CustomerShow = () => {
                   <Typography variant="h3" className="text-2xl font-bold">
                     {customerValue.username}
                   </Typography>
-                  <Typography variant="body1" className="text-slate-400">
+                  <Typography variant="body1" className="text-black">
                     {customerValue.customer_id}
                   </Typography>
                 </Stack>
               </Box>
-              <Box className="flex flex-row gap-4 items-center">
+              {/* <Box className="flex flex-row gap-4 items-center">
                 <Button className="text-white bg-accent min-w-12 px-7 h-max w-max py-3 flex flex-row gap-1">
                   <RemoveCircleIcon />
                   <Typography variant="caption">Delete</Typography>
@@ -109,7 +109,7 @@ const CustomerShow = () => {
                     Lock
                   </Typography>
                 </Button>
-              </Box>
+              </Box> */}
             </Box>
             {/* Information */}
             <Box className="grid grid-cols-2">
@@ -157,7 +157,7 @@ const CustomerShow = () => {
                 {customerValue.addresses?.map((address, index) => (
                   <Box key={index} className="flex flex-row gap-3 items-center">
                     <HouseOutlinedIcon />
-                    <Typography variant="caption" className="text-slate-500">
+                    <Typography variant="caption" className="text-black">
                       {address.address}, {address.district}, {address.city}
                     </Typography>
                   </Box>

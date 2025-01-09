@@ -55,7 +55,6 @@ const StaffCreate = () => {
     e.preventDefault();
     try {
       await onFinish(staffValue);
-      console.log(staffValue);
     } catch (error) {
       console.log(error);
     }

@@ -30,10 +30,10 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 const ProductEdit = () => {
   const { list } = useNavigation();
 
-  const { query, onFinish, formLoading } = useForm<
-    IProductReceive,
-    HttpError
-  >();
+  const { query, onFinish, formLoading } = useForm<IProductReceive, HttpError>({
+    resource: 'products',
+    action: 'edit'
+  });
 
   const record = query?.data?.data;
 
@@ -52,7 +52,7 @@ const ProductEdit = () => {
     if (record?.images) {
       const productImages = record?.images.map((url) => {
         return {
-          name: record?.product_name,
+          name: record?.product_id || '',
           url: url
         };
       });
@@ -61,34 +61,31 @@ const ProductEdit = () => {
     return list;
   });
 
-  const [productValue, setProductValue] = React.useState<IProductReceive>({
-    product_name: record?.product_name || '',
-    images: record?.images || [],
-    description: record?.description || '',
-    price: record?.price || 0,
-    discount: record?.discount || 0,
-    stock_quantity: record?.stock_quantity || 0,
-    categories: record?.categories || [],
-    attributes: record?.attributes || []
-  });
-
-  const setAttributes = (attributes: IProductAttribute[]) => {
-    setProductValue({
-      ...productValue,
-      attributes
-    });
-  };
-
   const [productFormValue, setProductFormValue] =
     React.useState<ProductFormValues>({
-      ...productValue,
-      images: productValue.images.map((url) => {
-        return {
-          name: productValue.product_name,
-          url: url
-        };
-      })
+      product_id: record?.product_id || '',
+      product_name: record?.product_name || '',
+      description: record?.description || '',
+      price: record?.price || 0,
+      discount: record?.discount || 0,
+      stock_quantity: record?.stock_quantity || 0,
+      categories: record?.categories || [],
+      attributes: record?.attributes || [],
+      images:
+        record?.images.map((url) => {
+          return {
+            name: record?.product_id || '',
+            url: url
+          };
+        }) || []
     });
+
+  const setAttributes = (attributes: IProductAttribute[]) => {
+    setProductFormValue((prev) => ({
+      ...prev,
+      attributes
+    }));
+  };
 
   const changeImage = ({ name, url }: { name: string; url: string }) => {
     setImages((prev) => {
@@ -118,13 +115,17 @@ const ProductEdit = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
       if (images.length < 4) {
         console.log('Please upload at least 3 image');
         return;
       }
 
-      await onFinish(productFormValue);
+      const response = await onFinish(productFormValue);
+      if (response?.data) {
+        console.log('Product updated successfully');
+      }
     } catch (error) {
       console.log('error', error);
     }
@@ -139,38 +140,29 @@ const ProductEdit = () => {
 
   React.useEffect(() => {
     if (record) {
-      setProductValue({
-        product_name: record?.product_name || '',
-        images: record?.images || [],
-        description: record?.description || '',
-        price: record?.price || 0,
-        discount: record?.discount || 0,
-        stock_quantity: record?.stock_quantity || 0,
-        categories: record?.categories || [],
-        attributes: record?.attributes || []
-      });
-
       setProductFormValue({
+        product_id: record?.product_id || '',
         product_name: record?.product_name || '',
-        images: [
-          {
-            name: record?.product_name,
-            url: record?.images[0]
-          }
-        ],
         description: record?.description || '',
         price: record?.price || 0,
         discount: record?.discount || 0,
         stock_quantity: record?.stock_quantity || 0,
         categories: record?.categories || [],
-        attributes: record?.attributes || []
+        attributes: record?.attributes || [],
+        images:
+          record?.images.map((url) => {
+            return {
+              name: record?.product_id || '',
+              url: url
+            };
+          }) || []
       });
 
       setImages(() => {
         const productImages =
           record?.images?.map((url) => {
             return {
-              name: record?.product_name,
+              name: record?.product_id || '',
               url: url
             };
           }) || [];
@@ -197,7 +189,7 @@ const ProductEdit = () => {
           variant="h1"
           className="text-xl uppercase font-bold text-accent"
         >
-          Edit Product
+          Edit Product {productFormValue.product_id}
         </Typography>
       </Box>
       <Box className="grid grid-cols-5 justify-start">
@@ -322,16 +314,16 @@ const ProductEdit = () => {
                 <TextField
                   id="product-name"
                   type="text"
-                  value={productValue.product_name}
+                  value={productFormValue.product_name}
                   variant="outlined"
                   label="Product name"
                   aria-describedby="product-name"
                   placeholder="Product name"
                   onChange={(e) => {
-                    setProductValue({
-                      ...productValue,
+                    setProductFormValue((prev) => ({
+                      ...prev,
                       product_name: e.target.value
-                    });
+                    }));
                   }}
                 />
               </FormControl>
@@ -341,16 +333,16 @@ const ProductEdit = () => {
                     id="price"
                     type="number"
                     defaultValue={''}
-                    value={productValue.price}
+                    value={productFormValue.price}
                     variant="outlined"
                     label="Price"
                     aria-describedby="Price"
                     placeholder="1.000"
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue((prev) => ({
+                        ...prev,
                         price: Number(e.target.value)
-                      });
+                      }));
                     }}
                   />
                 </FormControl>
@@ -360,16 +352,16 @@ const ProductEdit = () => {
                   <Select
                     labelId="categories"
                     id="demo-simple-select"
-                    value={productValue.categories[0]?.category_id || ''} // Ensure a default value
+                    value={productFormValue.categories[0]?.category_id || ''} // Ensure a default value
                     label="Category"
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue((prev) => ({
+                        ...prev,
                         categories: categories.filter(
                           (category) =>
                             category.category_id === Number(e.target.value)
                         )
-                      });
+                      }));
                     }}
                   >
                     {categories.map((category) => (
@@ -390,16 +382,16 @@ const ProductEdit = () => {
                     id="discount"
                     type="number"
                     defaultValue={''}
-                    value={productValue.discount}
+                    value={productFormValue.discount}
                     variant="outlined"
                     label="Discount"
                     aria-describedby="Discount"
                     placeholder="33"
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue((prev) => ({
+                        ...prev,
                         discount: Number(e.target.value)
-                      });
+                      }));
                     }}
                   />
                 </FormControl>
@@ -409,14 +401,14 @@ const ProductEdit = () => {
                     id="stock-quanity"
                     type="number"
                     defaultValue={''}
-                    value={productValue.stock_quantity}
+                    value={productFormValue.stock_quantity}
                     variant="outlined"
                     label="Stock Quantity"
                     aria-describedby="Stock Quantity"
                     placeholder="10"
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue({
+                        ...productFormValue,
                         stock_quantity: Number(e.target.value)
                       });
                     }}
@@ -430,12 +422,12 @@ const ProductEdit = () => {
                     multiline
                     rows={4}
                     placeholder="Describe your product..."
-                    value={productValue.description}
+                    value={productFormValue.description}
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue((prev) => ({
+                        ...prev,
                         description: e.target.value
-                      });
+                      }));
                     }}
                   />
                 </FormControl>
@@ -459,7 +451,7 @@ const ProductEdit = () => {
         </CommonContainer>
         <CommonContainer className="w-full py-4 col-span-2">
           <ProductAttributeFields
-            attributes={productValue.attributes}
+            attributes={productFormValue.attributes}
             setAttributes={setAttributes}
           />
         </CommonContainer>

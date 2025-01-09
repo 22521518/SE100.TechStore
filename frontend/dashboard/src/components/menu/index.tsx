@@ -56,7 +56,7 @@ export const Menu = ({ className = '' }: { className: string }) => {
             </li>
           ))}
         </ul>
-        <button onClick={handleLogout}>Logout</button>
+        <button onClick={() => logout()}>Logout</button>
       </div>
     </nav>
   );

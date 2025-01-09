@@ -1,5 +1,3 @@
-import { CANCELLED } from 'dns';
-
 export enum ORDER_STATUS {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',

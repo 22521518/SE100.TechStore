@@ -20,11 +20,15 @@ import React from 'react';
 type VoucherEditProps = {
   voucher: IVoucher;
   onCancel: () => void;
+  onSuccessfulEdit: (voucher: IVoucher) => void;
 };
 
-const VoucherEdit = ({ onCancel, voucher }: VoucherEditProps) => {
-  const { list } = useNavigation();
-  const { query, formLoading, onFinish } = useForm<IVoucher, HttpError>({
+const VoucherEdit = ({
+  onCancel,
+  voucher,
+  onSuccessfulEdit
+}: VoucherEditProps) => {
+  const { query, onFinish } = useForm<IVoucher, HttpError>({
     resource: 'vouchers',
     action: 'edit',
     id: voucher.voucher_code,
@@ -43,7 +47,11 @@ const VoucherEdit = ({ onCancel, voucher }: VoucherEditProps) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await onFinish(voucherValue);
+      const rep = await onFinish(voucherValue);
+      if (rep) {
+        onSuccessfulEdit(rep.data as IVoucher);
+      }
+      onCancel();
       console.log('voucher');
     } catch (error) {
       console.log('error', error);
@@ -89,13 +97,27 @@ const VoucherEdit = ({ onCancel, voucher }: VoucherEditProps) => {
           </FormControl>
           <FormControl className="col-span-2">
             <TextField
-              type="float"
+              type="number"
               label="Discount Amount"
               value={voucherValue.discount_amount}
               onChange={(e) =>
                 setVoucherValue({
                   ...voucherValue,
                   discount_amount: parseFloat(e.target.value)
+                })
+              }
+              className="w-full"
+            />
+          </FormControl>
+          <FormControl className="col-span-full">
+            <TextField
+              type="text"
+              value={voucherValue.description}
+              multiline
+              rows={3}
+              onChange={(e) =>
+                setVoucherValue((prev) => {
+                  return { ...prev, description: e.target.value };
                 })
               }
               className="w-full"
@@ -132,7 +154,10 @@ const VoucherEdit = ({ onCancel, voucher }: VoucherEditProps) => {
                 new Date(voucherValue.valid_to).toISOString().split('T')[0]
               }
               onChange={(e) =>
-                setVoucherValue({ ...voucherValue, valid_to: e.target.value })
+                setVoucherValue({
+                  ...voucherValue,
+                  valid_to: new Date(e.target.value)
+                })
               }
               className="w-full"
             />

@@ -23,7 +23,6 @@ import ProductAttributeFields from '@components/products';
 import Image from 'next/image';
 import CommonContainer from '@components/common-container';
 import { ProductFormValues } from '../product.interface';
-import { generateRandomProduct } from '@utils/random.util';
 import { dummyProductImage } from '@constant/value.constant';
 import { handleImage } from '@utils/image.utils';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -45,31 +44,24 @@ const ProductCreate = () => {
     }
   ]);
 
-  // const [productValue, setProductValue] = React.useState<IProduct>({
-  //   product_name: '',
-  //   images: [],
-  //   description: '',
-  //   price: 0,
-  //   discount: 0,
-  //   stock_quantity: 0,
-  //   categories: [],
-  //   attributes: []
-  // });
-
-  const [productValue, setProductValue] = React.useState<IProduct>(
-    generateRandomProduct()
-  );
-
   const [productFormValue, setProductFormValue] =
     React.useState<ProductFormValues>({
-      ...productValue
+      product_id: '',
+      product_name: '',
+      images: [],
+      description: '',
+      price: 0,
+      discount: 0,
+      stock_quantity: 0,
+      categories: [],
+      attributes: []
     });
 
   const setAttributes = (attributes: IProductAttribute[]) => {
-    setProductValue({
-      ...productValue,
+    setProductFormValue((prev) => ({
+      ...prev,
       attributes
-    });
+    }));
   };
 
   const changeImage = ({ name, url }: { name: string; url: string }) => {
@@ -106,12 +98,10 @@ const ProductCreate = () => {
         return;
       }
 
-      setProductFormValue({
+      await onFinish({
         ...productFormValue,
         images: images.slice(1, images.length)
       });
-
-      await onFinish(productFormValue);
     } catch (error) {
       console.log('error', error);
     }
@@ -250,14 +240,14 @@ const ProductCreate = () => {
                   id="product-name"
                   type="text"
                   defaultValue={''}
-                  value={productValue.product_name}
+                  value={productFormValue.product_name}
                   variant="outlined"
                   label="Product name"
                   aria-describedby="product-name"
                   placeholder="Product name"
                   onChange={(e) => {
-                    setProductValue({
-                      ...productValue,
+                    setProductFormValue({
+                      ...productFormValue,
                       product_name: e.target.value
                     });
                   }}
@@ -269,14 +259,14 @@ const ProductCreate = () => {
                     id="price"
                     type="number"
                     defaultValue={''}
-                    value={productValue.price}
+                    value={productFormValue.price}
                     variant="outlined"
                     label="Price"
                     aria-describedby="Price"
                     placeholder="1.000"
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue({
+                        ...productFormValue,
                         price: Number(e.target.value)
                       });
                     }}
@@ -288,11 +278,11 @@ const ProductCreate = () => {
                   <Select
                     labelId="categories"
                     id="demo-simple-select"
-                    value={productValue.categories[0]?.category_id || ''} // Ensure a default value
+                    value={productFormValue.categories[0]?.category_id || ''} // Ensure a default value
                     label="Category"
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue({
+                        ...productFormValue,
                         categories: categories.filter(
                           (category) =>
                             category.category_id === Number(e.target.value)
@@ -318,14 +308,14 @@ const ProductCreate = () => {
                     id="discount"
                     type="number"
                     defaultValue={''}
-                    value={productValue.discount}
+                    value={productFormValue.discount}
                     variant="outlined"
                     label="Discount"
                     aria-describedby="Discount"
                     placeholder="33"
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue({
+                        ...productFormValue,
                         discount: Number(e.target.value)
                       });
                     }}
@@ -337,14 +327,14 @@ const ProductCreate = () => {
                     id="stock-quanity"
                     type="number"
                     defaultValue={''}
-                    value={productValue.stock_quantity}
+                    value={productFormValue.stock_quantity}
                     variant="outlined"
                     label="Stock Quantity"
                     aria-describedby="Stock Quantity"
                     placeholder="10"
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue({
+                        ...productFormValue,
                         stock_quantity: Number(e.target.value)
                       });
                     }}
@@ -358,10 +348,10 @@ const ProductCreate = () => {
                     multiline
                     rows={4}
                     placeholder="Describe your product..."
-                    value={productValue.description}
+                    value={productFormValue.description}
                     onChange={(e) => {
-                      setProductValue({
-                        ...productValue,
+                      setProductFormValue({
+                        ...productFormValue,
                         description: e.target.value
                       });
                     }}
@@ -387,7 +377,7 @@ const ProductCreate = () => {
         </CommonContainer>
         <CommonContainer className="w-full py-4">
           <ProductAttributeFields
-            attributes={productValue.attributes}
+            attributes={productFormValue.attributes}
             setAttributes={setAttributes}
           />
         </CommonContainer>

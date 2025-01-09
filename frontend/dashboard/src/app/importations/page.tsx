@@ -10,16 +10,31 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Edit, useDataGrid } from '@refinedev/mui';
+import { DeleteButton, Edit, useDataGrid } from '@refinedev/mui';
 import React from 'react';
 import { transformDate } from '@utils/transform.util';
 import ImportationDetail from '@components/importations/item-detail';
 import ImportationCreate from './create/page';
-import { useDelete, useNavigation } from '@refinedev/core';
+import { useDelete, useNotification } from '@refinedev/core';
 import { DeleteForever } from '@mui/icons-material';
 
 const ImportationList = () => {
-  const { mutate: deleteAction, isLoading, isError } = useDelete();
+  const { open } = useNotification();
+  const onOpenNotification = React.useCallback(
+    (
+      type: 'success' | 'error' | 'progress',
+      message: string,
+      description: string
+    ) => {
+      open?.({
+        type: type,
+        message: message,
+        description: description
+      });
+    },
+    [open]
+  );
+
   const [query, setQuery] = React.useState('');
 
   const [importationCreateModal, setImportationCreateModal] =
@@ -39,12 +54,18 @@ const ImportationList = () => {
       ]
     }
   });
-
-  const { rows } = dataGridProps;
-  const [importationDetail, setImportationDetail] = React.useState<
-    IImportation | undefined
-  >(rows[0]);
-
+  const [flag, setFlag] = React.useState(true);
+  const {
+    paginationMode,
+    paginationModel,
+    onPaginationModelChange,
+    ...restDataGridProps
+  } = dataGridProps;
+  const [rowDatagrid, setRowDatagrid] = React.useState<IImportation[]>([
+    ...dataGridProps.rows
+  ]);
+  const [importationDetail, setImportationDetail] =
+    React.useState<IImportation>(rowDatagrid[0]);
   const columns = React.useMemo<GridColDef<IImportation>[]>(
     () => [
       {
@@ -81,18 +102,20 @@ const ImportationList = () => {
         flex: 2,
         renderCell: ({ row }) => {
           return (
-            <Box className="flex flex-row max-w-max min-w-full justify-center items-center h-full">
-              <EditIcon className="text-lg p-1 min-w-8 min-h-8 round hover:bg-slate-50 hover:cursor-pointer" />
-              <DeleteIcon
-                className="text-lg p-1 min-w-8 min-h-8 hover:bg-slate-50 hover:cursor-pointer"
-                onClick={() =>
-                  deleteAction({
-                    resource: 'importations',
-                    id: row.importation_id as number
-                  })
-                }
+            <Button className="text-accent overflow-hidden">
+              <DeleteIcon />
+              <DeleteButton
+                className="absolute top-0 left-0 opacity-0"
+                recordItemId={row.importation_id}
+                onSuccess={() => {
+                  setRowDatagrid((prev) => {
+                    return [...prev].filter(
+                      (r) => r.importation_id !== row.importation_id
+                    );
+                  });
+                }}
               />
-            </Box>
+            </Button>
           );
         }
       }
@@ -105,16 +128,18 @@ const ImportationList = () => {
   };
 
   React.useEffect(() => {
-    setImportationDetail(rows[0]);
-  }, [rows]);
+    if (dataGridProps.rows.length !== rowDatagrid.length && flag) {
+      setRowDatagrid([...dataGridProps.rows]);
+    }
 
-  if (isError) {
-    console.error('Error while deleting importation');
-  }
+    if (rowDatagrid.length !== 0) {
+      setFlag(false);
+    }
+  }, [dataGridProps.rows, rowDatagrid, flag]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  React.useEffect(() => {
+    setImportationDetail(rowDatagrid[0]);
+  }, [rowDatagrid]);
 
   return (
     <div className="">
@@ -155,9 +180,21 @@ const ImportationList = () => {
 
           <DataGrid
             {...dataGridProps}
+            rows={rowDatagrid}
             columns={columns}
             getRowId={(row) => row.importation_id}
-            onRowClick={(row) => setImportationDetail(row.row)}
+            pagination
+            paginationMode={paginationMode}
+            paginationModel={paginationModel}
+            onPaginationModelChange={(model, details) => {
+              onPaginationModelChange &&
+                onPaginationModelChange(model, details);
+              setFlag(true);
+            }}
+            onCellClick={(cell) => {
+              if (cell.field !== 'actions')
+                setImportationDetail(cell.row as IImportation);
+            }}
             sx={{
               '& .MuiDataGrid-container--top [role="row"], & .MuiDataGrid-container--bottom [role="row"]':
                 {
@@ -199,6 +236,17 @@ const ImportationList = () => {
           <Box className="w-4/5 h-[80%]">
             {importationCreateModal && (
               <ImportationCreate
+                onSuccessfulCreate={(importation) => {
+                  onOpenNotification(
+                    'success',
+                    'Importation created',
+                    'The importation has been created successfully.'
+                  );
+
+                  setRowDatagrid((prev) => {
+                    return [...prev, importation];
+                  });
+                }}
                 onCancel={() => setImportationCreateModal(false)}
               />
             )}

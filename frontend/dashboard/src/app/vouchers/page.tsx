@@ -3,7 +3,7 @@
 import { IVoucher } from '@constant/interface.constant';
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigation } from '@refinedev/core';
-import { useDataGrid } from '@refinedev/mui';
+import { DeleteButton, useDataGrid } from '@refinedev/mui';
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -13,11 +13,13 @@ import CommonContainer from '@components/common-container';
 import SearchBar from '@components/searchbar';
 import LoyaltyOutlinedIcon from '@mui/icons-material/LoyaltyOutlined';
 import VoucherCreate from './create/page';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import VoucherEdit from './edit/[id]/page';
 import { DeleteForever } from '@mui/icons-material';
 
 const VoucherList = () => {
-  const { edit, create, show } = useNavigation();
+  const { list } = useNavigation();
   const [query, setQuery] = React.useState('');
   const { dataGridProps } = useDataGrid<IVoucher>({
     resource: `vouchers?q=${query}&`,
@@ -25,6 +27,18 @@ const VoucherList = () => {
       mode: 'server'
     }
   });
+  const [rowDatagrid, setRowDatagrid] = React.useState<IVoucher[]>([
+    ...dataGridProps.rows
+  ]);
+  const [voucherCreateModal, setVoucherCreateModal] = React.useState(false);
+  const [voucherSelect, setVoucher] = React.useState<IVoucher | undefined>();
+  const [flag, setFlag] = React.useState(true);
+  const {
+    paginationMode,
+    paginationModel,
+    onPaginationModelChange,
+    ...restDataGridProps
+  } = dataGridProps;
   const columns = React.useMemo<GridColDef<IVoucher>[]>(
     () => [
       {
@@ -82,31 +96,67 @@ const VoucherList = () => {
         field: 'description',
         headerName: 'Description',
         flex: 4
+      },
+      {
+        field: 'actions',
+        headerName: '',
+        flex: 2,
+        renderCell: ({ row }) => {
+          return (
+            <Box className="flex flex-row gap-1 items-center justify-center h-full">
+              <Button
+                className="text-accent"
+                onClick={() => {
+                  console.log(row);
+                  setVoucher(row as IVoucher);
+                }}
+              >
+                <EditIcon />
+              </Button>
+              <Button className="text-accent overflow-hidden">
+                <DeleteIcon />
+                <DeleteButton
+                  className="absolute top-0 left-0 opacity-0"
+                  recordItemId={row.voucher_code}
+                  onSuccess={() => {
+                    setRowDatagrid((prev) => {
+                      return [...prev].filter(
+                        (r) => r.voucher_code !== row.voucher_code
+                      );
+                    });
+                  }}
+                />
+              </Button>
+            </Box>
+          );
+        }
       }
     ],
     []
   );
 
-  const [voucherCreateModal, setVoucherCreateModal] = React.useState(false);
-  const [voucherEditModal, setVoucherEditModal] = React.useState(false);
-  const [voucher, setVoucher] = React.useState<IVoucher | undefined>();
-
   const onCancel = React.useCallback(() => {
     setVoucherCreateModal(false);
-    setVoucherEditModal(false);
+    setVoucher(undefined);
   }, []);
 
   const onCreate = React.useCallback(() => {
     setVoucherCreateModal(true);
   }, []);
 
-  const onEdit = React.useCallback(() => {
-    setVoucherEditModal(true);
-  }, []);
-
   const searchVoucherHandle = async (q: string) => {
     setQuery(q);
   };
+
+  React.useEffect(() => {
+    if (flag && dataGridProps.rows.length !== 0) {
+      setRowDatagrid([...dataGridProps.rows]);
+    }
+    if (rowDatagrid.length !== 0) {
+      setFlag(false);
+    }
+  }, [dataGridProps.rows, rowDatagrid, flag]);
+
   return (
     <>
       <CommonContainer className="flex flex-col">
@@ -140,11 +190,18 @@ const VoucherList = () => {
         </Box>
         <DataGrid
           {...dataGridProps}
+          rows={rowDatagrid}
           columns={columns}
           getRowId={(row: IVoucher) => row.voucher_code || ''}
+          pagination
+          paginationMode={paginationMode}
+          paginationModel={paginationModel}
+          onPaginationModelChange={(model, details) => {
+            onPaginationModelChange && onPaginationModelChange(model, details);
+            setFlag(true);
+          }}
           onCellClick={(cell) => {
-            setVoucher(cell.row as IVoucher);
-            onEdit();
+            if (cell.field !== 'actions') setVoucher(cell.row as IVoucher);
           }}
           sx={{
             color: 'black',
@@ -162,15 +219,35 @@ const VoucherList = () => {
           className="text-accent my-4"
         />
       </CommonContainer>
-      {(voucherCreateModal || voucherEditModal) && (
-        <div className="bg-slate-700 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
+      {(voucherCreateModal || voucherSelect) && (
+        <Box className="bg-slate-700 bg-opacity-75 absolute top-0 left-0 flex items-center justify-center w-full h-full overflow-hidden">
           <Box className="w-2/5">
-            {voucherCreateModal && <VoucherCreate onCancel={onCancel} />}
-            {voucherEditModal && voucher && (
-              <VoucherEdit voucher={voucher} onCancel={onCancel} />
+            {voucherCreateModal && (
+              <VoucherCreate
+                onCancel={onCancel}
+                onSuccessfulCreate={(voucher) => {
+                  setRowDatagrid((prev) => [...prev, voucher]);
+                }}
+              />
+            )}
+            {voucherSelect && (
+              <VoucherEdit
+                voucher={voucherSelect}
+                onCancel={onCancel}
+                onSuccessfulEdit={(voucher) => {
+                  setRowDatagrid((prev) => {
+                    return prev.map((v) => {
+                      if (v.voucher_code === voucher.voucher_code) {
+                        return voucher;
+                      }
+                      return v;
+                    });
+                  });
+                }}
+              />
             )}
           </Box>
-        </div>
+        </Box>
       )}
     </>
   );

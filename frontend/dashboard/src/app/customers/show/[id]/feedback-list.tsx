@@ -62,10 +62,7 @@ const CustomerFeedbackList = ({ feedbackList }: CustomerFeedbackListProps) => {
             Feedbacks
           </Typography>
         </Box>
-        <Typography
-          variant="h4"
-          className="font-semibold text-lg text-slate-500"
-        >
+        <Typography variant="h4" className="font-semibold text-lg text-black">
           Total {feedbackList.length} feedbacks
         </Typography>
       </Box>

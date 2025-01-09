@@ -14,8 +14,8 @@ type ProductCardProps = {
 const ProductCard = ({ orderItem }: ProductCardProps) => {
   const productInfo = orderItem.product;
   return (
-    <Box className="flex flex-row justify-around items-center">
-      <Box className="flex flex-row justify-center gap-3">
+    <Box className="flex flex-row justify-between items-center">
+      <Box className=" flex flex-row justify-center gap-3">
         <Image
           src={
             productInfo?.images
@@ -38,7 +38,9 @@ const ProductCard = ({ orderItem }: ProductCardProps) => {
           </Typography>
         </Stack>
       </Box>
-      <Typography>x {orderItem.quantity || 'product'}</Typography>
+      <Typography className="col-span-1">
+        x {orderItem.quantity || 'product'}
+      </Typography>
     </Box>
   );
 };

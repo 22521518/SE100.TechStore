@@ -15,6 +15,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import React from 'react';
 import { transformVNMoney } from '@utils/transform.util';
 import Image from 'next/image';
+import { dummyProductImage } from '@constant/value.constant';
 
 export default function CategoryShow() {
   const { create, edit, show } = useNavigation();
@@ -58,7 +59,7 @@ export default function CategoryShow() {
         renderCell: ({ row }) => {
           return (
             <Image
-              src={`${row.images && row.images[0]}`}
+              src={`${(row.images && row.images[0]) || dummyProductImage}`}
               alt={row.product_name}
               width={48}
               height={48}
