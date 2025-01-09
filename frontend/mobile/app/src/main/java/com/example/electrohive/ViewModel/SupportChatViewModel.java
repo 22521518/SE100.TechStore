@@ -7,14 +7,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.electrohive.Models.Customer;
 import com.example.electrohive.Models.Message;
-import com.example.electrohive.Models.SupportChat;
 import com.example.electrohive.Repository.SupportChatRepository;
 import com.example.electrohive.utils.PreferencesHelper;
 import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
-import java.util.Date;
 import java.util.List;
 
 public class SupportChatViewModel extends ViewModel {

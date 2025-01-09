@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.electrohive.Models.ApiResponse;
-import com.example.electrohive.Models.Province;
 import com.example.electrohive.Models.Voucher;
-import com.example.electrohive.Repository.LocationRepository;
 import com.example.electrohive.Repository.VoucherRepository;
 
 import java.util.List;

@@ -2,7 +2,6 @@ package com.example.electrohive.ViewModel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.electrohive.Models.ApiResponse;
