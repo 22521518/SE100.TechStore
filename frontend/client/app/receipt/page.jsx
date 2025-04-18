@@ -51,15 +51,13 @@ const Payment = () => {
   const checkPaymentStatus = () => {
     if ((!orderId &&!orderId_Zalo ) || !session.customer?.customer_id) return;
 
-    // getOrder(session.customer?.customer_id, orderId?orderId:orderId_Zalo).then((data) => {
-    //   setIsSuccessful(
-    //     ((data.payment_method === "MOMO"|| data.payment_method === "ZALOPAY") && data.payment_status === "PAID") ||
-    //       data.payment_method === "COD"
-    //   );
-    //   setIsLoading(false);
-    // });
-    setIsSuccessful(true)
-    setIsLoading(false) 
+    getOrder(session.customer?.customer_id, orderId?orderId:orderId_Zalo).then((data) => {
+      setIsSuccessful(
+        (data.payment_method === "MOMO" && data.payment_status === "PAID") ||
+          data.payment_method === "COD"
+      );
+      setIsLoading(false);
+    });
   };
 
   useEffect(() => {
