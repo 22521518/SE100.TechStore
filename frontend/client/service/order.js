@@ -75,11 +75,9 @@ export const payWithZaloPay = async (payload) => {
 
 
     if (response.ok) {
-      console.log(response);
       const data = await response.json()
       return data.order_url
     } else {
-      console.log(response);
       return "";
     }
   } catch (error) {
@@ -102,17 +100,15 @@ export const payWithMoMo = async (payload) => {
 
 
     if (response.ok) {
-      console.log(response);
       const data = await response.json()
       return data.shortLink
     } else {
-      console.log(response);
       return "";
     }
   } catch (error) {
     console.log(error);
     return "";
-  }
+  }npm 
 }
 
 export const postOrder = async (payload) => {

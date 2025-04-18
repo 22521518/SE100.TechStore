@@ -150,6 +150,7 @@ const Payment = () => {
         voucher: order.order_voucher?.voucher_code || null,
       },
     };
+
     if (order.order_payment_method === "MOMO") {
       await payWithMoMo(payload).then((data) => {
         if (data) {

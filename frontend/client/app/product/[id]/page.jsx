@@ -533,6 +533,7 @@ const Product = () => {
                   <FeedbackTag key={index} loading={true} />
                 ))
               : productFeedbacks
+                  .sort((a, b) => b.rating - a.rating)
                   .filter(
                     (item) =>
                       item.rating === feedbackFilter || feedbackFilter === -1
